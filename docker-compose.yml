@@ -1,0 +1,25 @@
+version: "3.1"
+
+services:
+  db:
+    image: postgres:latest
+    restart: unless-stopped
+    ports:
+      - "5444:5432"
+
+  api:
+    image: api
+    build: ./server/
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+  frontend:
+    image: frontend
+    build:
+      context: ./client/
+    ports:
+      - "3001:3000"
+    depends_on:
+      - api
