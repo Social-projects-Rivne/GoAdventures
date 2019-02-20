@@ -3,22 +3,29 @@ version: "3.1"
 services:
   db:
     image: postgres:latest
+    container_name: db
     restart: unless-stopped
     ports:
       - "5444:5432"
+    environment:
+      POSTGRES_PASSWORD: 'niger'
+      POSTGRES_DB: 'adventuredb'
+    volumes:
+      - ~/GoAdventures/data:/var/lib/postgresql/data
 
   api:
-    image: api
-    build: ./server/
+    build:
+     context: ./server/goadventures
+    container_name: api
     ports:
       - "8080:8080"
     depends_on:
       - db
 
   frontend:
-    image: frontend
     build:
       context: ./client/
+    container_name: frontend
     ports:
       - "3001:3000"
     depends_on:
