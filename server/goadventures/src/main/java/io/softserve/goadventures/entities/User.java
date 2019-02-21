@@ -6,37 +6,37 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = 'users')
+@Table(name = "users")
 public class User {
     @Id
-    @Column(name = 'id')
+    @Column(name = "id")
     private int id;
 
-    @Column(name = 'fullname')
+    @Column(name = "fullname")
     private String fullname;
 
-    @Column(name = 'username')
+    @Column(name = "username")
     private String username;
 
-    @Column(name = 'password')
+    @Column(name = "password")
     private String password;
 
-    @Column(name = 'location')
+    @Column(name = "location")
     private String location;
 
-    @Column(name = 'email')
+    @Column(name = "email")
     private String email;
 
-    @Column(name = 'phone')
+    @Column(name = "phone")
     private int phone;
 
-    @Column(name = 'role')
+    @Column(name = "role")
     private String role;
 
-    @Column(name = 'avatar')
+    @Column(name = "avatar")
     private String avatar;
 
-    @Column(name = 'status_id')
+    @Column(name = "status_id")
     private int statusId;
 
     public User() {
