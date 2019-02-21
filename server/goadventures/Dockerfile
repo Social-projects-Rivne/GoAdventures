@@ -1,3 +1,4 @@
-FROM openjdk:11-jdk
-ADD /target/goadventures-0.0.1-SNAPSHOT.jar app.jar
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+FROM maven:3.6-jdk-11
+VOLUME /app
+WORKDIR /app
+COPY . /app
