@@ -10,8 +10,8 @@ public class VerificationService {
   @Autowired
   UserService userService;
 
-  public void checkUserStatus() {
-
+  public boolean checkUserStatus() {
+    return  true;
   }
 
 }
