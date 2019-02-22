@@ -38,7 +38,7 @@ public class UserAccountController {
     public ModelAndView registerUser(ModelAndView modelAndView, User user)
     {
 
-        User existingUser = userRepository.findByEmailIdIgnoreCase(user.getEmailId());
+        User existingUser = userRepository.findByEmailIgnoreCase(user.getEmail());
         if(existingUser != null)
         {
             modelAndView.addObject("message","This email already exists!");
@@ -53,15 +53,15 @@ public class UserAccountController {
             confirmationTokenRepository.save(confirmationToken);
 
             SimpleMailMessage mailMessage = new SimpleMailMessage();
-            mailMessage.setTo(user.getEmailId());
+            mailMessage.setTo(user.getEmail());
             mailMessage.setSubject("Complete Registration!");
             mailMessage.setFrom("chand312902@gmail.com");
             mailMessage.setText("To confirm your account, please click here : "
-                    +"http://localhost:8082/confirm-account?token="+confirmationToken.getConfirmationToken());
+                    +"http://localhost:8080/confirm-account?token="+confirmationToken.getConfirmationToken());
 
             emailSenderService.sendEmail(mailMessage);
 
-            modelAndView.addObject("emailId", user.getEmailId());
+            modelAndView.addObject("email", user.getEmail());
 
             modelAndView.setViewName("successfulRegisteration");
         }
@@ -78,8 +78,8 @@ public class UserAccountController {
 
         if(token != null)
         {
-            User user = userRepository.findByEmailIdIgnoreCase(token.getUser().getEmailId());
-            user.setEnabled(true);
+            User user = userRepository.findByEmailIgnoreCase(token.getUser().getEmail());
+            user.setStatusId(1);
             userRepository.save(user);
             modelAndView.setViewName("accountVerified");
         }
