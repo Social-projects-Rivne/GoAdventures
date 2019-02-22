@@ -1,14 +1,12 @@
 package io.softserve.goadventures.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "users")
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private int id;
 
@@ -42,16 +40,10 @@ public class User {
     public User() {
     }
 
-    public User(String fullname, String username, String password, String location, String email, int phone, String role, String avatar, int statusId) {
+    public User(String fullname, String email, String password) {
         this.fullname = fullname;
-        this.username = username;
         this.password = password;
-        this.location = location;
         this.email = email;
-        this.phone = phone;
-        this.role = role;
-        this.avatar = avatar;
-        this.statusId = statusId;
     }
 
     public int getId() {
