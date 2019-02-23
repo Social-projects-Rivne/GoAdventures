@@ -20,15 +20,15 @@ public class JWTService {
   /**
   * Get email from token
   */
-  public String parseToken(String token) {
+  public String parseToken(String token) {  // Change type to boolean
     String userEmail = JWT.require(HMAC256(SECRET.getBytes()))
             .build()
             .verify(token.replace(TOKEN_PREFIX, ""))
             .getSubject();
     if (userEmail != null) {
-      return "Verified";
+      return "Verified";                    // Return true
     }
-    return null;
+    return null;                            // Return false
   }
 
   /**
