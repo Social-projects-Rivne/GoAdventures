@@ -16,4 +16,13 @@ public class UserService {
   public Optional<User> getUserById(int id){
      return userRepository.findById(id);
   }
+
+  public User getUserByEmail(String email) {
+    return userRepository.findByEmailIgnoreCase(email);
+  }
+
+  public void updateUser(User user) {
+    userRepository.save(user);
+  }
+
 }

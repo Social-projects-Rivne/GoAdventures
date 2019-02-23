@@ -1,4 +1,4 @@
-package io.softserve.goadventures.registration.service;
+package io.softserve.goadventures.auth.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
