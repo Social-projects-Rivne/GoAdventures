@@ -32,7 +32,7 @@ export const Navbar = () => {
             <li className='nav-item'>
               {/* Activate on state authorized */}
               <Link className='nav-link' to='/profile'>
-                Events
+                Profile
               </Link>
             </li>
             <li className='nav-item'>
