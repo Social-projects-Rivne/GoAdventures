@@ -1,6 +1,6 @@
 package io.softserve.goadventures.auth.controller;
 
-import io.softserve.goadventures.auth.services.JWTService;
+import io.softserve.goadventures.auth.providers.JWTProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
@@ -22,7 +22,7 @@ public class AuthController {
   private VerificationService verificationService;
 
   @Autowired
-  private JWTService jwtService;
+  private JWTProvider jwtProvider;
 
   @Autowired
   private EmailSenderService emailSenderService;
@@ -52,9 +52,9 @@ public class AuthController {
    */
   @PutMapping("/confirm-account")
   public ResponseEntity<String> confirmUserAccount(@RequestParam("token") String confirmationToken) {
-    User user = userService.getUserByEmail(jwtService.parseToken(confirmationToken));
+    User user = userService.getUserByEmail(jwtProvider.parseToken(confirmationToken));
     if (confirmationToken != null) {
-      String authToken = jwtService.createToken(user);
+      String authToken = jwtProvider.createToken(user);
       user.setStatusId(UserStatus.ACTIVE.getUserStatus());
       userService.updateUser(user);
       HttpHeaders responseHeaders = new HttpHeaders();

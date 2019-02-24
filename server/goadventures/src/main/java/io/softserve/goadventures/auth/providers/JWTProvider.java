@@ -1,4 +1,4 @@
-package io.softserve.goadventures.auth.services;
+package io.softserve.goadventures.auth.providers;
 
 import static io.softserve.goadventures.auth.models.SecurityConstants.EXPIRATION_TIME;
 import static io.softserve.goadventures.auth.models.SecurityConstants.SECRET;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 
 @Service("jwtService")
-public class JWTService {
+public class JWTProvider {
 
   /**
   * Get email from token
@@ -26,7 +26,7 @@ public class JWTService {
             .verify(token.replace(TOKEN_PREFIX, ""))
             .getSubject();
     if (userEmail != null) {
-      return "Verified";                    // Return true
+      return userEmail;                    // Returns user email to check if such user exist in db
     }
     return null;                            // Return false
   }
