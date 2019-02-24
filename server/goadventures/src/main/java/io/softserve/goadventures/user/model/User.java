@@ -1,6 +1,8 @@
 package io.softserve.goadventures.user.model;
 
 import javax.persistence.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 @Entity
 @Table(name = "users")
@@ -41,9 +43,9 @@ public class User {
     }
 
     public User(String fullname, String email, String password) {
-        this.fullname = fullname;
-        this.password = password;
-        this.email = email;
+        setFullname(fullname);
+        setEmail(email);
+        setPassword(password);
     }
 
     public int getId() {
@@ -55,6 +57,7 @@ public class User {
     }
 
     public void setFullname(String fullname) {
+
         this.fullname = fullname;
     }
 
@@ -71,7 +74,23 @@ public class User {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
+
+            byte[] bytes = messageDigest.digest(fullname.getBytes());
+
+            StringBuilder str = new StringBuilder();
+
+            for (byte b : bytes) {
+                str.append(b);
+            }
+
+            this.password = str.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getLocation() {

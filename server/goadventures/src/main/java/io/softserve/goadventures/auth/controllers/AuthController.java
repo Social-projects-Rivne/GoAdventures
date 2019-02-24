@@ -30,11 +30,7 @@ public class AuthController {
     @PostMapping
     public void signUp(@RequestBody User user) {
         if (!checkEmail(user.getEmail())) {
-            try {
-                userRepository.save(hashPassword(user));
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            }
+            userRepository.save(user);
             logger.info("signUp: New user create.");
         } else {
             logger.info("signUp: This user is already exist.");
@@ -53,19 +49,19 @@ public class AuthController {
         }
     }
 
-    private User hashPassword(User user) throws NoSuchAlgorithmException {
-        MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
-
-        byte[] bytes = messageDigest.digest(user.getPassword().getBytes());
-
-        StringBuilder str = new StringBuilder();
-
-        for (byte b : bytes) {
-            str.append(b);
-        }
-
-        user.setPassword(str.toString());
-
-        return user;
-    }
+//    private User hashPassword(User user) throws NoSuchAlgorithmException {
+//        MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
+//
+//        byte[] bytes = messageDigest.digest(user.getPassword().getBytes());
+//
+//        StringBuilder str = new StringBuilder();
+//
+//        for (byte b : bytes) {
+//            str.append(b);
+//        }
+//
+//        user.setPassword(str.toString());
+//
+//        return user;
+//    }
 }
