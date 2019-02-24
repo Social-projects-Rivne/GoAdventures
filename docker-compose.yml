@@ -11,14 +11,17 @@ services:
       POSTGRES_PASSWORD: 'niger'
       POSTGRES_DB: 'adventuredb'
     volumes:
-      - ./GoAdventures/data:/var/lib/postgresql/data
+      - ./data:/var/lib/postgresql/data
 
   api:
+    restart: always
+    working_dir: /app
     build:
      context: ./server/goadventures
     container_name: api
     ports:
       - "8080:8080"
+    command: "mvn clean spring-boot:run"
     depends_on:
       - db
 

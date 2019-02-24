@@ -1,4 +1,4 @@
-package io.softserve.goadventures.entities;
+package io.softserve.goadventures.user.model;
 
 import javax.persistence.*;
 
