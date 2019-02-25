@@ -3,4 +3,5 @@ export interface InputSettings {
     placeholder: string;
     type: string;
     inital_value?: string;
+    field_name: string;
 }
