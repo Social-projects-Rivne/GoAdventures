@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css?family=Archivo+Black");
 .Home-content {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -11,7 +11,7 @@
   background-position: center;
 
   & .Home-heading {
-    height: 300px;
+    height: auto;
     margin: 5px 2px 5px 2px;
     padding: 5px;
     & h2 {

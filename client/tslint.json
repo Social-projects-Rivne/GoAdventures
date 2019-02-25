@@ -6,6 +6,7 @@
         },
         "triple-equals": true,
         "quotemark": [true, "single"],
+        "interface-name":false,
         "semicolon":true,
         "trailing-comma": true,
         "new-parens": true,

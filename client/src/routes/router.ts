@@ -1,6 +1,6 @@
-import { Home, About, Events, Profile } from '../pages';
+import { About, Events, Home, Profile } from '../pages';
 const routes = [
     {
         path: '/'
     }
-]
+];
