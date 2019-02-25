@@ -1,4 +1,4 @@
-package io.softserve.goadventures.auth.services;
+package io.softserve.goadventures.auth.service;
 
 import static io.softserve.goadventures.auth.models.SecurityConstants.EXPIRATION_TIME;
 import static io.softserve.goadventures.auth.models.SecurityConstants.SECRET;
