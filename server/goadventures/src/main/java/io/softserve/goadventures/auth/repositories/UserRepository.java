@@ -1,10 +1,8 @@
-package io.softserve.goadventures.repositories;
+package io.softserve.goadventures.auth.repositories;
 
-import io.softserve.goadventures.entities.User;
+import io.softserve.goadventures.auth.entities.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {

@@ -1,4 +1,4 @@
-package io.softserve.goadventures.entities;
+package io.softserve.goadventures.auth.entities;
 import javax.persistence.*;
 
 @Entity
