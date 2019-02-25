@@ -1,8 +1,8 @@
 package io.softserve.goadventures.user.model;
 
+
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import javax.persistence.*;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 @Entity
 @Table(name = "users")
@@ -73,24 +73,8 @@ public class User {
         return password;
     }
 
-    public void setPassword(String password) {
-
-        try {
-            MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
-
-            byte[] bytes = messageDigest.digest(fullname.getBytes());
-
-            StringBuilder str = new StringBuilder();
-
-            for (byte b : bytes) {
-                str.append(b);
-            }
-
-            this.password = str.toString();
-
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
+    private void setPassword(String password) {
+        this.password = BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
     public String getLocation() {

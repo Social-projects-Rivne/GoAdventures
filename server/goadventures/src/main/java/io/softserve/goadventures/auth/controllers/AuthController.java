@@ -1,5 +1,6 @@
 package io.softserve.goadventures.auth.controllers;
 
+import io.softserve.goadventures.auth.service.JwtService;
 import io.softserve.goadventures.user.model.User;
 import io.softserve.goadventures.user.repository.UserRepository;
 import org.slf4j.Logger;
@@ -7,19 +8,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 @RestController
 @RequestMapping("auth")
 public class AuthController {
     private Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     private final UserRepository userRepository;
+    private final JwtService jwtService;
 
     @Autowired
-    public AuthController(UserRepository userRepository) {
+    public AuthController(UserRepository userRepository, JwtService jwtService) {
         this.userRepository = userRepository;
+        this.jwtService = jwtService;
     }
 
     @GetMapping("/list")
@@ -36,6 +36,8 @@ public class AuthController {
             logger.info("signUp: This user is already exist.");
         }
 
+        String confirmationToken = jwtService.createToken(user);
+
     }
 
     private boolean checkEmail(String email) {
@@ -48,20 +50,4 @@ public class AuthController {
             return false;
         }
     }
-
-//    private User hashPassword(User user) throws NoSuchAlgorithmException {
-//        MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
-//
-//        byte[] bytes = messageDigest.digest(user.getPassword().getBytes());
-//
-//        StringBuilder str = new StringBuilder();
-//
-//        for (byte b : bytes) {
-//            str.append(b);
-//        }
-//
-//        user.setPassword(str.toString());
-//
-//        return user;
-//    }
 }
