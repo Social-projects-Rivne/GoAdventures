@@ -10,6 +10,12 @@
   background-size: cover;
   background-position: center;
 
+  & .Home__signup {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+
   & .Home-heading {
     height: auto;
     margin: 5px 2px 5px 2px;
