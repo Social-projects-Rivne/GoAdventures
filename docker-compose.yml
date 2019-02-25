@@ -17,7 +17,7 @@ services:
     restart: always
     working_dir: /app
     build:
-     context: ./server/goadventures
+      context: ./server/goadventures
     container_name: api
     ports:
       - "8080:8080"
