@@ -13,24 +13,24 @@ import org.springframework.http.HttpHeaders;
 import io.softserve.goadventures.auth.enums.UserStatus;
 
 import io.softserve.goadventures.auth.service.EmailSenderService;
-import io.softserve.goadventures.auth.service.VerificationService;
 import io.softserve.goadventures.user.model.User;
 import io.softserve.goadventures.user.service.UserService;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("auth")
 public class AuthController {
   private Logger logger = LoggerFactory.getLogger(io.softserve.goadventures.auth.controller.AuthController.class);
 
-  private final VerificationService verificationService;
   private final JWTService jwtService;
   private final EmailSenderService emailSenderService;
   private final UserService userService;
   private final UserRepository userRepository;
 
   @Autowired
-  public AuthController(VerificationService verificationService, JWTService jwtService, EmailSenderService emailSenderService, UserService userService, UserRepository userRepository) {
-    this.verificationService = verificationService;
+  public AuthController(JWTService jwtService, EmailSenderService emailSenderService, UserService userService, UserRepository userRepository) {
     this.jwtService = jwtService;
     this.emailSenderService = emailSenderService;
     this.userService = userService;
@@ -54,9 +54,9 @@ public class AuthController {
     SimpleMailMessage mailMessage = new SimpleMailMessage();
     mailMessage.setTo(user.getEmail());
     mailMessage.setSubject("Complete Registration!");
-    mailMessage.setFrom("chand312902@gmail.com");
+    mailMessage.setFrom("GoAdventures@gmail.com");
     mailMessage.setText("To confirm your account, please click here : "
-            + "http://localhost:8080/confirm-account?token=" + confirmationToken);
+            + "http://localhost:8080/auth/confirm-account?token=" + confirmationToken);
     emailSenderService.sendEmail(mailMessage);
   }
 
@@ -65,18 +65,21 @@ public class AuthController {
    * @param confirmationToken
    * @return ResponseEntity<T>  authToken *
    */
-  @PutMapping("/confirm-account")
-  public ResponseEntity<String> confirmUserAccount(@RequestParam("token") String confirmationToken) {
+  @GetMapping("/confirm-account")
+  public ResponseEntity<String> confirmUserAccount(@RequestParam("token") String confirmationToken, HttpServletRequest req) {
     User user = userService.getUserByEmail(jwtService.parseToken(confirmationToken));
-    if (confirmationToken != null) {
+    if (user != null) {
       String authToken = jwtService.createToken(user);
+      System.out.println("AUTH TOKEN  " + authToken);
       user.setStatusId(UserStatus.ACTIVE.getUserStatus());
       userService.updateUser(user);
       HttpHeaders responseHeaders = new HttpHeaders();
       responseHeaders.setBearerAuth(authToken);
-      return ResponseEntity.ok().headers(responseHeaders).body("User verified");
+      //HttpSession session = req.getSession();
+      //session.setAttribute("user", user);
+      return ResponseEntity.ok().headers(responseHeaders).body("User verified"); //TODO page User Verified
     } else {
-      return ResponseEntity.badRequest().body("The link is invalid or broken!");
+      return ResponseEntity.badRequest().body("The link is invalid or broken!"); // TODO page the link is invalid
     }
   }
 
