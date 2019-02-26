@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { async } from 'q';
 import { serverUrl } from '../../url.config';
 
 export const API_SIGN_UP = 'API_SIGN_UP';
