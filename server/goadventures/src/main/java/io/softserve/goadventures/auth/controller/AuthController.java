@@ -37,27 +37,32 @@ public class AuthController {
     this.userRepository = userRepository;
   }
 
+  @GetMapping
+  public Iterable<User> list(){
+    return userRepository.findAll();
+  }
 
   @PostMapping("/sign-up")
   public void signUp(@RequestBody User user) {
 
     if (!checkEmail(user.getEmail())) {
       user.setStatusId(UserStatus.PENDING.getUserStatus());
+      user.setUsername(user.getEmail().split("@")[0]);
       userRepository.save(user);
       logger.info("signUp: New user create.");
     } else {
       logger.info("signUp: This user is already exist.");
     }
 
-    String confirmationToken = jwtService.createToken(user);
-
-    SimpleMailMessage mailMessage = new SimpleMailMessage();
-    mailMessage.setTo(user.getEmail());
-    mailMessage.setSubject("Complete Registration!");
-    mailMessage.setFrom("GoAdventures@gmail.com");
-    mailMessage.setText("To confirm your account, please click here : "
-            + "http://localhost:8080/auth/confirm-account?token=" + confirmationToken);
-    emailSenderService.sendEmail(mailMessage);
+//    String confirmationToken = jwtService.createToken(user);
+//
+//    SimpleMailMessage mailMessage = new SimpleMailMessage();
+//    mailMessage.setTo(user.getEmail());
+//    mailMessage.setSubject("Complete Registration!");
+//    mailMessage.setFrom("GoAdventures@gmail.com");
+//    mailMessage.setText("To confirm your account, please click here : "
+//            + "http://localhost:8080/auth/confirm-account?token=" + confirmationToken);
+//    emailSenderService.sendEmail(mailMessage);
   }
 
 

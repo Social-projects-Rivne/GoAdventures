@@ -4,10 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "users")
@@ -16,6 +13,7 @@ import javax.persistence.Table;
 public class User {
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
     @Column(name = "fullname")
@@ -54,5 +52,4 @@ public class User {
     private void setPassword(String password) {
         this.password = BCrypt.hashpw(password, BCrypt.gensalt());
     }
-
 }
