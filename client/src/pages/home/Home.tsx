@@ -29,7 +29,7 @@ export class Home extends Component {
       type: 'password',
     },
     {
-      field_name: 'password',
+      field_name: 're-password',
       label_value: 'Repeat your password',
       placeholder: '********',
       type: 'password',
@@ -39,6 +39,7 @@ export class Home extends Component {
 
   public submitHandlerer(event: any) {
     event.preventDefault();
+
   }
 
   public render() {
