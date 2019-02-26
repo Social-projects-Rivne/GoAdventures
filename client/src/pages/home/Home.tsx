@@ -37,7 +37,7 @@ export class Home extends Component {
     }
   ];
 
-  public submitHandlerer(event: any) {
+  public submitHandle(event: any) {
     event.preventDefault();
 
   }
@@ -60,7 +60,7 @@ export class Home extends Component {
             <div className='col'>
               <div className='Home__signup'>
                 <Dialog
-                  handleSubmit={this.submitHandlerer}
+                  handleSubmit={this.submitHandle}
                   inputs={this.inputSettings}
                   button_text='Sign up'
                   header='Sign up for adventures'
