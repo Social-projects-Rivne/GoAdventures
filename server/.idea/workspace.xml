@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f388677b-bcbb-41c2-a048-f6a90268802d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/goadventures/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/goadventures/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/goadventures/src/main/java/io/softserve/goadventures/auth/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/goadventures/src/main/java/io/softserve/goadventures/auth/controller/AuthController.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/goadventures/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -31,8 +30,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/goadventures/src/main/java/io/softserve/goadventures/auth/controller/AuthController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="486">
-              <caret line="83" column="35" lean-forward="true" selection-start-line="83" selection-start-column="35" selection-end-line="83" selection-end-column="35" />
+            <state relative-caret-position="426">
+              <caret line="85" lean-forward="true" selection-start-line="85" selection-end-line="85" />
             </state>
           </provider>
         </entry>
@@ -334,7 +333,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1551177446988" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1551177706865" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/goadventures/pom.xml" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
@@ -561,8 +560,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/goadventures/src/main/java/io/softserve/goadventures/auth/controller/AuthController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="486">
-          <caret line="83" column="35" lean-forward="true" selection-start-line="83" selection-start-column="35" selection-end-line="83" selection-end-column="35" />
+        <state relative-caret-position="426">
+          <caret line="85" lean-forward="true" selection-start-line="85" selection-end-line="85" />
         </state>
       </provider>
     </entry>

@@ -80,7 +80,7 @@ public class AuthController {
           if(user.getStatusId()==UserStatus.DELETED.getUserStatus())
             return "email is deleted";
 
-          logger.info("checkPassword: " + user.toString());
+          logger.info("success sign in checkPassword: " + user.toString());
           return confirmationToken;
         }
 
