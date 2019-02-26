@@ -59,7 +59,7 @@ public class AuthController {
 //    SimpleMailMessage mailMessage = new SimpleMailMessage();
 //    mailMessage.setTo(user.getEmail());
 //    mailMessage.setSubject("Complete Registration!");
-//    mailMessage.setFrom("GoAdventures@gmail.com");
+//    mailMessage.setFrom("goadventuressup@gmail.com");
 //    mailMessage.setText("To confirm your account, please click here : "
 //            + "http://localhost:8080/auth/confirm-account?token=" + confirmationToken);
 //    emailSenderService.sendEmail(mailMessage);
