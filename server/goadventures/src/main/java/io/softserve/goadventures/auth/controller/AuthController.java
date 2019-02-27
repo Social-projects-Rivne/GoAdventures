@@ -61,42 +61,37 @@ public class AuthController {
 
 
 
-    @PostMapping("/sign-in")
-    public String signIn(@RequestBody User userAuthDto) {
+  @PostMapping("/sign-in")
+  public ResponseEntity<String>  signIn(@RequestBody User userAuthDto) {
 
-      logger.info("add: Entered data = name = " + "; email = " + userAuthDto.getEmail() + "; password = " + userAuthDto.getPassword());
+    logger.info("add: Entered data = name = " + "; email = " + userAuthDto.getEmail() + "; password = " + userAuthDto.getPassword());
 
-      User user = userRepository.findByEmail(userAuthDto.getEmail());
-      String confirmationToken = jwtService.createToken(user);
-      if (user != null) {
-        logger.info("checkEmail: " + user.toString());
-        if (user.getPassword() == userAuthDto.getPassword()){
+    User user = userRepository.findByEmail(userAuthDto.getEmail());
+    String authToken = jwtService.createToken(user);
+    if (user != null) {
+      logger.info("checkEmail: " + user.toString());
+      if (user.getPassword() == userAuthDto.getPassword()){
 
+        if(user.getStatusId()==UserStatus.PENDING.getUserStatus())
+          return ResponseEntity.badRequest().body("User is not confirm auth!");
+        if(user.getStatusId()==UserStatus.BANNED.getUserStatus())
+          return ResponseEntity.badRequest().body("User is banned");
+        if(user.getStatusId()==UserStatus.DELETED.getUserStatus())
+          return ResponseEntity.badRequest().body("User is deleted");
 
-          if(user.getStatusId()==UserStatus.PENDING.getUserStatus())
-            return "email is not confirmed";
-          if(user.getStatusId()==UserStatus.BANNED.getUserStatus())
-            return "email is banned";
-          if(user.getStatusId()==UserStatus.DELETED.getUserStatus())
-            return "email is deleted";
-
-          logger.info("success sign in checkPassword: " + user.toString());
-          return confirmationToken;
-        }
-
-        else {
-          logger.info("checkPassword: password is wrong");
-          return "password is wrong";
-        }
-
-      } else {
-        logger.info("checkEmail: can't find this userAuthDto");
-        return "can't find this user";
-
-      }
+        user.setStatusId(UserStatus.ACTIVE.getUserStatus());
+        userService.updateUser(user);
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setBearerAuth(authToken);
+        return ResponseEntity.ok().headers(responseHeaders).body("pizda");
+      } else
+        return ResponseEntity.badRequest().body("User password is wrong");
 
     }
+    else
+      return ResponseEntity.badRequest().body("Not found user");
 
+  }
 
     /**
    * @param confirmationToken
