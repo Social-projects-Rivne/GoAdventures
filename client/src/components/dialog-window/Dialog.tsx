@@ -1,4 +1,4 @@
-import React, { ChangeEvent, Component } from 'react';
+import React, { ChangeEvent, Component, SyntheticEvent } from 'react';
 import './Dialog.scss';
 import { DialogSettings } from './interfaces/dialog.interface';
 
@@ -10,6 +10,7 @@ export class Dialog extends Component<DialogSettings> {
 
     //  :*D
     this.handleChange = this.handleChange.bind(this);
+    this.submitForm = this.submitForm.bind(this);
   }
 
 
@@ -23,7 +24,7 @@ export class Dialog extends Component<DialogSettings> {
           <h3>{this.props.header}</h3>
         </div>
         <div className='card-body'>
-          <form onSubmit={this.props.handleSubmit}>
+          <form id='dynamic_form'>
             {this.props.inputs.map((input, index) => {
               return (
                 <label key={index}>
@@ -35,6 +36,7 @@ export class Dialog extends Component<DialogSettings> {
                     placeholder={input.placeholder}
                     onChange={this.handleChange}
                     key={index}
+                    required
                   />
                   <div className='valid-feedback'>Success! You've done it.</div>
                 </label>
@@ -44,13 +46,20 @@ export class Dialog extends Component<DialogSettings> {
         </div>
         <div className='card-footer text-muted d-flex justify-content-center'>
               <button
+                form='dynamic_form'
                 type='submit'
-                className='btn btn-success'>
+                className='btn btn-success'
+                onSubmit={this.submitForm}>
                 {this.props.button_text}
               </button>
             </div>
       </div>
     );
+  }
+
+
+  private submitForm(e: any) {
+    e.preventDefault();
   }
 
   private handleChange(event: any): void {

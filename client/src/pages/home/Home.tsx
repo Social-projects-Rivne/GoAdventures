@@ -1,45 +1,46 @@
 import React, { Component } from 'react';
 import { CSSProperties } from 'react';
+import { signUp } from '../../api/request';
 import { Dialog } from '../../components/';
 import { InputSettings } from '../../components/dialog-window/interfaces/input.interface';
+import { AuthContext } from '../../context/auth.context';
 import './Home.scss';
 
 export class Home extends Component {
- private signUpDialogStyles: CSSProperties = {
+  private signUpDialogStyles: CSSProperties = {
     maxWidth: '20rem',
-    opacity: 0.9,
+    opacity: 0.9
   };
   private inputSettings: InputSettings[] = [
     {
       field_name: 'name',
       label_value: 'Your name',
       placeholder: 'John',
-      type: 'text',
+      type: 'text'
     },
     {
       field_name: 'email',
       label_value: 'Your email',
       placeholder: 'example@example.com',
-      type: 'email',
+      type: 'email'
     },
     {
       field_name: 'password',
       label_value: 'Your password',
       placeholder: '********',
-      type: 'password',
+      type: 'password'
     },
     {
       field_name: 're-password',
       label_value: 'Repeat your password',
       placeholder: '********',
-      type: 'password',
-
+      type: 'password'
     }
   ];
 
-  public submitHandle(event: any) {
-    event.preventDefault();
-
+  public submitHandle(): boolean {
+    // signUp();
+    return true;
   }
 
   public render() {
@@ -59,13 +60,18 @@ export class Home extends Component {
           <div className='row'>
             <div className='col'>
               <div className='Home__signup'>
-                <Dialog
-                  handleSubmit={this.submitHandle}
-                  inputs={this.inputSettings}
-                  button_text='Sign up'
-                  header='Sign up for adventures'
-                  inline_styles={this.signUpDialogStyles}
-                />
+                <AuthContext.Consumer>
+                  {({authorized, authorize}) => (
+                    <Dialog
+                      context={{authorized, authorize}}
+                      handleSubmit={this.submitHandle}
+                      inputs={this.inputSettings}
+                      button_text='Sign up'
+                      header='Sign up for adventures'
+                      inline_styles={this.signUpDialogStyles}
+                  />
+                  )}
+                </AuthContext.Consumer>
               </div>
             </div>
           </div>

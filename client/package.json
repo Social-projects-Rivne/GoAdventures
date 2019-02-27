@@ -18,6 +18,7 @@
     "popper.js": "^1.14.7",
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
+    "react-form-validator-core": "^0.6.1",
     "react-redux": "^6.0.1",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.5",

@@ -3,6 +3,6 @@ RUN mkdir app
 WORKDIR /app
 COPY . /app/
 RUN npm install --production
-CMD [ "npm", "start" ]
+CMD [ "npm", "start:dev" ]
 EXPOSE 3001
 
