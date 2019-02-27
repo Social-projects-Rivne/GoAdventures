@@ -23,7 +23,7 @@ export class Dialog extends Component<DialogSettings> {
           <h3>{this.props.header}</h3>
         </div>
         <div className='card-body'>
-          <form>
+          <form onSubmit={this.props.handleSubmit}>
             {this.props.inputs.map((input, index) => {
               return (
                 <label key={index}>
@@ -45,7 +45,6 @@ export class Dialog extends Component<DialogSettings> {
         <div className='card-footer text-muted d-flex justify-content-center'>
               <button
                 type='submit'
-                onClick={this.props.handleSubmit}
                 className='btn btn-success'>
                 {this.props.button_text}
               </button>
@@ -59,6 +58,5 @@ export class Dialog extends Component<DialogSettings> {
     const stateObj: any = {};
     stateObj[objKey.toString()] = event.target.value;
     this.setState({...stateObj});
-    console.log(this.state);
   }
 }
