@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("auth")
 public class AuthController extends HttpServlet {
     private Logger logger = LoggerFactory.getLogger(io.softserve.goadventures.auth.controller.AuthController.class);
-
     private final JWTService jwtService;
     private final EmailSenderService emailSenderService;
     private final UserService userService;
@@ -40,12 +39,10 @@ public class AuthController extends HttpServlet {
     return userRepository.findAll();
     }
 
-
     @PostMapping("/sign-up")
     public ResponseEntity<String> signUp(@RequestBody User user) {
 
         HttpHeaders httpHeaders = new HttpHeaders();
-
 
         if (!checkEmail(user.getEmail())) {
             user.setStatusId(UserStatus.PENDING.getUserStatus());
@@ -54,39 +51,36 @@ public class AuthController extends HttpServlet {
             logger.info("signUp: New user create.");
 
 //            emailConfirmation(user);
-
             return ResponseEntity.ok().body("user create");
 
         } else {
             logger.info("signUp: This user is already exist.");
 
             return ResponseEntity.badRequest().body("user already exist");
-
         }
     }
 
-    /**
-    * @param confirmationToken
-    * @return ResponseEntity<T>  authToken *
-    */
-    @GetMapping("/confirm-account")
-    public ResponseEntity<String> confirmUserAccount(@RequestParam("token") String confirmationToken, HttpServletRequest req) {
-        User user = userService.getUserByEmail(jwtService.parseToken(confirmationToken));
-        if (user != null) {
-            String authToken = jwtService.createToken(user);
-            System.out.println("AUTH TOKEN  " + authToken);
-            user.setStatusId(UserStatus.ACTIVE.getUserStatus());
-            userService.updateUser(user);
-            HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.setBearerAuth(authToken);
-            //HttpSession session = req.getSession();
-            //session.setAttribute("user", user);
-            return ResponseEntity.ok().headers(responseHeaders).body("User verified"); //TODO page User Verified
-        } else {
-            return ResponseEntity.badRequest().body("The link is invalid or broken!"); // TODO page the link is invalid
-        }
-    }
-
+  /**
+   * @param confirmationToken
+   * @return ResponseEntity<T>  authToken *
+   */
+  @GetMapping("/confirm-account")
+  public ResponseEntity<String> confirmUserAccount(@RequestParam("token") String confirmationToken, HttpServletRequest req) {
+      User user = userService.getUserByEmail(jwtService.parseToken(confirmationToken));
+      if (user != null) {
+          String authToken = jwtService.createToken(user);
+          System.out.println("AUTH TOKEN  " + authToken);
+          user.setStatusId(UserStatus.ACTIVE.getUserStatus());
+          userService.updateUser(user);
+          HttpHeaders responseHeaders = new HttpHeaders();
+          responseHeaders.setBearerAuth(authToken);
+          //HttpSession session = req.getSession();
+          //session.setAttribute("user", user);
+          return ResponseEntity.ok().headers(responseHeaders).body("User verified"); //TODO page User Verified
+      } else {
+          return ResponseEntity.badRequest().body("The link is invalid or broken!"); // TODO page the link is invalid
+      }
+  }
     private void emailConfirmation(User user) {
         String confirmationToken = jwtService.createToken(user);
 
@@ -95,7 +89,7 @@ public class AuthController extends HttpServlet {
         mailMessage.setSubject("Complete Registration!");
         mailMessage.setFrom("GoAdventures@gmail.com");
         mailMessage.setText("To confirm your account, please click here : "
-                + "http://localhost:8080/auth/confirm-account?token=" + confirmationToken);
+                + "http://localhost:3001/auth/confirm-account?token=" + confirmationToken);
         emailSenderService.sendEmail(mailMessage);
     }
 
