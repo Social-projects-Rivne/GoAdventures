@@ -1,7 +1,8 @@
 #IDE
 /.vscode
 /.idea
-/client/node_modules
+/node_modules
+/data
 
 # Compiled class file
 *.class
