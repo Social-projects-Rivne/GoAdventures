@@ -72,7 +72,7 @@ public class AuthController {
       String authToken = jwtService.createToken(user);
       if (user != null) {
         logger.info("checkEmail: " + user.toString());
-        logger.info("========"+userAuthDto.getPassword());
+        logger.info("Glory to Ukraine========"+userAuthDto.getPassword());
         if (BCrypt.checkpw(userAuthDto.getPassword(),user.getPassword())){
 
 
