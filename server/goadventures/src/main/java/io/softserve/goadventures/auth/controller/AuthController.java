@@ -64,7 +64,7 @@ public class AuthController {
 
 
     @PostMapping("/sign-in")
-    public ResponseEntity<String>  signIn(@RequestParam UserAuthDto userAuthDto) {
+    public ResponseEntity<String>  signIn(@RequestBody UserAuthDto userAuthDto) {
 
       logger.info("add: Entered data = name = " + "; email = " + userAuthDto.getEmail() + "; password = " + userAuthDto.getPassword());
 
