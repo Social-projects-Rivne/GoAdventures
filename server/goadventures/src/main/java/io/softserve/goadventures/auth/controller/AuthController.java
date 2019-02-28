@@ -45,13 +45,17 @@ public class AuthController extends HttpServlet {
             user.setStatusId(UserStatus.PENDING.getUserStatus());
             user.setUsername(user.getEmail().split("@")[0]);
             userService.addUser(user);
-            logger.info("signUp: New user create.");
+            logger.info("\nsignUp: New user create.");
+            logger.info("\nsignUp detail: \n\t" +
+                    user.getFullname() + " : \n\t" +
+                    user.getEmail() + " : \n\t" +
+                    user.getUsername());
 
-           emailConfirmation(user);
+            emailConfirmation(user);
             return ResponseEntity.ok().headers(httpHeaders).body("user create");
 
         } else {
-            logger.info("signUp: This user is already exist.");
+            logger.info("\nsignUp: This user is already exist.");
 
             return ResponseEntity.badRequest().body("user already exist");
         }
@@ -78,6 +82,7 @@ public class AuthController extends HttpServlet {
           return ResponseEntity.badRequest().body("The link is invalid or broken!"); // TODO page the link is invalid
       }
   }
+
     private void emailConfirmation(User user) {
         String confirmationToken = jwtService.createToken(user);
 
