@@ -1,5 +1,6 @@
 package io.softserve.goadventures.auth.controller;
 
+import io.softserve.goadventures.auth.dtoModels.UserAuthDto;
 import io.softserve.goadventures.auth.service.JWTService;
 import io.softserve.goadventures.user.repository.UserRepository;
 import org.slf4j.Logger;
@@ -7,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpHeaders;
 
@@ -61,37 +63,40 @@ public class AuthController {
 
 
 
-  @PostMapping("/sign-in")
-  public ResponseEntity<String>  signIn(@RequestBody User userAuthDto) {
+    @PostMapping("/sign-in")
+    public ResponseEntity<String>  signIn(@RequestParam UserAuthDto userAuthDto) {
 
-    logger.info("add: Entered data = name = " + "; email = " + userAuthDto.getEmail() + "; password = " + userAuthDto.getPassword());
+      logger.info("add: Entered data = name = " + "; email = " + userAuthDto.getEmail() + "; password = " + userAuthDto.getPassword());
 
-    User user = userRepository.findByEmail(userAuthDto.getEmail());
-    String authToken = jwtService.createToken(user);
-    if (user != null) {
-      logger.info("checkEmail: " + user.toString());
-      if (user.getPassword() == userAuthDto.getPassword()){
+      User user = userRepository.findByEmail(userAuthDto.getEmail());
+      String authToken = jwtService.createToken(user);
+      if (user != null) {
+        logger.info("checkEmail: " + user.toString());
+        logger.info("========"+userAuthDto.getPassword());
+        if (BCrypt.checkpw(userAuthDto.getPassword(),user.getPassword())){
 
-        if(user.getStatusId()==UserStatus.PENDING.getUserStatus())
-          return ResponseEntity.badRequest().body("User is not confirm auth!");
-        if(user.getStatusId()==UserStatus.BANNED.getUserStatus())
-          return ResponseEntity.badRequest().body("User is banned");
-        if(user.getStatusId()==UserStatus.DELETED.getUserStatus())
-          return ResponseEntity.badRequest().body("User is deleted");
 
-        user.setStatusId(UserStatus.ACTIVE.getUserStatus());
-        userService.updateUser(user);
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.setBearerAuth(authToken);
-        return ResponseEntity.ok().headers(responseHeaders).body("pizda");
-      } else
-        return ResponseEntity.badRequest().body("User password is wrong");
+          if(user.getStatusId()==UserStatus.PENDING.getUserStatus())
+            return ResponseEntity.badRequest().body("User is not confirm auth!");
+          if(user.getStatusId()==UserStatus.BANNED.getUserStatus())
+            return ResponseEntity.badRequest().body("User is banned");
+          if(user.getStatusId()==UserStatus.DELETED.getUserStatus())
+            return ResponseEntity.badRequest().body("User is deleted");
+
+            user.setStatusId(UserStatus.ACTIVE.getUserStatus());
+            userService.updateUser(user);
+            HttpHeaders responseHeaders = new HttpHeaders();
+            responseHeaders.setBearerAuth(authToken);
+            return ResponseEntity.ok().headers(responseHeaders).body(user.toString());
+          }
+          else return ResponseEntity.badRequest().body("User password is wrong");
+
+        }
+      else
+        return ResponseEntity.badRequest().body("Not found user");
 
     }
-    else
-      return ResponseEntity.badRequest().body("Not found user");
 
-  }
 
     /**
    * @param confirmationToken
@@ -111,6 +116,7 @@ public class AuthController {
       return ResponseEntity.badRequest().body("The link is invalid or broken!");
     }
   }
+
 
   private boolean checkEmail(String email) {
     User user = userRepository.findByEmail(email);
