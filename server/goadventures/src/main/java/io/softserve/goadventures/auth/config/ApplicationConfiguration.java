@@ -13,7 +13,7 @@ public class ApplicationConfiguration {
         FilterRegistrationBean registration = new FilterRegistrationBean();
         registration.setFilter(new LoginFilter());
 // specific URl patterns
-        //registration.addUrlPatterns("/res/reg");
+        registration.addUrlPatterns("/res/reg");
         //registration.addUrlPatterns("/content/*");
         return registration;
     }

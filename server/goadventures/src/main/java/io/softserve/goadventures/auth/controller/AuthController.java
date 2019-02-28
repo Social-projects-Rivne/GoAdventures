@@ -48,7 +48,7 @@ public class AuthController extends HttpServlet {
             logger.info("signUp: New user create.");
 
            emailConfirmation(user);
-            return ResponseEntity.ok().body("user create");
+            return ResponseEntity.ok().headers(httpHeaders).body("user create");
 
         } else {
             logger.info("signUp: This user is already exist.");

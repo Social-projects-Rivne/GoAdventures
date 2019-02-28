@@ -39,19 +39,6 @@ import org.springframework.http.HttpStatus;
             }
         }
 
-            /*
-            //HttpSession session = request.getSession(false);
-            String loginURI = request.getContextPath() + "/auth/signin";
-            //boolean loggedIn = session != null && session.getAttribute("user") != null;
-            //boolean loginRequest = request.getRequestURI().equals(loginURI);
-            if (loggedIn || loginRequest) {
-                filterchain.doFilter(request, response);
-            } else {
-                response.sendRedirect(loginURI);
-            }
-            //filterchain.doFilter(request, response);
-        }*/
-
         public HttpServletResponse setOk(ServletResponse response) {
             HttpServletResponse httpResponse = (HttpServletResponse) response;
             httpResponse.setStatus(200);

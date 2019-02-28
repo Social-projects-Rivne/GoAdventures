@@ -38,8 +38,8 @@ export class Home extends Component {
     }
   ];
 
-  public submitHandle(): boolean {
-    // signUp();
+  public submitRequest(): boolean {
+    signUp();
     return true;
   }
 
@@ -62,14 +62,15 @@ export class Home extends Component {
               <div className='Home__signup'>
                 <AuthContext.Consumer>
                   {({authorized, authorize}) => (
+                    !authorized ?
                     <Dialog
                       context={{authorized, authorize}}
-                      handleSubmit={this.submitHandle}
+                      handleSubmit={this.submitRequest}
                       inputs={this.inputSettings}
                       button_text='Sign up'
                       header='Sign up for adventures'
                       inline_styles={this.signUpDialogStyles}
-                  />
+                  /> : null
                   )}
                 </AuthContext.Consumer>
               </div>

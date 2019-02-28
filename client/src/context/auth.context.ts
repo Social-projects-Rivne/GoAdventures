@@ -1,12 +1,9 @@
 import React from 'react';
 export const user = {
-        authorized: false
-    };
+  authorized: false
+};
 
-export const AuthContext = React.createContext(
-        {
-        authorize: (reqType: () => any): void => {},
-        ...user,
-    }
-    );
-
+export const AuthContext = React.createContext({
+  authorize: (reqType: () => any): void => {},
+  ...user
+});

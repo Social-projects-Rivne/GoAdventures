@@ -16,7 +16,6 @@ class App extends Component<{}, Auth> {
       ...user,
       authorize: async (reqType: () => any) => {
         const request = await reqType();
-        request ? console.log('benis') : console.log('vegenis');
         this.setState((state) => ({
           authorized: state.authorized ? state.authorized : !state.authorized
         }));
@@ -29,7 +28,7 @@ class App extends Component<{}, Auth> {
     return (
       <div>
         <AuthContext.Provider value={this.state}>
-          <Navbar />
+          <Navbar authorized={this.state.authorized} />
           <Content />
           <Footer />
         </AuthContext.Provider>

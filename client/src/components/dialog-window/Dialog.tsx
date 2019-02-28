@@ -3,8 +3,9 @@ import { signUp } from '../../api/request';
 import './Dialog.scss';
 import { DialogSettings } from './interfaces/dialog.interface';
 
-export class Dialog extends Component<DialogSettings> {
+/* DON'T RE-DEFINE COMPONENT! USE IT! */
 
+export class Dialog extends Component<DialogSettings, any> {
   constructor(props: DialogSettings) {
     super(props);
     this.state = {};
@@ -13,7 +14,6 @@ export class Dialog extends Component<DialogSettings> {
     this.handleChange = this.handleChange.bind(this);
     this.submitForm = this.submitForm.bind(this);
   }
-
 
   public render() {
     return (
@@ -33,41 +33,50 @@ export class Dialog extends Component<DialogSettings> {
                   <input
                     name={input.field_name}
                     type={input.type}
-                    className='form-control '
+                    className='form-control'
                     placeholder={input.placeholder}
                     onChange={this.handleChange}
                     key={index}
-                    required
                   />
-                  <div className='valid-feedback'>Success! You've done it.</div>
                 </label>
               );
             })}
           </form>
         </div>
         <div className='card-footer text-muted d-flex justify-content-center'>
-              <button
-                className='btn btn-success'
-                onClick={this.submitForm}>
-                {this.props.button_text}
-              </button>
-            </div>
+          <button className='btn btn-success' onClick={this.submitForm}>
+            {this.props.button_text}
+          </button>
+        </div>
       </div>
     );
   }
 
-
   private submitForm() {
-    // this.props.context.authorize(this.props.handleSubmit);
-    signUp({title: `summer`, body: 'roooooo', userId: 1 });
+    if(Object.keys(this.state).length !== 0 && this.compareFields()) {
+      const data = {...this.state};
+      delete data.confirmPassword;
+      console.log(data);
+      this.props.context.authorize(this.props.handleSubmit);
+      signUp(data);
+    } else {
+      return (
+        <div>Not match</div>
+      );
+    }
   }
 
   private handleChange(event: any): void {
     const objKey: any = event.target.getAttribute('name');
     const stateObj: any = {};
     stateObj[objKey.toString()] = event.target.value;
-    stateObj.password === stateObj.confirmPassword ?
-    (delete stateObj.confirmPassword, this.setState({...stateObj})): console.log('Passwords dont match');
+    this.setState({ ...stateObj });
+  }
 
+  private compareFields(): boolean {
+    const { password, confirmPassword } = this.state;
+    return password === confirmPassword &&
+    password !== '' &&
+    confirmPassword !== '';
   }
 }
