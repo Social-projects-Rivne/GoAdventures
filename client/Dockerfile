@@ -3,6 +3,7 @@ RUN mkdir app
 WORKDIR /app
 COPY . /app/
 RUN npm install --production
-CMD [ "npm", "start:dev" ]
+RUN npm rebuild node-sass
+CMD [ "npm", "run", "start:dev"]
 EXPOSE 3001
 

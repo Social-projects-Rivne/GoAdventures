@@ -4,7 +4,6 @@ import io.softserve.goadventures.auth.enums.UserStatus;
 import io.softserve.goadventures.auth.service.EmailSenderService;
 import io.softserve.goadventures.auth.service.JWTService;
 import io.softserve.goadventures.user.model.User;
-import io.softserve.goadventures.user.repository.UserRepository;
 import io.softserve.goadventures.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,26 +16,24 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 
+//@CrossOrigin(origins = "http://domain2.com", maxAge = 3600)
+@CrossOrigin
 @RestController
 @RequestMapping("auth")
 public class AuthController extends HttpServlet {
     private Logger logger = LoggerFactory.getLogger(io.softserve.goadventures.auth.controller.AuthController.class);
+
     private final JWTService jwtService;
+
     private final EmailSenderService emailSenderService;
+
     private final UserService userService;
-    private final UserRepository userRepository;
 
     @Autowired
-    public AuthController(JWTService jwtService, EmailSenderService emailSenderService, UserService userService, UserRepository userRepository) {
+    public AuthController(JWTService jwtService, EmailSenderService emailSenderService, UserService userService) {
         this.jwtService = jwtService;
         this.emailSenderService = emailSenderService;
         this.userService = userService;
-        this.userRepository = userRepository;
-    }
-
-    @GetMapping
-    public Iterable<User> list(){
-    return userRepository.findAll();
     }
 
     @PostMapping("/sign-up")
@@ -47,10 +44,10 @@ public class AuthController extends HttpServlet {
         if (!checkEmail(user.getEmail())) {
             user.setStatusId(UserStatus.PENDING.getUserStatus());
             user.setUsername(user.getEmail().split("@")[0]);
-            userRepository.save(user);
+            userService.addUser(user);
             logger.info("signUp: New user create.");
 
-//            emailConfirmation(user);
+           emailConfirmation(user);
             return ResponseEntity.ok().body("user create");
 
         } else {
@@ -94,7 +91,7 @@ public class AuthController extends HttpServlet {
     }
 
     private boolean checkEmail(String email) {
-        User user = userRepository.findByEmail(email);
+        User user = userService.getUserByEmail(email);
         if (user != null) {
             logger.info("checkEmail: " + user.toString());
             return true;

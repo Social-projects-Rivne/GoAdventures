@@ -1,4 +1,4 @@
-package io.softserve.goadventures.auth.config;
+package io.softserve.goadventures.configs;
 
 //import org.springframework.web.filter.GenericFilterBean;
 //
@@ -44,7 +44,7 @@ public class CorsConfiguration implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("localhost:3001")
+                .allowedOrigins("localhost:3000")
                 .allowCredentials(false)
                 .maxAge(3600);
     }

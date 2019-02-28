@@ -18,13 +18,14 @@ class App extends Component<{}, Auth> {
         const request = await reqType();
         request ? console.log('benis') : console.log('vegenis');
         this.setState((state) => ({
-          authorized: state.authorized ? !state.authorized : state.authorized
+          authorized: state.authorized ? state.authorized : !state.authorized
         }));
       }
     };
   }
 
   public render() {
+    console.log(this.state.authorized);
     return (
       <div>
         <AuthContext.Provider value={this.state}>

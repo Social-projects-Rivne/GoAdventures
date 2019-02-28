@@ -1,4 +1,5 @@
 import React, { ChangeEvent, Component, SyntheticEvent } from 'react';
+import { signUp } from '../../api/request';
 import './Dialog.scss';
 import { DialogSettings } from './interfaces/dialog.interface';
 
@@ -24,7 +25,7 @@ export class Dialog extends Component<DialogSettings> {
           <h3>{this.props.header}</h3>
         </div>
         <div className='card-body'>
-          <form id='dynamic_form'>
+          <form>
             {this.props.inputs.map((input, index) => {
               return (
                 <label key={index}>
@@ -46,10 +47,8 @@ export class Dialog extends Component<DialogSettings> {
         </div>
         <div className='card-footer text-muted d-flex justify-content-center'>
               <button
-                form='dynamic_form'
-                type='submit'
                 className='btn btn-success'
-                onSubmit={this.submitForm}>
+                onClick={this.submitForm}>
                 {this.props.button_text}
               </button>
             </div>
@@ -58,14 +57,17 @@ export class Dialog extends Component<DialogSettings> {
   }
 
 
-  private submitForm(e: any) {
-    e.preventDefault();
+  private submitForm() {
+    // this.props.context.authorize(this.props.handleSubmit);
+    signUp({title: `summer`, body: 'roooooo', userId: 1 });
   }
 
   private handleChange(event: any): void {
     const objKey: any = event.target.getAttribute('name');
     const stateObj: any = {};
     stateObj[objKey.toString()] = event.target.value;
-    this.setState({...stateObj});
+    stateObj.password === stateObj.confirmPassword ?
+    (delete stateObj.confirmPassword, this.setState({...stateObj})): console.log('Passwords dont match');
+
   }
 }

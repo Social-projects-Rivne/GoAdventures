@@ -31,7 +31,7 @@ export class Home extends Component {
       type: 'password'
     },
     {
-      field_name: 're-password',
+      field_name: 'confirmPassword',
       label_value: 'Repeat your password',
       placeholder: '********',
       type: 'password'
