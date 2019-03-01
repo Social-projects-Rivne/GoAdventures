@@ -39,15 +39,13 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@EnableWebMvc
 public class CorsConfiguration implements WebMvcConfigurer {
   @Override
   public void addCorsMappings(CorsRegistry registry) {
     registry.addMapping("/**")
-            .allowedOrigins("*")
+            .allowedOrigins("http://localhost:3001", "http://localhost:3000")
             .allowCredentials(false)
-            .allowedHeaders("Origin, X-Requested-With, Content-Type, Accept, X-Auth-Token, X-Csrf-Token, Authorization")
-            .allowedMethods("POST, GET, PUT, OPTIONS, DELETE")
+            .allowedMethods("*")
             .maxAge(3600);
   }
 }
