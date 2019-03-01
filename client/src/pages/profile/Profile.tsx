@@ -4,7 +4,6 @@ import Dialog from './Dialog';
 export class Profile extends Component {
   render() {
     return (
-      <Dialog/>
     )
   }
 }
