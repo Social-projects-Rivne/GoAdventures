@@ -7,5 +7,5 @@ export interface DialogSettings {
     button_text: string;
     inputs: InputSettings[];
     inline_styles?: CSSProperties;
-    handleSubmit: () => void;
+    handleSubmit: (data: any) => Promise<boolean>;
 }

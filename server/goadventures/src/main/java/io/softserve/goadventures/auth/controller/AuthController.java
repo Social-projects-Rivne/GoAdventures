@@ -38,10 +38,10 @@ public class AuthController extends HttpServlet {
 
     @PostMapping("/sign-up")
     public ResponseEntity<String> signUp(@RequestBody User user) {
-
         HttpHeaders httpHeaders = new HttpHeaders();
-
+        logger.info(String.valueOf(user));
         if (!checkEmail(user.getEmail())) {
+
             user.setStatusId(UserStatus.PENDING.getUserStatus());
             user.setUsername(user.getEmail().split("@")[0]);
             userService.addUser(user);
@@ -52,7 +52,7 @@ public class AuthController extends HttpServlet {
                     user.getUsername());
 
             emailConfirmation(user);
-            return ResponseEntity.ok().headers(httpHeaders).body("user create");
+            return ResponseEntity.ok().headers(httpHeaders).body("user created");
 
         } else {
             logger.info("\nsignUp: This user is already exist.");

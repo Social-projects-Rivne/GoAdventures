@@ -1,6 +1,5 @@
 import { stat } from 'fs';
 import React, { Component } from 'react';
-import { signUp } from './api/requests';
 import './App.scss';
 import { Content, Footer, Navbar } from './components';
 import { AuthContext, user } from './context/auth.context';
@@ -12,8 +11,8 @@ class App extends Component<{}, Auth> {
     super(props);
     this.state = {
       ...user,
-      authorize: async (reqType: () => any) => {
-        if (await reqType()) {
+      authorize: async (reqType: (data: object) => any, data: object) => {
+        if (await reqType({...data})) {
           this.setState((state) => ({
             authorized: state.authorized ? state.authorized : !state.authorized
           }));

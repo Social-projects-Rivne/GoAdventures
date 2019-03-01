@@ -6,7 +6,7 @@ export const user = {
 };
 
 export const AuthContext = React.createContext({
-  authorize: (reqType: () => any): void => {},
+  authorize: (reqType: () => any, data: object): void => {},
   toggleAuthType: () => {},
   ...user
 });

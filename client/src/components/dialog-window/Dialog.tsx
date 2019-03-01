@@ -25,7 +25,9 @@ export class Dialog extends Component<DialogSettings, any> {
           <h3>{this.props.header}</h3>
         </div>
         <div className='card-body'>
-          <form id='dialog' noValidate>
+          <form id='dialog'
+            onSubmit={this.submitForm}
+           noValidate>
             {this.props.inputs.map((input, index) => {
               return (
                 <label key={index}>
@@ -45,7 +47,7 @@ export class Dialog extends Component<DialogSettings, any> {
           </form>
         </div>
         <div className='card-footer text-muted d-flex justify-content-center'>
-          <button type='submit' form='dialog' className='btn btn-success' onSubmit={this.submitForm}>
+          <button type='submit' form='dialog' className='btn btn-success'>
             {this.props.button_text}
           </button>
         </div>
@@ -54,11 +56,12 @@ export class Dialog extends Component<DialogSettings, any> {
   }
 
   private submitForm(event: SyntheticEvent<EventTarget>) {
+    event.preventDefault();
     // if(Object.keys(this.state).length !== 0 &&)
     if(Object.keys(this.state).length !== 0 && this.compareFields()) {
       const data = {...this.state};
       delete data.confirmPassword;
-      this.props.context.authorize(this.props.handleSubmit);
+      this.props.context.authorize(this.props.handleSubmit, data);
     } else {
       return (
         <div>Not match</div>
@@ -72,4 +75,19 @@ export class Dialog extends Component<DialogSettings, any> {
     stateObj[objKey.toString()] = event.target.value;
     this.setState({...stateObj});
   }
+
+
+  private compareFields(): boolean {
+    const { password } = this.state;
+    if (this.state.hasOwnProperty('confirmPassword')) {
+      const { confirmPassword } = this.state;
+      return password === confirmPassword &&
+      password !== '' &&
+      confirmPassword !== '';
+    } else {
+      return password !== '';
+    }
+  }
+
+
 }

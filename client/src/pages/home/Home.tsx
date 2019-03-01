@@ -38,8 +38,8 @@ export class Home extends Component {
     }
   ];
 
-  public async submitSignUpRequest(): Promise<boolean> {
-    const status = await signUp().then((res) => {
+  public submitSignUpRequest(data: object): Promise<boolean> {
+    const status = signUp(data).then((res) => {
       return res.statusText === 'OK' && res.status === 200;
     }).catch((error) => {
       console.error(error);
