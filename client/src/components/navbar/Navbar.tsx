@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../../context/auth.context';
 
 export const Navbar = (props: any) => {
   return (
@@ -50,12 +51,25 @@ export const Navbar = (props: any) => {
               </Link>
             </li>
           </ul>
-          <button type='button' className='btn btn-success'>
-            Sign In
-          </button>
-          <button type='button' className='btn btn-warning'>
-            Sign Up
-          </button>
+          <AuthContext.Consumer>
+            {({ authorized, authType, toggleAuthType }) =>
+              authType === 'signUp' && !authorized ? (
+                <button
+                  onClick={toggleAuthType}
+                  type='button'
+                  className='btn btn-success'>
+                  Sign In
+                </button>
+              ) : (
+                <button
+                  onClick={toggleAuthType}
+                  type='button'
+                  className='btn btn-warning'>
+                  Sign Up
+                </button>
+              )
+            }
+          </AuthContext.Consumer>
         </div>
       </div>
     </nav>

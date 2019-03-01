@@ -1,5 +1,5 @@
 import React, { ChangeEvent, Component, SyntheticEvent } from 'react';
-import { signUp } from '../../api/request';
+import { signUp } from '../../api/requests';
 import './Dialog.scss';
 import { DialogSettings } from './interfaces/dialog.interface';
 
@@ -25,7 +25,7 @@ export class Dialog extends Component<DialogSettings, any> {
           <h3>{this.props.header}</h3>
         </div>
         <div className='card-body'>
-          <form>
+          <form id='dialog' noValidate>
             {this.props.inputs.map((input, index) => {
               return (
                 <label key={index}>
@@ -37,6 +37,7 @@ export class Dialog extends Component<DialogSettings, any> {
                     placeholder={input.placeholder}
                     onChange={this.handleChange}
                     key={index}
+                    required
                   />
                 </label>
               );
@@ -44,7 +45,7 @@ export class Dialog extends Component<DialogSettings, any> {
           </form>
         </div>
         <div className='card-footer text-muted d-flex justify-content-center'>
-          <button className='btn btn-success' onClick={this.submitForm}>
+          <button type='submit' form='dialog' className='btn btn-success' onSubmit={this.submitForm}>
             {this.props.button_text}
           </button>
         </div>
@@ -52,13 +53,12 @@ export class Dialog extends Component<DialogSettings, any> {
     );
   }
 
-  private submitForm() {
+  private submitForm(event: SyntheticEvent<EventTarget>) {
+    // if(Object.keys(this.state).length !== 0 &&)
     if(Object.keys(this.state).length !== 0 && this.compareFields()) {
       const data = {...this.state};
       delete data.confirmPassword;
-      console.log(data);
       this.props.context.authorize(this.props.handleSubmit);
-      signUp(data);
     } else {
       return (
         <div>Not match</div>
@@ -74,9 +74,14 @@ export class Dialog extends Component<DialogSettings, any> {
   }
 
   private compareFields(): boolean {
-    const { password, confirmPassword } = this.state;
-    return password === confirmPassword &&
-    password !== '' &&
-    confirmPassword !== '';
+    const { password } = this.state;
+    if (this.state.hasOwnProperty('confirmPassword')) {
+      const { confirmPassword } = this.state;
+      return password === confirmPassword &&
+      password !== '' &&
+      confirmPassword !== '';
+    } else {
+      return password !== '';
+    }
   }
 }

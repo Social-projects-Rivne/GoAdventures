@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { CSSProperties } from 'react';
-import { signUp } from '../../api/request';
+import { signUp } from '../../api/requests';
 import { Dialog } from '../../components/';
 import { InputSettings } from '../../components/dialog-window/interfaces/input.interface';
 import { AuthContext } from '../../context/auth.context';
@@ -13,7 +13,7 @@ export class Home extends Component {
   };
   private inputSettings: InputSettings[] = [
     {
-      field_name: 'name',
+      field_name: 'fullname',
       label_value: 'Your name',
       placeholder: 'John',
       type: 'text'
@@ -38,9 +38,15 @@ export class Home extends Component {
     }
   ];
 
-  public submitRequest(): boolean {
-    signUp();
-    return true;
+  public async submitSignUpRequest(): Promise<boolean> {
+    const status = await signUp().then((res) => {
+      return res.statusText === 'OK' && res.status === 200;
+    }).catch((error) => {
+      console.error(error);
+      return false;
+    });
+    console.info(`${status} 41 line in Home`);
+    return status;
   }
 
   public render() {
@@ -61,11 +67,11 @@ export class Home extends Component {
             <div className='col'>
               <div className='Home__signup'>
                 <AuthContext.Consumer>
-                  {({authorized, authorize}) => (
-                    !authorized ?
+                  {({authorized, authType , authorize}) => (
+                    !authorized && authType === 'signUp' ?
                     <Dialog
                       context={{authorized, authorize}}
-                      handleSubmit={this.submitRequest}
+                      handleSubmit={this.submitSignUpRequest}
                       inputs={this.inputSettings}
                       button_text='Sign up'
                       header='Sign up for adventures'
