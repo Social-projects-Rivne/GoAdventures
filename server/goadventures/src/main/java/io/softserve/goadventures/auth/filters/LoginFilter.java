@@ -14,8 +14,12 @@ import org.springframework.http.HttpStatus;
     //@WebFilter("/reg/")
     @Component
     public class LoginFilter implements Filter {
+        private final JWTService jwtService;
+
         @Autowired
-        private JWTService jwtService = new JWTService();
+        public LoginFilter(JWTService jwtService) {
+            this.jwtService = jwtService;
+        }
 
         @Override
         public void destroy() {}

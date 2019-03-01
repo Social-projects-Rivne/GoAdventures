@@ -70,18 +70,6 @@ export class Dialog extends Component<DialogSettings, any> {
     const objKey: any = event.target.getAttribute('name');
     const stateObj: any = {};
     stateObj[objKey.toString()] = event.target.value;
-    this.setState({ ...stateObj });
-  }
-
-  private compareFields(): boolean {
-    const { password } = this.state;
-    if (this.state.hasOwnProperty('confirmPassword')) {
-      const { confirmPassword } = this.state;
-      return password === confirmPassword &&
-      password !== '' &&
-      confirmPassword !== '';
-    } else {
-      return password !== '';
-    }
+    this.setState({...stateObj});
   }
 }

@@ -1,0 +1,36 @@
+@import url("https://fonts.googleapis.com/css?family=Archivo+Black");
+
+.User {
+    vertical-align: middle;
+    align-items: center;
+    display: inline-flex;
+    width: 100%;
+    /* background-color: #182839; */
+}
+
+.User-Data {
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    font-size: 2rem;
+}
+
+.User-image {
+  /* padding-left: 10%; */
+  width: 40%;
+  /* background-color: #999; */
+}
+
+img {
+    border-radius: 50%;
+    width: 28rem;
+}
+
+.user-detail {
+  display: flex;
+  flex-direction: column;
+}
+
+p {
+  padding-bottom: 2rem;
+}
