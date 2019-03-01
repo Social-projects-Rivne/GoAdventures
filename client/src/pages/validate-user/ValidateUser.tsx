@@ -1,9 +1,11 @@
 import React from 'react';
 
-export default function ValidateUser() {
+const ValidateUser = (props: any) => {
   return (
     <div>
-
     </div>
   );
-}
+};
+
+
+export default ValidateUser;
