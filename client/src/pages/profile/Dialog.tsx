@@ -14,7 +14,7 @@ export class Dialog extends Component<any, ProfileSetting> {
           userUrl: ''
         }
         
-        axios.get('http://localhost:8080/profile/gamesfortimak')
+        axios.get('http://localhost:8080/profile/1first_user1')
           .then(response => this.setState(
             {
               fullName: response.data.fullName,
