@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { CSSProperties } from 'react';
-import { signUp } from '../../api/requests';
+import { signIn, signUp } from '../../api/requests';
 import { Dialog } from '../../components/';
 import { InputSettings } from '../../components/dialog-window/interfaces/input.interface';
 import { AuthContext } from '../../context/auth.context';
@@ -8,10 +8,12 @@ import './Home.scss';
 
 export class Home extends Component {
   private signUpDialogStyles: CSSProperties = {
+    height: '27rem',
     maxWidth: '20rem',
-    opacity: 0.9
+    opacity: 0.9,
+
   };
-  private inputSettings: InputSettings[] = [
+  private signUpSnputSettings: InputSettings[] = [
     {
       field_name: 'fullname',
       label_value: 'Your name',
@@ -38,15 +40,36 @@ export class Home extends Component {
     }
   ];
 
+  private signInSnputSettings: InputSettings[] = [
+    {
+      field_name: 'fullname',
+      label_value: 'Your name',
+      placeholder: 'John',
+      type: 'text'
+    },
+    {
+      field_name: 'email',
+      label_value: 'Your email',
+      placeholder: 'example@example.com',
+      type: 'email'
+    },
+    {
+      field_name: 'password',
+      label_value: 'Your password',
+      placeholder: '********',
+      type: 'password'
+    },
+  ];
+
   public submitSignUpRequest(data: object): Promise<boolean> {
-    const status = signUp(data).then((res) => {
-      return res.statusText === 'OK' && res.status === 200;
-    }).catch((error) => {
-      console.error(error);
-      return false;
-    });
-    console.info(`${status} 41 line in Home`);
-    return status;
+    return signUp(data);
+  }
+
+  /**
+   * submitSignInRequest
+   */
+  public submitSignInRequest(data: object): Promise<boolean> {
+    return signIn(data);
   }
 
   public render() {
@@ -67,17 +90,29 @@ export class Home extends Component {
             <div className='col'>
               <div className='Home__signup'>
                 <AuthContext.Consumer>
-                  {({authorized, authType , authorize}) => (
-                    !authorized && authType === 'signUp' ?
+                  {({authorized, authType , authorize}) =>
+
+                  !authorized && authType === 'signUp' ? (
+
                     <Dialog
                       context={{authorized, authorize}}
                       handleSubmit={this.submitSignUpRequest}
-                      inputs={this.inputSettings}
+                      inputs={this.signUpSnputSettings}
                       button_text='Sign up'
                       header='Sign up for adventures'
                       inline_styles={this.signUpDialogStyles}
-                  /> : null
-                  )}
+                  />
+                  ) : (
+                    <Dialog
+                      context={{authorized, authorize}}
+                      handleSubmit={this.submitSignInRequest}
+                      inputs={this.signInSnputSettings}
+                      button_text='Sign up'
+                      header='Sign up for adventures'
+                      inline_styles={this.signUpDialogStyles}
+                      />
+                  )
+                }
                 </AuthContext.Consumer>
               </div>
             </div>
