@@ -33,7 +33,6 @@ import org.springframework.http.HttpStatus;
             String token = request.getHeader("Authorization");
             if (token != null) {
                 if (jwtService.parseToken(token) != null) {
-                    setOk(response);
                     filterchain.doFilter(request, response);
                 } else {
                     setUnauthorized(response);
@@ -41,12 +40,6 @@ import org.springframework.http.HttpStatus;
             } else {
                 setUnauthorized(response);
             }
-        }
-
-        public HttpServletResponse setOk(ServletResponse response) {
-            HttpServletResponse httpResponse = (HttpServletResponse) response;
-            httpResponse.setStatus(200);
-            return httpResponse;
         }
 
         public HttpServletResponse setUnauthorized(ServletResponse response) {
