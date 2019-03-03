@@ -42,12 +42,6 @@ export class Home extends Component {
 
   private signInSnputSettings: InputSettings[] = [
     {
-      field_name: 'fullname',
-      label_value: 'Your name',
-      placeholder: 'John',
-      type: 'text'
-    },
-    {
       field_name: 'email',
       label_value: 'Your email',
       placeholder: 'example@example.com',

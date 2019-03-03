@@ -4,7 +4,7 @@ import { serverUrl } from './url.config';
 export const signUp = async (data: any) => {
     return await axios.post(`${serverUrl}/auth/sign-up`, {...data},
          { headers: {'Content-Type': 'application/json'}}).then((res) => {
-            return res.statusText === 'OK' && res.status === 200;
+             return res.statusText === 'OK' && res.status === 200;
           }).catch((error) => {
             console.error(error);
             return false;
@@ -14,7 +14,7 @@ export const signUp = async (data: any) => {
 export const signIn = async (data: any) => {
     return await axios.post(`${serverUrl}/auth/sign-in`, {...data}, { headers: {'Content-Type': 'application/json'}})
     .then((res) => {
-        if (res.statusText === 'OK' && res.status === 200) {
+        if (res.statusText === 'OK' && res.headers.hasOwnProperty('authorization')) {
             localStorage.setItem('tkn879', res.headers.authorization);
             return true;
         } else {
