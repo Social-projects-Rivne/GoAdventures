@@ -96,6 +96,13 @@ public class AuthController {
         return ResponseEntity.badRequest().body("Not found user");
 
     }
+    @PutMapping
+    public void logOut(@RequestBody String email){
+      User user = userRepository.findByEmail(email);
+      user.setStatusId(2);
+      userService.updateUser(user);
+
+    }
 
 
     /**
