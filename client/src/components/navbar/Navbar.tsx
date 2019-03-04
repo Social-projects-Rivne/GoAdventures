@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../../context/auth.context';
 
-export const Navbar = () => {
+export const Navbar = (props: any) => {
   return (
     <nav className='navbar navbar-expand-lg navbar-dark bg-primary'>
       <div className='container'>
@@ -29,25 +30,46 @@ export const Navbar = () => {
                 Home {/* <span className="sr-only">(current)</span> */}
               </Link>
             </li>
-            <li className='nav-item'>
-              {/* Activate on state authorized */}
-              <Link className='nav-link' to='/profile'>
-                Profile
-              </Link>
-            </li>
-            <li className='nav-item'>
-              <Link className='nav-link' to='/events'>
-                Events
-              </Link>
-            </li>
+            {/* Activate on state authorized */}
+            {props.authorized ? (
+              <li className='nav-item'>
+                <Link className='nav-link' to='/profile'>
+                  Profile
+                </Link>
+              </li>
+            ) : null}
+            {props.authorized ? (
+              <li className='nav-item'>
+                <Link className='nav-link' to='/events'>
+                  Events
+                </Link>
+              </li>
+            ) : null}
             <li className='nav-item'>
               <Link className='nav-link' to='/about'>
                 About
               </Link>
             </li>
           </ul>
-          <button type='button' className='btn btn-success'>Sign In</button>
-          <button type='button' className='btn btn-warning'>Sign Up</button>
+          <AuthContext.Consumer>
+            {({ authorized, authType, toggleAuthType }) =>
+              authType === 'signUp' && !authorized ? (
+                <button
+                  onClick={toggleAuthType}
+                  type='button'
+                  className='btn btn-success'>
+                  Sign In
+                </button>
+              ) : (
+                <button
+                  onClick={toggleAuthType}
+                  type='button'
+                  className='btn btn-warning'>
+                  Sign Up
+                </button>
+              )
+            }
+          </AuthContext.Consumer>
         </div>
       </div>
     </nav>

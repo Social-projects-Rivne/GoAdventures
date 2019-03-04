@@ -25,7 +25,13 @@ public class UserService {
     return userRepository.findByEmail(email);
   }
 
+  public void addUser(User newUser) {userRepository.save(newUser);}
+
   public void updateUser(User user) {
     userRepository.save(user);
+  }
+
+  public Iterable<User> getAllUsers() {
+    return userRepository.findAll();
   }
 }

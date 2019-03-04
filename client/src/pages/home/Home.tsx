@@ -1,44 +1,69 @@
 import React, { Component } from 'react';
 import { CSSProperties } from 'react';
+import { signIn, signUp } from '../../api/requests';
 import { Dialog } from '../../components/';
 import { InputSettings } from '../../components/dialog-window/interfaces/input.interface';
+import { AuthContext } from '../../context/auth.context';
 import './Home.scss';
 
 export class Home extends Component {
- private signUpDialogStyles: CSSProperties = {
+  private signUpDialogStyles: CSSProperties = {
+    height: '27rem',
     maxWidth: '20rem',
     opacity: 0.9,
+
   };
-  private inputSettings: InputSettings[] = [
+  private signUpSnputSettings: InputSettings[] = [
     {
-      field_name: 'name',
+      field_name: 'fullname',
       label_value: 'Your name',
       placeholder: 'John',
-      type: 'text',
+      type: 'text'
     },
     {
       field_name: 'email',
       label_value: 'Your email',
       placeholder: 'example@example.com',
-      type: 'email',
+      type: 'email'
     },
     {
       field_name: 'password',
       label_value: 'Your password',
       placeholder: '********',
-      type: 'password',
+      type: 'password'
     },
     {
-      field_name: 'password',
+      field_name: 'confirmPassword',
       label_value: 'Repeat your password',
       placeholder: '********',
-      type: 'password',
-
+      type: 'password'
     }
   ];
 
-  public submitHandlerer(event: any) {
-    event.preventDefault();
+  private signInSnputSettings: InputSettings[] = [
+    {
+      field_name: 'email',
+      label_value: 'Your email',
+      placeholder: 'example@example.com',
+      type: 'email'
+    },
+    {
+      field_name: 'password',
+      label_value: 'Your password',
+      placeholder: '********',
+      type: 'password'
+    },
+  ];
+
+  public submitSignUpRequest(data: object): Promise<boolean> {
+    return signUp(data);
+  }
+
+  /**
+   * submitSignInRequest
+   */
+  public submitSignInRequest(data: object): Promise<boolean> {
+    return signIn(data);
   }
 
   public render() {
@@ -58,13 +83,31 @@ export class Home extends Component {
           <div className='row'>
             <div className='col'>
               <div className='Home__signup'>
-                <Dialog
-                  handleSubmit={this.submitHandlerer}
-                  inputs={this.inputSettings}
-                  button_text='Sign up'
-                  header='Sign up for adventures'
-                  inline_styles={this.signUpDialogStyles}
-                />
+                <AuthContext.Consumer>
+                  {({authorized, authType , authorize}) =>
+
+                  !authorized && authType === 'signUp' ? (
+
+                    <Dialog
+                      context={{authorized, authorize}}
+                      handleSubmit={this.submitSignUpRequest}
+                      inputs={this.signUpSnputSettings}
+                      button_text='Sign up'
+                      header='Sign up for adventures'
+                      inline_styles={this.signUpDialogStyles}
+                  />
+                  ) : (
+                    <Dialog
+                      context={{authorized, authorize}}
+                      handleSubmit={this.submitSignInRequest}
+                      inputs={this.signInSnputSettings}
+                      button_text='Sign up'
+                      header='Sign up for adventures'
+                      inline_styles={this.signUpDialogStyles}
+                      />
+                  )
+                }
+                </AuthContext.Consumer>
               </div>
             </div>
           </div>

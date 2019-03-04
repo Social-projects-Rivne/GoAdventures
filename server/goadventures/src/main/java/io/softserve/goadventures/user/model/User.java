@@ -2,9 +2,7 @@ package io.softserve.goadventures.user.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import org.springframework.security.crypto.bcrypt.BCrypt;
-
 import javax.persistence.*;
 
 @Entity
@@ -14,9 +12,10 @@ import javax.persistence.*;
 public class User {
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @Column(name = "fullname")
+    @Column(name = "full_name")
     private String fullname;
 
     @Column(name = "username")

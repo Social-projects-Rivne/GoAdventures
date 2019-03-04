@@ -1,17 +1,19 @@
-import React, { ChangeEvent, Component } from 'react';
+import React, { ChangeEvent, Component, SyntheticEvent } from 'react';
+import { signUp } from '../../api/requests';
 import './Dialog.scss';
 import { DialogSettings } from './interfaces/dialog.interface';
 
-export class Dialog extends Component<DialogSettings> {
+/* DON'T RE-DEFINE COMPONENT! USE IT! */
 
+export class Dialog extends Component<DialogSettings, any> {
   constructor(props: DialogSettings) {
     super(props);
     this.state = {};
 
     //  :*D
     this.handleChange = this.handleChange.bind(this);
+    this.submitForm = this.submitForm.bind(this);
   }
-
 
   public render() {
     return (
@@ -23,7 +25,9 @@ export class Dialog extends Component<DialogSettings> {
           <h3>{this.props.header}</h3>
         </div>
         <div className='card-body'>
-          <form>
+          <form id='dialog'
+            onSubmit={this.submitForm}
+           noValidate>
             {this.props.inputs.map((input, index) => {
               return (
                 <label key={index}>
@@ -31,27 +35,38 @@ export class Dialog extends Component<DialogSettings> {
                   <input
                     name={input.field_name}
                     type={input.type}
-                    className='form-control '
+                    className='form-control'
                     placeholder={input.placeholder}
                     onChange={this.handleChange}
                     key={index}
+                    required
                   />
-                  <div className='valid-feedback'>Success! You've done it.</div>
                 </label>
               );
             })}
           </form>
         </div>
         <div className='card-footer text-muted d-flex justify-content-center'>
-              <button
-                type='submit'
-                onClick={this.props.handleSubmit}
-                className='btn btn-success'>
-                {this.props.button_text}
-              </button>
-            </div>
+          <button type='submit' form='dialog' className='btn btn-success'>
+            {this.props.button_text}
+          </button>
+        </div>
       </div>
     );
+  }
+
+  private submitForm(event: SyntheticEvent<EventTarget>) {
+    event.preventDefault();
+    // if(Object.keys(this.state).length !== 0 &&)
+    if(Object.keys(this.state).length !== 0 && this.compareFields()) {
+      const data = {...this.state};
+      delete data.confirmPassword;
+      this.props.context.authorize(this.props.handleSubmit, data);
+    } else {
+      return (
+        <div>Not match</div>
+      );
+    }
   }
 
   private handleChange(event: any): void {
@@ -59,6 +74,20 @@ export class Dialog extends Component<DialogSettings> {
     const stateObj: any = {};
     stateObj[objKey.toString()] = event.target.value;
     this.setState({...stateObj});
-    console.log(this.state);
   }
+
+
+  private compareFields(): boolean {
+    const { password } = this.state;
+    if (this.state.hasOwnProperty('confirmPassword')) {
+      const { confirmPassword } = this.state;
+      return password === confirmPassword &&
+      password !== '' &&
+      confirmPassword !== '';
+    } else {
+      return password !== '';
+    }
+  }
+
+
 }
