@@ -1,8 +1,9 @@
 import React from 'react';
 // import { SecureRoute } from 'react-route-guard';
 import { Route, Switch } from 'react-router-dom';
-import { About, Events, Home, Profile } from '../../pages';
+import { About, Confirm, Events, Home, Profile, ValidateUser } from '../../pages';
 // import AuthGuard from '../../pages/auth/guards/auth.guard';
+
 
 export const Content = () => {
   return (
@@ -18,6 +19,8 @@ export const Content = () => {
             <Route exact path='/profile' component={Profile} />
             <Route exact path='/events' component={Events} />
             <Route exact path='/about' component={About} />
+            <Route exact path='/confirm-yor-yo' component={ValidateUser}/>
+            <Route exact path='/confirm-account' component={Confirm} />
           </Switch>
         </div>
       </div>

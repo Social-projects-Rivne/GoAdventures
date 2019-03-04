@@ -79,7 +79,7 @@ public class AuthController extends HttpServlet {
    * @return ResponseEntity<T>  authToken *
    */
   @GetMapping("/confirm-account")
-  public ResponseEntity<String> confirmUserAccount(@RequestParam("token") String confirmationToken, HttpServletRequest req) {
+  public ResponseEntity<String> confirmUserAccount(@RequestParam("token") String confirmationToken) {
       User user = userService.getUserByEmail(jwtService.parseToken(confirmationToken));
       if (user != null) {
           String authToken = jwtService.createToken(user);
@@ -164,7 +164,7 @@ public class AuthController extends HttpServlet {
                 "<h3 class=pink align=\"center\">" + "A Quick Click to Confirm" + "</h3>" +
                 "<h3 class=pink align=\"center\">" + "Your Account" + "</h3>" +
                 "<p align=\"center\">" +
-                "<a href=http://localhost:8080/auth/confirm-account?token=" + confirmationToken + ">" + "<button class=button>Confirm Account</button></a></p>" +
+                "<a href=http://localhost:3001/confirm-account?token=" + confirmationToken + ">" + "<button class=button>Confirm Account</button></a></p>" +
                 "<br></br>" + "<br></br>" + "<br></br>" + "<br></br>" + "<br></br>" + "<br></br>" + "<br></br>" +
                 "<hr align=\"center\" width=\"90%\" size=\"1\"/>" +
                 "<br></br>" + "<br></br>" +
@@ -174,14 +174,6 @@ public class AuthController extends HttpServlet {
 
         multipart.addBodyPart(messageBodyPart);
 
-        //messageBodyPart = new MimeBodyPart();
-        //DataSource fds = new FileDataSource(
-          //      "/home/luxobscr/GoAdventures/client/src/assets/images/Stripe-email.png");
-
-        //messageBodyPart.setDataHandler(new DataHandler(fds));
-        //messageBodyPart.setHeader("Content-ID", "<confirmImage>");
-
-        //multipart.addBodyPart(messageBodyPart);
         msg.setContent(multipart);
 
         transport.connect(props.get("mail.smtp.host").toString(),
@@ -189,7 +181,6 @@ public class AuthController extends HttpServlet {
         transport.sendMessage(msg,
                 msg.getRecipients(Message.RecipientType.TO));
         transport.close();
-        //Transport.send(msg);
     }
 
     private boolean checkEmail(String email) {

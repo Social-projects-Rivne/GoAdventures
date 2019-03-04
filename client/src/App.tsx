@@ -11,8 +11,9 @@ class App extends Component<{}, Auth> {
     super(props);
     this.state = {
       ...user,
-      authorize: async (reqType: (data: object) => any, data: object) => {
-        if (await reqType({...data})) {
+      authorize: (reqType: (data: object) => any, data: object) => {
+        if (reqType({...data})) {
+          console.log(this.state.authorized);
           this.setState((state) => ({
             authorized: state.authorized ? state.authorized : !state.authorized
           }));

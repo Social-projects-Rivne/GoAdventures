@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { CSSProperties } from 'react';
-import { signIn, signUp } from '../../api/requests';
+import { Redirect } from 'react-router';
+import { signIn, signUp } from '../../api/auth.service';
 import { Dialog } from '../../components/';
 import { InputSettings } from '../../components/dialog-window/interfaces/input.interface';
 import { AuthContext } from '../../context/auth.context';
@@ -10,8 +11,7 @@ export class Home extends Component {
   private signUpDialogStyles: CSSProperties = {
     height: '27rem',
     maxWidth: '20rem',
-    opacity: 0.9,
-
+    opacity: 0.9
   };
   private signUpSnputSettings: InputSettings[] = [
     {
@@ -52,8 +52,10 @@ export class Home extends Component {
       label_value: 'Your password',
       placeholder: '********',
       type: 'password'
-    },
+    }
   ];
+
+
 
   public submitSignUpRequest(data: object): Promise<boolean> {
     return signUp(data);
@@ -84,29 +86,32 @@ export class Home extends Component {
             <div className='col'>
               <div className='Home__signup'>
                 <AuthContext.Consumer>
-                  {({authorized, authType , authorize}) =>
-
-                  !authorized && authType === 'signUp' ? (
-
-                    <Dialog
-                      context={{authorized, authorize}}
-                      handleSubmit={this.submitSignUpRequest}
-                      inputs={this.signUpSnputSettings}
-                      button_text='Sign up'
-                      header='Sign up for adventures'
-                      inline_styles={this.signUpDialogStyles}
-                  />
-                  ) : (
-                    <Dialog
-                      context={{authorized, authorize}}
-                      handleSubmit={this.submitSignInRequest}
-                      inputs={this.signInSnputSettings}
-                      button_text='Sign up'
-                      header='Sign up for adventures'
-                      inline_styles={this.signUpDialogStyles}
+                  {({ authorized, authType, authorize }) =>
+                    !authorized && authType === 'signUp' ? (
+                      <Dialog
+                        context={{ authorized, authorize }}
+                        handleSubmit={this.submitSignUpRequest}
+                        inputs={this.signUpSnputSettings}
+                        button_text='Sign up'
+                        header='Sign up for adventures'
+                        inline_styles={this.signUpDialogStyles}
+                        redirect={this.redirect}
                       />
-                  )
-                }
+                    ) : (
+                      <Dialog
+                        context={{ authorized, authorize }}
+                        handleSubmit={this.submitSignInRequest}
+                        inputs={this.signInSnputSettings}
+                        button_text='Sign in'
+                        header='Sign in for adventures'
+                        inline_styles={this.signUpDialogStyles}
+                        redirect={() => {
+                          console.debug('profile');
+                          return <Redirect to='/profile' />;
+                        }}
+                      />
+                    )
+                  }
                 </AuthContext.Consumer>
               </div>
             </div>
@@ -114,5 +119,9 @@ export class Home extends Component {
         </div>
       </div>
     );
+  }
+  public redirect() {
+    console.debug('yor-yo');
+    return <Redirect to='/confirm-yor-yo' />;
   }
 }
