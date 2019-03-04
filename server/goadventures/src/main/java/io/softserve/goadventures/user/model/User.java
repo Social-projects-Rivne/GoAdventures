@@ -3,7 +3,6 @@ package io.softserve.goadventures.user.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCrypt;
-
 import javax.persistence.*;
 
 @Entity
@@ -48,7 +47,6 @@ public class User {
         setEmail(email);
         setPassword(password);
     }
-
     private void setPassword(String password) {
         this.password = BCrypt.hashpw(password, BCrypt.gensalt());
     }

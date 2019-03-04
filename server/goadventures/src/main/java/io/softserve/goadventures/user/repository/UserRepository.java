@@ -1,5 +1,4 @@
 package io.softserve.goadventures.user.repository;
-
 import io.softserve.goadventures.user.model.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

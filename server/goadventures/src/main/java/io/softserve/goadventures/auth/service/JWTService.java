@@ -16,12 +16,12 @@ import java.util.Date;
 
 @Service("jwtService")
 public class JWTService {
-
   public JWTService(){}
   /**
   * Get email from token
   */
   public String parseToken(String token) {
+
     String userEmail = JWT.require(HMAC256(SECRET.getBytes()))
             .build()
             .verify(token.replace(TOKEN_PREFIX, ""))
@@ -32,6 +32,7 @@ public class JWTService {
     else {
       return null;
     }
+
   }
 
   /**

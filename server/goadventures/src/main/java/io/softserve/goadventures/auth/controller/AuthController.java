@@ -1,5 +1,6 @@
 package io.softserve.goadventures.auth.controller;
 
+
 import io.softserve.goadventures.auth.dto.UserDto;
 import io.softserve.goadventures.auth.enums.UserStatus;
 import io.softserve.goadventures.auth.service.JWTService;
@@ -9,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import io.softserve.goadventures.auth.dtoModels.UserAuthDto;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -195,5 +198,39 @@ public class AuthController extends HttpServlet {
             logger.info("checkEmail: can't find this user");
             return false;
         }
+    }
+
+    @PostMapping("/sign-in")
+    public ResponseEntity<String>  signIn(@RequestBody UserAuthDto userAuthDto) {
+
+      logger.info("add: Entered data = name = " + "; email = " + userAuthDto.getEmail() + "; password = " + userAuthDto.getPassword());
+
+      User user = userRepository.findByEmail(userAuthDto.getEmail());
+      String authToken = jwtService.createToken(user);
+      if (user != null) {
+        logger.info("checkEmail: " + user.toString());
+        logger.info("Glory to Ukraine========"+userAuthDto.getPassword());
+        if (BCrypt.checkpw(userAuthDto.getPassword(),user.getPassword())){
+
+
+          if(user.getStatusId()==UserStatus.PENDING.getUserStatus())
+            return ResponseEntity.badRequest().body("User is not confirm auth!");
+          if(user.getStatusId()==UserStatus.BANNED.getUserStatus())
+            return ResponseEntity.badRequest().body("User is banned");
+          if(user.getStatusId()==UserStatus.DELETED.getUserStatus())
+            return ResponseEntity.badRequest().body("User is deleted");
+
+            user.setStatusId(UserStatus.ACTIVE.getUserStatus());
+            userService.updateUser(user);
+            HttpHeaders responseHeaders = new HttpHeaders();
+            responseHeaders.setBearerAuth(authToken);
+            return ResponseEntity.ok().headers(responseHeaders).body(user.toString());
+          }
+          else return ResponseEntity.badRequest().body("User password is wrong");
+
+        }
+      else
+        return ResponseEntity.badRequest().body("Not found user");
+
     }
 }
