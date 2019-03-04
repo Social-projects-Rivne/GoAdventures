@@ -10,10 +10,22 @@ import io.softserve.goadventures.user.model.User;
 
 @Service
 public class UserService {
+  private final UserRepository userRepository;
+
   @Autowired
-  private UserRepository userRepository;
+  public UserService(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
 
   public Optional<User> getUserById(int id){
      return userRepository.findById(id);
+  }
+
+  public User getUserByEmail(String email) {
+    return userRepository.findByEmail(email);
+  }
+
+  public void updateUser(User user) {
+    userRepository.save(user);
   }
 }

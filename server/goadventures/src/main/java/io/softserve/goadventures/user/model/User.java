@@ -3,10 +3,9 @@ package io.softserve.goadventures.user.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "users")
@@ -43,4 +42,13 @@ public class User {
 
     @Column(name = "status_id")
     private int statusId;
+
+    public User(String fullname, String email, String password) {
+        setFullname(fullname);
+        setEmail(email);
+        setPassword(password);
+    }
+    private void setPassword(String password) {
+        this.password = BCrypt.hashpw(password, BCrypt.gensalt());
+    }
 }
