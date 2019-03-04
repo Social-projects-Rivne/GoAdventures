@@ -1,6 +1,9 @@
 package io.softserve.goadventures.auth.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import io.softserve.goadventures.auth.dto.UserDto;
 import io.softserve.goadventures.auth.enums.UserStatus;
 import io.softserve.goadventures.auth.service.JWTService;
@@ -201,7 +204,7 @@ public class AuthController extends HttpServlet {
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<String>  signIn(@RequestBody UserAuthDto userAuthDto) {
+    public ResponseEntity<String>  signIn(@RequestBody UserAuthDto userAuthDto) throws JsonProcessingException {
 
       logger.info("add: Entered data = name = " + "; email = " + userAuthDto.getEmail() + "; password = " + userAuthDto.getPassword());
 
@@ -224,7 +227,10 @@ public class AuthController extends HttpServlet {
             userService.updateUser(user);
             HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.setBearerAuth(authToken);
-            return ResponseEntity.ok().headers(responseHeaders).body(user.toString());
+
+            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+
+            return ResponseEntity.ok().headers(responseHeaders).body(ow.writeValueAsString(user));
           }
           else return ResponseEntity.badRequest().body("User password is wrong");
 
