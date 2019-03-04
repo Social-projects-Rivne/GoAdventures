@@ -161,7 +161,7 @@ public class AuthController extends HttpServlet {
                 "<h3 class=pink align=\"center\">" + "A Quick Click to Confirm" + "</h3>" +
                 "<h3 class=pink align=\"center\">" + "Your Account" + "</h3>" +
                 "<p align=\"center\">" +
-                "<a href=http://localhost:8080/auth/confirm-account?token=" + confirmationToken + ">" + "<button class=button>Confirm Account</button></a></p>" +
+                "<a href=http://localhost:3001/auth/confirm-account?token=" + confirmationToken + ">" + "<button class=button>Confirm Account</button></a></p>" +
                 "<br></br>" + "<br></br>" + "<br></br>" + "<br></br>" + "<br></br>" + "<br></br>" + "<br></br>" +
                 "<hr align=\"center\" width=\"90%\" size=\"1\"/>" +
                 "<br></br>" + "<br></br>" +
@@ -205,7 +205,7 @@ public class AuthController extends HttpServlet {
 
       logger.info("add: Entered data = name = " + "; email = " + userAuthDto.getEmail() + "; password = " + userAuthDto.getPassword());
 
-      User user = userRepository.findByEmail(userAuthDto.getEmail());
+      User user = userService.getUserByEmail(userAuthDto.getEmail());
       String authToken = jwtService.createToken(user);
       if (user != null) {
         logger.info("checkEmail: " + user.toString());
