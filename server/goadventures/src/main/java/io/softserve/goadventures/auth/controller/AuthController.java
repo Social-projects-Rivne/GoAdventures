@@ -1,5 +1,6 @@
 package io.softserve.goadventures.auth.controller;
 
+
 import io.softserve.goadventures.auth.dtoModels.UserAuthDto;
 import io.softserve.goadventures.auth.service.JWTService;
 import io.softserve.goadventures.user.repository.UserRepository;
