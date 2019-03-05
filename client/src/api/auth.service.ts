@@ -14,10 +14,18 @@ export const signUp = async (data: any) => {
 export const signIn = async (data: any) => {
     return await axios.post(`${serverUrl}/auth/sign-in`, {...data}, { headers: {'Content-Type': 'application/json'}})
     .then((res) => {
+// <<<<<<< Updated upstream
         if (res.status === 200  && res.headers.hasOwnProperty('authorization')) {
-            localStorage.setItem('tkn879', res.headers.authorization.replace('Bearer', ''));
+            localStorage.setItem('tkn879', res.headers.authorization.replace('Bearer ', ''));
+// =======
+//         if (res.statusText === 'OK') {
+//             console.debug("token is: " + res.headers.token);
+//             localStorage.setItem('tkn879', res.headers.authorization);
+// >>>>>>> Stashed changes
             return true;
         } else {
+            localStorage.setItem("token", res.headers.token);
+            console.debug("sign in !=work");
             return false;
         }
     }).catch((error) => {
