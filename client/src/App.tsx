@@ -12,8 +12,7 @@ class App extends Component<{}, Auth> {
     this.state = {
       ...user,
       authorize: (reqType: (data: object) => any, data: object) => {
-        if (reqType({...data})) {
-          console.log(this.state.authorized);
+        if (reqType({...data}) && localStorage.getItem('tkn879')) {
           this.setState((state) => ({
             authorized: state.authorized ? state.authorized : !state.authorized
           }));
