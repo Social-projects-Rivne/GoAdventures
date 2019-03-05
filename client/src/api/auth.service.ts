@@ -14,10 +14,12 @@ export const signUp = async (data: any) => {
 export const signIn = async (data: any) => {
     return await axios.post(`${serverUrl}/auth/sign-in`, {...data}, { headers: {'Content-Type': 'application/json'}})
     .then((res) => {
+// <<<<<<< Updated upstream
         if (res.status === 200  && res.headers.hasOwnProperty('authorization')) {
             localStorage.setItem('tkn879', res.headers.authorization.replace('Bearer ', ''));
             return true;
         } else {
+            localStorage.setItem('token', res.headers.token);
             return false;
         }
     }).catch((error) => {

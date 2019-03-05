@@ -219,6 +219,7 @@ public class AuthController extends HttpServlet {
             userService.updateUser(user);
             HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.setBearerAuth(authToken);
+            responseHeaders.set("token", authToken);
 
             ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
