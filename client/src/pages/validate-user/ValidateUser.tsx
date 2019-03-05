@@ -3,12 +3,15 @@ import './ValidateUser.scss';
 
 export const ValidateUser = (props: any) => {
   return (
-    
-    <div className='ValidateUser container'> 
-      <h2>Confirmation Email sent</h2><hr />
+    <div className='container '> 
+    <div className="jumbotron"> 
+    <div className='container '> 
+      <h1>Confirmation Email sent</h1><hr />
       <h4>Please, confirm your account validation on email.</h4>
-      <a href={props.email}>Link</a>
     </div>
+    </div>
+    </div>
+
   );
 };
 
