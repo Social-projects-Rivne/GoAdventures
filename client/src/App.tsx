@@ -11,10 +11,13 @@ class App extends Component<{}, Auth> {
     super(props);
     this.state = {
       ...user,
-      authorize: (reqType: (data: object) => any, data: object) => {
-        if (reqType({...data}) && localStorage.getItem('tkn879')) {
+      authorize: (reqType: (data?: object) => any, data?: object) => {
+        const request = reqType( data ? {...data} : undefined);
+        console.debug(request);
+        if (request) {
           this.setState((state) => ({
-            authorized: state.authorized ? state.authorized : !state.authorized
+            authorized: state.authorized && localStorage.getItem('tkn879')
+            ? true : false
           }));
         }
       },
@@ -27,7 +30,6 @@ class App extends Component<{}, Auth> {
   }
 
   public render() {
-    console.log(this.state.authorized);
     return (
       <div>
         <AuthContext.Provider value={this.state}>

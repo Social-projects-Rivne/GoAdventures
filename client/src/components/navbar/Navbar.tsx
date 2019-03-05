@@ -52,7 +52,17 @@ export const Navbar = (props: any) => {
             </li>
           </ul>
           <AuthContext.Consumer>
-            {({ authorized, authType, toggleAuthType }) =>
+            {({ authorized, authType, toggleAuthType, authorize }) =>
+            authorized ? (
+              <button type='button'
+               className='btn btn-error'
+               onClick={(): void => {
+                localStorage.removeItem('tkn879');
+                authorize((): boolean => false);
+                }}>
+                Sign Out
+              </button>
+            ) :
               authType === 'signUp' && !authorized ? (
                 <button
                   onClick={toggleAuthType}

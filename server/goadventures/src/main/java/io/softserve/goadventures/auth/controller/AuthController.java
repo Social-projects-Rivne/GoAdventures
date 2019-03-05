@@ -200,8 +200,9 @@ public class AuthController extends HttpServlet {
       logger.info("add: Entered data = name = " + "; email = " + userAuthDto.getEmail() + "; password = " + userAuthDto.getPassword());
 
       User user = userService.getUserByEmail(userAuthDto.getEmail());
-      String authToken = jwtService.createToken(user);
+
       if (user != null) {
+        String authToken = jwtService.createToken(user);
         logger.info("checkEmail: " + user.toString());
         logger.info("Glory to Ukraine========"+userAuthDto.getPassword());
         if (BCrypt.checkpw(userAuthDto.getPassword(),user.getPassword())){

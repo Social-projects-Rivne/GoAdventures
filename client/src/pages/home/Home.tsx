@@ -72,41 +72,40 @@ export class Home extends Component {
     return (
       <div className='Home-content'>
         <div className='container'>
-          <div className='row'>
-            <div className='col'>
-              <div className='Home-heading d-flex flex-column align-items-baseline'>
-                <h2>GO</h2>
-              </div>
-              <div className='Home-heading d-flex flex-column align-items-end'>
-                <h2>Adventures!</h2>
-              </div>
-            </div>
+        <div className='row'>
           </div>
           <div className='row'>
-            <div className='col'>
+            <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 d-sm-flex col d-none align-self-center'>
+              <div className='Home-heading d-flex flex-column align-items-baseline'>
+                <h2>GO</h2>
+                <h2>Adventures</h2>
+              </div>
+            </div>
+            <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12'>
               <div className='Home__signup'>
                 <AuthContext.Consumer>
                   {({ authorized, authType, authorize }) =>
                     !authorized && authType === 'signUp' ? (
                       <Dialog
-                        context={{ authorized, authorize }}
+                        context={{ authorized, authorize, authType }}
                         handleSubmit={this.submitSignUpRequest}
                         inputs={this.signUpSnputSettings}
                         button_text='Sign up'
                         header='Sign up for adventures'
                         inline_styles={this.signUpDialogStyles}
-                        redirect={this.redirect}
+                        redirect={() => {
+                          return <Redirect to='/confirm-yor-yo' />;
+                        }}
                       />
                     ) : (
                       <Dialog
-                        context={{ authorized, authorize }}
+                        context={{ authorized, authorize, authType }}
                         handleSubmit={this.submitSignInRequest}
                         inputs={this.signInSnputSettings}
                         button_text='Sign in'
                         header='Sign in for adventures'
                         inline_styles={this.signUpDialogStyles}
                         redirect={() => {
-                          console.debug('profile');
                           return <Redirect to='/profile' />;
                         }}
                       />
@@ -119,9 +118,5 @@ export class Home extends Component {
         </div>
       </div>
     );
-  }
-  public redirect() {
-    console.debug('yor-yo');
-    return <Redirect to='/confirm-yor-yo' />;
   }
 }

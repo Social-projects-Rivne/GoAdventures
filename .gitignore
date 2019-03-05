@@ -1,6 +1,6 @@
 #IDE
-/.vscode
-/.idea
+**/.vscode
+**/.idea
 /node_modules
 /data
 

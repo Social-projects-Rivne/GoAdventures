@@ -1,9 +1,6 @@
-import React, {
-  ChangeEvent,
-  Component,
-  ReactNode,
-  SyntheticEvent
-} from 'react';
+import React, { Component, SyntheticEvent } from 'react';
+import fb from '../../assets/icons/fb.svg';
+import google from '../../assets/icons/google.svg';
 import './Dialog.scss';
 import { DialogSettings } from './interfaces/dialog.interface';
 
@@ -20,12 +17,13 @@ export class Dialog extends Component<DialogSettings, any> {
   }
 
   public render(): JSX.Element {
+    console.log(this.props.context.authType);
     if (this.props.context.authorized) {
       return this.props.redirect();
     } else {
       return (
         <div
-          className='Dialog__window card border-success mb-3'
+          className='Dialog__window card border-success mb-3 mt-3'
           style={this.props.inline_styles ? this.props.inline_styles : {}}
         >
           <div className='card-header'>
@@ -50,6 +48,21 @@ export class Dialog extends Component<DialogSettings, any> {
                 );
               })}
             </form>
+            {this.props.context.authType === 'signIn' ? (
+              <div className='text-center'>
+                <h3>Sign in with</h3>
+                <div className='d-flex flex-row justify-content-around align-self-center'>
+                  <a href='#'>
+                    <img src={fb} />
+                    <p>Facebook</p>
+                  </a>
+                  <a href='#'>
+                    <img src={google} />
+                    <p>Google</p>
+                  </a>
+                </div>
+              </div>
+            ) : null}
           </div>
           <div className='card-footer text-muted d-flex justify-content-center'>
             <button type='submit' form='dialog' className='btn btn-success'>

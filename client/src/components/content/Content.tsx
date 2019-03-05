@@ -2,8 +2,6 @@ import React from 'react';
 // import { SecureRoute } from 'react-route-guard';
 import { Route, Switch } from 'react-router-dom';
 import { About, Confirm, Events, Home, Profile, ValidateUser } from '../../pages';
-// import AuthGuard from '../../pages/auth/guards/auth.guard';
-
 
 export const Content = () => {
   return (
