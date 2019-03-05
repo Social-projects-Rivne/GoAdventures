@@ -2,9 +2,9 @@ import axios from 'axios';
 import React, { ChangeEvent, Component } from 'react';
 import {ProfileSetting} from '../../components/dialog-window/interfaces/profile.interface';
 import avatar from '../../data/image/Person.jpg';
-import './Dialog.scss';
+import './Show.scss';
 
-export class Dialog extends Component<any, ProfileSetting> {
+export class Show extends Component<any, ProfileSetting> {
     constructor(props: any) {
         super(props);
         this.state = {
@@ -45,4 +45,4 @@ export class Dialog extends Component<any, ProfileSetting> {
         );
     }
 }
-export default Dialog;
+export default Show;

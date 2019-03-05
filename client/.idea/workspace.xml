@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1fe605bc-fab0-4536-a379-76b4c64883ae" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/api/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/auth.service.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/profile/Profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/profile/Profile.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../server/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../server/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/goadventures/src/main/java/io/softserve/goadventures/auth/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../server/goadventures/src/main/java/io/softserve/goadventures/auth/controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/goadventures/src/main/java/io/softserve/goadventures/profile/ProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../server/goadventures/src/main/java/io/softserve/goadventures/profile/ProfileController.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -36,7 +31,7 @@
         <entry file="file://$PROJECT_DIR$/src/pages/profile/Profile.tsx">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="120">
-              <caret line="8" column="17" lean-forward="true" selection-start-line="8" selection-start-column="17" selection-end-line="8" selection-end-column="17" />
+              <caret line="8" column="15" lean-forward="true" selection-start-line="8" selection-start-column="15" selection-end-line="8" selection-end-column="15" />
               <folding>
                 <element signature="e#0#41#0" expanded="true" />
               </folding>
@@ -52,8 +47,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/api/auth.service.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="18" column="85" selection-start-line="18" selection-start-column="85" selection-end-line="18" selection-end-column="85" />
+            <state relative-caret-position="315">
+              <caret line="21" column="63" lean-forward="true" selection-start-line="21" selection-start-column="63" selection-end-line="21" selection-end-column="63" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
               </folding>
@@ -62,7 +57,7 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/pages/profile/Dialog.tsx">
+        <entry file="file://$PROJECT_DIR$/src/pages/profile/Show.tsx">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="150">
               <caret line="18" column="45" selection-start-line="18" selection-start-column="45" selection-end-line="18" selection-end-column="45" />
@@ -134,6 +129,7 @@
         <option value="$PROJECT_DIR$/src/pages/profile/Profile.tsx" />
         <option value="$PROJECT_DIR$/src/api/auth.service.ts" />
         <option value="$PROJECT_DIR$/src/pages/profile/Dialog.tsx" />
+        <option value="$PROJECT_DIR$/src/pages/profile/Show.tsx" />
       </list>
     </option>
   </component>
@@ -266,12 +262,12 @@
       <updated>1551661473411</updated>
       <workItem from="1551661475546" duration="3031000" />
       <workItem from="1551701906040" duration="1757000" />
-      <workItem from="1551739581358" duration="7093000" />
+      <workItem from="1551739581358" duration="7783000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="11881000" />
+    <option name="totallyTimeSpent" value="12571000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="27" width="1366" height="741" extended-state="6" />
@@ -327,7 +323,7 @@
     <entry file="file://$PROJECT_DIR$/src/pages/profile/Profile.tsx">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
-          <caret line="8" column="17" lean-forward="true" selection-start-line="8" selection-start-column="17" selection-end-line="8" selection-end-column="17" />
+          <caret line="8" column="15" lean-forward="true" selection-start-line="8" selection-start-column="15" selection-end-line="8" selection-end-column="15" />
           <folding>
             <element signature="e#0#41#0" expanded="true" />
           </folding>
@@ -362,15 +358,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/api/auth.service.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="85" selection-start-line="18" selection-start-column="85" selection-end-line="18" selection-end-column="85" />
+        <state relative-caret-position="315">
+          <caret line="21" column="63" lean-forward="true" selection-start-line="21" selection-start-column="63" selection-end-line="21" selection-end-column="63" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/pages/profile/Dialog.tsx">
+    <entry file="file://$PROJECT_DIR$/src/pages/profile/Show.tsx">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
           <caret line="18" column="45" selection-start-line="18" selection-start-column="45" selection-end-line="18" selection-end-column="45" />

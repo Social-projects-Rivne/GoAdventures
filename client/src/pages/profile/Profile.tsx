@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import Dialog from "./Dialog";
+import Show from "./Show";
 
 
 export class Profile extends Component {
   public render() {
     return (
       <div>
-        <Dialog/>
+        <Show/>
       </div>
     );
 
