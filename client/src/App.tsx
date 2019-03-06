@@ -11,16 +11,9 @@ class App extends Component<{}, Auth> {
       ...user,
       authorize: async (reqType: (data?: object) => any, data?: object) => {
         const request = await reqType({ ...data });
-        console.debug(request);
         if (request) {
-          this.setState((state) => {
-            console.debug(state);
-            return ({
-            authorized:
-              state.authorized && localStorage.getItem('tkn879')
-                ? state.authorized
-                : !state.authorized
-          });});
+          this.setState({authorized: this.state.authorized && localStorage.getItem('tkn879') ?
+        this.state.authorized : !this.state.authorized});
         }
       },
       toggleAuthType: (): void => {
@@ -31,11 +24,16 @@ class App extends Component<{}, Auth> {
     };
   }
 
-  public componentDidMount() {
+  // public componentDidUpdate() {
+
+  // }
+
+  public componentWillMount() {
     this.setState({ authorized: !!localStorage.getItem('tkn879') });
   }
 
   public render() {
+    console.debug(this.state);
     return (
       <div>
         <AuthContext.Provider value={this.state}>

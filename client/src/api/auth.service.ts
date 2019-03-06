@@ -54,12 +54,12 @@ export const signOut = async (): Promise<boolean> => {
     .then((res) => {
         if (res.status === 200) {
             localStorage.removeItem('tkn879');
-            return false;
-        } else {
             return true;
+        } else {
+            return false;
         }
     }).catch((error) => {
         console.error(`Something went wrong ${error}`);
-        return true;
+        return false;
     });
 };
