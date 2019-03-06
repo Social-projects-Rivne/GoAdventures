@@ -1,4 +1,3 @@
-import { stat } from 'fs';
 import React, { Component } from 'react';
 import './App.scss';
 import { Content, Footer, Navbar } from './components';
@@ -11,15 +10,17 @@ class App extends Component<{}, Auth> {
     this.state = {
       ...user,
       authorize: async (reqType: (data?: object) => any, data?: object) => {
-        const request = await reqType(data ? { ...data } : undefined);
+        const request = await reqType({ ...data });
         console.debug(request);
         if (request) {
-          this.setState((state) => ({
+          this.setState((state) => {
+            console.debug(state);
+            return ({
             authorized:
               state.authorized && localStorage.getItem('tkn879')
                 ? state.authorized
                 : !state.authorized
-          }));
+          });});
         }
       },
       toggleAuthType: (): void => {
