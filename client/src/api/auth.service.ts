@@ -29,7 +29,8 @@ export const signIn = async (data: any) => {
 };
 
 
-export const confirmAccount = async (param: string): Promise<boolean> => {
+export const confirmAccount = async (data: any): Promise<boolean> => {
+    const { param } = data;
     return await axios.get(`${serverUrl}/auth/confirm-account${param}`, {headers :
         {'Content-Type': 'application/text'}})
         .then((res) => {
