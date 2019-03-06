@@ -45,3 +45,21 @@ export const confirmAccount = async (param: string): Promise<boolean> => {
             return false;
         });
 };
+
+
+export const signOut = async (): Promise<boolean> => {
+    return await axios.put(`${serverUrl}/auth/sign-out`, null, {headers: {
+        Authorization: `Bearer ${localStorage.getItem('tkn879')}`
+    }})
+    .then((res) => {
+        if (res.status === 200) {
+            localStorage.removeItem('tkn879');
+            return false;
+        } else {
+            return true;
+        }
+    }).catch((error) => {
+        console.error(`Something went wrong ${error}`);
+        return true;
+    });
+};

@@ -1,12 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+import { signOut } from '../../api/auth.service';
 import { AuthContext } from '../../context/auth.context';
 
 export const Navbar = (props: any) => {
   return (
     <nav className='navbar navbar-expand-lg navbar-dark bg-primary'>
       <div className='container'>
-        <Link className='navbar-brand' to='/'>
+        <Link className='navbar-brand' to='/home'>
           GoAdventures
         </Link>
         <button
@@ -55,10 +56,9 @@ export const Navbar = (props: any) => {
             {({ authorized, authType, toggleAuthType, authorize }) =>
             authorized ? (
               <button type='button'
-               className='btn btn-error'
+               className='btn btn-danger'
                onClick={(): void => {
-                localStorage.removeItem('tkn879');
-                authorize((): boolean => false);
+                authorize((): Promise<boolean> => signOut());
                 }}>
                 Sign Out
               </button>

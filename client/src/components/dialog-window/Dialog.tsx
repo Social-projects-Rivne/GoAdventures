@@ -17,7 +17,6 @@ export class Dialog extends Component<DialogSettings, any> {
   }
 
   public render(): JSX.Element {
-    console.log(this.props.context.authType);
     if (this.props.context.authorized) {
       return this.props.redirect();
     } else {
