@@ -8,4 +8,5 @@ export interface DialogSettings {
     inputs: InputSettings[];
     inline_styles?: CSSProperties;
     handleSubmit: (data: any) => Promise<boolean>;
+    redirect: (data?: any) => JSX.Element;
 }

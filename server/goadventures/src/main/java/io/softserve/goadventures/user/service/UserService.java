@@ -21,8 +21,12 @@ public class UserService {
      return userRepository.findById(id);
   }
 
-  public User getUserByEmail(String email) {
-    return userRepository.findByEmail(email);
+  public User getUserByEmail(String email) throws UserNotFoundException {
+    if(userRepository.existsByEmail(email)){
+      return userRepository.findByEmail(email);
+    } else {
+      throw new UserNotFoundException("User not found");
+    }
   }
 
   public void addUser(User newUser) {userRepository.save(newUser);}
