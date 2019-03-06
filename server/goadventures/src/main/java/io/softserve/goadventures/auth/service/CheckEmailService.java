@@ -1,6 +1,7 @@
 package io.softserve.goadventures.auth.service;
 
 import io.softserve.goadventures.user.model.User;
+import io.softserve.goadventures.user.service.UserNotFoundException;
 import io.softserve.goadventures.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class CheckEmailService {
         this.userService=userService;
     }
 
-    public boolean checkingEmail(String email) {
+    public boolean checkingEmail(String email) throws UserNotFoundException {
         User user = userService.getUserByEmail(email);
         if (user != null) {
             logger.info("checkEmail: " + user.toString());
