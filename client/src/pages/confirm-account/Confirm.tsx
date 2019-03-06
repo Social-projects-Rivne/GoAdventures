@@ -1,34 +1,37 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router';
 import { confirmAccount } from '../../api/auth.service';
+import { RequestStatus } from '../../api/requestStatus.inreface';
 
+export class Confirm extends Component<any, any> {
+  private url: string;
 
-export class Confirm extends Component {
+  constructor(props: any) {
+    super(props);
+    this.url = '';
+  }
 
-    private validated: Promise<boolean> | undefined;
+  public componentWillMount() {
+    this.url = window.location.toString();
+  }
 
-    constructor(props: any) {
-        super(props);
-        this.validated = undefined;
-    }
-
-
-    public componentWillMount() {
-        const currentUrl: string = window.location.toString();
-        console.debug(currentUrl);
-        this.validated = confirmAccount(currentUrl.slice(currentUrl.indexOf('?')));
-    }
-
+  public async componentDidMount() {
+    this.props.context.authorize(
+      confirmAccount, { param: this.url.slice(this.url.indexOf('?')) }
+    );
+  }
 
   public render() {
-      if(this.validated) {
-        return (
-            <Redirect to='/profile' />
-          );
-      } else {
-        return (
-            <Redirect to='/' />
-        );
-      }
+    return (
+      <div>
+        {this.props.context.  authorized ? (
+          <Redirect to='/profile' />
+        ) : (
+          <div>
+            <h5>Loading...</h5>
+          </div>
+        )}
+      </div>
+    );
   }
 }

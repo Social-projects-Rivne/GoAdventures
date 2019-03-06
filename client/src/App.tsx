@@ -11,6 +11,7 @@ class App extends Component<{}, Auth> {
       ...user,
       authorize: async (reqType: (data?: object) => any, data?: object) => {
         const request = await reqType({ ...data });
+        console.debug(request);
         if (request) {
           this.setState({authorized: this.state.authorized && localStorage.getItem('tkn879') ?
         this.state.authorized : !this.state.authorized});
@@ -28,8 +29,9 @@ class App extends Component<{}, Auth> {
 
   // }
 
-  public componentWillMount() {
+  public componentDidMount() {
     this.setState({ authorized: !!localStorage.getItem('tkn879') });
+    console.debug('Will mount with state ' + this.state.authorized);
   }
 
   public render() {
