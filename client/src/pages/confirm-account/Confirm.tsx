@@ -24,7 +24,7 @@ export class Confirm extends Component<any, any> {
   public render() {
     return (
       <div>
-        {this.props.context.  authorized ? (
+        {this.props.context.authorized ? (
           <Redirect to='/profile' />
         ) : (
           <div>
