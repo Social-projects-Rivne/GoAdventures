@@ -2,11 +2,19 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router';
 import { confirmAccount } from '../../api/auth.service';
 import { RequestStatus } from '../../api/requestStatus.inreface';
+import { Auth } from '../../context/auth.context.interface';
 
-export class Confirm extends Component<any, any> {
+interface ConfirmProps {
+  context: {
+    authorize: Auth['authorize'];
+    authorized: Auth['authorized'];
+  };
+}
+
+export class Confirm extends Component<ConfirmProps, any> {
   private url: string;
 
-  constructor(props: any) {
+  constructor(props: ConfirmProps) {
     super(props);
     this.url = '';
   }
@@ -16,9 +24,9 @@ export class Confirm extends Component<any, any> {
   }
 
   public async componentDidMount() {
-    this.props.context.authorize(
-      confirmAccount, { param: this.url.slice(this.url.indexOf('?')) }
-    );
+    this.props.context.authorize(confirmAccount, {
+      param: this.url.slice(this.url.indexOf('?'))
+    });
   }
 
   public render() {
@@ -27,9 +35,7 @@ export class Confirm extends Component<any, any> {
         {this.props.context.authorized ? (
           <Redirect to='/profile' />
         ) : (
-          <div>
-            <h5>Loading...</h5>
-          </div>
+          <h5>Loading...</h5>
         )}
       </div>
     );
