@@ -4,6 +4,7 @@ import { Redirect } from 'react-router';
 import { Route, Switch } from 'react-router-dom';
 import { AuthContext } from '../../context/auth.context';
 import { About, Confirm, Events, Home, Profile, ValidateUser } from '../../pages';
+import { ContextProtectedRoute } from '../contextRoute/ContextProtectedRoute';
 
 export const Content = (props: any) => {
   return (
@@ -19,19 +20,10 @@ export const Content = (props: any) => {
                 {({authorize, authorized}) =>
                   (<Confirm context={{authorize, authorized}} />)
                 }
-              </AuthContext.Consumer>
+            </AuthContext.Consumer>
             </Route>
-            {/* <SecureRoute path='/profile' routeGuard={AuthGuard}
-             component={Profile} redirectToPathWhenFail='/' /> */}
-            {/* <SecureRoute path='/events' routeGuard={AuthGuard}
-             component={Events} redirectToPathWhenFail='/' /> */}
-             {props.authorized ? (
-               <Route exact path='/profile' component={Profile} />
-             ) : (<Redirect to='/home' />)};
-             {props.authorized ? (
-               <Route exact path='/events' component={Events} />
-             ) : (<Redirect to='/home' />)}
-
+            <ContextProtectedRoute exact path='/profile' component={Profile} />
+            <ContextProtectedRoute exact path='/events' component={Events} />
           </Switch>
         </div>
       </div>
