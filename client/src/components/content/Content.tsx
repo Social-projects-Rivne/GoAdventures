@@ -12,6 +12,9 @@ export const Content = (props: any) => {
       <div className='container-fluid'>
         <div className='row'>
           <Switch>
+            <Route exact path='/about' component={About} />
+            <Route exact path='/confirm-yor-yo' component={ValidateUser}/>
+            <Route exact path='/confirm-account' component={Confirm} />
             <Route exact path='/home' component={Home} />
             <Route exact path='/about' component={About} />
             <Route exact path='/confirm-yor-yo' component={ValidateUser}/>
