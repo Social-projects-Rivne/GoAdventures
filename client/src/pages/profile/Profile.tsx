@@ -4,7 +4,7 @@ import Show from './Show';
 
 export class Profile extends Component<any, any> {
   constructor(props: any) {
-    super(props)
+    super(props);
   }
   public render() {
     return (

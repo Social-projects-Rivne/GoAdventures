@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { About, Confirm, Events, Home, Profile, ValidateUser } from '../../pages';
 import { ContextProtectedRoute, ContextRoute } from '../../components';
+import { About, Confirm, Events, Home, Profile, ValidateUser } from '../../pages';
 
 export const Content = (props: any) => {
   return (
