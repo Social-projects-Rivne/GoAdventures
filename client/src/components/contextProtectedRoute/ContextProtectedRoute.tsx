@@ -10,7 +10,7 @@ export const ContextProtectedRoute = ({ component, ...rest }: any) => (
             () =>
               authorized
               ? React.createElement(component, {authorize, authorized})
-              : <Redirect to='/home' />
+              : <Redirect to='/' />
           }
           {...rest}
         />
