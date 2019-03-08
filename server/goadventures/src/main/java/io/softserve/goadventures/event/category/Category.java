@@ -1,12 +1,12 @@
 package io.softserve.goadventures.event.category;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.softserve.goadventures.event.model.Event;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
 
-@EqualsAndHashCode(exclude="events")
 @Getter
 @Setter
 @Entity
@@ -17,34 +17,14 @@ public class Category{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @Column(name = "category")
-    private String category;
+    @Column(name = "category_name")
+    private String categoryName;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private Set<Event> events;
 
-    public Category(String category){
-        this.category = category;
+    public Category(String categoryName){
+        this.categoryName = categoryName;
     }
-
-
-    /*public void addEvent(Event event) {
-        events.add(event);
-        events.setEvents(this);
-    }
-
-    public void removeEvent(Event event) {
-        events.remove(event);
-        events.setEvents(null);
-    }*/
-
-    public Set<Event> getEvents() {
-        return events;
-    }
-
-    public void setEvents(Set<Event> events) {
-        this.events = events;
-    }
-
-
 }

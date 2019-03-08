@@ -1,5 +1,6 @@
-package io.softserve.goadventures.event.repository;
+package io.softserve.goadventures.Gallery.repository;
 
+import io.softserve.goadventures.Gallery.model.Gallery;
 import io.softserve.goadventures.event.model.Event;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,10 +11,8 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface EventRepository extends JpaRepository<Event, Integer> {
-    Event findByTopic(String topic);
-    Event findById(int id);
-    Page<Event> findByCategoryId(int eventId, Pageable pageable);
-    //Optional<Event> findByIdAndCategoryId(int id, int eventId);
+public interface GalleryRepository extends JpaRepository<Gallery, Integer> {
+    Gallery findById(int id);
+    Page<Gallery> findByEventId(Event eventId, Pageable pageable);
+    //Optional<Gallery> findByIdAndEventId(int id, int eventId);
 }
-
