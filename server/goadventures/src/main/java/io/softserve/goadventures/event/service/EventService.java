@@ -1,5 +1,5 @@
 package io.softserve.goadventures.event.service;
-
+import java.util.*;
 import io.softserve.goadventures.event.model.Event;
 import io.softserve.goadventures.event.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +21,17 @@ public class EventService{
     public Event getEventByTopic(String topic){
         return eventRepository.findByTopic(topic);
     }
+
+    public Iterable<Event> getEventsByLocation(String location){
+        List<Event> returnEvents=new ArrayList();
+        for(Event event: eventRepository.findAll()) {
+            if (event.getLocation()==location) {
+                returnEvents.add(event);
+            }
+        }
+        return returnEvents;
+    }
+
 
     public void addEvent(Event newEvent) {eventRepository.save(newEvent);}
 
