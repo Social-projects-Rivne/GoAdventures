@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { UserDto } from '../interfaces/User.dto';
 import { serverUrl } from './url.config';
 
-export const signUp = async (data: any) => {
+export const signUp = async (data: UserDto) => {
     return await axios.post(`${serverUrl}/auth/sign-up`, {...data},
          { headers: {'Content-Type': 'application/json'}}).then((res) => {
              return res.status === 200;
@@ -11,7 +12,7 @@ export const signUp = async (data: any) => {
           });
 };
 
-export const signIn = async (data: any) => {
+export const signIn = async (data: UserDto) => {
     return await axios.post(`${serverUrl}/auth/sign-in`, {...data}, { headers: {'Content-Type': 'application/json'}})
     .then((res) => {
 // <<<<<<< Updated upstream

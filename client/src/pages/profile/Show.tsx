@@ -1,17 +1,16 @@
 import axios from 'axios';
-import React, { ChangeEvent, Component } from 'react';
-import { ProfileSetting } from '../../components/dialog-window/interfaces/profile.interface';
-import avatar from '../../data/image/Person.jpg';
+import React, { Component } from 'react';
+import { UserDto } from '../../interfaces/User.dto';
 import './Show.scss';
 
-export class Show extends Component<any, ProfileSetting> {
+export class Show extends Component<any, UserDto> {
   constructor(props: any) {
     super(props);
     this.state = {
+      avatar: '',
         email: '',
         fullName: '',
         userName: '',
-        userUrl: ''
     };
   }
 
@@ -25,9 +24,9 @@ export class Show extends Component<any, ProfileSetting> {
       })
       .then((response) =>
         this.setState({
+          email: response.data.email,
           fullName: response.data.fullName,
           userName: response.data.userName,
-          email: response.data.email
         })
       );
   }
@@ -37,7 +36,7 @@ export class Show extends Component<any, ProfileSetting> {
       <div>
         <div className='User'>
           <div className='User-image'>
-            <img className='User__avatar' src={avatar} alt='avatar' />
+            <img className='User__avatar' src={this.state.avatar} alt='avatar' />
           </div>
 
           <div className='User-Data'>

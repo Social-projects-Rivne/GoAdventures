@@ -14,11 +14,12 @@ export class Dialog extends Component<DialogSettings, any> {
     //  :*D
     this.handleChange = this.handleChange.bind(this);
     this.submitForm = this.submitForm.bind(this);
+    this.props.redirect.bind(this);
   }
 
   public render(): JSX.Element {
     if (this.props.context.authorized) {
-      return this.props.redirect();
+      return this.props.redirect(this.props.context.authType);
     } else {
       return (
         <div

@@ -5,6 +5,8 @@ import { signIn, signUp } from '../../api/auth.service';
 import { Dialog } from '../../components/';
 import { InputSettings } from '../../components/dialog-window/interfaces/input.interface';
 import { AuthContext } from '../../context/auth.context';
+import { Auth } from '../../context/auth.context.interface';
+import { UserDto } from '../../interfaces/User.dto';
 import './Home.scss';
 
 export class Home extends Component {
@@ -56,15 +58,25 @@ export class Home extends Component {
   ];
 
 
+  public redirect(redirectType: Auth['authType']): JSX.Element {
+    if(redirectType === 'signUp') {
+      return <Redirect to='/confirm-yor-yo' />;
+    } else if(redirectType === 'signIn') {
+      return <Redirect to='/profile' />;
+    } else {
+      return <Redirect to='/' />;
+    }
+  }
 
-  public submitSignUpRequest(data: object): Promise<boolean> {
+
+  public submitSignUpRequest(data: UserDto): Promise<boolean> {
     return signUp(data);
   }
 
   /**
    * submitSignInRequest
    */
-  public submitSignInRequest(data: object): Promise<boolean> {
+  public submitSignInRequest(data: UserDto): Promise<boolean> {
     return signIn(data);
   }
 
@@ -93,9 +105,7 @@ export class Home extends Component {
                         button_text='Sign up'
                         header='Sign up for adventures'
                         inline_styles={this.signUpDialogStyles}
-                        redirect={() => {
-                          return <Redirect to='/confirm-yor-yo' />;
-                        }}
+                        redirect={this.redirect}
                       />
                     ) : (
                       <Dialog
@@ -105,9 +115,7 @@ export class Home extends Component {
                         button_text='Sign in'
                         header='Sign in for adventures'
                         inline_styles={this.signUpDialogStyles}
-                        redirect={() => {
-                          return <Redirect to='/profile' />;
-                        }}
+                        redirect={this.redirect}
                       />
                     )
                   }
