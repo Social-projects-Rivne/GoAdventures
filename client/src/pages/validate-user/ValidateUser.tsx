@@ -1,11 +1,13 @@
 import React from 'react';
 
-const ValidateUser = (props: any) => {
+export const ValidateUser = (props: any) => {
   return (
-    <div>
-    </div>
+      <div className='container '>
+          <div className="jumbotron">
+              <div className='container '>
+                  <h1>Confirmation Email sent</h1><hr />
+              </div>
+          </div>
+      </div>
   );
 };
-
-
-export default ValidateUser;

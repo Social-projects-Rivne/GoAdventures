@@ -1,5 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+import { signOut } from '../../api/auth.service';
 import { AuthContext } from '../../context/auth.context';
 
 export const Navbar = (props: any) => {
@@ -52,7 +53,16 @@ export const Navbar = (props: any) => {
             </li>
           </ul>
           <AuthContext.Consumer>
-            {({ authorized, authType, toggleAuthType }) =>
+            {({ authorized, authType, toggleAuthType, authorize }) =>
+            authorized ? (
+              <button type='button'
+               className='btn btn-danger'
+               onClick={(): void => {
+                authorize((): Promise<boolean> => signOut());
+                }}>
+                Sign Out
+              </button>
+            ) :
               authType === 'signUp' && !authorized ? (
                 <button
                   onClick={toggleAuthType}
