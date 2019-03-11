@@ -11,6 +11,8 @@ public class Profile {
     private String fullName;
     private String userName;
     private String email;
+    private String location;
+    private int phone;
 
     @Override
     public String toString() {
@@ -25,5 +27,7 @@ public class Profile {
         this.fullName = fullName;
         this.userName = userName;
         this.email = email;
+
+
     }
 }
