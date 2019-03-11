@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { UserDto } from '../../interfaces/User.dto';
 import './Sidebar.scss';
-import InputSidebarBut from './InputSidebarBut';
+
 
 export const Sidebar = (props: UserDto) => {
 

@@ -4,9 +4,10 @@ import { Sidebar } from '../../components';
 import { UserDto } from '../../interfaces/User.dto';
 import { getUserData } from '../../api/user.service';
 import { AxiosResponse } from 'axios';
-import {UserEventList} from "../../components/userevenlist/UserEventList";
+
 import {EventDto} from "../../interfaces/Event.dto";
 import {getEventData} from "../../api/event.service";
+import {UserEventList} from "../../components/userevenlist/UserEventList";
 
 
 
@@ -14,17 +15,10 @@ import {getEventData} from "../../api/event.service";
 
 
 
-export class Profile extends Component<UserDto, any> {        //початкова ініціалізація(null)
+export class Profile extends Component<UserDto,any> {        //початкова ініціалізація(null)
   constructor(props: any) {
-    super(props)
-    // this.state = {
-    //   fullName: '',
-    //   userName: '',
-    //   email: '',
-    //   avatarUrl: '',
-    //
-    //
-    // }
+    super(props);
+
     this.state = {
       userProfile: {
         fullName: '',
@@ -37,21 +31,13 @@ export class Profile extends Component<UserDto, any> {        //початков
         topic:'',
         start_date: '',
       }
-
     }
-
-
-
   }
-
-
-
-
 
   public componentDidMount() {                                  //сеттер на пропси зверху з api
     getUserData().then((response: AxiosResponse<UserDto>) =>
-      this.setState({ userProfile: { ...response.data }
-      })
+        this.setState({ userProfile: { ...response.data }
+        })
     );
     // getEventData().then((response: AxiosResponse<EventDto>) =>
     //     this.setState({
@@ -59,6 +45,7 @@ export class Profile extends Component<UserDto, any> {        //початков
     //     })
     // );
   }
+
 
 
 
