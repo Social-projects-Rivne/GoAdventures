@@ -7,11 +7,12 @@ import { InputSettings } from '../../components/dialog-window/interfaces/input.i
 import { AuthContext } from '../../context/auth.context';
 import { Auth } from '../../context/auth.context.interface';
 import { UserDto } from '../../interfaces/User.dto';
+import { SigninSchema, SignupSchema } from '../../validationSchemas/authValidation';
 import './Home.scss';
 
 export class Home extends Component {
   private signUpDialogStyles: CSSProperties = {
-    height: '27rem',
+    height: 'auto',
     maxWidth: '20rem',
     opacity: 0.9
   };
@@ -99,6 +100,7 @@ export class Home extends Component {
                   {({ authorized, authType, authorize }) =>
                     !authorized && authType === 'signUp' ? (
                       <Dialog
+                        validationSchema={SignupSchema}
                         context={{ authorized, authorize, authType }}
                         handleSubmit={this.submitSignUpRequest}
                         inputs={this.signUpSnputSettings}
@@ -109,6 +111,7 @@ export class Home extends Component {
                       />
                     ) : (
                       <Dialog
+                        validationSchema={SigninSchema}
                         context={{ authorized, authorize, authType }}
                         handleSubmit={this.submitSignInRequest}
                         inputs={this.signInSnputSettings}

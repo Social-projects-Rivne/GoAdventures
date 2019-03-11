@@ -5,9 +5,15 @@
     }
     label {
         width: 100%;
+        padding: 5px 0 5px 0;
     }
     img {
         max-width: 50px;
         max-height: 50px;
+    }
+
+    & .invalid-feedback, .valid-feedback {
+        display: inherit;
+        position: absolute;
     }
 }
