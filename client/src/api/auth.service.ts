@@ -49,9 +49,8 @@ export const confirmAccount = async (data: any): Promise<boolean> => {
 
 export const sentRecoveryEmail = async (data: any): Promise<boolean> => {
     const { param } = data;
-    return await axios.get(`${serverUrl}/auth/sent-recovery-email`, {headers :
-            {'Content-Type': 'application/text',
-            'email': param}})
+    return await axios.get(`${serverUrl}/auth/recovery${param}`, {headers :
+            {'Content-Type': 'application/text'}})
         .then((res) => {
             if (res.status === 200) {
                 console.log("email recovery sent");

@@ -45,7 +45,7 @@
     <h3 class=pink align="center">If you did not make a request, <a href="">contact support.</a></h3>
 
     <p align="center">
-        <a th:href="'http://localhost:8080/auth/recovery?setnewpassword=' + ${recoveryToken}">
+        <a th:href="'http://localhost:3001/send-recovery-email?setnewpassword=' + ${recoveryToken}">
             <button class=button>Get new password</button>
         </a>
     </p>
