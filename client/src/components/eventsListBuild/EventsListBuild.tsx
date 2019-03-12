@@ -1,12 +1,40 @@
 import React, { Component } from 'react';
 import { EventDto } from '../../interfaces/Event.dto';
 import { Events } from '../../pages/events/Events';
+import './EventsListBuild.scss';
+
+import { createDecipher } from 'crypto';
 
 
 export const EventsListBuild = (props: EventDto) => {
-    return(
-        <h1>{props.topic}</h1>
+    return (
+        <div className="col card" >
+            <img className="card-img-top" src="https://botw-pd.s3.amazonaws.com/styles/logo-thumbnail/s3/0016/1400/brand.gif?itok=AelJnUfh" alt="Card image cap"></img>
+            <div className="card-body">
+                <h5 className="card-title">{props.topic}</h5>
+
+                <div className="row">
+                    <h6 className="col-6"> {props.location}</h6>
+                    <div className="col-6">
+                        <p>Category</p>
+                    </div>
+                </div>
+
+
+
+                <a href="#" className="btn btn-primary">Details</a>
+
+            </div>
+        </div>
+
+
+
+
+
+
+
+
     );
 
-    
+
 }

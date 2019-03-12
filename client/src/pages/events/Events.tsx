@@ -5,8 +5,8 @@ import React, { Component } from 'react';
 
 import { eventList } from '../../api/event.service';
 import { AxiosResponse } from 'axios';
-import {EventsListBuild} from '../../components/eventsListBuild/EventsListBuild';
-import {EventDto} from "../../interfaces/Event.dto";
+import { EventsListBuild } from '../../components/eventsListBuild/EventsListBuild';
+import { EventDto } from "../../interfaces/Event.dto";
 
 
 // export class Events extends Component<EventDto, any> {   
@@ -18,45 +18,60 @@ import {EventDto} from "../../interfaces/Event.dto";
 // }
 
 
-export class Events extends Component<EventDto, EventDto[]> {       
+interface EventState {
+  events: EventDto[]
+}
+
+export class Events extends Component<EventDto, EventState> {
   constructor(props: any) {
-    super(props)   
-    this.state = [{    
-        description: '',
-        topic:'',
-        start_date: '',
-        end_date: '',
-        location: '',
-
- 
-    }]
-  }
+    super(props)
+    this.state = {
+      events: [
+        {
+          description: '',
+          topic: '',
+          startDate: '',
+          endDate: '',
+          location: '',
 
 
-
-
-
-  public componentDidMount() {                                  
-    eventList().then((response: AxiosResponse<EventDto[]>) =>{
-    console.log(response.data);  
-    this.setState({ ...response.data }
-        )
+        }
+      ]
     }
-    );
+  }
+
+
+
+
+
+  public componentDidMount() {
+    eventList().then((response: AxiosResponse<EventDto[]>) => {
+      console.log(response.data);
+
+      this.setState({ events: [...response.data] })
+      console.debug(this.state);
+    }
+    ).catch((err) => {
+
+    });
 
   }
 
-  public render() {                                          
+  public render() {
     return (
-      
-      <div className="row">
-        <div className="col">
-        {{...this.state}.map((event, index)=> {
-          <EventsListBuild {...event} key={index} />
-        })}
-          
-        </div>      
+      <div className="container-fluid">
+        <h1 className="text-center">Event List</h1>
+
+        <div className="row">
+
+          {this.state.events.map((event, index) =>
+            (<EventsListBuild {...event} key={index} />)
+          )}
+
+        </div>
       </div>
+
+
     );
   }
 }

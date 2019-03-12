@@ -67,6 +67,7 @@ public class EventController {
 
     @GetMapping("/all")
     public Iterable<Event> getAllEvents(){
+        logger.info("=====all events=====");
         return eventService.getAllEvents();
     }
 
