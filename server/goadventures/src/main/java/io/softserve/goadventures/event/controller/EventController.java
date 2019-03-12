@@ -67,8 +67,15 @@ public class EventController {
 
     @GetMapping("/all")
     public Iterable<Event> getAllEvents(){
+        logger.info("=====all events=====");
         return eventService.getAllEvents();
     }
+
+    @GetMapping("/all/{location}")
+    public Iterable<Event> getAllEvents(@PathVariable (value="location") String location){
+            return eventService.getEventsByLocation(location);
+    }
+
 
     @GetMapping("/category/{categoryId}")
     public Page<Event> getAllEventsByCategoryId(@PathVariable (value = "categoryId") int eventId,
