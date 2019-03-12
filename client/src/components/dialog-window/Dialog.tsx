@@ -44,12 +44,12 @@ export class Dialog extends Component<DialogSettings, any> {
               validateOnBlur={true}
               validationSchema={this.props.validationSchema}
               onSubmit={(values: any, actions) => {
-                const valuesMut = {...values};
-                if (valuesMut.hasOwnProperty('confirmPassword')) {
-                  delete valuesMut!.confirmPassword;
+                const valuesMutadet = {...values};
+                if (valuesMutadet.hasOwnProperty('confirmPassword')) {
+                  delete valuesMutadet!.confirmPassword;
                 }
-                console.debug(valuesMut);
-                this.props.context.authorize(this.props.handleSubmit, {...valuesMut});
+                console.debug(valuesMutadet);
+                this.props.context.authorize(this.props.handleSubmit, {...valuesMutadet});
                 actions.setSubmitting(false);
               }}
             >
