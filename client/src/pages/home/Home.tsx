@@ -12,7 +12,8 @@ import './Home.scss';
 
 export class Home extends Component {
   private signUpDialogStyles: CSSProperties = {
-    height: 'auto',
+    height: '30rem',
+    maxHeight: '30rem',
     maxWidth: '20rem',
     opacity: 0.9
   };

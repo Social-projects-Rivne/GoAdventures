@@ -1,5 +1,5 @@
-import { Field, FieldProps, Form, Formik, FormikActions, FormikProps } from 'formik';
-import React, { Component, SyntheticEvent } from 'react';
+import { Field, Form, Formik, FormikProps } from 'formik';
+import React, { Component } from 'react';
 import fb from '../../assets/icons/fb.svg';
 import google from '../../assets/icons/google.svg';
 import './Dialog.scss';
@@ -10,22 +10,16 @@ import { DialogSettings } from './interfaces/dialog.interface';
 export class Dialog extends Component<DialogSettings, any> {
   constructor(props: DialogSettings) {
     super(props);
-
-    this.state = {
-    };
-
+    this.state = {};
     //  :*D
-    this.handleChange = this.handleChange.bind(this);
-    this.submitForm = this.submitForm.bind(this);
     this.getInitialValues = this.getInitialValues.bind(this);
     this.props.redirect.bind(this);
   }
   public getInitialValues = (): object => {
-    const initialValues: {[key: string]: string} = {};
+    const initialValues: { [key: string]: string } = {};
     this.props.inputs.forEach((input) => {
       if (!initialValues[input.field_name.toString()]) {
         initialValues[input.field_name.toString()] = '';
-        console.debug(initialValues);
       }
     });
     return initialValues;
@@ -45,40 +39,46 @@ export class Dialog extends Component<DialogSettings, any> {
           </div>
           <div className='card-body'>
             <Formik
+              enableReinitialize={true}
               initialValues={this.getInitialValues()}
               validateOnBlur={true}
               validationSchema={this.props.validationSchema}
-              onSubmit={(values, actions) => {
-                console.debug(values);
-                // this.setState({ ...values });
+              onSubmit={(values: any, actions) => {
+                const valuesMut = {...values};
+                if (valuesMut.hasOwnProperty('confirmPassword')) {
+                  delete valuesMut!.confirmPassword;
+                }
+                console.debug(valuesMut);
+                this.props.context.authorize(this.props.handleSubmit, {...valuesMut});
                 actions.setSubmitting(false);
               }}
             >
-              {({ errors, touched, handleBlur, handleChange }: any) => {
+              {({ errors, touched, handleBlur, handleChange, values }: FormikProps<any>) => {
                 return (
                   <Form id='dialog'>
                     {this.props.inputs.map((input, index) => {
-                  return (
-                      <label key={index}>
-                        {input.label_value}
-                        <Field
-                          type={input.type}
-                          placeholder={input.placeholder}
-                          className='form-control'
-                          name={input.field_name}
-                          key={index}
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                        />
-                        {errors[`${input.field_name}`] &&
-                        touched[input.field_name] ? (
-                          <div className='invalid-feedback'>
-                            {errors[input.field_name]}
-                          </div>
-                        ) : null}
-                      </label>
-                    );}
-                    )}
+                      return (
+                        <label key={this.props.context.authType + index}>
+                          {input.label_value}
+                          <Field
+                            value={values[input.field_name]}
+                            type={input.type}
+                            placeholder={input.placeholder}
+                            className='form-control'
+                            name={input.field_name}
+                            key={this.props.context.authType + index}
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                          />
+                          {errors[`${input.field_name}`] &&
+                          touched[input.field_name] ? (
+                            <div className='invalid-feedback'>
+                              {errors[input.field_name]}
+                            </div>
+                          ) : null}
+                        </label>
+                      );
+                    })}
                   </Form>
                 );
               }}
@@ -106,39 +106,6 @@ export class Dialog extends Component<DialogSettings, any> {
           </div>
         </div>
       );
-    }
-  }
-
-  private submitForm(event: SyntheticEvent<EventTarget>) {
-    event.preventDefault();
-    if (Object.keys(this.state).length !== 0 && this.compareFields()) {
-    }
-    {
-      const data = { ...this.state };
-      delete data.confirmPassword;
-      this.props.context.authorize(this.props.handleSubmit, data);
-    }
-  }
-
-  private handleChange(event: any): void {
-    const objKey: any = event.target.getAttribute('name');
-    const stateObj: any = {};
-    stateObj[objKey.toString()] = event.target.value;
-    this.setState({ ...stateObj });
-  }
-
-  // Refactor
-  private compareFields(): boolean {
-    const { password } = this.state;
-    if (this.state.hasOwnProperty('confirmPassword')) {
-      const { confirmPassword } = this.state;
-      return (
-        password === confirmPassword &&
-        password !== '' &&
-        confirmPassword !== ''
-      );
-    } else {
-      return password !== '';
     }
   }
 }
