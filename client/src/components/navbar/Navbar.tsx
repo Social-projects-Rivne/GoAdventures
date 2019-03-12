@@ -7,7 +7,7 @@ export const Navbar = (props: any) => {
   return (
     <nav className='navbar navbar-expand-lg navbar-dark bg-primary'>
       <div className='container'>
-        <Link className='navbar-brand' to='/home'>
+        <Link className='navbar-brand' to='/'>
           GoAdventures
         </Link>
         <button
