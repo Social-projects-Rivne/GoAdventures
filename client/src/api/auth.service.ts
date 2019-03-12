@@ -47,6 +47,24 @@ export const confirmAccount = async (data: any): Promise<boolean> => {
         });
 };
 
+export const sentRecoveryEmail = async (data: any): Promise<boolean> => {
+    const { param } = data;
+    return await axios.get(`${serverUrl}/auth/sent-recovery-email`, {headers :
+            {'Content-Type': 'application/text',
+            'email': param}})
+        .then((res) => {
+            if (res.status === 200) {
+                console.log("email recovery sent");
+                return true;
+            } else {
+                return false;
+            }
+        }).catch((error) => {
+            console.debug(error);
+            return false;
+        });
+};
+
 
 export const signOut = async (): Promise<boolean> => {
     return await axios.put(`${serverUrl}/auth/sign-out`, null, {headers: {

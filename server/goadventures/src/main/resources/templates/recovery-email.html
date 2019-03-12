@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <style type="text/css">
+  .red{color:#FF0000;}
+  .pink{color:#8B008B;}
+  .button {
+    display: inline-block;
+    padding: 15px 25px;
+    font-size: 24px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    color: #fff;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 9px #999;
+  }
+  .button:hover {background-color: #3e8e41}
+  .button:active {
+    background-color: #3e8e41;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+  }
+  </style>
+<body>
+
+    <hr align="center" width="90%" size="1"/>
+    <h1 class=red align="center">Recovery password in GoAdventures</h1>
+    <h4 class=pink align="center">We care about you!</h4>
+
+    <br>
+
+    <hr align="center" width="90%" size="1"/>
+
+    <br><br><br>
+
+    <h3 class=pink align="center">Hi <span th:text="${recoveryEmail}"></span>.</h3>
+    <h3 class=pink align="center">You have requested to reset your password in GoAdventures!</h3>
+    <h3 class=pink align="center">A Quick Click to Refresh</h3>
+    <h3 class=pink align="center">If you did not make a request, <a href="">contact support.</a></h3>
+
+    <p align="center">
+        <a th:href="'http://localhost:8080/auth/recovery?setnewpassword=' + ${recoveryToken}">
+            <button class=button>Get new password</button>
+        </a>
+    </p>
+
+    <br><br><br>
+
+    <hr align="center" width="90%" size="1"/>
+
+    <br><br>
+
+    <h4 class=pink align = "center">All Rights Reserved</h4>
+  </body>
+</html>

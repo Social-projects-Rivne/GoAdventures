@@ -6,9 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import io.softserve.goadventures.auth.dtoModels.UserAuthDto;
 import io.softserve.goadventures.auth.enums.UserStatus;
-import io.softserve.goadventures.auth.service.CheckEmailService;
-import io.softserve.goadventures.auth.service.GeneratePasswordService;
-import io.softserve.goadventures.auth.service.JWTService;
+import io.softserve.goadventures.auth.service.*;
 import io.softserve.goadventures.user.model.User;
 import io.softserve.goadventures.user.service.UserNotFoundException;
 import io.softserve.goadventures.user.service.UserService;
@@ -21,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import io.softserve.goadventures.auth.service.EmailSenderService;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServlet;
@@ -34,19 +31,20 @@ public class AuthController extends HttpServlet {
     private Logger logger = LoggerFactory.getLogger(AuthController.class);
     private final JWTService jwtService;
     private final UserService userService;
-    private final EmailSenderService emailSenderService;
     private final CheckEmailService checkEmailService;
     private final GeneratePasswordService passwordService;
+    private final MailContentBuilder mailContentBuilder;
 
     @Autowired
     public AuthController(JWTService jwtService, UserService userService,
-                          EmailSenderService emailSenderService, CheckEmailService checkEmailService,
-                          GeneratePasswordService passwordService) {
-        this.emailSenderService = emailSenderService;
+                          CheckEmailService checkEmailService,
+                          GeneratePasswordService passwordService,
+                          MailContentBuilder mailContentBuilder) {
         this.jwtService = jwtService;
         this.userService = userService;
         this.checkEmailService = checkEmailService;
         this.passwordService = passwordService;
+        this.mailContentBuilder = mailContentBuilder;
     }
 
     @PostMapping("/sign-up")
@@ -66,6 +64,7 @@ public class AuthController extends HttpServlet {
 
             String confirmationToken = jwtService.createToken(user);
 
+            EmailSenderService emailSenderService = new EmailSenderService(mailContentBuilder);
             emailSenderService.sendEmail(confirmationToken, user);
             return ResponseEntity.ok().headers(httpHeaders).body("user created");
 
@@ -160,12 +159,16 @@ public class AuthController extends HttpServlet {
     }
 
     @GetMapping("/recovery")
-    public ResponseEntity<String> recoveryPassword(@RequestParam("recovery") String email) {
-//        String email = jwtService.parseToken(token);
+    public ResponseEntity<String> recoveryPassword(@RequestParam("setnewpassword") String token) {
+        LoggerFactory.getLogger("recovery").info("\n\n\ttoken is: " + token +
+                "\nemail is: " + jwtService.parseRedreshToken(token) + "\n");
+
+        String email = jwtService.parseRedreshToken(token);
+
         if (checkEmailService.checkingEmail(email)) {
             try {
                 User user = userService.getUserByEmail(email);
-                user.setPassword(passwordService.generatePassword(email));
+                user.setPassword(passwordService.generatePassword(email, mailContentBuilder));
                 userService.updateUser(user);
                 return ResponseEntity.status(200).body("Password changed.");
             } catch (UserNotFoundException e) {
@@ -175,7 +178,28 @@ public class AuthController extends HttpServlet {
         } else {
             return ResponseEntity.badRequest().body("Email " + email + " is not found.");
         }
+    }
 
+    @PostMapping("/sent-recovery-email")
+    public ResponseEntity<String> sentRecoveryEmail(@RequestHeader("email") String email) {
+        String refreshToken = jwtService.refreshToken(email);
+
+        LoggerFactory.getLogger("sent-recovery-email").info("\n\n\ttoken is: " + refreshToken +
+                "\nemail is: " + email + "\n");
+
+
+        if (checkEmailService.checkingEmail(email)) {
+            try {
+                EmailSenderService emailSenderService = new EmailSenderService(mailContentBuilder);
+                emailSenderService.sendRecoveryEmail(email, refreshToken);
+                return ResponseEntity.ok().body("emailSenderService ok");
+            } catch (MessagingException e) {
+                e.printStackTrace();
+                return ResponseEntity.badRequest().body("try/catch error: " + e.toString());
+            }
+        } else {
+            return ResponseEntity.badRequest().body("Email " + email + " is not found.");
+        }
     }
 }
 
