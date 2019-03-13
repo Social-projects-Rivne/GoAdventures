@@ -4,6 +4,7 @@ import io.softserve.goadventures.Gallery.model.Gallery;
 import io.softserve.goadventures.Gallery.repository.GalleryRepository;
 import io.softserve.goadventures.event.category.Category;
 import io.softserve.goadventures.event.model.Event;
+import io.softserve.goadventures.event.model.EventDTO;
 import io.softserve.goadventures.event.repository.CategoryRepository;
 import io.softserve.goadventures.event.repository.EventRepository;
 import io.softserve.goadventures.event.service.EventService;
@@ -75,8 +76,8 @@ public class EventController {
     }
 
     @GetMapping("/all/{location}")
-    public Iterable<Event> getAllEvents(@PathVariable(value = "location") String location) {
-        return eventService.getEventsByLocation(location);
+    public Iterable<EventDTO> getAllEvents(@PathVariable (value="location") String location){
+            return eventService.getEventsByLocation(location);
     }
 
     @GetMapping("/category/{categoryId}")
@@ -85,9 +86,10 @@ public class EventController {
     }
 
     @GetMapping("/gallery/{eventId}")
-    public Page<Gallery> getAllGalleryByEventId(@PathVariable(value = "eventId") int eventId, Pageable pageable) {
+    public Iterable<Gallery> getAllGalleryByEventId(@PathVariable (value = "eventId") int eventId,
+                                              Pageable pageable) {
         Event event = eventRepository.findById(eventId);
-        return galleryRepository.findByEventId(event, pageable);
+        return galleryRepository.findByEventId(event.getId());
     }
 
     @GetMapping("/{eventId}")
