@@ -1,18 +1,15 @@
 package io.softserve.goadventures.Gallery.model;
 
 import io.softserve.goadventures.event.model.Event;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "gallery")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Gallery {
     @Id
     @Column(name = "id")

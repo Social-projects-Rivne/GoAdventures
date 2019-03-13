@@ -81,12 +81,12 @@ public class EventController {
 
     @GetMapping("/category/{categoryId}")
     public Page<Event> getAllEventsByCategoryId(@PathVariable(value = "categoryId") int eventId, Pageable pageable) {
-        return eventService.findByCategoryId(eventId, pageable);
+        return eventRepository.findByCategoryId(eventId, pageable);
     }
 
     @GetMapping("/gallery/{eventId}")
     public Page<Gallery> getAllGalleryByEventId(@PathVariable(value = "eventId") int eventId, Pageable pageable) {
-        Event event = eventService.findById(eventId);
+        Event event = eventRepository.findById(eventId);
         return galleryRepository.findByEventId(event, pageable);
     }
 

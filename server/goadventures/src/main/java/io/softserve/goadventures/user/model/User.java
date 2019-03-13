@@ -5,9 +5,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import javax.persistence.*;
 
+@Data
 @Entity
 @Table(name = "users")
-@Data
 @NoArgsConstructor
 public class User {
     @Id

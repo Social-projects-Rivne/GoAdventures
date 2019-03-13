@@ -13,7 +13,9 @@ export class Dialog extends Component<DialogSettings, any> {
     this.state = {};
     //  :*D
     this.getInitialValues = this.getInitialValues.bind(this);
-    this.props.redirect.bind(this);
+    if(this.props.redirect) {
+      this.props.redirect.bind(this);
+    }
   }
   public getInitialValues = (): object => {
     const initialValues: { [key: string]: string } = {};
@@ -26,7 +28,7 @@ export class Dialog extends Component<DialogSettings, any> {
   }
 
   public render(): JSX.Element {
-    if (this.props.context.authorized) {
+    if (this.props.context.authorized && this.props.redirect) {
       return this.props.redirect(this.props.context.authType);
     } else {
       return (
@@ -48,7 +50,6 @@ export class Dialog extends Component<DialogSettings, any> {
                 if (valuesMutadet.hasOwnProperty('confirmPassword')) {
                   delete valuesMutadet!.confirmPassword;
                 }
-                console.debug(valuesMutadet);
                 this.props.context.authorize(this.props.handleSubmit, {...valuesMutadet});
                 actions.setSubmitting(false);
               }}
