@@ -38,7 +38,7 @@ export class ForgotPassword extends Component<any, any> {
                         <hr />
                         <div className="card-body">
                             <form id='recovery-dialog' onSubmit={this.handleClick} >
-                                <input className="form-control" type="text" onChange={this.handle.bind(this)}/>
+                                <input className="form-control" type="email" onChange={this.handle.bind(this)}/>
                                 <button type="submit" className="btn btn-success">
                                     Recover password
                                 </button>
