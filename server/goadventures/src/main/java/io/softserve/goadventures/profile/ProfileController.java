@@ -70,9 +70,13 @@ public class ProfileController {
 
 
 
-        changeThisUser.setId(user.getId());
+        //changeThisUser.setId(user.getId());
 
-        userService.updateUser(changeThisUser);
+        user.setFullname(changeThisUser.getFullname());
+        user.setEmail(changeThisUser.getEmail());
+        user.setUsername(changeThisUser.getUsername());
+
+        userService.updateUser(user);
 
         logger.info("new data " + user.getEmail() + " " + user.getUsername() + " " + user.getFullname());
 
