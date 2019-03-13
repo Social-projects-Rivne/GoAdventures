@@ -7,11 +7,11 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "category")
 @NoArgsConstructor
+@AllArgsConstructor
 public class Category{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

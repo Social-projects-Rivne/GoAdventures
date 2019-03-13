@@ -27,21 +27,23 @@ public class EventController {
     private final GalleryRepository galleryRepository;
 
     @Autowired
-    public EventController(EventService eventService, EventRepository eventRepository, CategoryRepository categoryRepository, GalleryRepository galleryRepository){
+    public EventController(EventService eventService, EventRepository eventRepository,
+            CategoryRepository categoryRepository, GalleryRepository galleryRepository) {
         this.eventService = eventService;
-        this.eventRepository=eventRepository;
-        this.categoryRepository=categoryRepository;
+        this.eventRepository = eventRepository;
+        this.categoryRepository = categoryRepository;
         this.galleryRepository = galleryRepository;
     }
 
     @PostMapping("/create/{categoryId}")
-    public ResponseEntity<String> createEvent(@PathVariable (value = "categoryId") int categoryId, @RequestBody Event event){
+    public ResponseEntity<String> createEvent(@PathVariable(value = "categoryId") int categoryId,
+            @RequestBody Event event) {
         Category category = categoryRepository.findById(categoryId);
         event.setCategory(category);
         eventService.addEvent(event);
         HttpHeaders httpHeaders = new HttpHeaders();
-        //event.setStatusId(EventStatus.CREATED.getEventStatus());
-        //eventService.addEvent(event);
+        // event.setStatusId(EventStatus.CREATED.getEventStatus());
+        // eventService.addEvent(event);
 
         return ResponseEntity.ok().headers(httpHeaders).body("Event created");
     }
@@ -56,7 +58,8 @@ public class EventController {
     }
 
     @PostMapping("/gallery/{eventId}")
-    public ResponseEntity<String> createGallery(@PathVariable (value = "eventId") int eventId, @RequestBody Gallery gallery) {
+    public ResponseEntity<String> createGallery(@PathVariable(value = "eventId") int eventId,
+            @RequestBody Gallery gallery) {
         Event event = eventRepository.findById(eventId);
         gallery.setEventId(event);
         galleryRepository.save(gallery);
@@ -66,27 +69,30 @@ public class EventController {
     }
 
     @GetMapping("/all")
-    public Iterable<Event> getAllEvents(){
+    public Iterable<Event> getAllEvents() {
         logger.info("=====all events=====");
         return eventService.getAllEvents();
     }
 
     @GetMapping("/all/{location}")
-    public Iterable<Event> getAllEvents(@PathVariable (value="location") String location){
-            return eventService.getEventsByLocation(location);
+    public Iterable<Event> getAllEvents(@PathVariable(value = "location") String location) {
+        return eventService.getEventsByLocation(location);
     }
 
-
     @GetMapping("/category/{categoryId}")
-    public Page<Event> getAllEventsByCategoryId(@PathVariable (value = "categoryId") int eventId,
-                                              Pageable pageable) {
-        return eventRepository.findByCategoryId(eventId, pageable);
+    public Page<Event> getAllEventsByCategoryId(@PathVariable(value = "categoryId") int eventId, Pageable pageable) {
+        return eventService.findByCategoryId(eventId, pageable);
     }
 
     @GetMapping("/gallery/{eventId}")
-    public Page<Gallery> getAllGalleryByEventId(@PathVariable (value = "eventId") int eventId,
-                                              Pageable pageable) {
-        Event event = eventRepository.findById(eventId);
+    public Page<Gallery> getAllGalleryByEventId(@PathVariable(value = "eventId") int eventId, Pageable pageable) {
+        Event event = eventService.findById(eventId);
         return galleryRepository.findByEventId(event, pageable);
     }
+
+    @GetMapping("/{eventId}")
+    public Event getEvent(@PathVariable(value = "eventId") int eventId) {
+        return eventService.getEventById(eventId);
+    }
+
 }
