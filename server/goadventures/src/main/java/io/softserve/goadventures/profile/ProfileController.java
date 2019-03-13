@@ -1,5 +1,8 @@
 package io.softserve.goadventures.profile;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import io.softserve.goadventures.auth.service.JWTService;
 import io.softserve.goadventures.user.model.User;
 import io.softserve.goadventures.user.repository.UserRepository;
@@ -10,8 +13,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -40,8 +45,6 @@ public class ProfileController {
         logger.info("\n\n\n\tDo token:" + token + "\n\n\n");
 
 
-        logger.info("\n\n\n\tPislyatoken:" + token + "\n\n\n");
-
 
         User user = userService.getUserByEmail(jwtService.parseToken(token));
 
@@ -56,25 +59,33 @@ public class ProfileController {
     }
 
 
-    @GetMapping(path = "/edit-profile", produces = {MediaType.APPLICATION_JSON_VALUE} )
-    public void EditProfileData(@RequestHeader(value="Authorization") String authorizationHeader, @RequestBody User changeThisUser
-    ) throws UserNotFoundException {
+    @PostMapping(path = "/edit-profile", produces = {MediaType.APPLICATION_JSON_VALUE} )
+    public ResponseEntity<String> EditProfileData(@RequestHeader(value="Authorization") String authorizationHeader, @RequestBody User changeThisUser
+    ) throws UserNotFoundException, JsonProcessingException {
         String token = authorizationHeader;
-        logger.info(authorizationHeader);
-
-        User user = userService.getUserByEmail(jwtService.parseToken(token));
-        if(user!=null){
-            logger.info("Old data " + user.getEmail() + " " + user.getUsername());
-            user.setUsername(changeThisUser.getUsername());
-            user.setEmail(changeThisUser.getEmail());
-            userService.updateUser(user);
+        String newToken = "";
+        logger.info(token);
+        logger.info("email " + changeThisUser.getEmail() + " fullname " + changeThisUser.getFullname() + " username" + changeThisUser.getUsername());
+        User user = userService.getUserByEmail(jwtService.parseToken(token));   //user with old data
 
 
-            logger.info("new data "+ user.getEmail() + " " + user.getUsername());
+
+        changeThisUser.setId(user.getId());
+
+        userService.updateUser(changeThisUser);
+
+        logger.info("new data " + user.getEmail() + " " + user.getUsername() + " " + user.getFullname());
+
+        newToken = jwtService.createToken(user);
+
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setBearerAuth(newToken);
+        responseHeaders.set("token", newToken);
 
 
-        }
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
+        return ResponseEntity.ok().headers(responseHeaders).body("Data was changed");
 
 
 
@@ -82,7 +93,6 @@ public class ProfileController {
 
 
     }
-
 
 
 

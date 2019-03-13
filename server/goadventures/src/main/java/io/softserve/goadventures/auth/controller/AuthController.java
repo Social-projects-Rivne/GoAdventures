@@ -49,7 +49,7 @@ public class AuthController extends HttpServlet {
 
   @Autowired
   public AuthController(JWTService jwtService, UserService userService, EmailSenderService emailSenderService) {
-      this.emailSenderService = emailSenderService;
+    this.emailSenderService = emailSenderService;
     this.jwtService = jwtService;
     this.userService = userService;
   }

@@ -16,15 +16,19 @@
   & .Sidebar__avatar {
 
     width: 420px;
-    height: 320px;
-
+    height: 250px;
+  
 
     & img {
-      width: 320px;
-      height: 320px;
+      width: 250px;
+      height: 250px;
       border-radius: 50%;
 
     }
+  }
+
+  .title{
+    color: white;
   }
 
 
