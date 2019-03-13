@@ -161,9 +161,9 @@ public class AuthController extends HttpServlet {
     @GetMapping("/recovery")
     public ResponseEntity<String> recoveryPassword(@RequestParam("setnewpassword") String token) {
         LoggerFactory.getLogger("recovery").info("\n\n\ttoken is: " + token +
-                "\nemail is: " + jwtService.parseRedreshToken(token) + "\n");
+                "\nemail is: " + jwtService.parseRefreshToken(token) + "\n");
 
-        String email = jwtService.parseRedreshToken(token);
+        String email = jwtService.parseRefreshToken(token);
 
         if (checkEmailService.checkingEmail(email)) {
             try {

@@ -49,7 +49,7 @@ public class JWTService {
                 .sign(HMAC256(REFRESH_SECRET.getBytes()));
     }
 
-    public String parseRedreshToken(String token) {
+    public String parseRefreshToken(String token) {
         String userEmail = JWT.require(HMAC256(REFRESH_SECRET.getBytes()))
                 .build()
                 .verify(token)
