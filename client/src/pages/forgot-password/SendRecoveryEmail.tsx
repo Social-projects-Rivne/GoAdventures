@@ -1,6 +1,5 @@
 import React, { Component} from 'react';
 import {sentRecoveryEmail} from "../../api/auth.service";
-import {Auth} from "../../context/auth.context.interface";
 import {Redirect} from "react-router";
 
 export class SendRecoveryEmail extends Component<any, any> {
