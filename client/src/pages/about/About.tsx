@@ -1,11 +1,11 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 
 export class About extends Component {
-  render() {
+  public render() {
     return (
       <div>
-        
+        About page
       </div>
-    )
+    );
   }
 }

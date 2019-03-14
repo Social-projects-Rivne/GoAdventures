@@ -5,17 +5,13 @@ import google from '../../assets/icons/google.svg';
 import './Dialog.scss';
 import { DialogSettings } from './interfaces/dialog.interface';
 
-/* DON'T RE-DEFINE COMPONENT! USE IT! */
-
 export class Dialog extends Component<DialogSettings, any> {
   constructor(props: DialogSettings) {
     super(props);
     this.state = {};
     //  :*D
     this.getInitialValues = this.getInitialValues.bind(this);
-    if(this.props.redirect) {
-      this.props.redirect.bind(this);
-    }
+
   }
   public getInitialValues = (): object => {
     const initialValues: { [key: string]: string } = {};
@@ -28,9 +24,9 @@ export class Dialog extends Component<DialogSettings, any> {
   }
 
   public render(): JSX.Element {
-    if (this.props.context.authorized && this.props.redirect) {
-      return this.props.redirect(this.props.context.authType);
-    } else {
+    // if (this.props.redirect && this.props.context.authorized  ) {
+    //   return this.props.redirect(this.props.context.authType);
+    // } else {
       return (
         <div
           className='Dialog__window card border-success mb-3 mt-3'
@@ -50,7 +46,14 @@ export class Dialog extends Component<DialogSettings, any> {
                 if (valuesMutadet.hasOwnProperty('confirmPassword')) {
                   delete valuesMutadet!.confirmPassword;
                 }
-                this.props.context.authorize(this.props.handleSubmit, {...valuesMutadet});
+                if(this.props.context.authorize) {
+                  this.props.context.authorize(this.props.handleSubmit, {...valuesMutadet});
+                } else {
+                  this.props.handleSubmit({...valuesMutadet});
+                }
+                if (this.props.redirect) {
+                  this.props.redirect.routerProps.history.push(`${this.props.redirect.redirectURL}`);
+                }
                 actions.setSubmitting(false);
               }}
             >
@@ -107,6 +110,6 @@ export class Dialog extends Component<DialogSettings, any> {
           </div>
         </div>
       );
-    }
+    // }
   }
 }

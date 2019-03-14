@@ -8,13 +8,6 @@ import { EventsListBuild } from '../../components/eventsListBuild/EventsListBuil
 import { EventDto } from '../../interfaces/Event.dto';
 
 
-// export class Events extends Component<EventDto, any> {
-// constructor(props:any) {
-//   super(props)
-//   this.state = {
-//     list:[]
-//   }
-// }
 
 
 interface EventState {
@@ -28,10 +21,11 @@ export class Events extends Component<EventDto, EventState> {
       events: [
         {
           description: '',
-          topic: '',
-          startDate: '',
           endDate: '',
+          id: 0,
           location: '',
+          startDate: '',
+          topic: '',
 
 
         }
@@ -45,13 +39,12 @@ export class Events extends Component<EventDto, EventState> {
 
   public componentDidMount() {
     eventList().then((response: AxiosResponse<EventDto[]>) => {
-      console.log(response.data);
-
-      this.setState({ events: [...response.data] });
-      console.debug(this.state);
+      if(response.status <= 200 && response.status >= 300) {
+        this.setState({ events: [...response.data] });
+      }
     }
-    ).catch((err) => {
-
+    ).catch((error) => {
+      console.debug(error);
     });
 
   }

@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import { CSSProperties } from 'react';
-import { Redirect } from 'react-router';
+import { Redirect, RouterProps } from 'react-router';
 import { signIn, signUp } from '../../api/auth.service';
 import { Dialog } from '../../components/';
 import { InputSettings } from '../../components/dialog-window/interfaces/input.interface';
 import { AuthContext } from '../../context/auth.context';
-import { Auth } from '../../context/auth.context.interface';
 import { UserDto } from '../../interfaces/User.dto';
 import { SigninSchema, SignupSchema } from '../../validationSchemas/authValidation';
 import './Home.scss';
 
-export class Home extends Component {
+export class Home extends Component<RouterProps, any> {
   private signUpDialogStyles: CSSProperties = {
     height: '30rem',
     maxHeight: '30rem',
@@ -58,16 +57,8 @@ export class Home extends Component {
       type: 'password'
     }
   ];
-
-
-  public redirect(redirectType: Auth['authType']): JSX.Element {
-    if(redirectType === 'signUp') {
-      return <Redirect to='/confirm-yor-yo' />;
-    } else if(redirectType === 'signIn') {
-      return <Redirect to='/profile' />;
-    } else {
-      return <Redirect to='/' />;
-    }
+  constructor(props: RouterProps) {
+    super(props);
   }
 
 
@@ -86,7 +77,7 @@ export class Home extends Component {
     return (
       <div className='Home-content'>
         <div className='container'>
-        <div className='row'>
+          <div className='row'>
           </div>
           <div className='row'>
             <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 d-sm-flex col d-none align-self-center'>
@@ -108,9 +99,9 @@ export class Home extends Component {
                         button_text='Sign up'
                         header='Sign up for adventures'
                         inline_styles={this.signUpDialogStyles}
-                        redirect={this.redirect}
+                        redirect={{ routerProps: this.props, redirectURL: 'confirm-yor-yo'}}
                       />
-                    ) : (
+                    ) : !authorized && authType === 'signIn' ? (
                       <Dialog
                         validationSchema={SigninSchema}
                         context={{ authorized, authorize, authType }}
@@ -119,9 +110,9 @@ export class Home extends Component {
                         button_text='Sign in'
                         header='Sign in for adventures'
                         inline_styles={this.signUpDialogStyles}
-                        redirect={this.redirect}
+                        redirect={{ routerProps: this.props, redirectURL: 'profile'}}
                       />
-                    )
+                    ) : null
                   }
                 </AuthContext.Consumer>
               </div>
