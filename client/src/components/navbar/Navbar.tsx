@@ -58,7 +58,7 @@ export const Navbar = (props: any) => {
               <button type='button'
                className='btn btn-danger'
                onClick={(): void => {
-                authorize((): Promise<boolean> => signOut());
+                authorize((): Promise<string> => signOut());
                 }}>
                 Sign Out
               </button>

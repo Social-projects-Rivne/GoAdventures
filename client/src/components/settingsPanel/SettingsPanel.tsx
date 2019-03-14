@@ -23,12 +23,5 @@ export class SettingsPanel extends Component<PanelProps, any> {
                 {right ? <div>{right}</div> : null}
             </div>
         );
-        // return (
-        //     <div className='table-primary SettingsPanel'>
-        //         {this.props.map((component: any, index: number) => (
-        //             React.createElement(component, { key: index })
-        //         ))}
-        //     </div>
-        // );
     }
 }

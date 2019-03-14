@@ -1,6 +1,6 @@
 export interface UserDto {
-    fullname: string;
-    username: string;
+    fullName: string;
+    userName: string;
     email: string;
     avatarUrl?: string;
     password?: string;

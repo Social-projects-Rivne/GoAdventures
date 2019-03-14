@@ -7,12 +7,16 @@
   background-size: cover;
   background-position: center;
 
-  & .Home__signup {
+  & .Home__auth {
     display: flex;
     flex-direction: row;
     justify-content: right;
     height: 100%;
     margin: 15px;
+    & .alert {
+      position: absolute;
+      z-index: 1;
+    }
   }
 
   & .Home-heading {

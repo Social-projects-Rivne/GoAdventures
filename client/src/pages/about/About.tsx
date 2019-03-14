@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 
-export class About extends Component {
-  public render() {
-    return (
-      <div>
-        About page
-      </div>
-    );
-  }
-}
+export const About = (props: any) => {
+  console.debug(props);
+  return (
+    <div>
+      About page
+  </div>
+  );
+};
+
+

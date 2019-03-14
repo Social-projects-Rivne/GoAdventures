@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { CSSProperties } from 'react';
-import { Redirect, RouterProps } from 'react-router';
+import { RouterProps } from 'react-router';
 import { signIn, signUp } from '../../api/auth.service';
 import { Dialog } from '../../components/';
 import { InputSettings } from '../../components/dialog-window/interfaces/input.interface';
@@ -62,14 +62,14 @@ export class Home extends Component<RouterProps, any> {
   }
 
 
-  public submitSignUpRequest(data: UserDto): Promise<boolean> {
+  public submitSignUpRequest(data: UserDto): Promise<string> {
     return signUp(data);
   }
 
   /**
    * submitSignInRequest
    */
-  public submitSignInRequest(data: UserDto): Promise<boolean> {
+  public submitSignInRequest(data: UserDto): Promise<string> {
     return signIn(data);
   }
 
@@ -87,10 +87,18 @@ export class Home extends Component<RouterProps, any> {
               </div>
             </div>
             <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12'>
-              <div className='Home__signup'>
+              <div className='Home__auth'>
                 <AuthContext.Consumer>
-                  {({ authorized, authType, authorize }) =>
-                    !authorized && authType === 'signUp' ? (
+                  {({ authorized, authType, authorize, messages }) =>
+                  <div>
+                    {!authorized && messages ?
+                  (<div className='alert alert-danger alert-dismissible fade show' role='alert'>
+                  <strong>Holy guacamole!</strong> {messages}
+                  <button type='button' className='close' data-dismiss='alert' aria-label='Close'>
+                    <span aria-hidden='true'>&times;</span>
+                  </button>
+                </div>) : null}
+                    {!authorized && authType === 'signUp' ? (
                       <Dialog
                         validationSchema={SignupSchema}
                         context={{ authorized, authorize, authType }}
@@ -99,7 +107,7 @@ export class Home extends Component<RouterProps, any> {
                         button_text='Sign up'
                         header='Sign up for adventures'
                         inline_styles={this.signUpDialogStyles}
-                        redirect={{ routerProps: this.props, redirectURL: 'confirm-yor-yo'}}
+                        redirect={{ routerProps: this.props, redirectURL: '/confirm-yor-yo'}}
                       />
                     ) : !authorized && authType === 'signIn' ? (
                       <Dialog
@@ -110,10 +118,11 @@ export class Home extends Component<RouterProps, any> {
                         button_text='Sign in'
                         header='Sign in for adventures'
                         inline_styles={this.signUpDialogStyles}
-                        redirect={{ routerProps: this.props, redirectURL: 'profile'}}
+                        redirect={{ routerProps: this.props, redirectURL: '/profile'}}
                       />
-                    ) : null
-                  }
+                    ) : null}
+
+                  </div>                  }
                 </AuthContext.Consumer>
               </div>
             </div>

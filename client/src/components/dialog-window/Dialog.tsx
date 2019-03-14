@@ -24,9 +24,6 @@ export class Dialog extends Component<DialogSettings, any> {
   }
 
   public render(): JSX.Element {
-    // if (this.props.redirect && this.props.context.authorized  ) {
-    //   return this.props.redirect(this.props.context.authType);
-    // } else {
       return (
         <div
           className='Dialog__window card border-success mb-3 mt-3'
@@ -41,15 +38,15 @@ export class Dialog extends Component<DialogSettings, any> {
               initialValues={this.getInitialValues()}
               validateOnBlur={true}
               validationSchema={this.props.validationSchema}
-              onSubmit={(values: any, actions) => {
+              onSubmit={ async (values: any, actions) => {
                 const valuesMutadet = {...values};
                 if (valuesMutadet.hasOwnProperty('confirmPassword')) {
                   delete valuesMutadet!.confirmPassword;
                 }
                 if(this.props.context.authorize) {
-                  this.props.context.authorize(this.props.handleSubmit, {...valuesMutadet});
+                  await this.props.context.authorize(this.props.handleSubmit, {...valuesMutadet});
                 } else {
-                  this.props.handleSubmit({...valuesMutadet});
+                  await this.props.handleSubmit({...valuesMutadet});
                 }
                 if (this.props.redirect) {
                   this.props.redirect.routerProps.history.push(`${this.props.redirect.redirectURL}`);

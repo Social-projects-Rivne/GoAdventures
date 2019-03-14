@@ -1,16 +1,20 @@
 import axios from 'axios';
+import { AxiosResponse } from 'axios';
 import React, { Component } from 'react';
+import { Cookies, withCookies } from 'react-cookie';
 import { UserDto } from '../../interfaces/User.dto';
 import './Show.scss';
 
 export class Show extends Component<any, UserDto> {
+  private cookies: Cookies;
   constructor(props: any) {
     super(props);
+    this.cookies = props.cookies;
     this.state = {
       avatarUrl: '',
         email: '',
-        fullname: '',
-        username: '',
+        fullName: '',
+        userName: '',
     };
   }
 
@@ -18,16 +22,17 @@ export class Show extends Component<any, UserDto> {
   public componentDidMount() {
     axios.get('http://localhost:8080/profile/page', {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('tkn879')}`,
+          'Authorization': `Bearer ${this.cookies.get('tk879n')}`,
           'Content-Type': 'application/json'
         }
       })
-      .then((response) =>
+      .then((response: AxiosResponse<UserDto>): void => {
+        console.debug(response);
         this.setState({
           email: response.data.email,
-          fullname: response.data.fullname,
-          username: response.data.username,
-        })
+          fullName: response.data.fullName,
+          userName: response.data.userName,
+        });}
       );
   }
 
@@ -41,8 +46,8 @@ export class Show extends Component<any, UserDto> {
 
           <div className='User-Data'>
             <div className='user-detail'>
-              <p className=''>{this.state.fullname}</p>
-              <p className=''>{this.state.username}</p>
+              <p className=''>{this.state.fullName}</p>
+              <p className=''>{this.state.userName}</p>
               <p className=''>{this.state.email}</p>
             </div>
           </div>
@@ -51,4 +56,4 @@ export class Show extends Component<any, UserDto> {
     );
   }
 }
-export default Show;
+export default withCookies(Show);

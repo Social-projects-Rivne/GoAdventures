@@ -9,7 +9,7 @@ export interface DialogSettings {
     validationSchema: object;
     inputs: InputSettings[];
     inline_styles?: CSSProperties;
-    handleSubmit: (data: any) => Promise<boolean>;
+    handleSubmit: (data: any) => Promise<string>;
     redirect?: {
         routerProps: RouterProps,
         redirectURL: string;

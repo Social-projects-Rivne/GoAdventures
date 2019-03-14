@@ -1,67 +1,86 @@
 import axios from 'axios';
+import { AxiosResponse } from 'axios';
+import { Cookies } from 'react-cookie';
 import { UserDto } from '../interfaces/User.dto';
 import { serverUrl } from './url.config';
 
-export const signUp = async (data: UserDto) => {
-    return await axios.post(`${serverUrl}/auth/sign-up`, {...data},
-         { headers: {'Content-Type': 'application/json'}}).then((res) => {
-             return res.status === 200;
-          }).catch((error) => {
-            console.error(error);
-            return false;
-          });
-};
+const cookies: Cookies = new Cookies();
+const currentDate: Date = new Date();
+const expiresIn: Date = new Date(currentDate.setDate(currentDate.getDate() + 10));
+const cookieMaxAge: number = 864000;
 
-export const signIn = async (data: UserDto) => {
-    return await axios.post(`${serverUrl}/auth/sign-in`, {...data}, { headers: {'Content-Type': 'application/json'}})
-    .then((res) => {
-// <<<<<<< Updated upstream
-        if (res.status === 200  && res.headers.hasOwnProperty('authorization')) {
-            localStorage.setItem('tkn879', res.headers.authorization.replace('Bearer ', ''));
-            return true;
-        } else {
-            localStorage.setItem('token', res.headers.token);
-            return false;
-        }
-    }).catch((error) => {
-        console.error(error);
-        return false;
+
+function setCookie(res: AxiosResponse) {
+    cookies.set('tk879n', res.headers.authorization.replace('Bearer ', ''), {
+        expires: expiresIn,
+        maxAge: cookieMaxAge,
+        path: '/',
     });
+}
+
+
+export const signUp = async (data: UserDto): Promise<string> => {
+    return await axios.post(`${serverUrl}/auth/sign-up`, { ...data },
+        { headers: { 'Content-Type': 'application/json' } }).then((res) => {
+            return res.status === 200 ? 'ok' : res.status.toString();
+        }).catch((error) => {
+            console.error(error);
+            return 'Server error';
+        });
 };
 
-
-export const confirmAccount = async (data: any): Promise<boolean> => {
-    const { param } = data;
-    return await axios.get(`${serverUrl}/auth/confirm-account${param}`, {headers :
-        {'Content-Type': 'application/text'}})
+export const signIn = async (data: UserDto): Promise<string> => {
+    return await axios.post(`${serverUrl}/auth/sign-in`, { ...data },
+        { headers: { 'Content-Type': 'application/json' } })
         .then((res) => {
-            // choto ne DRY :(
             if (res.status === 200 && res.headers.hasOwnProperty('authorization')) {
-                localStorage.setItem('tkn879', res.headers.authorization.replace('Bearer ', ''));
-                return true;
+                setCookie(res);
+                return 'ok';
             } else {
-                return false;
+                return res.status.toString();
             }
         }).catch((error) => {
-            console.debug(error);
-            return false;
+            console.error(error);
+            return 'Incorect email or password';
         });
 };
 
 
-export const signOut = async (): Promise<boolean> => {
-    return await axios.put(`${serverUrl}/auth/sign-out`, null, {headers: {
-        Authorization: `Bearer ${localStorage.getItem('tkn879')}`
-    }})
-    .then((res) => {
-        if (res.status === 200) {
-            localStorage.removeItem('tkn879');
-            return true;
-        } else {
-            return false;
+export const confirmAccount = async (data: any): Promise<string> => {
+    const { param } = data;
+    return await axios.get(`${serverUrl}/auth/confirm-account${param}`, {
+        headers:
+            { 'Content-Type': 'application/text' }
+    })
+        .then((res: AxiosResponse) => {
+            if (res.status === 200 && res.headers.hasOwnProperty('authorization')) {
+                setCookie(res);
+                return 'ok';
+            } else {
+                return res.status.toString();
+            }
+        }).catch((error) => {
+            console.debug(error);
+            return 'Server error';
+        });
+};
+
+
+export const signOut = async (): Promise<string> => {
+    return await axios.put(`${serverUrl}/auth/sign-out`, null, {
+        headers: {
+            Authorization: `Bearer ${cookies.get(('tk879n'))}`
         }
-    }).catch((error) => {
-        console.error(`Something went wrong ${error}`);
-        return false;
-    });
+    })
+        .then((res: AxiosResponse) => {
+            if (res.status === 200) {
+                cookies.remove('tk879n');
+                return 'ok';
+            } else {
+                return res.status.toString();
+            }
+        }).catch((error) => {
+            console.error(`Something went wrong ${error}`, error);
+            return 'Server error';
+        });
 };
