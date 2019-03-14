@@ -27,10 +27,6 @@ class App extends Component<{}, Auth> {
     };
   }
 
-  // public componentDidUpdate() {
-
-  // }
-
   public componentDidMount() {
     this.setState({ authorized: !!localStorage.getItem('tkn879') });
   }
@@ -42,7 +38,7 @@ class App extends Component<{}, Auth> {
         <AuthContext.Provider value={this.state}>
           <Navbar authorized={this.state.authorized} />
           <Content authorized={this.state.authorized} />
-          {this.state.authorized ? null : <Footer />}
+          {this.state.authorized ? null : <Footer/>}
         </AuthContext.Provider>
       </div>
     );

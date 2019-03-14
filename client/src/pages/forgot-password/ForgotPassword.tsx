@@ -1,5 +1,6 @@
 import React, {ChangeEvent, Component, SyntheticEvent} from 'react';
 import axios from 'axios';
+import './ForgotPassword.scss';
 
 export class ForgotPassword extends Component<any, any> {
     constructor(props: any) {
@@ -29,17 +30,26 @@ export class ForgotPassword extends Component<any, any> {
         })
     }
 
+    handleSubmit() {
+        if (this.state.email == "") {
+            alert("Please enter your email.")
+        } else {
+            alert("Recovery mail sent!")
+        }
+    }
+
     public render() {
         return (
-            <div className='container '>
+            <div className='container allHeight'>
                 <div className="jumbotron">
-                    <div className='container '>
+                    <div className='container'>
                         <h1>Recovery password page</h1>
-                        <hr />
+                        <hr/>
                         <div className="card-body">
                             <form id='recovery-dialog' onSubmit={this.handleClick} >
-                                <input className="form-control" type="email" onChange={this.handle.bind(this)}/>
-                                <button type="submit" className="btn btn-success">
+                                <input className="form-control" type="email" onChange={this.handle.bind(this)}
+                                       placeholder="enter your email"/>
+                                <button onClick={this.handleSubmit} type="submit" className="btn btn-success">
                                     Recover password
                                 </button>
                             </form>

@@ -26,7 +26,9 @@ export class EditForm extends Component<any, UserDto>{
     handleSubmit(event: SyntheticEvent) {
         event.preventDefault();
         console.log('form is submitted');
-        if (this.state.avatarUrl == "" && this.state.email == "" && this.state.fullname == "" && this.state.username == "") {
+        if (this.state.avatarUrl == "" && this.state.email == ""
+            && this.state.fullname == "" && this.state.username == ""
+            && this.state.password == "") {
             alert("Data not changed, pls enter new data")
         }
         else {
