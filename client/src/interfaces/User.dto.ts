@@ -9,7 +9,7 @@ export interface UserDto {
     phone?: string;
     role?: string;
     statusId?: string;
-    id?: string
+    id?: string;
 
-
+    show?: boolean;
 }

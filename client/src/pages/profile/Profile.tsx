@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
 import { Sidebar } from './sidebar/Sidebar';
-
 import { UserDto } from '../../interfaces/User.dto';
 import { getUserData } from '../../api/user.service';
 import { AxiosResponse } from 'axios';
-
-
 import { UserEventList } from './profileUserEventList/UserEventList';
-
 
 export class Profile extends Component<UserDto, any> {        //початкова ініціалізація(null)
   constructor(props: any) {
@@ -34,17 +30,7 @@ export class Profile extends Component<UserDto, any> {        //початков
         userProfile: { ...response.data }
       })
     );
-    // getEventData().then((response: AxiosResponse<EventDto>) =>
-    //     this.setState({
-    //       ...response.data
-    //     })
-    // );
   }
-
-
-
-
-
 
   public render() {                                           //рендер екземпляров сайдбар і юзерівенліст
     return (
@@ -56,7 +42,6 @@ export class Profile extends Component<UserDto, any> {        //початков
         </div>
       </div>
     );
-
   }
 }
 

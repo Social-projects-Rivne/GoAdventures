@@ -16,7 +16,7 @@ export class Dialog extends Component<DialogSettings, any> {
     this.submitForm = this.submitForm.bind(this);
   }
 
-  public render(): JSX.Element {
+    public render(): JSX.Element {
     if (this.props.context.authorized) {
       return this.props.redirect();
     } else {
