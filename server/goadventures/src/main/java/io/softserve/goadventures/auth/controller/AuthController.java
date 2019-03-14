@@ -52,7 +52,6 @@ public class AuthController extends HttpServlet {
         HttpHeaders httpHeaders = new HttpHeaders();
         logger.info(String.valueOf(user));
         if (!checkEmailService.checkingEmail(user.getEmail())) {
-
             user.setStatusId(UserStatus.PENDING.getUserStatus());
             user.setUsername(user.getEmail().split("@")[0]);
             userService.addUser(user);
@@ -70,7 +69,6 @@ public class AuthController extends HttpServlet {
 
         } else {
             logger.info("\nsignUp: This user is already exist.");
-
             return ResponseEntity.badRequest().body("user already exist");
         }
     }
@@ -138,7 +136,6 @@ public class AuthController extends HttpServlet {
 
         } else
             return ResponseEntity.badRequest().body("Not found user");
-
     }
 
     /**
@@ -186,7 +183,6 @@ public class AuthController extends HttpServlet {
 
         LoggerFactory.getLogger("sent-recovery-email").info("\n\n\ttoken is: " + refreshToken +
                 "\nemail is: " + email + "\n");
-
 
         if (checkEmailService.checkingEmail(email)) {
             try {

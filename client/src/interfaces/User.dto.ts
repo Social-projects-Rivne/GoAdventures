@@ -1,5 +1,15 @@
 export interface UserDto {
-    name: string;
-    password: string;
+    fullname: string;
+    username: string;
     email: string;
+    avatarUrl: string;
+    password?: string;
+    location?: string;
+
+    phone?: string;
+    role?: string;
+    statusId?: string;
+    id?: string;
+
+    show?: boolean;
 }
