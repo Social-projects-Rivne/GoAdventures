@@ -37,7 +37,7 @@ class App extends Component<{}, Auth> {
       <div>
         <AuthContext.Provider value={this.state}>
           <Navbar authorized={this.state.authorized} />
-          <Content authorized={this.state.authorized} />
+          <Content />
           {this.state.authorized ? null : <Footer />}
         </AuthContext.Provider>
       </div>

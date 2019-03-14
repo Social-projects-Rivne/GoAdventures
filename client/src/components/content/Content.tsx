@@ -16,7 +16,6 @@ export const Content = () => {
             <ContextProtectedRoute path='/profile' component={Profile} />
             <ContextProtectedRoute exact path='/events' component={Events} />
             <ContextRoute exact path='/events/deatail/:name' component={EventsDetail} />
-
           </Switch>
         </div>
       </div>
