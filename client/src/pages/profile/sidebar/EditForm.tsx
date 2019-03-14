@@ -1,16 +1,20 @@
-import React, {ChangeEvent, Component, ReactNode, SyntheticEvent} from 'react';
-import {UserDto} from "../../../interfaces/User.dto";
+import React, { ChangeEvent, Component, ReactNode, SyntheticEvent } from 'react';
+import { UserDto } from "../../../interfaces/User.dto";
 import axios from "axios";
+import { Sidebar } from './Sidebar';
 
 export class EditForm extends Component<any, UserDto>{
 
-    constructor(props: any) {
+    constructor(props: UserDto) {
         super(props);
         this.state = {
             fullname: '',
             username: '',
             email: '',
-            avatarUrl: ''
+            avatarUrl: '',
+            password: ''
+
+
         };
 
         this.hadleEmailChange = this.hadleEmailChange.bind(this);
@@ -21,19 +25,31 @@ export class EditForm extends Component<any, UserDto>{
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+
     handleSubmit(event: SyntheticEvent) {
         event.preventDefault();
         console.log('form is submitted');
+        if (this.state.avatarUrl == "" && this.state.email == "" && this.state.fullname == "" && this.state.username == "") {
+            alert("Data not changed, pls enter new data")
+        }
+        else {
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('tkn879')}`,
+                    'Content-Type': 'application/json'
+                }
+            };
 
-        const config = { headers: { 'Authorization': `Bearer ${localStorage.getItem('tkn879')}`,
-                'Content-Type': 'application/json' } };
-
-        axios.post('http://localhost:8080/profile/edit-profile', { ...this.state }, config)
-            .then((response) => {
+            axios.post('http://localhost:8080/profile/edit-profile', { ...this.state }, config)
+                .then((response) => {
                     localStorage.setItem('tkn879', response.headers.authorization.replace('Bearer ', '')),
                         this.setState(response.data)
                 }
-            );
+                );
+            alert("Saved successfully")
+
+
+        }
         console.log('saved successfully')
     }
 
@@ -62,26 +78,26 @@ export class EditForm extends Component<any, UserDto>{
                     <label className='list-group-item' htmlFor="exampleInputEmail1">
                         Email address
                         <input type="email" className="form-control" id="exampleInputEmail1"
-                               aria-describedby="emailHelp" placeholder="enter email"
-                               onChange={this.hadleEmailChange} value={this.state.email} />
+                            aria-describedby="emailHelp" placeholder="enter email"
+                            onChange={this.hadleEmailChange} value={this.state.email} />
                     </label>
                     <label className='list-group-item' htmlFor="exampleInputUsername">
                         Username
                         <input type="text" className="form-control" id="exampleInputUsername"
-                               onChange={this.hadleUserNameChange} value={this.state.username}
-                               aria-describedby="inputHelp" placeholder="Enter new username" />
+                            onChange={this.hadleUserNameChange} value={this.state.username}
+                            aria-describedby="inputHelp" placeholder="Enter new username" />
                     </label>
                     <label className='list-group-item' htmlFor="exampleInputFullname">
                         Fullname
                         <input type="text" className="form-control" id="exampleInputFullname"
-                               onChange={this.hadleFullNameChange} value={this.state.fullname}
-                               aria-describedby="inputHelp" placeholder="Enter new fullname" />
+                            onChange={this.hadleFullNameChange} value={this.state.fullname}
+                            aria-describedby="inputHelp" placeholder="Enter new fullname" />
                     </label>
                     <label className='list-group-item' htmlFor="exampleInputPassword">
                         Password
                         <input type="password" className="form-control" id="exampleInputPassword"
-                               onChange={this.hadlePasswordChange} value={this.state.password}
-                               aria-describedby="inputHelp" placeholder="Enter new password" />
+                            onChange={this.hadlePasswordChange} value={this.state.password}
+                            aria-describedby="inputHelp" placeholder="Enter new password" />
                     </label>
                     <button type="button" className="btn btn-primary" onClick={this.handleSubmit} > Save </button>
                 </form>

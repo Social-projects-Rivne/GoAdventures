@@ -1,9 +1,9 @@
 import React from 'react';
 
 import './Sidebar.scss';
-import {UserDto} from '../../../interfaces/User.dto';
+import { UserDto } from '../../../interfaces/User.dto';
 import avatar from '../../../data/image/Person.jpg';
-import {EditForm} from "./EditForm";
+import { EditForm } from "./EditForm";
 
 export class Sidebar extends React.Component<any, UserDto>{
 
@@ -19,8 +19,10 @@ export class Sidebar extends React.Component<any, UserDto>{
     }
 
     toggle() {
-        this.setState({show: !this.state.show});
+        this.setState({ show: !this.state.show });
     }
+
+
 
     render() {
         return (
@@ -43,7 +45,7 @@ export class Sidebar extends React.Component<any, UserDto>{
                         <button type="button" className="btn btn-success disabled" onClick={this.toggle.bind(this)}>
                             Edit Profile
                         </button>
-                        { this.state.show ? <EditForm /> : null }
+                        {this.state.show ? <EditForm /> : null}
                     </li>
                 </ul>
             </div>
