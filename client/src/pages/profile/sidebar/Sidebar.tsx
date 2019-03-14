@@ -4,6 +4,7 @@ import './Sidebar.scss';
 import { UserDto } from '../../../interfaces/User.dto';
 import axios, { AxiosResponse } from "axios";
 import { EventDto } from '../../../interfaces/Event.dto';
+import avatar from '../../../data/image/Person.jpg';
 
 
 export class Sidebar extends React.Component<any, UserDto>{
@@ -72,7 +73,7 @@ export class Sidebar extends React.Component<any, UserDto>{
                     <li className="list-group-item">
 
                         <div className='Sidebar__avatar'>
-                            <img src="https://i.ytimg.com/vi/aVeCYjAiQHo/maxresdefault.jpg" alt="user_avatar" />
+                            <img src={avatar} alt="user_avatar" />
                         </div>
                     </li>
 

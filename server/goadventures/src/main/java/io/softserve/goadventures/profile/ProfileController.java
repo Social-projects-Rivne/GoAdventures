@@ -72,9 +72,10 @@ public class ProfileController {
 
         //changeThisUser.setId(user.getId());
 
-        user.setFullname(changeThisUser.getFullname());
-        user.setEmail(changeThisUser.getEmail());
-        user.setUsername(changeThisUser.getUsername());
+
+        if(!(changeThisUser.getFullname().equals(""))) user.setFullname(changeThisUser.getFullname());
+        if(!(changeThisUser.getEmail().equals(""))) user.setEmail(changeThisUser.getEmail());
+        if(!(changeThisUser.getUsername().equals(""))) user.setUsername(changeThisUser.getUsername());
 
         userService.updateUser(user);
 
@@ -91,12 +92,35 @@ public class ProfileController {
 
         return ResponseEntity.ok().headers(responseHeaders).body("Data was changed");
 
-
-
-
-
-
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
