@@ -3,6 +3,7 @@ package io.softserve.goadventures.profile;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import io.softserve.goadventures.auth.dtoModels.UserAuthDto;
 import io.softserve.goadventures.auth.service.JWTService;
 import io.softserve.goadventures.user.model.User;
 import io.softserve.goadventures.user.repository.UserRepository;
@@ -40,7 +41,7 @@ public class ProfileController {
         this.userService = userService;
     }
 
-    @GetMapping("page")
+    @GetMapping("/page")
     public Profile getProfileUser(@RequestHeader("Authorization") String token) throws UserNotFoundException {
         logger.info("\n\n\n\tDo token:" + token + "\n\n\n");
 
@@ -60,7 +61,7 @@ public class ProfileController {
 
 
     @PostMapping(path = "/edit-profile", produces = {MediaType.APPLICATION_JSON_VALUE} )
-    public ResponseEntity<String> EditProfileData(@RequestHeader(value="Authorization") String authorizationHeader, @RequestBody User changeThisUser
+    public ResponseEntity<String> EditProfileData(@RequestHeader(value="Authorization") String authorizationHeader, @RequestBody UserAuthDto changeThisUser
     ) throws UserNotFoundException, JsonProcessingException {
         String token = authorizationHeader;
         String newToken = "";
@@ -68,24 +69,23 @@ public class ProfileController {
         logger.info("email " + changeThisUser.getEmail() + " fullname " + changeThisUser.getFullname() + " username" + changeThisUser.getUsername());
         User user = userService.getUserByEmail(jwtService.parseToken(token));   //user with old data
 
-
-
         //changeThisUser.setId(user.getId());
-
 
         if(!(changeThisUser.getFullname().equals(""))) user.setFullname(changeThisUser.getFullname());
         if(!(changeThisUser.getEmail().equals(""))) user.setEmail(changeThisUser.getEmail());
         if(!(changeThisUser.getUsername().equals(""))) user.setUsername(changeThisUser.getUsername());
+        logger.info("new password :" + changeThisUser.getPassword());
+        if(!(changeThisUser.getPassword().equals("")))user.setPassword(changeThisUser.getPassword());
 
         userService.updateUser(user);
 
-        logger.info("new data " + user.getEmail() + " " + user.getUsername() + " " + user.getFullname());
+        logger.info("new data " + user.getEmail() + " " + user.getUsername() + " " + user.getFullname() + " " + user.getPassword());
 
         newToken = jwtService.createToken(user);
 
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.setBearerAuth(newToken);
-        responseHeaders.set("token", newToken);
+        responseHeaders.set("token", newToken);   
 
 
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();

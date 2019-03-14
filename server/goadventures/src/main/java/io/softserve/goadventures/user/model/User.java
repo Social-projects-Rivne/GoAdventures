@@ -47,7 +47,7 @@ public class User {
         setEmail(email);
         setPassword(password);
     }
-    private void setPassword(String password) {
+    public void setPassword(String password) {
         this.password = BCrypt.hashpw(password, BCrypt.gensalt());
     }
 }

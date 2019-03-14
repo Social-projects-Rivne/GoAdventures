@@ -16,11 +16,13 @@ export class Sidebar extends React.Component<any, UserDto>{
             username: '',
             email: '',
             avatarUrl: '',
+            password: ''
 
         };
         this.hadleEmailChange = this.hadleEmailChange.bind(this);
         this.hadleUserNameChange = this.hadleUserNameChange.bind(this);
         this.hadleFullNameChange = this.hadleFullNameChange.bind(this);
+        this.hadlePasswordChange = this.hadlePasswordChange.bind(this);
 
         this.handleSubmit = this.handleSubmit.bind(this);
 
@@ -31,20 +33,24 @@ export class Sidebar extends React.Component<any, UserDto>{
         event.preventDefault();
         console.log('form is submitted')
 
-        const config = { headers: { 'Authorization': `Bearer ${localStorage.getItem('tkn879')}`, 'Content-Type': 'application/json' } };
+        if (this.state.fullname == "" && this.state.email == "" && this.state.avatarUrl == "" && this.state.username == "" && this.state.password == "") {
+            alert("Data not changed, pls input new data")
+        }
+        else {
 
-        axios.post('http://localhost:8080/profile/edit-profile', { ...this.state }, config)
-            .then((response) => {
-                localStorage.setItem('tkn879', response.headers.authorization.replace('Bearer ', '')),
-                    this.setState(response.data)
-            }
-            );
+            const config = { headers: { 'Authorization': `Bearer ${localStorage.getItem('tkn879')}`, 'Content-Type': 'application/json' } };
+
+            axios.post('http://localhost:8080/profile/edit-profile', { ...this.state }, config)
+                .then((response) => {
+                    localStorage.setItem('tkn879', response.headers.authorization.replace('Bearer ', '')),
+                        this.setState(response.data)
+                }
+                );
 
 
-        console.log('saved successfully')
-
-
-
+            console.log('saved successfully')
+            alert("saved successfully")
+        }
     }
     hadleEmailChange(event: ChangeEvent<HTMLInputElement>) {                        //викликається при зміні інпута емейлa
         console.log('email is changed ' + event.target.value)
@@ -57,6 +63,10 @@ export class Sidebar extends React.Component<any, UserDto>{
     hadleFullNameChange(event: ChangeEvent<HTMLInputElement>) {
         console.log('fullname is changed' + event.target.value)
         this.setState({ fullname: event.target.value });
+    }
+    hadlePasswordChange(event: ChangeEvent<HTMLInputElement>) {
+        console.log('password is changed' + event.target.value)
+        this.setState({ password: event.target.value });
     }
 
     render() {
@@ -80,7 +90,7 @@ export class Sidebar extends React.Component<any, UserDto>{
                     <li className="list-group-item">email: {this.props.email}</li>
                     <li className="list-group-item">username: {this.props.userName} </li>
                     <li className="list-group-item">fullname: {this.props.fullName}</li>
-                    <li className="list-group-item"> <button type="button" className="btn edit" > Edit Profile </button></li>
+                    <li className="list-group-item"> <button type="button" className="btn btn-primary" > Edit Profile </button></li>
 
                 </ul>
                 <div>
@@ -96,13 +106,14 @@ export class Sidebar extends React.Component<any, UserDto>{
                             <input type="text" className="form-control" id="exampleInput" onChange={this.hadleUserNameChange} value={this.state.username} aria-describedby="inputHelp" placeholder="Enter new username" />
                         </label>
 
+                        <label className='list-group-item' htmlFor="exampleInput"> Password
+                            <input type="password" className="form-control" id="exampleInput" onChange={this.hadlePasswordChange} value={this.state.password} aria-describedby="inputHelp" placeholder="Enter new password" />
+
+                        </label>
                         <label className='list-group-item' htmlFor="exampleInput">Fullname
                             <input type="text" className="form-control" id="exampleInput" onChange={this.hadleFullNameChange} value={this.state.fullname} aria-describedby="inputHelp" placeholder="Enter new fullname" />
-                            <button type="button" className="btn btn-primary" onClick={this.handleSubmit} > Save </button>
+                            <button type="button" className="btn btn-primary otstup" id="btn submit" onClick={this.handleSubmit} > Save </button>
                         </label>
-
-
-
 
 
                     </form>
