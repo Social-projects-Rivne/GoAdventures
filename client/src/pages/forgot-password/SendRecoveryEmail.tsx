@@ -3,14 +3,7 @@ import {sentRecoveryEmail} from "../../api/auth.service";
 import {Auth} from "../../context/auth.context.interface";
 import {Redirect} from "react-router";
 
-interface SendNewPasswordPropsTypes {
-    context: {
-        authorized: Auth['authorized'];
-        authorize: Auth['authorize'];
-    };
-}
-
-export class SendRecoveryEmail extends Component<SendNewPasswordPropsTypes, any> {
+export class SendRecoveryEmail extends Component<any, any> {
     private token: string;
 
     constructor(props: any) {
@@ -24,9 +17,7 @@ export class SendRecoveryEmail extends Component<SendNewPasswordPropsTypes, any>
     }
 
     public async componentDidMount() {
-        this.props.context.authorize(
-            sentRecoveryEmail, { param: this.token.slice(this.token.indexOf('?')) }
-        );
+        return sentRecoveryEmail(this.token.slice(this.token.indexOf('?')));
     }
 
     render(): React.ReactNode {

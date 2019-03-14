@@ -48,8 +48,7 @@ export const confirmAccount = async (data: any): Promise<boolean> => {
 };
 
 export const sentRecoveryEmail = async (data: any): Promise<boolean> => {
-    const { param } = data;
-    return await axios.get(`${serverUrl}/auth/recovery${param}`, {headers :
+    return await axios.get(`${serverUrl}/auth/recovery${data}`, {headers :
             {'Content-Type': 'application/text'}})
         .then((res) => {
             if (res.status === 200) {
