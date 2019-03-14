@@ -3,6 +3,7 @@ import fb from '../../assets/icons/fb.svg';
 import google from '../../assets/icons/google.svg';
 import './Dialog.scss';
 import { DialogSettings } from './interfaces/dialog.interface';
+import {DropDown} from "..";
 
 /* DON'T RE-DEFINE COMPONENT! USE IT! */
 
@@ -17,7 +18,7 @@ export class Dialog extends Component<DialogSettings, any> {
   }
 
   public render(): JSX.Element {
-    if (this.props.context.authorized) {
+    if (this.props.context.authorized && this.props.redirect) {
       return this.props.redirect();
     } else {
       return (
@@ -62,6 +63,13 @@ export class Dialog extends Component<DialogSettings, any> {
                 </div>
               </div>
             ) : null}
+            {this.props.event === true ? (
+                <div className="col-md-4">
+                <DropDown>
+                  onChange={this.handleChange}
+                </DropDown>
+                </div>
+            ) : null}
           </div>
           <div className='card-footer text-muted d-flex justify-content-center'>
             <button type='submit' form='dialog' className='btn btn-success'>
@@ -69,7 +77,7 @@ export class Dialog extends Component<DialogSettings, any> {
             </button>
           </div>
         </div>
-      );
+      )
     }
   }
 

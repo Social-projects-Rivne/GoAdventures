@@ -50,41 +50,33 @@ export const Navbar = (props: any) => {
               <Link className='nav-link' to='/about'>
                 About
               </Link>
-
             </li>
           </ul>
-
-
-
           <AuthContext.Consumer>
             {({ authorized, authType, toggleAuthType, authorize }) =>
             authorized ? (
-            <div>
-             <ul className='navbar-nav mr-auto'>
+                <div>
+                  <ul className='navbar-nav mr-auto'>
+                <li className='nav-item'>
+                  <Link to='/createEvent'>
+                    <button
+                        type='button'
+                        className='btn btn-success'>
+                      Create Event
+                    </button>
+                  </Link>
+                </li>
               <li className='nav-item'>
-               <Link to='/create-event'>
-              <button
-
-                       type='button'
-                       className='btn btn-success'>
-                       Create Event
-                       </button>
-
-              </Link>
-              </li>
-              <li className='nav-item'>
-
-                            <button type='button'
-                             className='btn btn-danger'
-                             onClick={(): void => {
-                              authorize((): Promise<boolean> => signOut());
-                              }}>
-                              Sign Out
-                            </button>
-
-                            </li>
-              </ul>
-             </div>
+              <button type='button'
+               className='btn btn-danger'
+               onClick={(): void => {
+                authorize((): Promise<boolean> => signOut());
+                }}>
+                Sign Out
+              </button>
+                </li>
+                </ul>
+                </div>
             ) :
               authType === 'signUp' && !authorized ? (
                 <button
