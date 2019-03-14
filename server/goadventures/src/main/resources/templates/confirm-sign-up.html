@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style type="text/css">
+        .red{color:#FF0000;}
+        .pink{color:#8B008B;}
+        .button {
+        display: inline-block;
+        padding: 15px 25px;
+        font-size: 24px;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        outline: none;
+        color: #fff;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 9px #999;
+        }
+        .button:hover {background-color: #3e8e41}
+        .button:active {
+        background-color: #3e8e41;
+        box-shadow: 0 5px #666;
+        transform: translateY(4px);
+        }
+    </style>
+</head>
+<body>
+
+    <hr align="center" width="90%" size="1"/>
+    <h1 class=red align="center">Welcome to GoAdventures</h1>
+    <h4 class=pink align="center">We need to make sure you're you!</h4>
+    <br>
+    <hr align="center" width="90%" size="1"/>
+
+    <br><br><br>
+
+    <h3 class=pink align="center">Hi <span th:text="${fullName}"></span>,</h3>
+    <h3 class=pink align="center">Thanks for signing up for GoAdventures!</h3>
+    <h3 class=pink align="center">A Quick Click to Confirm</h3>
+    <h3 class=pink align="center">Your Account</h3>
+
+    <p align="center">
+        <a th:href="'http://localhost:3001/confirm-account?token=' + ${confirmationToken}">
+            <button class=button>Confirm Account</button>
+        </a>
+    </p>
+
+    <br><br><br>
+
+    <hr align="center" width="90%" size="1"/>
+
+    <br><br>
+
+    <h4 class=pink align = "center">All Rights Reserved</h4>
+</body>
+</html>
