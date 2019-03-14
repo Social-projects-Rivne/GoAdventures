@@ -7,10 +7,10 @@ export class Show extends Component<any, UserDto> {
   constructor(props: any) {
     super(props);
     this.state = {
-      avatar: '',
+      avatarUrl: '',
         email: '',
-        fullName: '',
-        userName: '',
+        fullname: '',
+        username: '',
     };
   }
 
@@ -25,8 +25,8 @@ export class Show extends Component<any, UserDto> {
       .then((response) =>
         this.setState({
           email: response.data.email,
-          fullName: response.data.fullName,
-          userName: response.data.userName,
+          fullname: response.data.fullname,
+          username: response.data.username,
         })
       );
   }
@@ -36,13 +36,13 @@ export class Show extends Component<any, UserDto> {
       <div>
         <div className='User'>
           <div className='User-image'>
-            <img className='User__avatar' src={this.state.avatar} alt='avatar' />
+            <img className='User__avatar' src={this.state.avatarUrl} alt='avatar' />
           </div>
 
           <div className='User-Data'>
             <div className='user-detail'>
-              <p className=''>{this.state.fullName}</p>
-              <p className=''>{this.state.userName}</p>
+              <p className=''>{this.state.fullname}</p>
+              <p className=''>{this.state.username}</p>
               <p className=''>{this.state.email}</p>
             </div>
           </div>

@@ -31,6 +31,9 @@ class App extends Component<{}, Auth> {
     this.setState({ authorized: !!localStorage.getItem('tkn879') });
   }
 
+  public componentDidMount() {
+    this.setState({ authorized: !!localStorage.getItem('tkn879') });
+  }
 
   public render() {
     return (
