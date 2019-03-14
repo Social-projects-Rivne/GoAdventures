@@ -22,8 +22,6 @@ export class Sidebar extends React.Component<any, UserDto>{
         this.setState({ show: !this.state.show });
     }
 
-
-
     render() {
         return (
             <div className='Sidebar-wrapper' >
@@ -40,7 +38,6 @@ export class Sidebar extends React.Component<any, UserDto>{
                     <li className="list-group-item">email: {this.props.email}</li>
                     <li className="list-group-item">username: {this.props.userName} </li>
                     <li className="list-group-item">fullname: {this.props.fullName}</li>
-
                     <li className="list-group-item">
                         <button type="button" className="btn btn-success disabled" onClick={this.toggle.bind(this)}>
                             Edit Profile

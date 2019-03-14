@@ -13,8 +13,6 @@ export class EditForm extends Component<any, UserDto>{
             email: '',
             avatarUrl: '',
             password: ''
-
-
         };
 
         this.hadleEmailChange = this.hadleEmailChange.bind(this);
@@ -24,7 +22,6 @@ export class EditForm extends Component<any, UserDto>{
 
         this.handleSubmit = this.handleSubmit.bind(this);
     }
-
 
     handleSubmit(event: SyntheticEvent) {
         event.preventDefault();
@@ -44,11 +41,8 @@ export class EditForm extends Component<any, UserDto>{
                 .then((response) => {
                     localStorage.setItem('tkn879', response.headers.authorization.replace('Bearer ', '')),
                         this.setState(response.data)
-                }
-                );
+                });
             alert("Saved successfully")
-
-
         }
         console.log('saved successfully')
     }
@@ -69,8 +63,7 @@ export class EditForm extends Component<any, UserDto>{
         console.log('password is changed' + event.target.value);
         this.setState({ password: event.target.value });
     }
-
-
+    
     render() {
         return (
             <div>
