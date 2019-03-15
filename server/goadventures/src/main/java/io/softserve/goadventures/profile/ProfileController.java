@@ -9,6 +9,7 @@ import io.softserve.goadventures.user.model.User;
 import io.softserve.goadventures.user.repository.UserRepository;
 import io.softserve.goadventures.user.service.UserNotFoundException;
 import io.softserve.goadventures.user.service.UserService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +22,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-
-
-
 @CrossOrigin
 @RestController
 @RequestMapping("profile")
@@ -34,46 +32,61 @@ public class ProfileController {
 
     private final JWTService jwtService;
     private final UserService userService;
+    private final EmailValidator emailValidator ;
+    private final PasswordValidator passwordValidator;
 
     @Autowired
-    public ProfileController(JWTService jwtService, UserService userService, UserRepository userRepository) {
+    public ProfileController(JWTService jwtService, UserService userService, UserRepository userRepository, EmailValidator emailValidator, PasswordValidator passwordValidator) {
         this.jwtService = jwtService;
         this.userService = userService;
+
+        this.emailValidator = emailValidator;
+        this.passwordValidator = passwordValidator;
     }
 
     @GetMapping("/page")
     public Profile getProfileUser(@RequestHeader("Authorization") String token) throws UserNotFoundException {
         logger.info("\n\n\n\tDo token:" + token + "\n\n\n");
 
+
+
         User user = userService.getUserByEmail(jwtService.parseToken(token));
+
 
         Profile profile = new Profile(user.getFullname(), user.getUsername(), user.getEmail());
 
         logger.info(user.getFullname() + " " + user.getUsername() + " " + user.getEmail());
 
-        logger.info(profile.toString());
 
         return profile;
     }
 
 
     @PostMapping(path = "/edit-profile", produces = {MediaType.APPLICATION_JSON_VALUE} )
-    public ResponseEntity<String> EditProfileData(@RequestHeader(value = "Authorization") String authorizationHeader, @RequestBody UserAuthDto changeThisUser
+    public ResponseEntity<String> EditProfileData(@RequestHeader(value="Authorization") String authorizationHeader, @RequestBody UserAuthDto changeThisUser
     ) throws UserNotFoundException, JsonProcessingException {
         String token = authorizationHeader;
         String newToken = "";
-        logger.info("edit profile controller start");
         logger.info(token);
-        logger.info("email " + changeThisUser.getEmail() + " fullName " + changeThisUser.getFullName() + " userName" + changeThisUser.getUserName());
+        logger.info("email " + changeThisUser.getEmail() + " fullname " + changeThisUser.getFullName() + " username" + changeThisUser.getUserName());
         User user = userService.getUserByEmail(jwtService.parseToken(token));   //user with old data
 
         //changeThisUser.setId(user.getId());
 
+
+        if(emailValidator.validateEmail(changeThisUser.getEmail())) {
+            user.setEmail(changeThisUser.getEmail());
+            logger.info("email changed, new email:  " +user.getEmail());
+        }
+        if(passwordValidator.validatePassword(changeThisUser.getPassword())){
+            user.setPassword(changeThisUser.getPassword());
+            logger.info("passwrod changed, new email:  " + changeThisUser.getPassword());
+        }
+
         if(!(changeThisUser.getFullName().equals(""))) user.setFullname(changeThisUser.getFullName());
-        if(!(changeThisUser.getEmail().equals(""))) user.setEmail(changeThisUser.getEmail());
+
         if(!(changeThisUser.getUserName().equals(""))) user.setUsername(changeThisUser.getUserName());
-        logger.info("new password :" + changeThisUser.getPassword());
-        if(!(changeThisUser.getPassword().equals("")))user.setPassword(changeThisUser.getPassword());
+
 
         userService.updateUser(user);
 
@@ -91,6 +104,14 @@ public class ProfileController {
         return ResponseEntity.ok().headers(responseHeaders).body("Data was changed");
 
     }
+
+//    public boolean validateEmail(final String hex) {
+//
+//        pattern = Pattern.compile(EMAIL_PATTERN);
+//        matcher = pattern.matcher(hex);
+//        return matcher.matches();
+//
+//    }
 
 
 

@@ -1,7 +1,6 @@
 package io.softserve.goadventures.profile;
 
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
