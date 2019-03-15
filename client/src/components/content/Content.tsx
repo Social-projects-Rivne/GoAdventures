@@ -1,16 +1,6 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import {
-  About,
-  Confirm,
-  Events,
-  Home,
-  Profile,
-  ValidateUser,
-  ForgotPassword,
-  SendRecoveryEmail,
-  EventsDetail
-} from '../../pages';
+import { About, Confirm, Events, CreateEvent, Home, Profile, ValidateUser, ForgotPassword,SendRecoveryEmail, EventsDetail } from '../../pages';
 import { ContextProtectedRoute, ContextRoute } from '../../components';
 
 export const Content = () => {
@@ -28,6 +18,7 @@ export const Content = () => {
             <ContextRoute exact path='/send-recovery-email' component={SendRecoveryEmail} />
             <ContextProtectedRoute exact path='/events' component={Events} />
             <ContextRoute exact path='/events/deatail/:name' component={EventsDetail} />
+            <ContextProtectedRoute exact path='/createEvent' component={CreateEvent} />
           </Switch>
         </div>
       </div>

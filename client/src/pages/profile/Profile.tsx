@@ -49,4 +49,3 @@ export class Profile extends Component<UserDto, ProfileState> {        //поч�
     );
   }
 }
-
