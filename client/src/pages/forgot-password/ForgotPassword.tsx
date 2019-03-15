@@ -15,27 +15,25 @@ export class ForgotPassword extends Component<any, any> {
 
     handleClick(event: SyntheticEvent) {
         event.preventDefault();
-        axios.post("http://localhost:8080/auth/sent-recovery-email", null,{
-            headers: {
-                'email': this.state.email
+
+        if (this.state.email == "") {
+            alert("Please enter your email.")
+        } else {
+            alert("Recovery mail sent!")
+
+            axios.post("http://localhost:8080/auth/sent-recovery-email", null,{
+                headers: {
+                    'email': this.state.email
+                }}).then((response) =>
+                    console.log(response.status)
+                );
             }
-        }).then((response) =>
-            console.log(response.status)
-        );
     }
 
     handle(event: ChangeEvent<HTMLInputElement>) {
         this.setState({
             email: event.target.value
         })
-    }
-
-    handleSubmit() {
-        if (this.state.email == "") {
-            alert("Please enter your email.")
-        } else {
-            alert("Recovery mail sent!")
-        }
     }
 
     public render() {
@@ -49,7 +47,7 @@ export class ForgotPassword extends Component<any, any> {
                             <form id='recovery-dialog' onSubmit={this.handleClick} >
                                 <input className="form-control" type="email" onChange={this.handle.bind(this)}
                                        placeholder="enter your email"/>
-                                <button onClick={this.handleSubmit} type="submit" className="btn btn-success">
+                                <button type="submit" className="btn btn-success">
                                     Recover password
                                 </button>
                             </form>
