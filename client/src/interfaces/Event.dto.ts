@@ -1,6 +1,8 @@
 export interface EventDto {
-    description: String;
-    topic: String;
-    start_date: String;
-
+    id: number;
+    topic: string;
+    location: string;
+    description: string;
+    startDate: string;
+    endDate: string;
 }

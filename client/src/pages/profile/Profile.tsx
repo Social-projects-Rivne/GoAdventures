@@ -5,14 +5,19 @@ import { getUserData } from '../../api/user.service';
 import { AxiosResponse } from 'axios';
 import { UserEventList } from './profileUserEventList/UserEventList';
 
-export class Profile extends Component<UserDto, any> {        //початкова ініціалізація(null)
+interface ProfileState {
+  userProfile : UserDto;
+  userEventList: any
+}
+
+export class Profile extends Component<UserDto, ProfileState> {        //початкова ініціалізація(null)
   constructor(props: any) {
     super(props);
 
     this.state = {
       userProfile: {
-        fullname: '',
-        username: '',
+        fullName: '',
+        userName: '',
         email: '',
         avatarUrl: '',
       },

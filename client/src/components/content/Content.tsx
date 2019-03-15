@@ -3,21 +3,21 @@ import { Route, Switch } from 'react-router-dom';
 import { About, Confirm, Events, Home, Profile, ValidateUser, ForgotPassword, SendRecoveryEmail } from '../../pages';
 import { ContextProtectedRoute, ContextRoute } from '../../components';
 
-export const Content = (props: any) => {
+export const Content = () => {
   return (
     <main>
       <div className='container-fluid'>
         <div className='row'>
           <Switch>
-            <Route exact path='/' component={Home} />
-            <Route exact path='/about' component={About} />
-            <Route exact path='/confirm-yor-yo' component={ValidateUser} />
-            <Route exact path='/recovery-password' component={ForgotPassword} />
+            <Route exact strict path='/' component={Home} />
+            <Route strict path='/about' component={About} />
+            <Route strict exact path='/confirm-yor-yo' component={ValidateUser} />
+            <ContextRoute strict path='/confirm-account' component={Confirm} />
+            <ContextProtectedRoute path='/profile' component={Profile} />
             {/*<Route exact path='/send-recovery-email' component={SendRecoveryEmail} />*/}
             <ContextRoute exact path='/send-recovery-email' component={SendRecoveryEmail} />
-            <ContextRoute exact path='/confirm-account' component={Confirm} />
-            <ContextProtectedRoute exact path='/profile' component={Profile} />
             <ContextProtectedRoute exact path='/events' component={Events} />
+            <ContextRoute exact path='/events/deatail/:name' component={EventsDetail} />
           </Switch>
         </div>
       </div>
