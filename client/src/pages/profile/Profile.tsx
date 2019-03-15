@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Sidebar } from './sidebar/Sidebar';
+import Sidebar  from './sidebar/Sidebar';
 import { UserDto } from '../../interfaces/User.dto';
 import { getUserData } from '../../api/user.service';
 import { AxiosResponse } from 'axios';
