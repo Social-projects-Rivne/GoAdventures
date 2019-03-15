@@ -1,21 +1,24 @@
 import React, { Component } from 'react';
 import { CSSProperties } from 'react';
-import { Redirect } from 'react-router';
+import { RouterProps } from 'react-router';
 import { signIn, signUp } from '../../api/auth.service';
-import { Dialog } from '../../components/';
+import {Dialog, Footer} from '../../components/';
 import { InputSettings } from '../../components/dialog-window/interfaces/input.interface';
 import { AuthContext } from '../../context/auth.context';
+import { UserDto } from '../../interfaces/User.dto';
+import { SigninSchema, SignupSchema } from '../../validationSchemas/authValidation';
 import './Home.scss';
 
-export class Home extends Component {
+export class Home extends Component<RouterProps, any> {
   private signUpDialogStyles: CSSProperties = {
-    height: '27rem',
+    height: '30rem',
+    maxHeight: '30rem',
     maxWidth: '20rem',
     opacity: 0.9
   };
   private signUpSnputSettings: InputSettings[] = [
     {
-      field_name: 'fullname',
+      field_name: 'fullName',
       label_value: 'Your name',
       placeholder: 'John',
       type: 'text'
@@ -54,17 +57,19 @@ export class Home extends Component {
       type: 'password'
     }
   ];
+  constructor(props: RouterProps) {
+    super(props);
+  }
 
 
-
-  public submitSignUpRequest(data: object): Promise<boolean> {
+  public submitSignUpRequest(data: UserDto): Promise<string> {
     return signUp(data);
   }
 
   /**
    * submitSignInRequest
    */
-  public submitSignInRequest(data: object): Promise<boolean> {
+  public submitSignInRequest(data: UserDto): Promise<string> {
     return signIn(data);
   }
 
@@ -72,7 +77,7 @@ export class Home extends Component {
     return (
       <div className='Home-content'>
         <div className='container'>
-        <div className='row'>
+          <div className='row'>
           </div>
           <div className='row'>
             <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 d-sm-flex col d-none align-self-center'>
@@ -82,35 +87,42 @@ export class Home extends Component {
               </div>
             </div>
             <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12'>
-              <div className='Home__signup'>
+              <div className='Home__auth'>
                 <AuthContext.Consumer>
-                  {({ authorized, authType, authorize }) =>
-                    !authorized && authType === 'signUp' ? (
+                  {({ authorized, authType, authorize, messages }) =>
+                  <div>
+                    {!authorized && messages ?
+                  (<div className='alert alert-danger alert-dismissible fade show' role='alert'>
+                  <strong>Holy guacamole!</strong> {messages}
+                  <button type='button' className='close' data-dismiss='alert' aria-label='Close'>
+                    <span aria-hidden='true'>&times;</span>
+                  </button>
+                </div>) : null}
+                    {!authorized && authType === 'signUp' ? (
                       <Dialog
+                        validationSchema={SignupSchema}
                         context={{ authorized, authorize, authType }}
                         handleSubmit={this.submitSignUpRequest}
                         inputs={this.signUpSnputSettings}
                         button_text='Sign up'
                         header='Sign up for adventures'
                         inline_styles={this.signUpDialogStyles}
-                        redirect={() => {
-                          return <Redirect to='/confirm-yor-yo' />;
-                        }}
+                        redirect={{ routerProps: this.props, redirectURL: '/confirm-yor-yo'}}
                       />
-                    ) : (
+                    ) : !authorized && authType === 'signIn' ? (
                       <Dialog
+                        validationSchema={SigninSchema}
                         context={{ authorized, authorize, authType }}
                         handleSubmit={this.submitSignInRequest}
                         inputs={this.signInSnputSettings}
                         button_text='Sign in'
                         header='Sign in for adventures'
                         inline_styles={this.signUpDialogStyles}
-                        redirect={() => {
-                          return <Redirect to='/profile' />;
-                        }}
+                        redirect={{ routerProps: this.props, redirectURL: '/profile'}}
                       />
-                    )
-                  }
+                    ) : null}
+
+                  </div>                  }
                 </AuthContext.Consumer>
               </div>
             </div>

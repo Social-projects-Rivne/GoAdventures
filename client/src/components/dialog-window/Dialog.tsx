@@ -1,4 +1,5 @@
-import React, { Component, SyntheticEvent } from 'react';
+import { Field, Form, Formik, FormikProps } from 'formik';
+import React, { Component } from 'react';
 import fb from '../../assets/icons/fb.svg';
 import google from '../../assets/icons/google.svg';
 import './Dialog.scss';
@@ -6,15 +7,24 @@ import { DialogSettings } from './interfaces/dialog.interface';
 import {DropDown} from "..";
 
 /* DON'T RE-DEFINE COMPONENT! USE IT! */
+import {Link} from "react-router-dom";
 
 export class Dialog extends Component<DialogSettings, any> {
   constructor(props: DialogSettings) {
     super(props);
     this.state = {};
-
     //  :*D
-    this.handleChange = this.handleChange.bind(this);
-    this.submitForm = this.submitForm.bind(this);
+    this.getInitialValues = this.getInitialValues.bind(this);
+
+  }
+  public getInitialValues = (): object => {
+    const initialValues: { [key: string]: string } = {};
+    this.props.inputs.forEach((input) => {
+      if (!initialValues[input.field_name.toString()]) {
+        initialValues[input.field_name.toString()] = '';
+      }
+    });
+    return initialValues;
   }
 
   public render(): JSX.Element {
@@ -30,24 +40,57 @@ export class Dialog extends Component<DialogSettings, any> {
             <h3>{this.props.header}</h3>
           </div>
           <div className='card-body'>
-            <form id='dialog' onSubmit={this.submitForm} noValidate>
-              {this.props.inputs.map((input, index) => {
+            <Formik
+              enableReinitialize={true}
+              initialValues={this.getInitialValues()}
+              validateOnBlur={true}
+              validationSchema={this.props.validationSchema}
+              onSubmit={ async (values: any, actions) => {
+                const valuesMutadet = {...values};
+                if (valuesMutadet.hasOwnProperty('confirmPassword')) {
+                  delete valuesMutadet!.confirmPassword;
+                }
+                if(this.props.context.authorize) {
+                  await this.props.context.authorize(this.props.handleSubmit, {...valuesMutadet});
+                } else {
+                  await this.props.handleSubmit({...valuesMutadet});
+                }
+                if (this.props.redirect) {
+                  this.props.redirect.routerProps.history.push(`${this.props.redirect.redirectURL}`);
+                }
+                actions.setSubmitting(false);
+              }}
+            >
+              {({ errors, touched, handleBlur, handleChange, values }: FormikProps<any>) => {
                 return (
-                  <label key={index}>
-                    {input.label_value}
-                    <input
-                      name={input.field_name}
-                      type={input.type}
-                      className='form-control'
-                      placeholder={input.placeholder}
-                      onChange={this.handleChange}
-                      key={index}
-                      required
-                    />
-                  </label>
+                  <Form id='dialog'>
+                    {this.props.inputs.map((input, index) => {
+                      return (
+                        <label key={this.props.context.authType + index}>
+                          {input.label_value}
+                          <Field
+                            value={values[input.field_name]}
+                            type={input.type}
+                            placeholder={input.placeholder}
+                            className='form-control'
+                            name={input.field_name}
+                            key={this.props.context.authType + index}
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                          />
+                          {errors[`${input.field_name}`] &&
+                          touched[input.field_name] ? (
+                            <div className='invalid-feedback'>
+                              {errors[input.field_name]}
+                            </div>
+                          ) : null}
+                        </label>
+                      );
+                    })}
+                  </Form>
                 );
-              })}
-            </form>
+              }}
+            </Formik>
             {this.props.context.authType === 'signIn' ? (
               <div className='text-center'>
                 <h3>Sign in with</h3>
@@ -61,6 +104,7 @@ export class Dialog extends Component<DialogSettings, any> {
                     <p>Google</p>
                   </a>
                 </div>
+                <Link to={"/recovery-password"}>Forgot password?</Link>
               </div>
             ) : null}
             {this.props.event === true ? (
@@ -77,38 +121,7 @@ export class Dialog extends Component<DialogSettings, any> {
             </button>
           </div>
         </div>
-      )
-    }
-  }
-
-  private submitForm(event: SyntheticEvent<EventTarget>) {
-    event.preventDefault();
-    if (Object.keys(this.state).length !== 0 && this.compareFields()) {
-      const data = { ...this.state };
-      delete data.confirmPassword;
-      this.props.context.authorize(this.props.handleSubmit, data);
-    }
-  }
-
-  private handleChange(event: any): void {
-    const objKey: any = event.target.getAttribute('name');
-    const stateObj: any = {};
-    stateObj[objKey.toString()] = event.target.value;
-    this.setState({ ...stateObj });
-  }
-
-  // Refactor
-  private compareFields(): boolean {
-    const { password } = this.state;
-    if (this.state.hasOwnProperty('confirmPassword')) {
-      const { confirmPassword } = this.state;
-      return (
-        password === confirmPassword &&
-        password !== '' &&
-        confirmPassword !== ''
       );
-    } else {
-      return password !== '';
-    }
+    // }
   }
 }

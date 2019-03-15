@@ -1,11 +1,10 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 
-export class About extends Component {
-  render() {
-    return (
-      <div>
-
-      </div>
-    )
-  }
-}
+export const About = (props: any) => {
+  console.debug(props);
+  return (
+    <div>
+      About page
+  </div>
+  );
+};

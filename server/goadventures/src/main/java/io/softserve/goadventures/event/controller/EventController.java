@@ -4,6 +4,7 @@ import io.softserve.goadventures.Gallery.model.Gallery;
 import io.softserve.goadventures.Gallery.repository.GalleryRepository;
 import io.softserve.goadventures.event.category.Category;
 import io.softserve.goadventures.event.model.Event;
+import io.softserve.goadventures.event.model.EventDTO;
 import io.softserve.goadventures.event.repository.CategoryRepository;
 import io.softserve.goadventures.event.repository.EventRepository;
 import io.softserve.goadventures.event.service.EventService;
@@ -27,10 +28,11 @@ public class EventController {
     private final GalleryRepository galleryRepository;
 
     @Autowired
-    public EventController(EventService eventService, EventRepository eventRepository, CategoryRepository categoryRepository, GalleryRepository galleryRepository){
+    public EventController(EventService eventService, EventRepository eventRepository,
+            CategoryRepository categoryRepository, GalleryRepository galleryRepository) {
         this.eventService = eventService;
-        this.eventRepository=eventRepository;
-        this.categoryRepository=categoryRepository;
+        this.eventRepository = eventRepository;
+        this.categoryRepository = categoryRepository;
         this.galleryRepository = galleryRepository;
     }
 
@@ -40,8 +42,8 @@ public class EventController {
         event.setCategory(category);
         eventService.addEvent(event);
         HttpHeaders httpHeaders = new HttpHeaders();
-        //event.setStatusId(EventStatus.CREATED.getEventStatus());
-        //eventService.addEvent(event);
+        // event.setStatusId(EventStatus.CREATED.getEventStatus());
+        // eventService.addEvent(event);
 
         return ResponseEntity.ok().headers(httpHeaders).body("Event created");
     }
@@ -56,7 +58,8 @@ public class EventController {
     }
 
     @PostMapping("/gallery/{eventId}")
-    public ResponseEntity<String> createGallery(@PathVariable (value = "eventId") int eventId, @RequestBody Gallery gallery) {
+    public ResponseEntity<String> createGallery(@PathVariable(value = "eventId") int eventId,
+            @RequestBody Gallery gallery) {
         Event event = eventRepository.findById(eventId);
         gallery.setEventId(event);
         galleryRepository.save(gallery);
@@ -66,25 +69,35 @@ public class EventController {
     }
 
     @GetMapping("/all")
-    public Iterable<Event> getAllEvents(){
+    public Iterable<Event> getAllEvents() {
+        logger.info("=====all events=====");
         return eventService.getAllEvents();
     }
 
     @GetMapping("/allCategory")
     public Iterable<Category> getAllCategory(){
         return categoryRepository.findAll();
+
+    @GetMapping("/all/{location}")
+    public Iterable<EventDTO> getAllEvents(@PathVariable (value="location") String location){
+            return eventService.getEventsByLocation(location);
     }
 
     @GetMapping("/category/{categoryId}")
-    public Page<Event> getAllEventsByCategoryId(@PathVariable (value = "categoryId") int eventId,
-                                              Pageable pageable) {
+    public Page<Event> getAllEventsByCategoryId(@PathVariable(value = "categoryId") int eventId, Pageable pageable) {
         return eventRepository.findByCategoryId(eventId, pageable);
     }
 
     @GetMapping("/gallery/{eventId}")
-    public Page<Gallery> getAllGalleryByEventId(@PathVariable (value = "eventId") int eventId,
+    public Iterable<Gallery> getAllGalleryByEventId(@PathVariable (value = "eventId") int eventId,
                                               Pageable pageable) {
         Event event = eventRepository.findById(eventId);
-        return galleryRepository.findByEventId(event, pageable);
+        return galleryRepository.findByEventId(event.getId());
     }
+
+    @GetMapping("/{eventId}")
+    public Event getEvent(@PathVariable(value = "eventId") int eventId) {
+        return eventService.getEventById(eventId);
+    }
+
 }

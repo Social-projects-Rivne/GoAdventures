@@ -5,9 +5,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import javax.persistence.*;
 
+@Data
 @Entity
 @Table(name = "users")
-@Data
 @NoArgsConstructor
 public class User {
     @Id
@@ -18,7 +18,7 @@ public class User {
     @Column(name = "full_name")
     private String fullname;
 
-    @Column(name = "username")
+    @Column(name = "userName")
     private String username;
 
     @Column(name = "password")
@@ -47,7 +47,7 @@ public class User {
         setEmail(email);
         setPassword(password);
     }
-    private void setPassword(String password) {
+    public void setPassword(String password) {
         this.password = BCrypt.hashpw(password, BCrypt.gensalt());
     }
 }

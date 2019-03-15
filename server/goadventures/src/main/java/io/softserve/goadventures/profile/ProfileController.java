@@ -1,34 +1,51 @@
 package io.softserve.goadventures.profile;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import io.softserve.goadventures.auth.dtoModels.UserAuthDto;
 import io.softserve.goadventures.auth.service.JWTService;
 import io.softserve.goadventures.user.model.User;
 import io.softserve.goadventures.user.repository.UserRepository;
+import io.softserve.goadventures.user.service.UserNotFoundException;
+import io.softserve.goadventures.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
+
+
+
+@CrossOrigin
 @RestController
 @RequestMapping("profile")
 public class ProfileController {
-    private UserRepository userRepository;
+
 
     private final Logger logger = LoggerFactory.getLogger(ProfileController.class);
 
+    private final JWTService jwtService;
+    private final UserService userService;
+
     @Autowired
-    public ProfileController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public ProfileController(JWTService jwtService, UserService userService, UserRepository userRepository) {
+        this.jwtService = jwtService;
+        this.userService = userService;
     }
 
-    @GetMapping("page")
-    public Profile getProfileUser(@RequestHeader("Authorization") String token) {
+    @GetMapping("/page")
+    public Profile getProfileUser(@RequestHeader("Authorization") String token) throws UserNotFoundException {
         logger.info("\n\n\n\tDo token:" + token + "\n\n\n");
 
-        String email = new JWTService().parseToken(token);
-
-        logger.info("\n\n\n\tPislyatoken:" + token + "\n\n\n");
-
-        User user = userRepository.findByEmail(email);
+        User user = userService.getUserByEmail(jwtService.parseToken(token));
 
         Profile profile = new Profile(user.getFullname(), user.getUsername(), user.getEmail());
 
@@ -38,4 +55,71 @@ public class ProfileController {
 
         return profile;
     }
+
+
+    @PostMapping(path = "/edit-profile", produces = {MediaType.APPLICATION_JSON_VALUE} )
+    public ResponseEntity<String> EditProfileData(@RequestHeader(value = "Authorization") String authorizationHeader, @RequestBody UserAuthDto changeThisUser
+    ) throws UserNotFoundException, JsonProcessingException {
+        String token = authorizationHeader;
+        String newToken = "";
+        logger.info("edit profile controller start");
+        logger.info(token);
+        logger.info("email " + changeThisUser.getEmail() + " fullName " + changeThisUser.getFullName() + " userName" + changeThisUser.getUserName());
+        User user = userService.getUserByEmail(jwtService.parseToken(token));   //user with old data
+
+        //changeThisUser.setId(user.getId());
+
+        if(!(changeThisUser.getFullName().equals(""))) user.setFullname(changeThisUser.getFullName());
+        if(!(changeThisUser.getEmail().equals(""))) user.setEmail(changeThisUser.getEmail());
+        if(!(changeThisUser.getUserName().equals(""))) user.setUsername(changeThisUser.getUserName());
+        logger.info("new password :" + changeThisUser.getPassword());
+        if(!(changeThisUser.getPassword().equals("")))user.setPassword(changeThisUser.getPassword());
+
+        userService.updateUser(user);
+
+        logger.info("new data " + user.getEmail() + " " + user.getUsername() + " " + user.getFullname() + " " + user.getPassword());
+
+        newToken = jwtService.createToken(user);
+
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setBearerAuth(newToken);
+        responseHeaders.set("token", newToken);   
+
+
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+
+        return ResponseEntity.ok().headers(responseHeaders).body("Data was changed");
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

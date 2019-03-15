@@ -18,13 +18,18 @@ public class CheckEmailService {
         this.userService=userService;
     }
 
-    public boolean checkingEmail(String email) throws UserNotFoundException {
-        User user = userService.getUserByEmail(email);
-        if (user != null) {
-            logger.info("checkEmail: " + user.toString());
-            return true;
-        } else {
-            logger.info("checkEmail: can't find this user");
+    public boolean checkingEmail(String email){
+        try {
+            User user = userService.getUserByEmail(email);
+            if (user != null) {
+                logger.info("checkEmail: " + user.toString());
+                return true;
+            } else {
+                logger.info("checkEmail: can't find this user");
+                return false;
+            }
+        } catch (UserNotFoundException e) {
+            e.printStackTrace();
             return false;
         }
     }
