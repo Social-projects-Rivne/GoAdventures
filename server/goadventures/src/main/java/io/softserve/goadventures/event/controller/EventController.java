@@ -75,8 +75,9 @@ public class EventController {
     }
 
     @GetMapping("/allCategory")
-    public Iterable<Category> getAllCategory(){
+    public Iterable<Category> getAllCategory() {
         return categoryRepository.findAll();
+    }
 
     @GetMapping("/all/{location}")
     public Iterable<EventDTO> getAllEvents(@PathVariable (value="location") String location){

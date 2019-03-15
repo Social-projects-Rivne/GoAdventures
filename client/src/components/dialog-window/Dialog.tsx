@@ -17,6 +17,7 @@ export class Dialog extends Component<DialogSettings, any> {
     this.getInitialValues = this.getInitialValues.bind(this);
 
   }
+
   public getInitialValues = (): object => {
     const initialValues: { [key: string]: string } = {};
     this.props.inputs.forEach((input) => {
@@ -28,100 +29,97 @@ export class Dialog extends Component<DialogSettings, any> {
   }
 
   public render(): JSX.Element {
-    if (this.props.context.authorized && this.props.redirect) {
-      return this.props.redirect();
-    } else {
       return (
-        <div
-          className='Dialog__window card border-success mb-3 mt-3'
-          style={this.props.inline_styles ? this.props.inline_styles : {}}
-        >
-          <div className='card-header'>
-            <h3>{this.props.header}</h3>
+          <div
+              className='Dialog__window card border-success mb-3 mt-3'
+              style={this.props.inline_styles ? this.props.inline_styles : {}}
+          >
+            <div className='card-header'>
+              <h3>{this.props.header}</h3>
+            </div>
+            <div className='card-body'>
+              <Formik
+                  enableReinitialize={true}
+                  initialValues={this.getInitialValues()}
+                  validateOnBlur={true}
+                  validationSchema={this.props.validationSchema}
+                  onSubmit={async (values: any, actions) => {
+                    const valuesMutadet = {...values};
+                    if (valuesMutadet.hasOwnProperty('confirmPassword')) {
+                      delete valuesMutadet!.confirmPassword;
+                    }
+                    if (this.props.context.authorize) {
+                      await this.props.context.authorize(this.props.handleSubmit, {...valuesMutadet});
+                    } else {
+                      await this.props.handleSubmit({...valuesMutadet});
+                    }
+                    if (this.props.redirect) {
+                      this.props.redirect.routerProps.history.push(`${this.props.redirect.redirectURL}`);
+                    }
+                    actions.setSubmitting(false);
+                  }}
+              >
+                {({errors, touched, handleBlur, handleChange, values}: FormikProps<any>) => {
+                  return (
+                      <Form id='dialog'>
+                        {this.props.inputs.map((input, index) => {
+                          return (
+                              <label key={this.props.context.authType + index}>
+                                {input.label_value}
+                                <Field
+                                    value={values[input.field_name]}
+                                    type={input.type}
+                                    placeholder={input.placeholder}
+                                    className='form-control'
+                                    name={input.field_name}
+                                    key={this.props.context.authType + index}
+                                    onBlur={handleBlur}
+                                    onChange={handleChange}
+                                />
+                                {errors[`${input.field_name}`] &&
+                                touched[input.field_name] ? (
+                                    <div className='invalid-feedback'>
+                                      {errors[input.field_name]}
+                                    </div>
+                                ) : null}
+                              </label>
+                          );
+                        })}
+                      </Form>
+                  );
+                }}
+              </Formik>
+              {this.props.context.authType === 'signIn' ? (
+                  <div className='text-center'>
+                    <h3>Sign in with</h3>
+                    <div className='d-flex flex-row justify-content-around align-self-center'>
+                      <a href='#'>
+                        <img src={fb}/>
+                        <p>Facebook</p>
+                      </a>
+                      <a href='#'>
+                        <img src={google}/>
+                        <p>Google</p>
+                      </a>
+                    </div>
+                    <Link to={"/recovery-password"}>Forgot password?</Link>
+                  </div>
+              ) : null}
+              {this.props.event === true ? (
+                  <div className="col-md-4">
+                    <DropDown>
+                    </DropDown>
+                  </div>
+              ) : null}
+            </div>
+            <div className='card-footer text-muted d-flex justify-content-center'>
+              <button type='submit' form='dialog' className='btn btn-success'>
+                {this.props.button_text}
+              </button>
+            </div>
           </div>
-          <div className='card-body'>
-            <Formik
-              enableReinitialize={true}
-              initialValues={this.getInitialValues()}
-              validateOnBlur={true}
-              validationSchema={this.props.validationSchema}
-              onSubmit={ async (values: any, actions) => {
-                const valuesMutadet = {...values};
-                if (valuesMutadet.hasOwnProperty('confirmPassword')) {
-                  delete valuesMutadet!.confirmPassword;
-                }
-                if(this.props.context.authorize) {
-                  await this.props.context.authorize(this.props.handleSubmit, {...valuesMutadet});
-                } else {
-                  await this.props.handleSubmit({...valuesMutadet});
-                }
-                if (this.props.redirect) {
-                  this.props.redirect.routerProps.history.push(`${this.props.redirect.redirectURL}`);
-                }
-                actions.setSubmitting(false);
-              }}
-            >
-              {({ errors, touched, handleBlur, handleChange, values }: FormikProps<any>) => {
-                return (
-                  <Form id='dialog'>
-                    {this.props.inputs.map((input, index) => {
-                      return (
-                        <label key={this.props.context.authType + index}>
-                          {input.label_value}
-                          <Field
-                            value={values[input.field_name]}
-                            type={input.type}
-                            placeholder={input.placeholder}
-                            className='form-control'
-                            name={input.field_name}
-                            key={this.props.context.authType + index}
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                          />
-                          {errors[`${input.field_name}`] &&
-                          touched[input.field_name] ? (
-                            <div className='invalid-feedback'>
-                              {errors[input.field_name]}
-                            </div>
-                          ) : null}
-                        </label>
-                      );
-                    })}
-                  </Form>
-                );
-              }}
-            </Formik>
-            {this.props.context.authType === 'signIn' ? (
-              <div className='text-center'>
-                <h3>Sign in with</h3>
-                <div className='d-flex flex-row justify-content-around align-self-center'>
-                  <a href='#'>
-                    <img src={fb} />
-                    <p>Facebook</p>
-                  </a>
-                  <a href='#'>
-                    <img src={google} />
-                    <p>Google</p>
-                  </a>
-                </div>
-                <Link to={"/recovery-password"}>Forgot password?</Link>
-              </div>
-            ) : null}
-            {this.props.event === true ? (
-                <div className="col-md-4">
-                <DropDown>
-                  onChange={this.handleChange}
-                </DropDown>
-                </div>
-            ) : null}
-          </div>
-          <div className='card-footer text-muted d-flex justify-content-center'>
-            <button type='submit' form='dialog' className='btn btn-success'>
-              {this.props.button_text}
-            </button>
-          </div>
-        </div>
       );
-    // }
   }
-}
+      // }
+
+  }

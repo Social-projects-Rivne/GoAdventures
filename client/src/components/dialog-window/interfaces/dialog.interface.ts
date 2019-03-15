@@ -6,7 +6,7 @@ export interface DialogSettings {
     context?: any;
     header: string;
     button_text: string;
-    validationSchema: object;
+    validationSchema?: object;
     inputs: InputSettings[];
     inline_styles?: CSSProperties;
     event?: boolean;

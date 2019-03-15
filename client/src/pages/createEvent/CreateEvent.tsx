@@ -6,10 +6,11 @@ import {Dialog} from '../../components/';
 import { InputSettings } from '../../components/dialog-window/interfaces/input.interface';
 import { AuthContext } from '../../context/auth.context';
 import '../home/Home.scss';
+import {SignupSchema} from "../../validationSchemas/authValidation";
 
 export class CreateEvent extends Component {
     private createEventDialogStyles: CSSProperties = {
-        height: '33rem',
+        height: '35rem',
         maxWidth: '20rem',
         opacity: 0.9
     };
@@ -46,7 +47,7 @@ export class CreateEvent extends Component {
         }
     ];
 
-    public submitCreateEventRequest(data: object): Promise<boolean>{
+    public submitCreateEventRequest(data: object): Promise<string>{
         return createEventReq(data);
     }
 
@@ -65,11 +66,8 @@ export class CreateEvent extends Component {
                         </div>
                         <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12'>
                             <div className='Home__signup'>
-                                <AuthContext.Consumer>
-                                    {({ authorized, authorize }) =>
-                                        authorized ? (
+
                                             <Dialog
-                                                context={{ authorized, authorize }}
                                                 handleSubmit={this.submitCreateEventRequest}
                                                 inputs={this.createEventInputSettings}
                                                 button_text='Create event'
@@ -77,8 +75,8 @@ export class CreateEvent extends Component {
                                                 inline_styles={this.createEventDialogStyles}
                                                 event={true}
                                             />
-                                        ) : null}
-                                </AuthContext.Consumer>
+
+
                             </div>
                         </div>
                     </div>

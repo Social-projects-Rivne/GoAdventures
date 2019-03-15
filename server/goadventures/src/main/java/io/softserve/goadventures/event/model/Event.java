@@ -7,7 +7,8 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "events")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Event {
@@ -37,4 +38,13 @@ public class Event {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id")
     private Category category;
+
+    public Event(String topic, String startDate, String endDate, String location, String description, Category category) {
+        setTopic(topic);
+        setStartDate(startDate);
+        setEndDate(endDate);
+        setLocation(location);
+        setDescription(description);
+        setCategory(category);
+    }
 }

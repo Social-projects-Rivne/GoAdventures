@@ -21,8 +21,13 @@ export class DropDown extends Component<any, DropDownSettings> {
                 this.setState({ categories });
             })
     }
-
-
+    componentWillMount() {
+        axios.get(`http://localhost:8080/event/allCategory`)
+            .then(res => {
+                const categories = res.data;
+                this.setState({ categories });
+            })
+    }
 
     render() {
         if(typeof this.state.categories === "undefined") {
