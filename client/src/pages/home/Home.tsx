@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { CSSProperties } from 'react';
 import { RouterProps } from 'react-router';
+import { Link } from 'react-router-dom';
 import { signIn, signUp } from '../../api/auth.service';
-import {Dialog, Footer} from '../../components/';
+import fb from '../../assets/icons/fb.svg';
+import google from '../../assets/icons/google.svg';
+import { Dialog, Footer } from '../../components/';
 import { InputSettings } from '../../components/dialog-window/interfaces/input.interface';
 import { AuthContext } from '../../context/auth.context';
 import { UserDto } from '../../interfaces/User.dto';
@@ -90,39 +93,55 @@ export class Home extends Component<RouterProps, any> {
               <div className='Home__auth'>
                 <AuthContext.Consumer>
                   {({ authorized, authType, authorize, messages }) =>
-                  <div>
-                    {!authorized && messages ?
-                  (<div className='alert alert-danger alert-dismissible fade show' role='alert'>
-                  <strong>Holy guacamole!</strong> {messages}
-                  <button type='button' className='close' data-dismiss='alert' aria-label='Close'>
-                    <span aria-hidden='true'>&times;</span>
-                  </button>
-                </div>) : null}
-                    {!authorized && authType === 'signUp' ? (
-                      <Dialog
-                        validationSchema={SignupSchema}
-                        context={{ authorized, authorize, authType }}
-                        handleSubmit={this.submitSignUpRequest}
-                        inputs={this.signUpSnputSettings}
-                        button_text='Sign up'
-                        header='Sign up for adventures'
-                        inline_styles={this.signUpDialogStyles}
-                        redirect={{ routerProps: this.props, redirectURL: '/confirm-yor-yo'}}
-                      />
-                    ) : !authorized && authType === 'signIn' ? (
-                      <Dialog
-                        validationSchema={SigninSchema}
-                        context={{ authorized, authorize, authType }}
-                        handleSubmit={this.submitSignInRequest}
-                        inputs={this.signInSnputSettings}
-                        button_text='Sign in'
-                        header='Sign in for adventures'
-                        inline_styles={this.signUpDialogStyles}
-                        redirect={{ routerProps: this.props, redirectURL: '/profile'}}
-                      />
-                    ) : null}
+                    <div>
+                      {!authorized && messages ?
+                        (<div className='alert alert-danger alert-dismissible fade show' role='alert'>
+                          <strong>Holy guacamole!</strong> {messages}
+                          <button type='button' className='close' data-dismiss='alert' aria-label='Close'>
+                            <span aria-hidden='true'>&times;</span>
+                          </button>
+                        </div>) : null}
+                      {!authorized && authType === 'signUp' ? (
+                        <Dialog
+                          validationSchema={SignupSchema}
+                          context={{ authorized, authorize, authType }}
+                          handleSubmit={this.submitSignUpRequest}
+                          inputs={this.signUpSnputSettings}
+                          button_text='Sign up'
+                          header='Sign up for adventures'
+                          inline_styles={this.signUpDialogStyles}
+                          redirect={{ routerProps: this.props, redirectURL: '/confirm-yor-yo' }}
+                        />
+                      ) : !authorized && authType === 'signIn' ? (
+                        <Dialog
+                          validationSchema={SigninSchema}
+                          context={{ authorized, authorize, authType }}
+                          handleSubmit={this.submitSignInRequest}
+                          inputs={this.signInSnputSettings}
+                          button_text='Sign in'
+                          header='Sign in for adventures'
+                          childСomponents={
+                            <div className='text-center'>
+                              <h3>Sign in with</h3>
+                              <div className='d-flex flex-row justify-content-around align-self-center'>
+                                <a href='#'>
+                                  <img src={fb} />
+                                  <p>Facebook</p>
+                                </a>
+                                <a href='#'>
+                                  <img src={google} />
+                                  <p>Google</p>
+                                </a>
+                              </div>
+                              <Link to={'/recovery-password'}>Forgot password?</Link>
+                            </div>
+                          }
+                          inline_styles={this.signUpDialogStyles}
+                          redirect={{ routerProps: this.props, redirectURL: '/profile' }}
+                        />
+                      ) : null}
 
-                  </div>                  }
+                    </div>}
                 </AuthContext.Consumer>
               </div>
             </div>

@@ -1,4 +1,4 @@
-import { CSSProperties } from 'react';
+import { CSSProperties, ReactNode } from 'react';
 import { RouterProps } from 'react-router';
 import { InputSettings } from './input.interface';
 
@@ -15,4 +15,5 @@ export interface DialogSettings {
         routerProps: RouterProps,
         redirectURL: string;
     };
+    childСomponents?: ReactNode;
 }

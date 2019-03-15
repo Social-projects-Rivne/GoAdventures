@@ -1,13 +1,12 @@
 import { Field, Form, Formik, FormikProps } from 'formik';
 import React, { Component } from 'react';
-import fb from '../../assets/icons/fb.svg';
-import google from '../../assets/icons/google.svg';
+import {DropDown} from '..';
+
 import './Dialog.scss';
 import { DialogSettings } from './interfaces/dialog.interface';
-import {DropDown} from "..";
 
 /* DON'T RE-DEFINE COMPONENT! USE IT! */
-import {Link} from "react-router-dom";
+import {Link} from 'react-router-dom';
 
 export class Dialog extends Component<DialogSettings, any> {
   constructor(props: DialogSettings) {
@@ -89,24 +88,12 @@ export class Dialog extends Component<DialogSettings, any> {
                   );
                 }}
               </Formik>
-              {this.props.context.authType === 'signIn' ? (
-                  <div className='text-center'>
-                    <h3>Sign in with</h3>
-                    <div className='d-flex flex-row justify-content-around align-self-center'>
-                      <a href='#'>
-                        <img src={fb}/>
-                        <p>Facebook</p>
-                      </a>
-                      <a href='#'>
-                        <img src={google}/>
-                        <p>Google</p>
-                      </a>
-                    </div>
-                    <Link to={"/recovery-password"}>Forgot password?</Link>
-                  </div>
-              ) : null}
+              {this.props.childСomponents ? (this.props.childСomponents) : null}
+              {/* {this.props.context.authType === 'signIn' ? (
+
+              ) : null} */}
               {this.props.event === true ? (
-                  <div className="col-md-4">
+                  <div className='col-md-4'>
                     <DropDown>
                     </DropDown>
                   </div>
