@@ -5,8 +5,7 @@ import {DropDown} from '..';
 import './Dialog.scss';
 import { DialogSettings } from './interfaces/dialog.interface';
 
-/* DON'T RE-DEFINE COMPONENT! USE IT! */
-import {Link} from 'react-router-dom';
+
 
 export class Dialog extends Component<DialogSettings, any> {
   constructor(props: DialogSettings) {
@@ -47,7 +46,7 @@ export class Dialog extends Component<DialogSettings, any> {
                     if (valuesMutadet.hasOwnProperty('confirmPassword')) {
                       delete valuesMutadet!.confirmPassword;
                     }
-                    if (this.props.context.authorize) {
+                    if (this.props.context && this.props.context.authorize) {
                       await this.props.context.authorize(this.props.handleSubmit, {...valuesMutadet});
                     } else {
                       await this.props.handleSubmit({...valuesMutadet});
@@ -63,7 +62,7 @@ export class Dialog extends Component<DialogSettings, any> {
                       <Form id='dialog'>
                         {this.props.inputs.map((input, index) => {
                           return (
-                              <label key={this.props.context.authType + index}>
+                              <label key={index}>
                                 {input.label_value}
                                 <Field
                                     value={values[input.field_name]}
@@ -71,7 +70,7 @@ export class Dialog extends Component<DialogSettings, any> {
                                     placeholder={input.placeholder}
                                     className='form-control'
                                     name={input.field_name}
-                                    key={this.props.context.authType + index}
+                                    key={index}
                                     onBlur={handleBlur}
                                     onChange={handleChange}
                                 />
@@ -89,15 +88,6 @@ export class Dialog extends Component<DialogSettings, any> {
                 }}
               </Formik>
               {this.props.childСomponents ? (this.props.childСomponents) : null}
-              {/* {this.props.context.authType === 'signIn' ? (
-
-              ) : null} */}
-              {this.props.event === true ? (
-                  <div className='col-md-4'>
-                    <DropDown>
-                    </DropDown>
-                  </div>
-              ) : null}
             </div>
             <div className='card-footer text-muted d-flex justify-content-center'>
               <button type='submit' form='dialog' className='btn btn-success'>

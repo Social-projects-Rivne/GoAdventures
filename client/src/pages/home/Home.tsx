@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { signIn, signUp } from '../../api/auth.service';
 import fb from '../../assets/icons/fb.svg';
 import google from '../../assets/icons/google.svg';
-import { Dialog, Footer } from '../../components/';
+import { Dialog } from '../../components/';
 import { InputSettings } from '../../components/dialog-window/interfaces/input.interface';
 import { AuthContext } from '../../context/auth.context';
 import { UserDto } from '../../interfaces/User.dto';

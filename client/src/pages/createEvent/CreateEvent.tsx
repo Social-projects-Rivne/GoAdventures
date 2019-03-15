@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import { CSSProperties } from 'react';
-import { Redirect } from 'react-router';
 import { createEventReq } from '../../api/requestCreateEvent';
-import {Dialog} from '../../components/';
+import { DropDown } from '../../components/';
+import { Dialog } from '../../components/';
 import { InputSettings } from '../../components/dialog-window/interfaces/input.interface';
-import { AuthContext } from '../../context/auth.context';
-import '../home/Home.scss';
-import {SignupSchema} from "../../validationSchemas/authValidation";
 
-export class CreateEvent extends Component {
+import '../home/Home.scss';
+
+export class CreateEvent extends Component<any, any> {
     private createEventDialogStyles: CSSProperties = {
         height: '35rem',
         maxWidth: '20rem',
@@ -47,7 +46,12 @@ export class CreateEvent extends Component {
         }
     ];
 
-    public submitCreateEventRequest(data: object): Promise<string>{
+    constructor(props: any) {
+        super(props);
+        console.debug(props);
+    }
+
+    public submitCreateEventRequest(data: object): Promise<string> {
         return createEventReq(data);
     }
 
@@ -66,17 +70,17 @@ export class CreateEvent extends Component {
                         </div>
                         <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12'>
                             <div className='Home__signup'>
-
-                                            <Dialog
-                                                handleSubmit={this.submitCreateEventRequest}
-                                                inputs={this.createEventInputSettings}
-                                                button_text='Create event'
-                                                header='Create event'
-                                                inline_styles={this.createEventDialogStyles}
-                                                event={true}
-                                            />
-
-
+                                <Dialog
+                                    handleSubmit={this.submitCreateEventRequest}
+                                    inputs={this.createEventInputSettings}
+                                    button_text='Create event'
+                                    header='Create event'
+                                    inline_styles={this.createEventDialogStyles}
+                                    childСomponents={
+                                        <DropDown />
+                                    }
+                                    redirect={{ routerProps: this.props.routerProps, redirectURL: '/profile' }}
+                                />
                             </div>
                         </div>
                     </div>

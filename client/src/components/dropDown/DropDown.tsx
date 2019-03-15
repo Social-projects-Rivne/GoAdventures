@@ -1,49 +1,48 @@
-import React, { Component } from 'react';
 import axios from 'axios';
+import React, { Component } from 'react';
 import { DropDownSettings } from './dropDown.interface';
-
-var values;
 
 export class DropDown extends Component<any, DropDownSettings> {
 
     public state: DropDownSettings = {
-        "categories": []
+        categories: []
+    };
+
+    constructor(props: DropDownSettings) {
+        super(props);
     }
 
-    constructor(props: DropDownSettings){
-        super(props)
-    }
-
-    componentDidMount() {
+    public componentDidMount() {
         axios.get(`http://localhost:8080/event/allCategory`)
-            .then(res => {
+            .then((res) => {
                 const categories = res.data;
                 this.setState({ categories });
-            })
+            });
     }
-    componentWillMount() {
+    public componentWillMount() {
         axios.get(`http://localhost:8080/event/allCategory`)
-            .then(res => {
+            .then((res) => {
                 const categories = res.data;
                 this.setState({ categories });
-            })
+            });
     }
 
-    render() {
-        if(typeof this.state.categories === "undefined") {
-            console.log('I during componentDidMount ' + this.state.categories)
+    public render() {
+        if(typeof this.state.categories === 'undefined') {
+            console.log('I during componentDidMount ' + this.state.categories);
             return(
                 <div>
 
                 </div>
             );
-        }else {
+        } else {
         return <div>
             <select>{
-                this.state.categories.map((option) => <option value = {option.categoryName}>{option.categoryName}</option>)
+                this.state.categories.map((option) =>
+                <option value = {option.categoryName}>{option.categoryName}</option>)
             }
             </select>
-        </div>
+        </div>;
     }
 }
 
