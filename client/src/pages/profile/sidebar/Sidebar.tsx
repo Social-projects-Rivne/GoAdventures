@@ -4,11 +4,13 @@ import './Sidebar.scss';
 import { UserDto } from '../../../interfaces/User.dto';
 import avatar from '../images/Person.png';
 import { EditForm } from "./EditForm";
+import { withCookies, Cookies } from 'react-cookie';
 
-export class Sidebar extends React.Component<any, UserDto>{
+class Sidebar extends React.Component<any, UserDto>{
 
     constructor(props: any) {
         super(props);
+        
         this.state = {
             fullName: '',
             userName: '',
@@ -23,6 +25,7 @@ export class Sidebar extends React.Component<any, UserDto>{
     }
 
     render() {
+        const { cookies } = this.props;
         return (
             <div className='Sidebar-wrapper' >
                 <ul className="list-group list-group-flush">
@@ -42,10 +45,12 @@ export class Sidebar extends React.Component<any, UserDto>{
                         <button type="button" className="btn btn-success disabled" onClick={this.toggle.bind(this)}>
                             Edit Profile
                         </button>
-                        {this.state.show ? <EditForm /> : null}
+                        {this.state.show ? <EditForm cookies={cookies}/> : null}
                     </li>
                 </ul>
             </div>
         );
     }
 }
+
+export default withCookies(Sidebar)
