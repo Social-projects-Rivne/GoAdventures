@@ -4,6 +4,7 @@ import fb from '../../assets/icons/fb.svg';
 import google from '../../assets/icons/google.svg';
 import './Dialog.scss';
 import { DialogSettings } from './interfaces/dialog.interface';
+import {Link} from "react-router-dom";
 
 export class Dialog extends Component<DialogSettings, any> {
   constructor(props: DialogSettings) {
@@ -97,6 +98,7 @@ export class Dialog extends Component<DialogSettings, any> {
                     <p>Google</p>
                   </a>
                 </div>
+                <Link to={"/recovery-password"}>Forgot password?</Link>
               </div>
             ) : null}
           </div>

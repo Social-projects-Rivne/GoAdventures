@@ -11,3 +11,12 @@ export const eventList = async (): Promise<AxiosResponse> => await axios.get(`${
         'Content-Type': 'application/json'
     }
 });
+
+
+export const getEventData = async (): Promise<AxiosResponse> => await axios.get('http://localhost:8080/profile/getevent', {
+    headers: {
+        'Authorization': `Bearer ${cookies.get(('tk879n'))}`,
+        'Content-Type': 'application/json'
+
+    }
+});

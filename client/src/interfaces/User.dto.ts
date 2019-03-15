@@ -10,4 +10,6 @@ export interface UserDto {
     role?: string;
     statusId?: string;
     id?: string;
+
+    show?: boolean;
 }

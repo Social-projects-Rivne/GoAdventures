@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { CSSProperties } from 'react';
 import { RouterProps } from 'react-router';
 import { signIn, signUp } from '../../api/auth.service';
-import { Dialog } from '../../components/';
+import {Dialog, Footer} from '../../components/';
 import { InputSettings } from '../../components/dialog-window/interfaces/input.interface';
 import { AuthContext } from '../../context/auth.context';
 import { UserDto } from '../../interfaces/User.dto';

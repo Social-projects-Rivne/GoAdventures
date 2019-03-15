@@ -7,3 +7,4 @@ export * from './dialog-window/Dialog';
 export * from './contextProtectedRoute/ContextProtectedRoute';
 export * from './contextRoute/ContextRoute';
 export * from './settingsPanel/SettingsPanel';
+export * from '../pages/profile/sidebar/Sidebar';
