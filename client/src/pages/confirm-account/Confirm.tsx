@@ -17,7 +17,6 @@ export class Confirm extends Component<ConfirmPropsTypes, any> {
   constructor(props: any) {
     super(props);
     this.url = '';
-    console.debug(this.props)
   }
 
   public componentWillMount() {

@@ -4,9 +4,6 @@ import fb from '../../assets/icons/fb.svg';
 import google from '../../assets/icons/google.svg';
 import './Dialog.scss';
 import { DialogSettings } from './interfaces/dialog.interface';
-import {DropDown} from "..";
-
-/* DON'T RE-DEFINE COMPONENT! USE IT! */
 import {Link} from "react-router-dom";
 
 export class Dialog extends Component<DialogSettings, any> {
@@ -28,9 +25,6 @@ export class Dialog extends Component<DialogSettings, any> {
   }
 
   public render(): JSX.Element {
-    if (this.props.context.authorized && this.props.redirect) {
-      return this.props.redirect();
-    } else {
       return (
         <div
           className='Dialog__window card border-success mb-3 mt-3'
@@ -106,13 +100,6 @@ export class Dialog extends Component<DialogSettings, any> {
                 </div>
                 <Link to={"/recovery-password"}>Forgot password?</Link>
               </div>
-            ) : null}
-            {this.props.event === true ? (
-                <div className="col-md-4">
-                <DropDown>
-                  onChange={this.handleChange}
-                </DropDown>
-                </div>
             ) : null}
           </div>
           <div className='card-footer text-muted d-flex justify-content-center'>

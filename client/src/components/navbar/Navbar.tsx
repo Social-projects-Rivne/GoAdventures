@@ -55,18 +55,6 @@ export const Navbar = (props: any) => {
           <AuthContext.Consumer>
             {({ authorized, authType, toggleAuthType, authorize }) =>
             authorized ? (
-                <div>
-                  <ul className='navbar-nav mr-auto'>
-                <li className='nav-item'>
-                  <Link to='/createEvent'>
-                    <button
-                        type='button'
-                        className='btn btn-success'>
-                      Create Event
-                    </button>
-                  </Link>
-                </li>
-              <li className='nav-item'>
               <button type='button'
                className='btn btn-danger'
                onClick={(): void => {
@@ -74,9 +62,6 @@ export const Navbar = (props: any) => {
                 }}>
                 Sign Out
               </button>
-                </li>
-                </ul>
-                </div>
             ) :
               authType === 'signUp' && !authorized ? (
                 <button
