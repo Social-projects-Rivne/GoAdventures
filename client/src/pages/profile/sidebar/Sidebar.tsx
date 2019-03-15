@@ -2,7 +2,7 @@ import React from 'react';
 
 import './Sidebar.scss';
 import { UserDto } from '../../../interfaces/User.dto';
-import avatar from '../../../data/image/Person.jpg';
+import avatar from '../images/Person.png';
 import { EditForm } from "./EditForm";
 
 export class Sidebar extends React.Component<any, UserDto>{
@@ -10,8 +10,8 @@ export class Sidebar extends React.Component<any, UserDto>{
     constructor(props: any) {
         super(props);
         this.state = {
-            fullname: '',
-            username: '',
+            fullName: '',
+            userName: '',
             email: '',
             avatarUrl: '',
             show: false

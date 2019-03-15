@@ -1,17 +1,15 @@
 import React, { ChangeEvent, Component, ReactNode, SyntheticEvent } from 'react';
 import { UserDto } from "../../../interfaces/User.dto";
-import axios from "axios";
+import axios, {AxiosResponse} from "axios";
 import { Sidebar } from './Sidebar';
 
 export class EditForm extends Component<any, UserDto>{
-
     constructor(props: UserDto) {
         super(props);
         this.state = {
-            fullname: '',
-            username: '',
+            fullName: '',
+            userName: '',
             email: '',
-            avatarUrl: '',
             password: ''
         };
 
@@ -26,9 +24,7 @@ export class EditForm extends Component<any, UserDto>{
     handleSubmit(event: SyntheticEvent) {
         event.preventDefault();
         console.log('form is submitted');
-        if (this.state.avatarUrl == "" && this.state.email == ""
-            && this.state.fullname == "" && this.state.username == ""
-            && this.state.password == "") {
+        if (this.state.password == "" && this.state.email == "" && this.state.fullName == "" && this.state.userName == "") {
             alert("Data not changed, pls enter new data")
         }
         else {
@@ -54,12 +50,12 @@ export class EditForm extends Component<any, UserDto>{
         this.setState({ email: event.target.value });
     }
     hadleUserNameChange(event: ChangeEvent<HTMLInputElement>) {
-        console.log('username is changed ' + event.target.value);
-        this.setState({ username: event.target.value });
+        console.log('userName is changed ' + event.target.value);
+        this.setState({ userName: event.target.value });
     }
     hadleFullNameChange(event: ChangeEvent<HTMLInputElement>) {
-        console.log('fullname is changed' + event.target.value);
-        this.setState({ fullname: event.target.value });
+        console.log('fullName is changed' + event.target.value);
+        this.setState({ fullName: event.target.value });
     }
     hadlePasswordChange(event: ChangeEvent<HTMLInputElement>) {
         console.log('password is changed' + event.target.value);
@@ -79,13 +75,13 @@ export class EditForm extends Component<any, UserDto>{
                     <label className='list-group-item' htmlFor="exampleInputUsername">
                         Username
                         <input type="text" className="form-control" id="exampleInputUsername"
-                            onChange={this.hadleUserNameChange} value={this.state.username}
+                            onChange={this.hadleUserNameChange} value={this.state.userName}
                             aria-describedby="inputHelp" placeholder="Enter new username" />
                     </label>
                     <label className='list-group-item' htmlFor="exampleInputFullname">
                         Fullname
                         <input type="text" className="form-control" id="exampleInputFullname"
-                            onChange={this.hadleFullNameChange} value={this.state.fullname}
+                            onChange={this.hadleFullNameChange} value={this.state.fullName}
                             aria-describedby="inputHelp" placeholder="Enter new fullname" />
                     </label>
                     <label className='list-group-item' htmlFor="exampleInputPassword">

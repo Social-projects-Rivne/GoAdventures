@@ -40,7 +40,7 @@ export class ForgotPassword extends Component<any, any> {
 
     public render() {
         return (
-            <div className='container allHeight'>
+            <div className='allHeight'>
                 <div className="jumbotron">
                     <div className='container'>
                         <h1>Recovery password page</h1>

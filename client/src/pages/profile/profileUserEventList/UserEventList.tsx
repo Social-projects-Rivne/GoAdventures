@@ -15,7 +15,7 @@ export const UserEventList = (props: EventDto) => {
                         decription: {props.description}
                     </a>
                     <a href="#" className="list-group-item list-group-item-action disabled">
-                        start date: {props.start_date}
+                        start date: {props.startDate}
                     </a>
                 </div>
             </div>

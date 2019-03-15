@@ -45,10 +45,7 @@ public class ProfileController {
     public Profile getProfileUser(@RequestHeader("Authorization") String token) throws UserNotFoundException {
         logger.info("\n\n\n\tDo token:" + token + "\n\n\n");
 
-
-
         User user = userService.getUserByEmail(jwtService.parseToken(token));
-
 
         Profile profile = new Profile(user.getFullname(), user.getUsername(), user.getEmail());
 
@@ -61,19 +58,20 @@ public class ProfileController {
 
 
     @PostMapping(path = "/edit-profile", produces = {MediaType.APPLICATION_JSON_VALUE} )
-    public ResponseEntity<String> EditProfileData(@RequestHeader(value="Authorization") String authorizationHeader, @RequestBody UserAuthDto changeThisUser
+    public ResponseEntity<String> EditProfileData(@RequestHeader(value = "Authorization") String authorizationHeader, @RequestBody UserAuthDto changeThisUser
     ) throws UserNotFoundException, JsonProcessingException {
         String token = authorizationHeader;
         String newToken = "";
+        logger.info("edit profile controller start");
         logger.info(token);
-        logger.info("email " + changeThisUser.getEmail() + " fullname " + changeThisUser.getFullname() + " username" + changeThisUser.getUsername());
+        logger.info("email " + changeThisUser.getEmail() + " fullName " + changeThisUser.getFullName() + " userName" + changeThisUser.getUserName());
         User user = userService.getUserByEmail(jwtService.parseToken(token));   //user with old data
 
         //changeThisUser.setId(user.getId());
 
-        if(!(changeThisUser.getFullname().equals(""))) user.setFullname(changeThisUser.getFullname());
+        if(!(changeThisUser.getFullName().equals(""))) user.setFullname(changeThisUser.getFullName());
         if(!(changeThisUser.getEmail().equals(""))) user.setEmail(changeThisUser.getEmail());
-        if(!(changeThisUser.getUsername().equals(""))) user.setUsername(changeThisUser.getUsername());
+        if(!(changeThisUser.getUserName().equals(""))) user.setUsername(changeThisUser.getUserName());
         logger.info("new password :" + changeThisUser.getPassword());
         if(!(changeThisUser.getPassword().equals("")))user.setPassword(changeThisUser.getPassword());
 

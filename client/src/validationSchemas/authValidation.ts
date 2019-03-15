@@ -4,7 +4,7 @@ export const SignupSchema = Yup.object().shape({
     email: Yup.string()
       .email('Invalid email')
       .required('Required'),
-  fullname: Yup.string()
+  fullName: Yup.string()
     .min(2, 'Too Short!')
     .max(35, 'Too Long!')
     .required('Required'),
