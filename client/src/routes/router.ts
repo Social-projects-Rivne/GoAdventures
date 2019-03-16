@@ -1,4 +1,4 @@
-import { About, Events, Home, Profile } from '../pages';
+import { About, Events, Home, Profile, CreateEvent } from '../pages';
 const routes = [
     {
         path: '/'
