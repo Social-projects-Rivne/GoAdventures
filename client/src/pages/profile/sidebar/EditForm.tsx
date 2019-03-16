@@ -1,11 +1,13 @@
 import React, { ChangeEvent, Component, ReactNode, SyntheticEvent } from 'react';
 import { UserDto } from "../../../interfaces/User.dto";
 import axios, {AxiosResponse} from "axios";
-import { Sidebar } from './Sidebar';
+import { Cookies, withCookies} from 'react-cookie';
 
 export class EditForm extends Component<any, UserDto>{
-    constructor(props: UserDto) {
+    private cookies: Cookies;
+    constructor(props: any) {
         super(props);
+        this.cookies = props.cookies; 
         this.state = {
             fullName: '',
             userName: '',
@@ -24,20 +26,21 @@ export class EditForm extends Component<any, UserDto>{
     handleSubmit(event: SyntheticEvent) {
         event.preventDefault();
         console.log('form is submitted');
+
         if (this.state.password == "" && this.state.email == "" && this.state.fullName == "" && this.state.userName == "") {
             alert("Data not changed, pls enter new data")
         }
         else {
             const config = {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('tkn879')}`,
+                    'Authorization': `Bearer ${this.cookies.get("tk879n")}`,
                     'Content-Type': 'application/json'
                 }
             };
 
             axios.post('http://localhost:8080/profile/edit-profile', { ...this.state }, config)
-                .then((response) => {
-                    localStorage.setItem('tkn879', response.headers.authorization.replace('Bearer ', '')),
+                .then((response: AxiosResponse) => {
+                    this.cookies.set('tkn879', response.headers.authorization.replace('Bearer ', '')),
                         this.setState(response.data)
                 });
             alert("Saved successfully")
@@ -63,6 +66,7 @@ export class EditForm extends Component<any, UserDto>{
     }
     
     render() {
+         
         return (
             <div>
                 <form onSubmit={this.handleSubmit} >
@@ -96,3 +100,4 @@ export class EditForm extends Component<any, UserDto>{
         );
     }
 }
+export default EditForm;
