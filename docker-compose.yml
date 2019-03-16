@@ -1,0 +1,36 @@
+version: "3.1"
+
+services:
+  db:
+    image: postgres:latest
+    container_name: db
+    restart: unless-stopped
+    ports:
+      - "5444:5432"
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'niger'
+      POSTGRES_DB: 'adventuredb'
+    volumes:
+      - ./data:/var/lib/postgresql/data
+
+  api:
+    restart: always
+    working_dir: /app
+    build:
+      context: ./server/goadventures
+    container_name: api
+    ports:
+      - "8080:8080"
+    command: "mvn clean spring-boot:run"
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./client/
+    container_name: frontend
+    ports:
+      - "3001:3000"
+    depends_on:
+      - api
