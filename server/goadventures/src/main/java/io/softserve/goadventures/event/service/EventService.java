@@ -1,16 +1,17 @@
 package io.softserve.goadventures.event.service;
 import java.util.*;
 
-import io.softserve.goadventures.Gallery.model.Gallery;
-import io.softserve.goadventures.Gallery.repository.GalleryRepository;
+import io.softserve.goadventures.gallery.model.Gallery;
+import io.softserve.goadventures.gallery.repository.GalleryRepository;
 import io.softserve.goadventures.event.category.Category;
 import io.softserve.goadventures.event.model.Event;
 import io.softserve.goadventures.event.model.EventDTO;
-import io.softserve.goadventures.event.repository.CategoryRepository;
 import io.softserve.goadventures.event.repository.EventRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -45,7 +46,6 @@ public class EventService{
                     gallery.add(gal.getImageUrl());
 
 
-
             returnEvents.add(
                     new EventDTO(event.getId(),event.getTopic(),event.getStartDate(),
                                 event.getEndDate(),event.getLocation(),event.getDescription(),
@@ -64,7 +64,7 @@ public class EventService{
         eventRepository.save(event);
     }
 
-    public Iterable<Event> getAllEvents() {
-        return eventRepository.findAll();
+    public Page<Event> getAllEvents(Pageable eventPageable) {
+        return eventRepository.findAll(eventPageable);
     }
 }

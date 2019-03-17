@@ -1,7 +1,6 @@
 package io.softserve.goadventures.event.model;
 
 
-import io.softserve.goadventures.Gallery.model.Gallery;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,7 +1,7 @@
 package io.softserve.goadventures.event.controller;
 
-import io.softserve.goadventures.Gallery.model.Gallery;
-import io.softserve.goadventures.Gallery.repository.GalleryRepository;
+import io.softserve.goadventures.gallery.model.Gallery;
+import io.softserve.goadventures.gallery.repository.GalleryRepository;
 import io.softserve.goadventures.event.category.Category;
 import io.softserve.goadventures.event.model.Event;
 import io.softserve.goadventures.event.model.EventDTO;
@@ -13,9 +13,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 @CrossOrigin
 @RestController
@@ -26,26 +29,27 @@ public class EventController {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
     private final GalleryRepository galleryRepository;
+    private final HttpHeaders httpHeaders;
 
     @Autowired
     public EventController(EventService eventService, EventRepository eventRepository,
-            CategoryRepository categoryRepository, GalleryRepository galleryRepository) {
+                           CategoryRepository categoryRepository, GalleryRepository galleryRepository, HttpHeaders httpHeaders) {
         this.eventService = eventService;
         this.eventRepository = eventRepository;
         this.categoryRepository = categoryRepository;
         this.galleryRepository = galleryRepository;
+        this.httpHeaders = httpHeaders;
     }
 
     @PostMapping("/create/{categoryId}")
-    public ResponseEntity<String> createEvent(@PathVariable (value = "categoryId") String categoryId, @RequestBody Event event){
+    public ResponseEntity<String> createEvent(@PathVariable(value = "categoryId") String categoryId, @RequestBody Event event) {
         Category category = categoryRepository.findByCategoryName(categoryId);
         event.setCategory(category);
         eventService.addEvent(event);
-        HttpHeaders httpHeaders = new HttpHeaders();
         // event.setStatusId(EventStatus.CREATED.getEventStatus());
         // eventService.addEvent(event);
 
-        return ResponseEntity.ok().headers(httpHeaders).body("Event created");
+        return ResponseEntity.ok().headers(this.httpHeaders).body("Event created");
     }
 
     @PostMapping("/category")
@@ -59,19 +63,17 @@ public class EventController {
 
     @PostMapping("/gallery/{eventId}")
     public ResponseEntity<String> createGallery(@PathVariable(value = "eventId") int eventId,
-            @RequestBody Gallery gallery) {
+                                                @RequestBody Gallery gallery) {
         Event event = eventRepository.findById(eventId);
         gallery.setEventId(event);
         galleryRepository.save(gallery);
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        return ResponseEntity.ok().headers(httpHeaders).body("Gallery created");
+        return ResponseEntity.ok().headers(this.httpHeaders).body("gallery created");
     }
 
     @GetMapping("/all")
-    public Iterable<Event> getAllEvents() {
-        logger.info("=====all events=====");
-        return eventService.getAllEvents();
+    public Slice<Event> getAllEvents(@PageableDefault(size = 15, sort = "id") Pageable eventPageable) {
+        return eventService.getAllEvents(eventPageable);
     }
 
     @GetMapping("/allCategory")
@@ -80,8 +82,8 @@ public class EventController {
     }
 
     @GetMapping("/all/{location}")
-    public Iterable<EventDTO> getAllEvents(@PathVariable (value="location") String location){
-            return eventService.getEventsByLocation(location);
+    public Iterable<EventDTO> getAllEvents(@PathVariable(value = "location") String location) {
+        return eventService.getEventsByLocation(location);
     }
 
     @GetMapping("/category/{categoryId}")
@@ -90,8 +92,8 @@ public class EventController {
     }
 
     @GetMapping("/gallery/{eventId}")
-    public Iterable<Gallery> getAllGalleryByEventId(@PathVariable (value = "eventId") int eventId,
-                                              Pageable pageable) {
+    public Iterable<Gallery> getAllGalleryByEventId(@PathVariable(value = "eventId") int eventId,
+                                                    Pageable pageable) {
         Event event = eventRepository.findById(eventId);
         return galleryRepository.findByEventId(event.getId());
     }
