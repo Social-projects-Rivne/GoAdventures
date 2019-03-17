@@ -5,6 +5,8 @@ export interface UserDto {
     avatarUrl?: string;
     password?: string;
     location?: string;
+    newPassword?: string;
+
 
     phone?: string;
     role?: string;

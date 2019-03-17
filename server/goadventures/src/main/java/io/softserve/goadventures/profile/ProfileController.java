@@ -19,6 +19,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -71,18 +72,26 @@ public class ProfileController {
         logger.info("email " + changeThisUser.getEmail() + " fullname " + changeThisUser.getFullName() + " username" + changeThisUser.getUserName());
         User user = userService.getUserByEmail(jwtService.parseToken(token));   //user with old data
 
-        //changeThisUser.setId(user.getId());
-
-
         if(emailValidator.validateEmail(changeThisUser.getEmail())) {
             user.setEmail(changeThisUser.getEmail());
             logger.info("email changed, new email:  " +user.getEmail());
         }
-        if(passwordValidator.validatePassword(changeThisUser.getPassword())){
-            user.setPassword(changeThisUser.getPassword());
-            logger.info("passwrod changed, new email:  " + changeThisUser.getPassword());
-        }
+//        if(passwordValidator.validatePassword(changeThisUser.getPassword())){
+//            user.setPassword(changeThisUser.getPassword());
+//            logger.info("passwrod changed, new password:  " + changeThisUser.getPassword());
+//        }
 
+        if(BCrypt.checkpw(changeThisUser.getPassword(),user.getPassword())){    //check current pass
+            logger.info("current password correct");
+            if(passwordValidator.validatePassword(changeThisUser.getNewPassword()))   //valide new password
+                user.setPassword(changeThisUser.getNewPassword());                      //if valide, set new pass
+            logger.info("password changed, new password:  " + changeThisUser.getPassword());
+
+        }
+        else{
+            return ResponseEntity.badRequest().body("Current password is wrong!");                     //wrong password
+
+        }
         if(!(changeThisUser.getFullName().equals(""))) user.setFullname(changeThisUser.getFullName());
 
         if(!(changeThisUser.getUserName().equals(""))) user.setUsername(changeThisUser.getUserName());
@@ -104,14 +113,6 @@ public class ProfileController {
         return ResponseEntity.ok().headers(responseHeaders).body("Data was changed");
 
     }
-
-//    public boolean validateEmail(final String hex) {
-//
-//        pattern = Pattern.compile(EMAIL_PATTERN);
-//        matcher = pattern.matcher(hex);
-//        return matcher.matches();
-//
-//    }
 
 
 

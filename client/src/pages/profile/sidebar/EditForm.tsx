@@ -1,24 +1,26 @@
 import React, { ChangeEvent, Component, ReactNode, SyntheticEvent } from 'react';
-import { UserDto } from "../../../interfaces/User.dto";
-import axios, {AxiosResponse} from "axios";
-import { Cookies, withCookies} from 'react-cookie';
+import { UserDto } from '../../../interfaces/User.dto';
+import axios, { AxiosResponse } from 'axios';
+import { Cookies, withCookies } from 'react-cookie';
 
 export class EditForm extends Component<any, UserDto>{
     private cookies: Cookies;
     constructor(props: any) {
         super(props);
-        this.cookies = props.cookies; 
+        this.cookies = props.cookies;
         this.state = {
             fullName: '',
             userName: '',
             email: '',
-            password: ''
+            password: '',
+            newPassword: ''
         };
 
         this.hadleEmailChange = this.hadleEmailChange.bind(this);
         this.hadleUserNameChange = this.hadleUserNameChange.bind(this);
         this.hadleFullNameChange = this.hadleFullNameChange.bind(this);
         this.hadlePasswordChange = this.hadlePasswordChange.bind(this);
+        this.hadleNewPasswordChange = this.hadleNewPasswordChange.bind(this);
 
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -27,13 +29,17 @@ export class EditForm extends Component<any, UserDto>{
         event.preventDefault();
         console.log('form is submitted');
 
-        if (this.state.password == "" && this.state.email == "" && this.state.fullName == "" && this.state.userName == "") {
-            alert("Data not changed, pls enter new data")
-        }
-        else {
+        if (this.state.password == '' && this.state.newPassword == '' && this.state.email == ''         //це рофл
+            && this.state.fullName == '' && this.state.userName == '') {
+            alert('Data not changed, pls enter new data')
+        } else if (this.state.newPassword !== '' && this.state.password == '') {
+            alert('Pls enter current password!')
+        } else if (this.state.newPassword == '' && this.state.password !== '') {
+            alert('Pls enter new password!')
+        } else {
             const config = {
                 headers: {
-                    'Authorization': `Bearer ${this.cookies.get("tk879n")}`,
+                    'Authorization': `Bearer ${this.cookies.get('tk879n')}`,
                     'Content-Type': 'application/json'
                 }
             };
@@ -43,7 +49,7 @@ export class EditForm extends Component<any, UserDto>{
                     this.cookies.set('tkn879', response.headers.authorization.replace('Bearer ', '')),
                         this.setState(response.data)
                 });
-            alert("Saved successfully")
+            alert('Saved successfully')
         }
         console.log('saved successfully')
     }
@@ -57,44 +63,53 @@ export class EditForm extends Component<any, UserDto>{
         this.setState({ userName: event.target.value });
     }
     hadleFullNameChange(event: ChangeEvent<HTMLInputElement>) {
-        console.log('fullName is changed' + event.target.value);
+        console.log('fullName is changed ' + event.target.value);
         this.setState({ fullName: event.target.value });
     }
     hadlePasswordChange(event: ChangeEvent<HTMLInputElement>) {
-        console.log('password is changed' + event.target.value);
+        console.log('password is changed ' + event.target.value);
         this.setState({ password: event.target.value });
     }
-    
+    hadleNewPasswordChange(event: ChangeEvent<HTMLInputElement>) {
+        console.log('new password is changed ' + event.target.value);
+        this.setState({ newPassword: event.target.value });
+    }
+
     render() {
-         
         return (
             <div>
                 <form onSubmit={this.handleSubmit} >
-                    <label className='list-group-item' htmlFor="exampleInputEmail1">
+                    <label className='list-group-item' htmlFor='exampleInputEmail1'>
                         Email address
-                        <input type="email" className="form-control" id="exampleInputEmail1"
-                            aria-describedby="emailHelp" placeholder="enter email"
+                        <input type='email' className='form-control' id='exampleInputEmail1'
+                            aria-describedby='emailHelp' placeholder='enter email'
                             onChange={this.hadleEmailChange} value={this.state.email} />
                     </label>
-                    <label className='list-group-item' htmlFor="exampleInputUsername">
+                    <label className='list-group-item' htmlFor='exampleInputUsername'>
                         Username
-                        <input type="text" className="form-control" id="exampleInputUsername"
+                        <input type='text' className='form-control' id='exampleInputUsername'
                             onChange={this.hadleUserNameChange} value={this.state.userName}
-                            aria-describedby="inputHelp" placeholder="Enter new username" />
+                            aria-describedby='inputHelp' placeholder='Enter new username' />
                     </label>
-                    <label className='list-group-item' htmlFor="exampleInputFullname">
+                    <label className='list-group-item' htmlFor='exampleInputFullname'>
                         Fullname
-                        <input type="text" className="form-control" id="exampleInputFullname"
+                        <input type='text' className='form-control' id='exampleInputFullname'
                             onChange={this.hadleFullNameChange} value={this.state.fullName}
-                            aria-describedby="inputHelp" placeholder="Enter new fullname" />
+                            aria-describedby='inputHelp' placeholder='Enter new fullname' />
                     </label>
-                    <label className='list-group-item' htmlFor="exampleInputPassword">
+                    <label className='list-group-item' htmlFor='exampleInputPassword'>
                         Password
-                        <input type="password" className="form-control" id="exampleInputPassword"
+                        <input type='password' className='form-control' id='exampleInputPassword'
                             onChange={this.hadlePasswordChange} value={this.state.password}
-                            aria-describedby="inputHelp" placeholder="Enter new password" />
+                            aria-describedby='inputHelp' placeholder='Enter current password' />
                     </label>
-                    <button type="button" className="btn btn-primary" onClick={this.handleSubmit} > Save </button>
+                    <label className='list-group-item' htmlFor='exampleInputPassword'>
+                        New Password
+                        <input type='password' className='form-control' id='exampleInputPassword'
+                            onChange={this.hadleNewPasswordChange} value={this.state.newPassword}
+                            aria-describedby='inputHelp' placeholder='Enter new password' />
+                    </label>
+                    <button type='button' className='btn btn-primary' onClick={this.handleSubmit} > Save </button>
                 </form>
             </div>
         );
