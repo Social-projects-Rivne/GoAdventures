@@ -81,14 +81,14 @@ public class ProfileController {
 //            logger.info("passwrod changed, new password:  " + changeThisUser.getPassword());
 //        }
 
+        if(!(changeThisUser.getPassword().equals("")))
         if(BCrypt.checkpw(changeThisUser.getPassword(),user.getPassword())){    //check current pass
             logger.info("current password correct");
             if(passwordValidator.validatePassword(changeThisUser.getNewPassword()))   //valide new password
                 user.setPassword(changeThisUser.getNewPassword());                      //if valide, set new pass
             logger.info("password changed, new password:  " + changeThisUser.getPassword());
 
-        }
-        else{
+        } else{
             return ResponseEntity.badRequest().body("Current password is wrong!");                     //wrong password
 
         }

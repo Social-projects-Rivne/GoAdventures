@@ -18,7 +18,8 @@ class Sidebar extends React.Component<any, UserDto> {
             avatarUrl: '',
             password: '',
             newPassword: '',
-            show: false
+            show: false,
+
         };
         this.hadleEmailChange = this.hadleEmailChange.bind(this);
         this.hadleUserNameChange = this.hadleUserNameChange.bind(this);
@@ -52,8 +53,10 @@ class Sidebar extends React.Component<any, UserDto> {
                 .then((response: AxiosResponse) => {
                     this.cookies.set('tkn879', response.headers.authorization.replace('Bearer ', '')),
                         this.setState(response.data);
+
                 });
-            alert('Saved successfully');
+            alert('Submited sucesfully!');
+
         }
         console.log('saved successfully');
     }
@@ -93,32 +96,40 @@ class Sidebar extends React.Component<any, UserDto> {
                         <div className='card-body'>
                             <h4 className='card-title'>Поміняй свої дані вася</h4>
                             <p className='card-text'>тут буде форма валідації мб</p>
-                            <label className='' htmlFor=' exampleInputEmail1'>
+                            <label className='' htmlFor='exampleInputEmail1'>
                                 Email address
-                        <input type='email' id='exampleInputEmail1'
-                                    aria-describedby='emailHelp' placeholder='enter email'
-                                    onChange={this.hadleEmailChange} value={this.state.email} />    </label>
+                            </label>
+                            <br />
+                            <input type='email' id=' exampleInputEmail1'
+                                aria-describedby='emailHelp' placeholder='enter email'
+                                onChange={this.hadleEmailChange} value={this.state.email} />
+                            <br />
+
+                            <label className='' htmlFor='examplefullName1'>
+                                fullName  </label>
+                            <br />
+                            <input type='text' id='examplefullName1'
+                                aria-describedby='emailHelp' placeholder='enter fullname'
+                                onChange={this.hadleFullNameChange} value={this.state.fullName} />
+
+
+                            <label className='' htmlFor='exampleUserNameEmail1'>
+                                UserName  </label>
+                            <input type='text' id='exampleUserNameEmail1'
+                                aria-describedby='emailHelp' placeholder='enter username'
+                                onChange={this.hadleUserNameChange} value={this.state.userName} />
+                            <br />
 
                             <label className='' htmlFor=' exampleInputEmail1'>
-                                Email address
-                        <input type='text' id='exampleInputEmail1'
-                                    aria-describedby='emailHelp' placeholder='enter username'
-                                    onChange={this.hadleUserNameChange} value={this.state.userName} />    </label>
+                                Current password
+                                </label>
+                            <br />
+                            <input type='password' id='exampleInputEmail1'
+                                aria-describedby='emailHelp' placeholder='enter current password'
+                                onChange={this.hadlePasswordChange} value={this.state.password} />
 
                             <label className='' htmlFor=' exampleInputEmail1'>
-                                Email address
-                        <input type='text' id='exampleInputEmail1'
-                                    aria-describedby='emailHelp' placeholder='enter fullname'
-                                    onChange={this.hadleFullNameChange} value={this.state.fullName} />    </label>
-
-                            <label className='' htmlFor=' exampleInputEmail1'>
-                                Email address
-                        <input type='password' id='exampleInputEmail1'
-                                    aria-describedby='emailHelp' placeholder='enter current password'
-                                    onChange={this.hadlePasswordChange} value={this.state.password} />    </label>
-
-                            <label className='' htmlFor=' exampleInputEmail1'>
-                                Email address
+                                New password
                         <input type='password' id='exampleInputEmail1'
                                     aria-describedby='emailHelp' placeholder='enter new password'
                                     onChange={this.hadleNewPasswordChange} value={this.state.newPassword} />    </label>
