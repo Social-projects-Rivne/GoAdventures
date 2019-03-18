@@ -29,12 +29,13 @@ export class EditForm extends Component<any, UserDto>{
         event.preventDefault();
         console.log('form is submitted');
 
-        if (this.state.password == '' && this.state.newPassword == '' && this.state.email == ''         //це рофл
-            && this.state.fullName == '' && this.state.userName == '') {
+
+        if (this.state.password === '' && this.state.newPassword === '' && this.state.email === ''         //це рофл
+            && this.state.fullName === '' && this.state.userName === '') {
             alert('Data not changed, pls enter new data')
-        } else if (this.state.newPassword !== '' && this.state.password == '') {
+        } else if (this.state.newPassword !== '' && this.state.password === '') {
             alert('Pls enter current password!')
-        } else if (this.state.newPassword == '' && this.state.password !== '') {
+        } else if (this.state.newPassword === '' && this.state.password !== '') {
             alert('Pls enter new password!')
         } else {
             const config = {
@@ -54,7 +55,7 @@ export class EditForm extends Component<any, UserDto>{
         console.log('saved successfully')
     }
 
-    hadleEmailChange(event: ChangeEvent<HTMLInputElement>) {                //викликається при зміні інпута емейлa
+    hadleEmailChange(event: ChangeEvent<HTMLInputElement>) {
         console.log('email is changed ' + event.target.value);
         this.setState({ email: event.target.value });
     }
@@ -115,4 +116,3 @@ export class EditForm extends Component<any, UserDto>{
         );
     }
 }
-export default EditForm;
