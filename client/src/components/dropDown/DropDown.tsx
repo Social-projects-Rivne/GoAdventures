@@ -29,7 +29,7 @@ export class DropDown extends Component<any, DropDownSettings> {
             });
     }
 
-    handleChange(e) {
+    handleChange(e:any) {
         this.props.onTemperatureChange(e.target.value);
     }
 

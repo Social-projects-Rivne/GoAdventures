@@ -51,8 +51,8 @@ export class CreateEvent extends Component<any, any> {
         console.debug(props);
     }
 
-    public submitCreateEventRequest(data: object): Promise<string> {
-        return createEventReq(data);
+    public submitCreateEventRequest(data: object, categ?:string): Promise<string> {
+        return createEventReq(data, categ);
     }
 
     public render() {
@@ -80,6 +80,7 @@ export class CreateEvent extends Component<any, any> {
                                         <DropDown handleCHange={this.props.handleCHange}/>
                                     }
                                     redirect={{ routerProps: this.props.routerProps, redirectURL: '/profile' }}
+                                    event={true}
                                 />
                             </div>
                         </div>
