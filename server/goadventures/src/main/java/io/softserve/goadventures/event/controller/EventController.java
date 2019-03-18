@@ -77,7 +77,9 @@ public class EventController {
     @GetMapping("/all")
     public ResponseEntity<?> getAllEvents(@PageableDefault(size = 15, sort = "id") Pageable eventPageable) {
         Page<Event> eventsPage = eventService.getAllEvents(eventPageable);
-        if (eventsPage.hasNext()) {
+        System.out.println(eventsPage.hasNext());
+//        if (eventsPage.hasNext()) {
+
             int nextPageNum = eventsPage.getNumber() + 1;
             UriComponents uriComponentsBuilder = UriComponentsBuilder.newInstance()
                     .path("/event/all/")
@@ -88,10 +90,10 @@ public class EventController {
             return new ResponseEntity<Slice<Event>>(eventsPage,
                      httpHeaders,
                     HttpStatus.OK);
-         } else {
-            // TODO: wr1 3r c
-            return  ResponseEntity.badRequest().body("End of pages");
-        }
+//         } else {
+//            // TODO: wr1 3r c
+//            return  ResponseEntity.badRequest().body("End of pages");
+//        }
     }
 
     @GetMapping("/allCategory")
