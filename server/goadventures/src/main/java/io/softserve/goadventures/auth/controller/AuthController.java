@@ -22,7 +22,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServlet;
-import java.io.UnsupportedEncodingException;
 
 @CrossOrigin
 @RestController
@@ -48,7 +47,7 @@ public class AuthController extends HttpServlet {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<String> signUp(@RequestBody User user) throws MessagingException, UnsupportedEncodingException {
+    public ResponseEntity<String> signUp(@RequestBody User user) throws MessagingException {
         HttpHeaders httpHeaders = new HttpHeaders();
         logger.info(String.valueOf(user));
         if (!checkEmailService.checkingEmail(user.getEmail())) {
@@ -79,7 +78,8 @@ public class AuthController extends HttpServlet {
      * @return ResponseEntity<T>  authToken *
      */
     @GetMapping("/confirm-account")
-    public ResponseEntity<String> confirmUserAccount(@RequestParam("token") String confirmationToken) throws UserNotFoundException {
+    public ResponseEntity<String> confirmUserAccount(@RequestParam("token") String confirmationToken)
+            throws UserNotFoundException {
         User user = userService.getUserByEmail(jwtService.parseToken(confirmationToken));
         if (user != null) {
             String authToken = jwtService.createToken(user);
@@ -88,9 +88,9 @@ public class AuthController extends HttpServlet {
             userService.updateUser(user);
             HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.setBearerAuth(authToken);
-            return ResponseEntity.ok().headers(responseHeaders).body("User verified"); //TODO page User Verified
+            return ResponseEntity.ok().headers(responseHeaders).body("User verified");
         } else {
-            return ResponseEntity.badRequest().body("The link is invalid or broken!"); // TODO page the link is invalid
+            return ResponseEntity.badRequest().body("The link is invalid or broken!");
         }
     }
 

@@ -16,8 +16,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 
 @CrossOrigin
@@ -29,16 +33,14 @@ public class EventController {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
     private final GalleryRepository galleryRepository;
-    private final HttpHeaders httpHeaders;
 
     @Autowired
     public EventController(EventService eventService, EventRepository eventRepository,
-                           CategoryRepository categoryRepository, GalleryRepository galleryRepository, HttpHeaders httpHeaders) {
+                           CategoryRepository categoryRepository, GalleryRepository galleryRepository) {
         this.eventService = eventService;
         this.eventRepository = eventRepository;
         this.categoryRepository = categoryRepository;
         this.galleryRepository = galleryRepository;
-        this.httpHeaders = httpHeaders;
     }
 
     @PostMapping("/create/{categoryId}")
@@ -46,10 +48,11 @@ public class EventController {
         Category category = categoryRepository.findByCategoryName(categoryId);
         event.setCategory(category);
         eventService.addEvent(event);
+        HttpHeaders httpHeaders = new HttpHeaders();
         // event.setStatusId(EventStatus.CREATED.getEventStatus());
         // eventService.addEvent(event);
 
-        return ResponseEntity.ok().headers(this.httpHeaders).body("Event created");
+        return ResponseEntity.ok().headers(httpHeaders).body("Event created");
     }
 
     @PostMapping("/category")
@@ -65,15 +68,30 @@ public class EventController {
     public ResponseEntity<String> createGallery(@PathVariable(value = "eventId") int eventId,
                                                 @RequestBody Gallery gallery) {
         Event event = eventRepository.findById(eventId);
+        HttpHeaders httpHeaders = new HttpHeaders();
         gallery.setEventId(event);
         galleryRepository.save(gallery);
-
-        return ResponseEntity.ok().headers(this.httpHeaders).body("gallery created");
+        return ResponseEntity.ok().headers(httpHeaders).body("gallery created");
     }
 
     @GetMapping("/all")
-    public Slice<Event> getAllEvents(@PageableDefault(size = 15, sort = "id") Pageable eventPageable) {
-        return eventService.getAllEvents(eventPageable);
+    public ResponseEntity<?> getAllEvents(@PageableDefault(size = 15, sort = "id") Pageable eventPageable) {
+        Page<Event> eventsPage = eventService.getAllEvents(eventPageable);
+        if (eventsPage.hasNext()) {
+            int nextPageNum = eventsPage.getNumber() + 1;
+            UriComponents uriComponentsBuilder = UriComponentsBuilder.newInstance()
+                    .path("/event/all/")
+                    .query("page={keyword}")
+                    .buildAndExpand(nextPageNum);
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.set("nextPage", uriComponentsBuilder.toString());
+            return new ResponseEntity<Slice<Event>>(eventsPage,
+                     httpHeaders,
+                    HttpStatus.OK);
+         } else {
+            // TODO: wr1 3r c
+            return  ResponseEntity.badRequest().body("End of pages");
+        }
     }
 
     @GetMapping("/allCategory")
