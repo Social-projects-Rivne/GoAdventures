@@ -5,11 +5,13 @@ import { DropDownSettings } from './dropDown.interface';
 export class DropDown extends Component<any, DropDownSettings> {
 
     public state: DropDownSettings = {
-        categories: []
+        categories: [],
+        categ: ''
     };
 
     constructor(props: DropDownSettings) {
         super(props);
+        this.handleChange = this.handleChange.bind(this);
     }
 
     public componentDidMount() {
@@ -27,6 +29,10 @@ export class DropDown extends Component<any, DropDownSettings> {
             });
     }
 
+    handleChange(e) {
+        this.props.onTemperatureChange(e.target.value);
+    }
+
     public render() {
         if(typeof this.state.categories === 'undefined') {
             console.log('I during componentDidMount ' + this.state.categories);
@@ -37,7 +43,7 @@ export class DropDown extends Component<any, DropDownSettings> {
             );
         } else {
         return <div>
-            <select>{
+            <select onChange={this.handleChange}>{
                 this.state.categories.map((option) =>
                 <option value = {option.categoryName}>{option.categoryName}</option>)
             }

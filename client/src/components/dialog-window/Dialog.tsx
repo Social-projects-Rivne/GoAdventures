@@ -10,11 +10,18 @@ import { DialogSettings } from './interfaces/dialog.interface';
 export class Dialog extends Component<DialogSettings, any> {
   constructor(props: DialogSettings) {
     super(props);
-    this.state = {};
+    this.state = {
+        categ: ''
+    };
     //  :*D
     this.getInitialValues = this.getInitialValues.bind(this);
-
+    this.handleCategory = this.handleCategory.bind(this);
   }
+
+    handleCategory(categ) {
+        console.log("DIALOG " + categ);
+        this.setState({categ});
+    }
 
   public getInitialValues = (): object => {
     const initialValues: { [key: string]: string } = {};
@@ -88,6 +95,7 @@ export class Dialog extends Component<DialogSettings, any> {
                 }}
               </Formik>
               {this.props.childСomponents ? (this.props.childСomponents) : null}
+                <DropDown onTemperatureChange={this.handleCategory}/>
             </div>
             <div className='card-footer text-muted d-flex justify-content-center'>
               <button type='submit' form='dialog' className='btn btn-success'>
