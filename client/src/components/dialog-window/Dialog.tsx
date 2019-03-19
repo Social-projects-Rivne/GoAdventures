@@ -1,10 +1,10 @@
 import { Field, Form, Formik, FormikProps } from 'formik';
 import React, { Component } from 'react';
+
 import {DropDown} from '..';
 
 import './Dialog.scss';
 import { DialogSettings } from './interfaces/dialog.interface';
-
 
 
 export class Dialog extends Component<DialogSettings, any> {
@@ -34,6 +34,7 @@ export class Dialog extends Component<DialogSettings, any> {
   }
 
   public render(): JSX.Element {
+
       return (
           <div
               className='Dialog__window card border-success mb-3 mt-3'
