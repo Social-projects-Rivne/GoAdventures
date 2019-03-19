@@ -20,7 +20,6 @@ export class Dialog extends Component<DialogSettings, any> {
     handleCategory(fromChild:any) {
         console.log("DIALOG " + fromChild);
         this.setState({category:fromChild});
-
         console.log("CATEGORY " + this.state.category);
     }
 
@@ -95,6 +94,7 @@ export class Dialog extends Component<DialogSettings, any> {
                   );
                 }}
               </Formik>
+              {this.props.childComponents ? (this.props.childComponents) : null}
               {this.props.event ?
                   <div>
                 <DropDown onTemperatureChange={this.handleCategory}/>

@@ -77,9 +77,6 @@ export class CreateEvent extends Component<any, any> {
                                     button_text='Create event'
                                     header='Create event'
                                     inline_styles={this.createEventDialogStyles}
-                                    childСomponents={
-                                        <DropDown handleCHange={this.props.handleCHange}/>
-                                    }
                                     redirect={{ routerProps: this.props.routerProps, redirectURL: '/profile' }}
                                     event={true}
                                 />

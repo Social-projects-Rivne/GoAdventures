@@ -14,6 +14,6 @@ export interface DialogSettings {
         routerProps: RouterProps,
         redirectURL: string;
     };
-    childСomponents?: ReactNode;
+    childComponents?: ReactNode;
     event?:boolean;
 }
