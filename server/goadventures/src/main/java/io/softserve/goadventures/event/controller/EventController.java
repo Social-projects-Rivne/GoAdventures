@@ -1,13 +1,15 @@
 package io.softserve.goadventures.event.controller;
 
+import io.softserve.goadventures.event.service.EventDtoBuilder;
 import io.softserve.goadventures.gallery.model.Gallery;
 import io.softserve.goadventures.gallery.repository.GalleryRepository;
 import io.softserve.goadventures.event.category.Category;
 import io.softserve.goadventures.event.model.Event;
-import io.softserve.goadventures.event.model.EventDTO;
+import io.softserve.goadventures.event.dto.EventDTO;
 import io.softserve.goadventures.event.repository.CategoryRepository;
 import io.softserve.goadventures.event.repository.EventRepository;
 import io.softserve.goadventures.event.service.EventService;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +20,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -33,15 +34,19 @@ public class EventController {
   private final EventRepository eventRepository;
   private final CategoryRepository categoryRepository;
   private final GalleryRepository galleryRepository;
+  private final EventDtoBuilder eventDtoBuilder;
 
   @Autowired
   public EventController(EventService eventService, EventRepository eventRepository,
-                         CategoryRepository categoryRepository, GalleryRepository galleryRepository) {
+                         CategoryRepository categoryRepository, GalleryRepository galleryRepository,
+                         EventDtoBuilder eventDtoBuilder) {
     this.eventService = eventService;
     this.eventRepository = eventRepository;
     this.categoryRepository = categoryRepository;
     this.galleryRepository = galleryRepository;
+    this.eventDtoBuilder = eventDtoBuilder;
   }
+
 
   @PostMapping("/create/{categoryId}")
   public ResponseEntity<String> createEvent(@PathVariable(value = "categoryId") String categoryId, @RequestBody Event event) {
@@ -80,11 +85,15 @@ public class EventController {
     if(eventsPage != null) {
       int nextPageNum = eventsPage.getNumber() + 1;
       UriComponents uriComponentsBuilder = UriComponentsBuilder.newInstance()
-              .path("/event/all/")
+              .path("/event/all")
               .query("page={keyword}")
               .buildAndExpand(nextPageNum);
       HttpHeaders httpHeaders = new HttpHeaders();
       httpHeaders.set("nextPage", uriComponentsBuilder.toString());
+
+
+
+      System.out.println(eventDtoBuilder.convertToDto(eventsPage));
       return new ResponseEntity<Slice<Event>>(eventsPage,
               httpHeaders,
               HttpStatus.OK);
@@ -94,15 +103,16 @@ public class EventController {
         }
   }
 
+
   @GetMapping("/allCategory")
   public Iterable<Category> getAllCategory() {
     return categoryRepository.findAll();
   }
 
-  @GetMapping("/all/{location}")
-  public Iterable<EventDTO> getAllEvents(@PathVariable(value = "location") String location) {
-    return eventService.getEventsByLocation(location);
-  }
+//  @GetMapping("/all/{location}")
+//  public Iterable<EventDTO> getAllEvents(@PathVariable(value = "location") String location) {
+//    return eventService.getEventsByLocation(location);
+//  }
 
   @GetMapping("/category/{categoryId}")
   public Page<Event> getAllEventsByCategoryId(@PathVariable(value = "categoryId") int eventId, Pageable pageable) {

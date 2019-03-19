@@ -5,7 +5,7 @@ import io.softserve.goadventures.gallery.model.Gallery;
 import io.softserve.goadventures.gallery.repository.GalleryRepository;
 import io.softserve.goadventures.event.category.Category;
 import io.softserve.goadventures.event.model.Event;
-import io.softserve.goadventures.event.model.EventDTO;
+import io.softserve.goadventures.event.dto.EventDTO;
 import io.softserve.goadventures.event.repository.EventRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,29 +33,29 @@ public class EventService{
     public Event getEventByTopic(String topic){
         return eventRepository.findByTopic(topic);
     }
-
-    public Iterable<EventDTO> getEventsByLocation(String location){
-        List<EventDTO> returnEvents = new ArrayList();
-        for(Event event: eventRepository.findAll()) {
-            if (event.getLocation().equals(location)) {
-                Category category=event.getCategory();
-
-                List<String>gallery = new ArrayList<>();
-
-                for(Gallery gal:galleryRepository.findByEventId(event.getId()))
-                    gallery.add(gal.getImageUrl());
-
-
-            returnEvents.add(
-                    new EventDTO(event.getId(),event.getTopic(),event.getStartDate(),
-                                event.getEndDate(),event.getLocation(),event.getDescription(),
-                                event.getStatusId(),
-                                category.getCategoryName(),gallery
-                    ));
-            }
-        }
-        return returnEvents;
-    }
+//
+//    public Iterable<EventDTO> getEventsByLocation(String location){
+//        List<EventDTO> returnEvents = new ArrayList();
+//        for(Event event: eventRepository.findAll()) {
+//            if (event.getLocation().equals(location)) {
+//                Category category=event.getCategory();
+//
+//                List<String>gallery = new ArrayList<>();
+//
+//                for(Gallery gal:galleryRepository.findByEventId(event.getId()))
+//                    gallery.add(gal.getImageUrl());
+//
+//
+//            returnEvents.add(
+//                    new EventDTO(event.getId(),event.getTopic(),event.getStartDate(),
+//                                event.getEndDate(),event.getLocation(),event.getDescription(),
+//                                event.getStatusId(),
+//                                category.getCategoryName(),gallery
+//                    ));
+//            }
+//        }
+//        return returnEvents;
+//    }
 
 
     public void addEvent(Event newEvent) {eventRepository.save(newEvent);}
@@ -65,6 +65,7 @@ public class EventService{
     }
 
     public Page<Event> getAllEvents(Pageable eventPageable) {
-        return eventRepository.findAll(eventPageable);
+        Page<Event> eventPage = eventRepository.findAll(eventPageable);
+        return eventPage;
     }
 }

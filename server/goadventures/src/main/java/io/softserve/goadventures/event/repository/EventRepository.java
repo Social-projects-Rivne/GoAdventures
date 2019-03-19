@@ -11,7 +11,6 @@ import java.util.Optional;
 
 @Repository
 public interface EventRepository extends PagingAndSortingRepository<Event, Integer> {
-
     Event findByTopic(String topic);
     Event findById(int id);
     Page<Event> findByCategoryId(int eventId, Pageable pageable);

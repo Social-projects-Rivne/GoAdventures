@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-
-
-
-import { AxiosResponse } from 'axios';
-import { eventList } from '../../api/event.service';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { getEventList } from '../../api/event.service';
 import { EventsListBuild } from '../../components/eventsListBuild/EventsListBuild';
 import { EventDto } from '../../interfaces/Event.dto';
 
@@ -34,19 +31,15 @@ export class Events extends Component<EventDto, EventState> {
   }
 
 
+  public async fetchEvents(): Promise<void> {
+    const response = await getEventList();
+    this.setState({ events: [...response.content] });
+  }
 
 
 
-  public componentDidMount() {
-    eventList().then((response: AxiosResponse<EventDto[]>) => {
-      if(response.status <= 200 && response.status >= 300) {
-        this.setState({ events: [...response.data] });
-      }
-    }
-    ).catch((error) => {
-      console.debug(error);
-    });
-
+  public  componentDidMount() {
+    this.fetchEvents();
   }
 
   public render() {
@@ -55,10 +48,31 @@ export class Events extends Component<EventDto, EventState> {
         <h1 className='text-center'>Event List</h1>
 
         <div className='row'>
-
-          {this.state.events.map((event, index) =>
+              <InfiniteScroll
+        dataLength={this.state.events.length} // This is important field to render the next data
+        next={this.fetchEvents}
+        hasMore={true}
+        loader={<h4>Loading...</h4>}
+        endMessage={
+          <p style={{textAlign: 'center'}}>
+            <b>Yay! You have seen it all</b>
+          </p>
+        }
+        // below props only if you need pull down functionality
+        // refreshFunction={this.refresh}
+        // pullDownToRefresh
+        // pullDownToRefreshContent={
+        //   <h3 style={{textAlign: 'center'}}>&#8595; Pull down to refresh</h3>
+        // }
+        // releaseToRefreshContent={
+        //   <h3 style={{textAlign: 'center'}}>&#8593; Release to refresh</h3>}
+          >
+        {this.state.events.map((event, index) =>
             (<EventsListBuild {...event} key={index} />)
           )}
+      </InfiniteScroll>
+
+
 
         </div>
       </div>
