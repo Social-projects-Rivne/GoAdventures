@@ -10,11 +10,18 @@ import { DialogSettings } from './interfaces/dialog.interface';
 export class Dialog extends Component<DialogSettings, any> {
   constructor(props: DialogSettings) {
     super(props);
-    this.state = {};
+    this.state = {category:''
+    };
     //  :*D
     this.getInitialValues = this.getInitialValues.bind(this);
-
+    this.handleCategory = this.handleCategory.bind(this);
   }
+
+    handleCategory(fromChild:any) {
+        console.log("DIALOG " + fromChild);
+        this.setState({category:fromChild});
+        console.log("CATEGORY " + this.state.category);
+    }
 
   public getInitialValues = (): object => {
     const initialValues: { [key: string]: string } = {};
@@ -49,7 +56,7 @@ export class Dialog extends Component<DialogSettings, any> {
                     if (this.props.context && this.props.context.authorize) {
                       await this.props.context.authorize(this.props.handleSubmit, {...valuesMutadet});
                     } else {
-                      await this.props.handleSubmit({...valuesMutadet});
+                      await this.props.handleSubmit({...valuesMutadet}, this.state.category);
                     }
                     if (this.props.redirect) {
                       this.props.redirect.routerProps.history.push(`${this.props.redirect.redirectURL}`);
@@ -87,7 +94,11 @@ export class Dialog extends Component<DialogSettings, any> {
                   );
                 }}
               </Formik>
-              {this.props.childСomponents ? (this.props.childСomponents) : null}
+              {this.props.childComponents ? (this.props.childComponents) : null}
+              {this.props.event ?
+                  <div>
+                <DropDown onTemperatureChange={this.handleCategory}/>
+                  </div> : null}
             </div>
             <div className='card-footer text-muted d-flex justify-content-center'>
               <button type='submit' form='dialog' className='btn btn-success'>
