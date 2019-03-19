@@ -8,5 +8,3 @@ export const About = (props: any) => {
   </div>
   );
 };
-
-

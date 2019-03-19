@@ -17,7 +17,6 @@ export const SignupSchema = Yup.object().shape({
     .max(18, 'Password is to long')
     .required('Confirm password is required')
     .min(5, 'Password is to short')
-
 });
 
 

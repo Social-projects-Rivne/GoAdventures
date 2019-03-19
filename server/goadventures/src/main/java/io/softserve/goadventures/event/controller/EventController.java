@@ -37,9 +37,8 @@ public class EventController {
     }
 
     @PostMapping("/create/{categoryId}")
-    public ResponseEntity<String> createEvent(@PathVariable(value = "categoryId") int categoryId,
-            @RequestBody Event event) {
-        Category category = categoryRepository.findById(categoryId);
+    public ResponseEntity<String> createEvent(@PathVariable (value = "categoryId") String categoryId, @RequestBody Event event){
+        Category category = categoryRepository.findByCategoryName(categoryId);
         event.setCategory(category);
         eventService.addEvent(event);
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -73,6 +72,11 @@ public class EventController {
     public Iterable<Event> getAllEvents() {
         logger.info("=====all events=====");
         return eventService.getAllEvents();
+    }
+
+    @GetMapping("/allCategory")
+    public Iterable<Category> getAllCategory() {
+        return categoryRepository.findAll();
     }
 
     @GetMapping("/all/{location}")

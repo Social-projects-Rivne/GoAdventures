@@ -17,7 +17,7 @@ class App extends Component<any, Auth> {
         if (request === 'ok') {
           this.setState({
             authorized: this.cookies.get(('tk879n')) && this.state.authorized === false ?
-              !this.state.authorized : !this.state.authorized
+              !this.state.authorized : false
           });
         } else {
           this.setState({
