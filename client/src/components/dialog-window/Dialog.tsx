@@ -96,7 +96,9 @@ export class Dialog extends Component<DialogSettings, any> {
                 }}
               </Formik>
               {this.props.event ?
-                <DropDown onTemperatureChange={this.handleCategory}/>: null}
+                  <div>
+                <DropDown onTemperatureChange={this.handleCategory}/>
+                  </div> : null}
             </div>
             <div className='card-footer text-muted d-flex justify-content-center'>
               <button type='submit' form='dialog' className='btn btn-success'>
