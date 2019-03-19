@@ -89,12 +89,10 @@ public class EventController {
               .query("page={keyword}")
               .buildAndExpand(nextPageNum);
       HttpHeaders httpHeaders = new HttpHeaders();
-      httpHeaders.set("nextPage", uriComponentsBuilder.toString());
-
-
-
+      httpHeaders.set("nextpage", uriComponentsBuilder.toString());
       System.out.println(eventDtoBuilder.convertToDto(eventsPage));
-      return new ResponseEntity<Slice<Event>>(eventsPage,
+
+      return new ResponseEntity<Slice<EventDTO>>(eventDtoBuilder.convertToDto(eventsPage),
               httpHeaders,
               HttpStatus.OK);
          } else {
