@@ -64,13 +64,15 @@ public class ProfileController {
 
 
     @PostMapping(path = "/edit-profile", produces = {MediaType.APPLICATION_JSON_VALUE} )
-    public ResponseEntity<String> EditProfileData(@RequestHeader(value="Authorization") String authorizationHeader, @RequestBody UserAuthDto changeThisUser
-    ) throws UserNotFoundException, JsonProcessingException {
-        String token = authorizationHeader;
+    public ResponseEntity<String> EditProfileData(@RequestHeader(value="Authorization") String authorizationHeader,
+                                                  @RequestBody UserAuthDto changeThisUser) throws UserNotFoundException, JsonProcessingException {
+
         String newToken = "";
-        logger.info(token);
-        logger.info("email " + changeThisUser.getEmail() + " fullname " + changeThisUser.getFullName() + " username" + changeThisUser.getUserName());
-        User user = userService.getUserByEmail(jwtService.parseToken(token));   //user with old data
+        logger.info(authorizationHeader);
+        logger.info("email " + changeThisUser.getEmail() +
+                " fullname " + changeThisUser.getFullName() +
+                " username" + changeThisUser.getUserName());
+        User user = userService.getUserByEmail(jwtService.parseToken(authorizationHeader));   //user with old data
 
         if(emailValidator.validateEmail(changeThisUser.getEmail())) {
             user.setEmail(changeThisUser.getEmail());
@@ -81,20 +83,25 @@ public class ProfileController {
 //            logger.info("passwrod changed, new password:  " + changeThisUser.getPassword());
 //        }
 
-        if(!(changeThisUser.getPassword().equals("")))
-        if(BCrypt.checkpw(changeThisUser.getPassword(),user.getPassword())){    //check current pass
-            logger.info("current password correct");
-            if(passwordValidator.validatePassword(changeThisUser.getNewPassword()))   //valide new password
-                user.setPassword(changeThisUser.getNewPassword());                      //if valide, set new pass
-            logger.info("password changed, new password:  " + changeThisUser.getPassword());
+        if(!(changeThisUser.getPassword().equals(""))){
+            if(BCrypt.checkpw(changeThisUser.getPassword(),user.getPassword())){    //check current pass
+                logger.info("current password correct");
 
-        } else{
-            return ResponseEntity.badRequest().body("Current password is wrong!");                     //wrong password
+                    user.setPassword(changeThisUser.getNewPassword());                      //if valide, set new pass
+                
+                logger.info("password changed, new password:  " + changeThisUser.getPassword());
 
+            } else{
+                return ResponseEntity.badRequest().body("Current password is wrong!");                     //wrong password
+            }
         }
-        if(!(changeThisUser.getFullName().equals(""))) user.setFullname(changeThisUser.getFullName());
+        if(!(changeThisUser.getFullName().equals(""))) {
+            user.setFullname(changeThisUser.getFullName());
+        }
 
-        if(!(changeThisUser.getUserName().equals(""))) user.setUsername(changeThisUser.getUserName());
+        if(!(changeThisUser.getUserName().equals(""))) {
+            user.setUsername(changeThisUser.getUserName());
+        }
 
 
         userService.updateUser(user);

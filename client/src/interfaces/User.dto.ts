@@ -6,6 +6,7 @@ export interface UserDto {
     password?: string;
     location?: string;
     newPassword?: string;
+    repeatNewPassword?: string;
 
 
     phone?: string;

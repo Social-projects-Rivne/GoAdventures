@@ -3,10 +3,13 @@ import React, { Component } from 'react';
 import { getUserData } from '../../api/user.service';
 import { UserDto } from '../../interfaces/User.dto';
 import Sidebar from './sidebar/Sidebar';
+import EditForm from './sidebar/EditForm'
+import './Profile.scss'
 
 interface ProfileState {
   userProfile: UserDto;
   userEventList: any;
+  show: boolean;
 }
 
 export class Profile extends Component<UserDto, ProfileState> {        // початкова ініціалізація(null)
@@ -14,6 +17,7 @@ export class Profile extends Component<UserDto, ProfileState> {        // поч
     super(props);
 
     this.state = {
+      show: true,
       userProfile: {
         fullName: '',
         userName: '',
@@ -38,7 +42,13 @@ export class Profile extends Component<UserDto, ProfileState> {        // поч
 
   public render() {                                           // рендер екземпляров сайдбар і юзерівенліст
     return (
-      <div><Sidebar {...this.state.userProfile} />
+      <div className="row profile-page container-fluid">
+        <div id='sidebar' className=''>
+          <Sidebar {...this.state.userProfile}/>
+        </div>
+        <div id='content' className=''>
+          {this.state.show ? <EditForm /> : <div>edit</div>}
+        </div>
       </div>
     );
   }
