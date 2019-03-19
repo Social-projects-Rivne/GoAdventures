@@ -108,7 +108,7 @@ public class ProfileController {
         responseHeaders.set("token", newToken);   
 
 
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        //ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
         return ResponseEntity.ok().headers(responseHeaders).body("Data was changed");
 
