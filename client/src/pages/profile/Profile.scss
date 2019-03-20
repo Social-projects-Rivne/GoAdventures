@@ -1,0 +1,16 @@
+#sidebar {
+    width: 25%;
+    //background: rgb(221, 69, 69);
+}
+
+#content {
+    width: 75%;
+    //background: rgb(83, 226, 26);
+}
+
+.profile-page {
+    display: flex;
+    width: inherit;
+    height: 100%;
+    position: relative;
+}

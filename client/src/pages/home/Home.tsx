@@ -120,7 +120,7 @@ export class Home extends Component<RouterProps, any> {
                           inputs={this.signInSnputSettings}
                           button_text='Sign in'
                           header='Sign in for adventures'
-                          childСomponents={
+                          childComponents={
                             <div className='text-center'>
                               <h3>Sign in with</h3>
                               <div className='d-flex flex-row justify-content-around align-self-center'>

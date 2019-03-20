@@ -5,6 +5,9 @@ export interface UserDto {
     avatarUrl?: string;
     password?: string;
     location?: string;
+    newPassword?: string;
+    repeatNewPassword?: string;
+
 
     phone?: string;
     role?: string;
@@ -12,4 +15,5 @@ export interface UserDto {
     id?: string;
 
     show?: boolean;
+
 }
