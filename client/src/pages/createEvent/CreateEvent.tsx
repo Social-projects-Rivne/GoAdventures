@@ -24,7 +24,8 @@ export class CreateEvent extends Component<any, any> {
             field_name: 'startDate',
             label_value: 'Start date of event',
             placeholder: '2019-01-01',
-            type: 'text'
+            type: 'text',
+            component:'select'
         },
         {
             field_name: 'endDate',

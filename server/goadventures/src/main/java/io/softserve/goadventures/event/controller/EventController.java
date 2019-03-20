@@ -3,6 +3,7 @@ package io.softserve.goadventures.event.controller;
 import io.softserve.goadventures.Gallery.model.Gallery;
 import io.softserve.goadventures.Gallery.repository.GalleryRepository;
 import io.softserve.goadventures.event.category.Category;
+import io.softserve.goadventures.event.enums.EventStatus;
 import io.softserve.goadventures.event.model.Event;
 import io.softserve.goadventures.event.model.EventDTO;
 import io.softserve.goadventures.event.repository.CategoryRepository;
@@ -40,10 +41,10 @@ public class EventController {
     public ResponseEntity<String> createEvent(@PathVariable (value = "categoryId") String categoryId, @RequestBody Event event){
         Category category = categoryRepository.findByCategoryName(categoryId);
         event.setCategory(category);
+        event.setStatusId(EventStatus.CREATED.getEventStatus());
         eventService.addEvent(event);
         HttpHeaders httpHeaders = new HttpHeaders();
-        // event.setStatusId(EventStatus.CREATED.getEventStatus());
-        // eventService.addEvent(event);
+
 
         return ResponseEntity.ok().headers(httpHeaders).body("Event created");
     }

@@ -34,6 +34,12 @@ public class DatabaseLoader implements CommandLineRunner {
         count = categoryRepository.countByCategoryName("Summer");
         if (count == 0)
             this.categoryRepository.save(new Category(1, "Summer", null));
+        count = categoryRepository.countByCategoryName("Spring");
+        if (count == 0)
+            this.categoryRepository.save(new Category(1, "Spring", null));
+        count = categoryRepository.countByCategoryName("Autumn");
+        if (count == 0)
+            this.categoryRepository.save(new Category(1, "Autumn", null));
         count = userRepository.countByFullname("Josh");
         if (count == 0)
         this.userRepository.save(new User("Josh","email@gmail.com","password"));

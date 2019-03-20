@@ -1,6 +1,7 @@
 import { Field, Form, Formik, FormikProps } from 'formik';
+import axios from 'axios';
 import React, { Component } from 'react';
-import {DropDown} from '..';
+import {DropDown, Datepicker} from '..';
 
 import './Dialog.scss';
 import { DialogSettings } from './interfaces/dialog.interface';
@@ -10,7 +11,8 @@ import { DialogSettings } from './interfaces/dialog.interface';
 export class Dialog extends Component<DialogSettings, any> {
   constructor(props: DialogSettings) {
     super(props);
-    this.state = {category:''
+    this.state = {category:'',
+    categories: []
     };
     //  :*D
     this.getInitialValues = this.getInitialValues.bind(this);
@@ -22,6 +24,11 @@ export class Dialog extends Component<DialogSettings, any> {
         this.setState({category:fromChild});
         console.log("CATEGORY " + this.state.category);
     }
+
+    handleDate(fromChild:any) {
+      console.log("DIALOG " + fromChild);
+    
+  }
 
   public getInitialValues = (): object => {
     const initialValues: { [key: string]: string } = {};
@@ -72,6 +79,7 @@ export class Dialog extends Component<DialogSettings, any> {
                               <label key={index}>
                                 {input.label_value}
                                 <Field
+                                    component={input.component}
                                     value={values[input.field_name]}
                                     type={input.type}
                                     placeholder={input.placeholder}
@@ -97,7 +105,8 @@ export class Dialog extends Component<DialogSettings, any> {
               {this.props.childComponents ? (this.props.childComponents) : null}
               {this.props.event ?
                   <div>
-                <DropDown onTemperatureChange={this.handleCategory}/>
+                <DropDown onCategoryChange={this.handleCategory}/>
+                  <Datepicker onDateChange={this.handleDate}/>
                   </div> : null}
             </div>
             <div className='card-footer text-muted d-flex justify-content-center'>

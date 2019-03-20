@@ -10,6 +10,7 @@
     "@types/react-dom": "16.8.1",
     "@types/react-router-dom": "^4.3.1",
     "@types/yup": "^0.26.12",
+    "@types/react-datepicker": "^2.2.0",
     "axios": "^0.18.0",
     "bootstrap": "^4.3.1",
     "bootstrap-loader": "^3.0.2",
@@ -26,7 +27,8 @@
     "rxjs": "^6.4.0",
     "tether": "^1.4.5",
     "typescript": "3.3.3",
-    "yup": "^0.26.10"
+    "yup": "^0.26.10",
+    "react-datepicker": "2.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
