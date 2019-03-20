@@ -60,10 +60,10 @@ export class Events extends Component<EventDto, EventState> {
           <div className='col'>
             <InfiniteScroll
               style={{
-                '-moz-column-width': '15em',
-                '-webkit-column-width': '15em',
-                '-moz-column-gap': '0.5em',
-                '-webkit-column-gap': '0.5em'
+                MozColumnGap: '0.5em',
+                MozColumnWidth: '15em',
+                WebkitColumnGap: '0.5em',
+                WebkitColumnWidth: '15em'
               }}
               dataLength={this.state.events.length} // This is important field to render the next data
               next={this.fetchEvents}
