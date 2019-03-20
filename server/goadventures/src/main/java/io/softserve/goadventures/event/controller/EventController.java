@@ -1,5 +1,6 @@
 package io.softserve.goadventures.event.controller;
 
+import antlr.StringUtils;
 import io.softserve.goadventures.event.service.EventDtoBuilder;
 import io.softserve.goadventures.gallery.model.Gallery;
 import io.softserve.goadventures.gallery.repository.GalleryRepository;
@@ -23,6 +24,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.Optional;
 
 
 @CrossOrigin
@@ -79,9 +82,15 @@ public class EventController {
     return ResponseEntity.ok().headers(httpHeaders).body("gallery created");
   }
 
-  @GetMapping("/all")
-  public ResponseEntity<?> getAllEvents(@PageableDefault(size = 15, sort = "id") Pageable eventPageable) {
-    Page<Event> eventsPage = eventService.getAllEvents(eventPageable);
+  @GetMapping({"/all/{search}", "/all"})
+  public ResponseEntity<?> getAllEvents(@PathVariable(value = "search",required=false) String search,
+                                        @PageableDefault(size = 15, sort = "id") Pageable eventPageable) {
+
+    Page<Event> eventsPage = search==null
+            ? eventService.getAllEvents(eventPageable)
+            : eventService.getAllEventsByTopic(eventPageable,search);
+
+
     if(eventsPage != null) {
       int nextPageNum = eventsPage.getNumber() + 1;
       UriComponents uriComponentsBuilder = UriComponentsBuilder.newInstance()

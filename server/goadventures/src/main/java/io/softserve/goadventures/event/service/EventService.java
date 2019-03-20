@@ -33,6 +33,9 @@ public class EventService{
     public Event getEventByTopic(String topic){
         return eventRepository.findByTopic(topic);
     }
+    public Page<Event> getAllEventsByTopic(Pageable eventPageable, String topic){
+        return eventRepository.findAllByTopic(eventPageable,topic);
+    }
 //
 //    public Iterable<EventDTO> getEventsByLocation(String location){
 //        List<EventDTO> returnEvents = new ArrayList();
