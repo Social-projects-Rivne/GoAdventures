@@ -58,7 +58,7 @@ export const Navbar = (props: any) => {
                 <div>
                   <ul className='navbar-nav mr-auto'>
                 <li className='nav-item'>
-                  <Link to='/createEvent'>
+                  <Link to='/create-event'>
                     <button
                         type='button'
                         className='btn btn-success'>
