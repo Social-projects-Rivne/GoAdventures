@@ -1,19 +1,12 @@
 import React, { Component, CSSProperties, SyntheticEvent } from 'react';
-import { Cookies, withCookies } from 'react-cookie';
+import { changeUserData } from '../../../api/user.service';
 import { Dialog } from '../../../components/dialog-window/Dialog';
 import { InputSettings } from '../../../components/dialog-window/interfaces/input.interface';
 import { UserDto } from '../../../interfaces/User.dto';
 import { editProfileSchema } from '../../../validationSchemas/authValidation';
 import './EditForm.scss';
 
-// interface EditFormState {
-//     userProfile: UserDto;
-//     show: boolean;
-//     errorForm: string;
-//   }
 export class EditForm extends Component<any, UserDto> {
-  private cookies: Cookies;
-
   private editFormInputSettings: InputSettings[] = [
     {
       field_name: 'fullName',
@@ -48,15 +41,12 @@ export class EditForm extends Component<any, UserDto> {
   ];
 
   private editFormDialogStyles: CSSProperties = {
-    height: '30rem',
-    maxHeight: '30rem',
-    maxWidth: '20rem',
-    opacity: 0.9
+    opacity: 0.9,
+    width: '100%'
   };
 
   constructor(props: any) {
     super(props);
-    this.cookies = props.cookies;
     this.state = {
       email: '',
       fullName: '',
@@ -66,18 +56,12 @@ export class EditForm extends Component<any, UserDto> {
       userName: ''
     };
 
-    // this.hadleEmailChange = this.hadleEmailChange.bind(this);
-    // this.hadleUserNameChange = this.hadleUserNameChange.bind(this);
-    // this.hadleFullNameChange = this.hadleFullNameChange.bind(this);
-    // this.hadlePasswordChange = this.hadlePasswordChange.bind(this);
-    // this.hadleNewPasswordChange = this.hadleNewPasswordChange.bind(this);
-    // this.handleRepeatNewPasswordChange = this.handleRepeatNewPasswordChange.bind(this);
-    // this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   public handleSubmit(event: SyntheticEvent): Promise<string> {
     event.preventDefault();
-    return;
+    return changeUserData({ ...this.state });
     // console.log('form is submitted');
   }
   public render() {
@@ -95,4 +79,3 @@ export class EditForm extends Component<any, UserDto> {
     );
   }
 }
-export default withCookies(EditForm);

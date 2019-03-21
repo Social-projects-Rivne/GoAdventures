@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { getUserData } from '../../api/user.service';
 import { UserDto } from '../../interfaces/User.dto';
 import './Profile.scss';
-import EditForm from './sidebar/EditForm';
+import { EditForm } from './sidebar/EditForm';
 import Sidebar from './sidebar/Sidebar';
 
 interface ProfileState {
@@ -45,11 +45,11 @@ export class Profile extends Component<UserDto, ProfileState> {
   public render() {
     // рендер екземпляров сайдбар і юзерівенліст
     return (
-      <div className='row profile-page container-fluid'>
-        <div id='sidebar' className=''>
+      <div className='profile-page'>
+        <div className='sidebar'>
           <Sidebar {...this.state.userProfile} />
         </div>
-        <div id='content' className=''>
+        <div className='Profile__content'>
           {this.state.show ? <EditForm /> : <div>edit</div>}
         </div>
       </div>

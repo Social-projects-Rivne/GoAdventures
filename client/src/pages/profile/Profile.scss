@@ -1,16 +1,22 @@
-#sidebar {
+.sidebar {
     width: 25%;
     //background: rgb(221, 69, 69);
 }
 
-#content {
-    width: 75%;
+.Profile__content {
+    flex: 2 2 20rem;
+
     //background: rgb(83, 226, 26);
+    & .Dialog__window {
+        max-width: 100%;
+        margin-bottom: 0 !important;
+    }
 }
 
 .profile-page {
     display: flex;
-    width: inherit;
+    width: 100%;
     height: 100%;
     position: relative;
+    flex-direction: row;
 }
