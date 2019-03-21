@@ -1,4 +1,4 @@
-import React, { Component, SyntheticEvent } from 'react';
+import React, { Component, CSSProperties, SyntheticEvent } from 'react';
 import { Cookies, withCookies } from 'react-cookie';
 import { Dialog } from '../../../components/dialog-window/Dialog';
 import { InputSettings } from '../../../components/dialog-window/interfaces/input.interface';
@@ -46,6 +46,14 @@ export class EditForm extends Component<any, UserDto> {
       type: 'password'
     }
   ];
+
+  private editFormDialogStyles: CSSProperties = {
+    height: '30rem',
+    maxHeight: '30rem',
+    maxWidth: '20rem',
+    opacity: 0.9
+  };
+
   constructor(props: any) {
     super(props);
     this.cookies = props.cookies;
@@ -81,7 +89,7 @@ export class EditForm extends Component<any, UserDto> {
           inputs={this.editFormInputSettings}
           button_text='Update'
           header='Edit your profile'
-          inline_styles={}
+          inline_styles={this.editFormDialogStyles}
         />
       </div>
     );
