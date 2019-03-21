@@ -6,6 +6,8 @@ import { Dialog } from '../../components/';
 import { InputSettings } from '../../components/dialog-window/interfaces/input.interface';
 import { EventSchema } from '../../validationSchemas/eventValidation';
 import '../home/Home.scss';
+import './CreateEvent.scss';
+import { Map as LeafletMap, TileLayer, Marker, Popup } from 'react-leaflet';
 
 export class CreateEvent extends Component<any, any> {
     private createEventDialogStyles: CSSProperties = {
@@ -58,18 +60,55 @@ export class CreateEvent extends Component<any, any> {
 
     public render() {
         return (
+
+
+
+
             <div className='Home-content'>
+
+
+
+
                 <div className='container'>
+
+
+
                     <div className='row'>
+
+
+
                     </div>
                     <div className='row'>
                         <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 d-sm-flex col d-none align-self-center'>
+                        <LeafletMap
+                                                    center={[50.37, 26.13]}
+                                                    zoom={6}
+                                                    maxZoom={10}
+                                                    attributionControl={true}
+                                                    zoomControl={true}
+                                                    doubleClickZoom={true}
+                                                    scrollWheelZoom={true}
+                                                    dragging={true}
+                                                    animate={true}
+                                                    easeLinearity={0.35}
+                                                  >
+                                                    <TileLayer
+                                                      url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
+                                                    />
+                                                    <Marker position={[50.37, 26.13]}>
+                                                      <Popup>
+                                                        Popup for any custom information.
+                                                      </Popup>
+                                                    </Marker>
+                                                  </LeafletMap>
+
                             <div className='Home-heading d-flex flex-column align-items-baseline'>
-                                <h2>GO</h2>
-                                <h2>Adventures</h2>
+
                             </div>
                         </div>
                         <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12'>
+
+
                             <div className='Home__signup'>
                                 <Dialog
                                     validationSchema={EventSchema}
