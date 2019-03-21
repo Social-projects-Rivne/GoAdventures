@@ -9,7 +9,7 @@ import Sidebar from './sidebar/Sidebar';
 interface ProfileState {
   userProfile: UserDto;
   userEventList: any;
-  show: boolean;
+  showEditForm: boolean;
 }
 
 export class Profile extends Component<UserDto, ProfileState> {
@@ -18,7 +18,7 @@ export class Profile extends Component<UserDto, ProfileState> {
     super(props);
 
     this.state = {
-      show: true,
+      showEditForm: true,
       userProfile: {
         fullName: '',
         userName: '',
@@ -50,7 +50,7 @@ export class Profile extends Component<UserDto, ProfileState> {
           <Sidebar {...this.state.userProfile} />
         </div>
         <div className='Profile__content'>
-          {this.state.show ? <EditForm /> : <div>edit</div>}
+          {this.state.showEditForm ? <EditForm /> : <div>User Event List</div>}
         </div>
       </div>
     );
