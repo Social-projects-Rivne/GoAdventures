@@ -60,23 +60,9 @@ export class CreateEvent extends Component<any, any> {
 
     public render() {
         return (
-
-
-
-
             <div className='Home-content'>
-
-
-
-
                 <div className='container'>
-
-
-
                     <div className='row'>
-
-
-
                     </div>
                     <div className='row'>
                         <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 d-sm-flex col d-none align-self-center'>
@@ -101,14 +87,10 @@ export class CreateEvent extends Component<any, any> {
                                                       </Popup>
                                                     </Marker>
                                                   </LeafletMap>
-
                             <div className='Home-heading d-flex flex-column align-items-baseline'>
-
                             </div>
                         </div>
                         <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12'>
-
-
                             <div className='Home__signup'>
                                 <Dialog
                                     validationSchema={EventSchema}
