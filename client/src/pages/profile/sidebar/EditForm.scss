@@ -1,14 +1,23 @@
-.edit-form {
-    display: flex;
-    padding-top: 5%;
-    padding-left: 20%;
-}
+// .edit-form {
+//     display: flex;
+//     padding-top: 5%;
+//     padding-left: 20%;
+// }
 
-.fields {
-    clear: both;
-    text-align: right;
-}
+// .fields {
+//     clear: both;
+//     text-align: right;
+// }
 
-label {
-    float: left;
+// label {
+//     float: left;
+// }
+
+#inputLarge{
+    width: 25em;
+    margin-bottom: 10px;
+
+}
+#label_on_input{
+    font-size: 1.25em;
 }

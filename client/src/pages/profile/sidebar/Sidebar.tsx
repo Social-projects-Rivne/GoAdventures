@@ -2,8 +2,18 @@ import axios, { AxiosResponse } from 'axios';
 import React, { ChangeEvent, Component, ReactNode, SyntheticEvent } from 'react';
 import { Cookies, withCookies } from 'react-cookie';
 import { UserDto } from '../../../interfaces/User.dto';
+
+
+
 import avatar from '../images/Person.png';
 import './Sidebar.scss';
+
+
+interface SelectProtected {
+    readonly wrapperElement: HTMLDivElement;
+    readonly inputElement: HTMLInputElement;
+}
+
 
 
 class Sidebar extends React.Component<any, UserDto> {
@@ -21,72 +31,8 @@ class Sidebar extends React.Component<any, UserDto> {
             show: false,
 
         };
-        this.hadleEmailChange = this.hadleEmailChange.bind(this);
-        this.hadleUserNameChange = this.hadleUserNameChange.bind(this);
-        this.hadleFullNameChange = this.hadleFullNameChange.bind(this);
-        this.hadlePasswordChange = this.hadlePasswordChange.bind(this);
-        this.hadleNewPasswordChange = this.hadleNewPasswordChange.bind(this);
-
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.hadleChancel = this.hadleChancel.bind(this);
 
     }
-    public hadleChancel(event: SyntheticEvent) {
-        console.log('cancel');
-        this.setState({ show: false });
-    }
-    public handleSubmit(event: SyntheticEvent) {
-        event.preventDefault();
-        console.log('form is submitted');
-
-        if (this.state.password == '' && this.state.newPassword == '' && this.state.email == ''         // це рофл
-            && this.state.fullName === '' && this.state.userName === '') {
-            alert('Data not changed, pls enter new data');
-        } else if (this.state.newPassword !== '' && this.state.password == '') {   // це тоже
-            alert('Pls enter current password!');
-        } else if (this.state.newPassword == '' && this.state.password !== '') {
-            alert('Pls enter new password!');
-        } else {
-            const config = {
-                headers: {
-                    'Authorization': `Bearer ${this.cookies.get('tk879n')}`,
-                    'Content-Type': 'application/json'
-                }
-            };
-
-            axios.post('http://localhost:8080/profile/edit-profile', { ...this.state }, config)
-                .then((response: AxiosResponse) => {
-                    this.cookies.set('tk879n', response.headers.authorization.replace('Bearer ', '')),
-                        this.setState(response.data);
-
-                });
-            alert('Submited sucesfully!');
-
-        }
-        console.log('saved successfully');
-    }
-    public hadleEmailChange(event: ChangeEvent<HTMLInputElement>) {
-        console.log('email is changed ' + event.target.value);
-        this.setState({ email: event.target.value });
-    }
-    public hadleUserNameChange(event: ChangeEvent<HTMLInputElement>) {
-        console.log('userName is changed ' + event.target.value);
-        this.setState({ userName: event.target.value });
-    }
-    public hadleFullNameChange(event: ChangeEvent<HTMLInputElement>) {
-        console.log('fullName is changed ' + event.target.value);
-        this.setState({ fullName: event.target.value });
-    }
-    public hadlePasswordChange(event: ChangeEvent<HTMLInputElement>) {
-        console.log('password is changed ' + event.target.value);
-        this.setState({ password: event.target.value });
-    }
-    public hadleNewPasswordChange(event: ChangeEvent<HTMLInputElement>) {
-        console.log('new password is changed ' + event.target.value);
-        this.setState({ newPassword: event.target.value });
-    }
-
-
     public toggleEdit() {
         this.setState({ show: true });
     }
@@ -105,7 +51,9 @@ class Sidebar extends React.Component<any, UserDto> {
                             <div className='Sidebar__avatar'>
                                 <img src={avatar} alt='user_avatar' />
                             </div>
+                            {/* <input type='file' onClick={this.fileSelectHandler}></input> */}
                         </div>
+
                         <div className='card-body'>
                             <div className='list-group'>
                                 <a className='list-group-item list-group-item-action active'>

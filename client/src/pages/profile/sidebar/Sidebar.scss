@@ -1,9 +1,8 @@
-/*.sidebar{
-  height:85em;
-  width: 30em;
+.sidebar{
+ 
+  align-items: stretch;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
   
   
   & .Sidebar__avatar {
@@ -22,15 +21,15 @@
   
 
 }
-.vidstup{
-  margin-bottom: 20px;
-}
-.btn{
-  width: 150px
-}
 
-.content{
-  height: 85em;
-  width: 100em
-}
-*/
+// .vidstup{
+//   margin-bottom: 20px;
+// }
+// .btn{
+//   width: 150px
+// }
+
+// .content{
+//   height: 85em;
+//   width: 100em
+// }

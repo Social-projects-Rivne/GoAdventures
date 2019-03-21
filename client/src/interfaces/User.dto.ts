@@ -1,3 +1,5 @@
+import { BlockOverflowProperty } from 'csstype';
+
 export interface UserDto {
     fullName: string;
     userName: string;
@@ -15,5 +17,6 @@ export interface UserDto {
     id?: string;
 
     show?: boolean;
+    errorMesage?: boolean;
 
 }

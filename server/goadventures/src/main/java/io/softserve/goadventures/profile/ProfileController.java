@@ -1,8 +1,6 @@
 package io.softserve.goadventures.profile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import io.softserve.goadventures.auth.dtoModels.UserAuthDto;
 import io.softserve.goadventures.auth.service.JWTService;
 import io.softserve.goadventures.user.model.User;
@@ -21,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 
 @CrossOrigin
@@ -35,14 +34,16 @@ public class ProfileController {
     private final UserService userService;
     private final EmailValidator emailValidator ;
     private final PasswordValidator passwordValidator;
+    private final  ErrorMesage errorMesage;
 
     @Autowired
-    public ProfileController(JWTService jwtService, UserService userService, UserRepository userRepository, EmailValidator emailValidator, PasswordValidator passwordValidator) {
+    public ProfileController(JWTService jwtService, UserService userService, UserRepository userRepository, EmailValidator emailValidator, PasswordValidator passwordValidator, ErrorMesage errorMesage) {
         this.jwtService = jwtService;
         this.userService = userService;
 
         this.emailValidator = emailValidator;
         this.passwordValidator = passwordValidator;
+        this.errorMesage = errorMesage;
     }
 
     @GetMapping("/page")
@@ -78,21 +79,19 @@ public class ProfileController {
             user.setEmail(changeThisUser.getEmail());
             logger.info("email changed, new email:  " +user.getEmail());
         }
-//        if(passwordValidator.validatePassword(changeThisUser.getPassword())){
-//            user.setPassword(changeThisUser.getPassword());
-//            logger.info("passwrod changed, new password:  " + changeThisUser.getPassword());
-//        }
 
         if(!(changeThisUser.getPassword().equals(""))){
             if(BCrypt.checkpw(changeThisUser.getPassword(),user.getPassword())){    //check current pass
                 logger.info("current password correct");
-
+                if(passwordValidator.validatePassword(changeThisUser.getNewPassword())){
                     user.setPassword(changeThisUser.getNewPassword());                      //if valide, set new pass
-                
-                logger.info("password changed, new password:  " + changeThisUser.getPassword());
+
+                    logger.info("password changed, new password:  " + changeThisUser.getPassword());
+                }
 
             } else{
-                return ResponseEntity.badRequest().body("Current password is wrong!");                     //wrong password
+                return ResponseEntity.badRequest().body(errorMesage.getErrorMesage());        //wrong password
+
             }
         }
         if(!(changeThisUser.getFullName().equals(""))) {
@@ -114,8 +113,6 @@ public class ProfileController {
         responseHeaders.setBearerAuth(newToken);
         responseHeaders.set("token", newToken);   
 
-
-        //ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
         return ResponseEntity.ok().headers(responseHeaders).body("Data was changed");
 
