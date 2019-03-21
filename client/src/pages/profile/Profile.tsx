@@ -1,9 +1,11 @@
 import { AxiosResponse } from 'axios';
-import React, { Component } from 'react';
-import { getUserData } from '../../api/user.service';
+import React, { Component, CSSProperties } from 'react';
+import { changeUserData, getUserData } from '../../api/user.service';
+import { Dialog } from '../../components';
+import { InputSettings } from '../../components/dialog-window/interfaces/input.interface';
 import { UserDto } from '../../interfaces/User.dto';
+import { editProfileSchema } from '../../validationSchemas/authValidation';
 import './Profile.scss';
-import { EditForm } from './sidebar/EditForm';
 import Sidebar from './sidebar/Sidebar';
 
 interface ProfileState {
@@ -13,6 +15,44 @@ interface ProfileState {
 }
 
 export class Profile extends Component<UserDto, ProfileState> {
+  private editFormInputSettings: InputSettings[] = [
+    {
+      field_name: 'fullName',
+      label_value: 'Your name',
+      placeholder: 'John',
+      type: 'text'
+    },
+    {
+      field_name: 'email',
+      label_value: 'New email',
+      placeholder: 'example@example.com',
+      type: 'email'
+    },
+    {
+      field_name: 'password',
+      label_value: 'Old password',
+      placeholder: '********',
+      type: 'password'
+    },
+    {
+      field_name: 'newPassword',
+      label_value: 'New password',
+      placeholder: '********',
+      type: 'password'
+    },
+    {
+      field_name: 'confirmPassword',
+      label_value: 'Confirm your password',
+      placeholder: '********',
+      type: 'password'
+    }
+  ];
+
+  private editFormDialogStyles: CSSProperties = {
+    opacity: 0.9,
+    width: '100%'
+  };
+
   // початкова ініціалізація(null)
   constructor(props: any) {
     super(props);
@@ -33,6 +73,10 @@ export class Profile extends Component<UserDto, ProfileState> {
     };
   }
 
+  public handleSubmit(data: UserDto): Promise<string> {
+    return changeUserData({ ...data });
+  }
+
   public componentDidMount() {
     // сеттер на пропси зверху з api
     getUserData().then((response: AxiosResponse<UserDto>) =>
@@ -50,7 +94,18 @@ export class Profile extends Component<UserDto, ProfileState> {
           <Sidebar {...this.state.userProfile} />
         </div>
         <div className='Profile__content'>
-          {this.state.showEditForm ? <EditForm /> : <div>User Event List</div>}
+          {this.state.showEditForm ? (
+            <Dialog
+              validationSchema={editProfileSchema}
+              handleSubmit={this.handleSubmit}
+              inputs={this.editFormInputSettings}
+              button_text='Update'
+              header='Edit your profile'
+              inline_styles={this.editFormDialogStyles}
+            />
+          ) : (
+            <div>User Event List</div>
+          )}
         </div>
       </div>
     );
