@@ -2,6 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 import { ErrorMessage } from 'formik';
 import React, { ChangeEvent, Component, ReactNode, SyntheticEvent } from 'react';
 import { Cookies, withCookies } from 'react-cookie';
+import { changeUserData } from '../../../api/user.service';
 import { UserDto } from '../../../interfaces/User.dto';
 import './EditForm.scss';
 
@@ -57,16 +58,6 @@ export class EditForm extends Component<any, UserDto> {
                     'Content-Type': 'application/json'
                 }
             };
-
-            axios.post('http://localhost:8080/profile/edit-profile', { ...this.state }, config)
-                .then((response: AxiosResponse) => {
-                    response.status === 400 ? this.setState({ errorMesage: true }) :
-                        this.cookies.set('tk879n', response.headers.authorization.replace('Bearer ', '')),
-                        alert('Submited sucesfully!');
-
-                }).catch((error) => {
-                    console.error(error);
-                });
 
         }
     }
