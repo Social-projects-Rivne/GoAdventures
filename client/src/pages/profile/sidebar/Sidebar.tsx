@@ -34,7 +34,7 @@ class Sidebar extends React.Component<any, UserDto> {
   public render() {
     // const { cookies } = this.props;
     return (
-      <div className='card text-white bg-dark'>
+      <div className='Sidebar__card card text-white bg-dark'>
         <div className='card-header'>
           <h2 className='title'> My Profile</h2>
           <div className='Sidebar__avatar'>
