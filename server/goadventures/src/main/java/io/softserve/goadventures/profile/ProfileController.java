@@ -1,33 +1,25 @@
 package io.softserve.goadventures.profile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import io.softserve.goadventures.auth.dtoModels.UserAuthDto;
 import io.softserve.goadventures.auth.service.JWTService;
 import io.softserve.goadventures.user.model.User;
 import io.softserve.goadventures.user.repository.UserRepository;
 import io.softserve.goadventures.user.service.UserNotFoundException;
 import io.softserve.goadventures.user.service.UserService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
-
 
 @CrossOrigin
 @RestController
 @RequestMapping("profile")
 public class ProfileController {
-
 
     private final Logger logger = LoggerFactory.getLogger(ProfileController.class);
 
@@ -47,17 +39,13 @@ public class ProfileController {
 
     @GetMapping("/page")
     public Profile getProfileUser(@RequestHeader("Authorization") String token) throws UserNotFoundException {
-        logger.info("\n\n\n\tDo token:" + token + "\n\n\n");
-
-
+        logger.info("\n\tDo token:" + token + "\n");
 
         User user = userService.getUserByEmail(jwtService.parseToken(token));
-
 
         Profile profile = new Profile(user.getFullname(), user.getUsername(), user.getEmail());
 
         logger.info(user.getFullname() + " " + user.getUsername() + " " + user.getEmail());
-
 
         return profile;
     }
@@ -78,11 +66,6 @@ public class ProfileController {
             user.setEmail(changeThisUser.getEmail());
             logger.info("email changed, new email:  " +user.getEmail());
         }
-//        if(passwordValidator.validatePassword(changeThisUser.getPassword())){
-//            user.setPassword(changeThisUser.getPassword());
-//            logger.info("passwrod changed, new password:  " + changeThisUser.getPassword());
-//        }
-
         if(!(changeThisUser.getPassword().equals(""))){
             if(BCrypt.checkpw(changeThisUser.getPassword(),user.getPassword())){    //check current pass
                 logger.info("current password correct");
@@ -103,7 +86,6 @@ public class ProfileController {
             user.setUsername(changeThisUser.getUserName());
         }
 
-
         userService.updateUser(user);
 
         logger.info("new data " + user.getEmail() + " " + user.getUsername() + " " + user.getFullname() + " " + user.getPassword());
@@ -114,11 +96,7 @@ public class ProfileController {
         responseHeaders.setBearerAuth(newToken);
         responseHeaders.set("token", newToken);   
 
-
-        //ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-
         return ResponseEntity.ok().headers(responseHeaders).body("Data was changed");
-
     }
 
 
