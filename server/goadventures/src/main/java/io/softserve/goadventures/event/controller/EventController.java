@@ -1,15 +1,17 @@
 package io.softserve.goadventures.event.controller;
 
-import io.softserve.goadventures.event.service.EventDtoBuilder;
-import io.softserve.goadventures.gallery.model.Gallery;
-import io.softserve.goadventures.gallery.repository.GalleryRepository;
+import io.softserve.goadventures.auth.service.JWTService;
 import io.softserve.goadventures.event.category.Category;
-import io.softserve.goadventures.event.model.Event;
 import io.softserve.goadventures.event.dto.EventDTO;
+import io.softserve.goadventures.event.model.Event;
 import io.softserve.goadventures.event.repository.CategoryRepository;
 import io.softserve.goadventures.event.repository.EventRepository;
+import io.softserve.goadventures.event.service.EventDtoBuilder;
 import io.softserve.goadventures.event.service.EventService;
-import org.modelmapper.ModelMapper;
+import io.softserve.goadventures.gallery.model.Gallery;
+import io.softserve.goadventures.gallery.repository.GalleryRepository;
+import io.softserve.goadventures.user.service.UserNotFoundException;
+import io.softserve.goadventures.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,27 +37,38 @@ public class EventController {
   private final CategoryRepository categoryRepository;
   private final GalleryRepository galleryRepository;
   private final EventDtoBuilder eventDtoBuilder;
+  private final JWTService jwtService;
+  private final UserService userService;
 
   @Autowired
   public EventController(EventService eventService, EventRepository eventRepository,
                          CategoryRepository categoryRepository, GalleryRepository galleryRepository,
+                         JWTService jwtService, UserService userService,
                          EventDtoBuilder eventDtoBuilder) {
     this.eventService = eventService;
     this.eventRepository = eventRepository;
     this.categoryRepository = categoryRepository;
     this.galleryRepository = galleryRepository;
     this.eventDtoBuilder = eventDtoBuilder;
+    this.jwtService = jwtService;
+    this.userService = userService;
   }
 
-
   @PostMapping("/create/{categoryId}")
-  public ResponseEntity<String> createEvent(@PathVariable(value = "categoryId") String categoryId, @RequestBody Event event) {
+  public ResponseEntity<String> createEvent(@PathVariable(value = "categoryId") String categoryId,
+                                            @RequestHeader(value = "Authorization") String token,
+                                            @RequestBody Event event) {
+    LoggerFactory.getLogger("eventController").info(event.toString());
+
     Category category = categoryRepository.findByCategoryName(categoryId);
     event.setCategory(category);
+    try {
+      event.setOwner(userService.getUserByEmail(jwtService.parseToken(token)));
+    } catch (UserNotFoundException e) {
+      e.printStackTrace();
+    }
     eventService.addEvent(event);
     HttpHeaders httpHeaders = new HttpHeaders();
-    // event.setStatusId(EventStatus.CREATED.getEventStatus());
-    // eventService.addEvent(event);
 
     return ResponseEntity.ok().headers(httpHeaders).body("Event created");
   }

@@ -53,6 +53,8 @@ public class AuthController extends HttpServlet {
         if (!checkEmailService.checkingEmail(user.getEmail())) {
             user.setStatusId(UserStatus.PENDING.getUserStatus());
             user.setUsername(user.getEmail().split("@")[0]);
+            user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
+            user.setSelfEvents(null);
             userService.addUser(user);
             logger.info("\nsignUp: New user create.");
             logger.info("\nsignUp detail: \n\t" +
