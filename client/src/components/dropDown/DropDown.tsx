@@ -43,7 +43,7 @@ export class DropDown extends Component<any, DropDownSettings> {
             );
         } else {
         return <div>
-            <label> Choose category for the event</label>
+            
             <select onChange={this.handleChange}>{
                 this.state.categories.map((option) =>
                 <option value = {option.categoryName}>{option.categoryName}</option>)
