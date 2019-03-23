@@ -12,14 +12,14 @@ public class Profile {
     private String location;
     private int phone;
 
-    @Override
-    public String toString() {
-        return "Profile{" +
-                "fullName='" + fullName + '\'' +
-                ", userName='" + userName + '\'' +
-                ", email='" + email + '\'' +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "Profile{" +
+//                "fullname='" + fullname + '\'' +
+//                ", username='" + username + '\'' +
+//                ", email='" + email + '\'' +
+//                '}';
+//    }
 
     public Profile(String fullName, String userName, String email) {
         this.fullName = fullName;

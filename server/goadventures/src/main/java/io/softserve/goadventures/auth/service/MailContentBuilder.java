@@ -16,7 +16,7 @@ public class MailContentBuilder {
 
     public String signUp(String message, String confirmationToken) {
         Context context = new Context();
-        context.setVariable("fullName", message);
+        context.setVariable("fullname", message);
         context.setVariable("confirmationToken", confirmationToken);
         return templateEngine.process("confirm-sign-up", context);
     }

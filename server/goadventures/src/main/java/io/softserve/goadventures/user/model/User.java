@@ -6,9 +6,9 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import javax.persistence.*;
 
 @Data
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
-@NoArgsConstructor
 public class User {
     @Id
     @Column(name = "id")
@@ -18,7 +18,7 @@ public class User {
     @Column(name = "full_name")
     private String fullname;
 
-    @Column(name = "userName")
+    @Column(name = "username")
     private String username;
 
     @Column(name = "password")
@@ -38,6 +38,7 @@ public class User {
 
     @Column(name = "avatar")
     private String avatar;
+
 
     @Column(name = "status_id")
     private int statusId;
