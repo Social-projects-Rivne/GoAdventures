@@ -23,7 +23,7 @@ export class Home extends Component<RouterProps, any> {
   };
   private signUpInputSettings: InputSettings[] = [
     {
-      field_name: 'fullName',
+      field_name: 'fullname',
       label_value: 'Your name',
       placeholder: 'John',
       type: 'text'

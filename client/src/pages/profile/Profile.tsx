@@ -17,9 +17,15 @@ interface ProfileState {
 export class Profile extends Component<UserDto, ProfileState> {
   private editFormInputSettings: InputSettings[] = [
     {
-      field_name: 'fullName',
-      label_value: 'Your name',
-      placeholder: 'John',
+      field_name: 'fullname',
+      label_value: 'Changed your name?',
+      placeholder: 'Vasyl',
+      type: 'text'
+    },
+    {
+      field_name: 'username',
+      label_value: 'New username',
+      placeholder: 'B4gr0vy',
       type: 'text'
     },
     {
@@ -27,6 +33,18 @@ export class Profile extends Component<UserDto, ProfileState> {
       label_value: 'New email',
       placeholder: 'example@example.com',
       type: 'email'
+    },
+    {
+      field_name: 'phone',
+      label_value: 'New phone number',
+      placeholder: '0631512412',
+      type: 'tel'
+    },
+    {
+      field_name: 'location',
+      label_value: 'Moved to another city? Lucky one',
+      placeholder: 'Rivne',
+      type: 'text'
     },
     {
       field_name: 'password',
@@ -60,8 +78,8 @@ export class Profile extends Component<UserDto, ProfileState> {
     this.state = {
       showEditForm: true,
       userProfile: {
-        fullName: '',
-        userName: '',
+        fullname: '',
+        username: '',
         email: '',
         avatarUrl: ''
       },

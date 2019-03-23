@@ -7,16 +7,16 @@ const cookies: Cookies = new Cookies();
 export const getUserData = async (): Promise<AxiosResponse> =>
   await axios.get(`${serverUrl}/profile/page`, {
     headers: {
-      'Authorization': `Bearer ${cookies.get('tkn879')}`,
+      'Authorization': `Bearer ${cookies.get('tk879n')}`,
       'Content-Type': 'application/json'
     }
   });
 
 export const changeUserData = async (data: any): Promise<string> => {
   return await axios
-    .post(
+    .put(
       `${serverUrl}/profile/edit-profile`,
-      { data },
+      { ...data },
       {
         headers: {
           'Authorization': `Bearer ${cookies.get('tk879n')}`,

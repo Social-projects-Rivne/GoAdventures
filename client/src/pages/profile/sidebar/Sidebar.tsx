@@ -9,14 +9,14 @@ interface SelectProtected {
   readonly inputElement: HTMLInputElement;
 }
 
-class Sidebar extends React.Component<any, UserDto> {
+class Sidebar extends React.Component<UserDto, UserDto> {
   //   private cookies: Cookies;
   constructor(props: any) {
     super(props);
     // this.cookies = props.cookies;
     this.state = {
-      fullName: '',
-      userName: '',
+      fullname: '',
+      username: '',
       email: '',
       avatarUrl: '',
       password: '',
@@ -59,7 +59,7 @@ class Sidebar extends React.Component<any, UserDto> {
               <div className='d-flex w-100 justify-content-between'>
                 <h5 className='mb-1'>
                   <p>Username:</p>
-                  {this.props.userName}
+                  {this.props.username}
                 </h5>
               </div>
             </a>
@@ -69,7 +69,7 @@ class Sidebar extends React.Component<any, UserDto> {
               <div className='d-flex w-100 justify-content-between'>
                 <h5 className='mb-1'>
                   <p>Fullname:</p>
-                  {this.props.fullName}
+                  {this.props.fullname}
                 </h5>
               </div>
             </a>
