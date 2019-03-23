@@ -4,7 +4,7 @@ export const SignupSchema = Yup.object().shape({
   email: Yup.string()
     .email('Invalid email')
     .required('Required'),
-  fullName: Yup.string()
+  fullname: Yup.string()
     .min(2, 'Too Short!')
     .max(35, 'Too Long!')
     .required('Required'),
@@ -31,12 +31,18 @@ export const SigninSchema = Yup.object().shape({
 
 export const editProfileSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email'),
-  fullName: Yup.string()
+  fullname: Yup.string()
     .min(2, 'Too Short!')
     .max(35, 'Too Long!'),
-  password: Yup.string()
-    .max(18, 'Password is to long')
-    .min(5, 'Password is to short'),
+  username: Yup.string()
+    .min(4, 'Too Short!')
+    .max(10, 'Too Long!'),
+  location: Yup.string()
+    .min(2, 'Too Short!')
+    .max(35, 'Too Long!'),
+  phone: Yup.number()
+    .max(10, 'Password is to long')
+    .min(10, 'Password is to short'),
   newPassword: Yup.string()
     .max(18, 'Password is to long')
     .min(5, 'Password is to short'),
