@@ -26,120 +26,110 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-
 @CrossOrigin
 @RestController
 @RequestMapping("event")
 public class EventController {
-  private Logger logger = LoggerFactory.getLogger(io.softserve.goadventures.event.controller.EventController.class);
-  private final EventService eventService;
-  private final EventRepository eventRepository;
-  private final CategoryRepository categoryRepository;
-  private final GalleryRepository galleryRepository;
-  private final EventDtoBuilder eventDtoBuilder;
-  private final JWTService jwtService;
-  private final UserService userService;
+    private final EventService eventService;
+    private final EventRepository eventRepository;
+    private final CategoryRepository categoryRepository;
+    private final GalleryRepository galleryRepository;
+    private final EventDtoBuilder eventDtoBuilder;
+    private final JWTService jwtService;
+    private final UserService userService;
 
-  @Autowired
-  public EventController(EventService eventService, EventRepository eventRepository,
-                         CategoryRepository categoryRepository, GalleryRepository galleryRepository,
-                         JWTService jwtService, UserService userService,
-                         EventDtoBuilder eventDtoBuilder) {
-    this.eventService = eventService;
-    this.eventRepository = eventRepository;
-    this.categoryRepository = categoryRepository;
-    this.galleryRepository = galleryRepository;
-    this.eventDtoBuilder = eventDtoBuilder;
-    this.jwtService = jwtService;
-    this.userService = userService;
-  }
-
-  @PostMapping("/create/{categoryId}")
-  public ResponseEntity<String> createEvent(@PathVariable(value = "categoryId") String categoryId,
-                                            @RequestHeader(value = "Authorization") String token,
-                                            @RequestBody Event event) {
-    LoggerFactory.getLogger("eventController").info(event.toString());
-
-    Category category = categoryRepository.findByCategoryName(categoryId);
-    event.setCategory(category);
-    try {
-      event.setOwner(userService.getUserByEmail(jwtService.parseToken(token)));
-    } catch (UserNotFoundException e) {
-      e.printStackTrace();
+    @Autowired
+    public EventController(EventService eventService, EventRepository eventRepository,
+                           CategoryRepository categoryRepository, GalleryRepository galleryRepository,
+                           JWTService jwtService, UserService userService,
+                           EventDtoBuilder eventDtoBuilder) {
+        this.eventService = eventService;
+        this.eventRepository = eventRepository;
+        this.categoryRepository = categoryRepository;
+        this.galleryRepository = galleryRepository;
+        this.eventDtoBuilder = eventDtoBuilder;
+        this.jwtService = jwtService;
+        this.userService = userService;
     }
-    eventService.addEvent(event);
-    HttpHeaders httpHeaders = new HttpHeaders();
 
-    return ResponseEntity.ok().headers(httpHeaders).body("Event created");
-  }
+    @PostMapping("/create/{categoryId}")
+    public ResponseEntity<String> createEvent(@PathVariable(value = "categoryId") String categoryId,
+                                              @RequestHeader(value = "Authorization") String token,
+                                              @RequestBody Event event) {
+        LoggerFactory.getLogger("eventController").info(event.toString());
 
-  @PostMapping("/category")
-  public ResponseEntity<String> createCategory(@RequestBody Category category) {
-    category.setEvents(null);
-    categoryRepository.save(category);
+        Category category = categoryRepository.findByCategoryName(categoryId);
+        event.setCategory(category);
+        try {
+            event.setOwner(userService.getUserByEmail(jwtService.parseToken(token)));
+        } catch (UserNotFoundException e) {
+            e.printStackTrace();
+        }
+        eventService.addEvent(event);
+        HttpHeaders httpHeaders = new HttpHeaders();
 
-    HttpHeaders httpHeaders = new HttpHeaders();
-    return ResponseEntity.ok().headers(httpHeaders).body("Category created");
-  }
+        return ResponseEntity.ok().headers(httpHeaders).body("Event created");
+    }
 
-  @PostMapping("/gallery/{eventId}")
-  public ResponseEntity<String> createGallery(@PathVariable(value = "eventId") int eventId,
-                                              @RequestBody Gallery gallery) {
-    Event event = eventRepository.findById(eventId);
-    HttpHeaders httpHeaders = new HttpHeaders();
-    gallery.setEventId(event);
-    galleryRepository.save(gallery);
-    return ResponseEntity.ok().headers(httpHeaders).body("gallery created");
-  }
+    @PostMapping("/category")
+    public ResponseEntity<String> createCategory(@RequestBody Category category) {
+        category.setEvents(null);
+        categoryRepository.save(category);
 
-  @GetMapping("/all")
-  public ResponseEntity<?> getAllEvents(@PageableDefault(size = 15, sort = "id") Pageable eventPageable) {
-    Page<Event> eventsPage = eventService.getAllEvents(eventPageable);
-    if(eventsPage != null) {
-      int nextPageNum = eventsPage.getNumber() + 1;
-      UriComponents uriComponentsBuilder = UriComponentsBuilder.newInstance()
-              .path("/event/all")
-              .query("page={keyword}")
-              .buildAndExpand(nextPageNum);
-      HttpHeaders httpHeaders = new HttpHeaders();
-      httpHeaders.set("nextpage", uriComponentsBuilder.toString());
-      System.out.println(eventDtoBuilder.convertToDto(eventsPage));
+        HttpHeaders httpHeaders = new HttpHeaders();
+        return ResponseEntity.ok().headers(httpHeaders).body("Category created");
+    }
 
-      return new ResponseEntity<Slice<EventDTO>>(eventDtoBuilder.convertToDto(eventsPage),
-              httpHeaders,
-              HttpStatus.OK);
-         } else {
+    @PostMapping("/gallery/{eventId}")
+    public ResponseEntity<String> createGallery(@PathVariable(value = "eventId") int eventId,
+                                                @RequestBody Gallery gallery) {
+        Event event = eventRepository.findById(eventId);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        gallery.setEventId(event);
+        galleryRepository.save(gallery);
+        return ResponseEntity.ok().headers(httpHeaders).body("gallery created");
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllEvents(@PageableDefault(size = 15, sort = "id") Pageable eventPageable) {
+        Page<Event> eventsPage = eventService.getAllEvents(eventPageable);
+        if(eventsPage != null) {
+            int nextPageNum = eventsPage.getNumber() + 1;
+            UriComponents uriComponentsBuilder = UriComponentsBuilder.newInstance()
+                    .path("/event/all")
+                    .query("page={keyword}")
+                    .buildAndExpand(nextPageNum);
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.set("nextpage", uriComponentsBuilder.toString());
+            System.out.println(eventDtoBuilder.convertToDto(eventsPage));
+
+            return new ResponseEntity<Slice<EventDTO>>(eventDtoBuilder.convertToDto(eventsPage),
+                    httpHeaders,
+                    HttpStatus.OK);
+        } else {
             // TODO: wr1 3r c
             return  ResponseEntity.badRequest().body("End of pages");
         }
-  }
+    }
 
+    @GetMapping("/allCategory")
+    public Iterable<Category> getAllCategory() {
+        return categoryRepository.findAll();
+    }
 
-  @GetMapping("/allCategory")
-  public Iterable<Category> getAllCategory() {
-    return categoryRepository.findAll();
-  }
+    @GetMapping("/category/{categoryId}")
+    public Page<Event> getAllEventsByCategoryId(@PathVariable(value = "categoryId") int eventId, Pageable pageable) {
+        return eventRepository.findByCategoryId(eventId, pageable);
+    }
 
-//  @GetMapping("/all/{location}")
-//  public Iterable<EventDTO> getAllEvents(@PathVariable(value = "location") String location) {
-//    return eventService.getEventsByLocation(location);
-//  }
+    @GetMapping("/gallery/{eventId}")
+    public Iterable<Gallery> getAllGalleryByEventId(@PathVariable(value = "eventId") int eventId, Pageable pageable) {
+        Event event = eventRepository.findById(eventId);
+        return galleryRepository.findByEventId(event.getId());
+    }
 
-  @GetMapping("/category/{categoryId}")
-  public Page<Event> getAllEventsByCategoryId(@PathVariable(value = "categoryId") int eventId, Pageable pageable) {
-    return eventRepository.findByCategoryId(eventId, pageable);
-  }
-
-  @GetMapping("/gallery/{eventId}")
-  public Iterable<Gallery> getAllGalleryByEventId(@PathVariable(value = "eventId") int eventId,
-                                                  Pageable pageable) {
-    Event event = eventRepository.findById(eventId);
-    return galleryRepository.findByEventId(event.getId());
-  }
-
-  @GetMapping("/{eventId}")
-  public Event getEvent(@PathVariable(value = "eventId") int eventId) {
-    return eventService.getEventById(eventId);
-  }
-
+    @GetMapping("/{eventId}")
+    public Event getEvent(@PathVariable(value = "eventId") int eventId) {
+        return eventService.getEventById(eventId);
+    }
 }

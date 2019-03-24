@@ -4,15 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.softserve.goadventures.event.model.Event;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
-@NoArgsConstructor
 public class User {
     @Id
     @Column(name = "id")
@@ -22,7 +21,7 @@ public class User {
     @Column(name = "full_name")
     private String fullname;
 
-    @Column(name = "userName")
+    @Column(name = "username")
     private String username;
 
     @Column(name = "password")

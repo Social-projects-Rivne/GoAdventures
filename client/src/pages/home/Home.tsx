@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import { CSSProperties } from 'react';
+import React, { Component, CSSProperties } from 'react';
 import { RouterProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { signIn, signUp } from '../../api/auth.service';
@@ -9,7 +8,10 @@ import { Dialog } from '../../components/';
 import { InputSettings } from '../../components/dialog-window/interfaces/input.interface';
 import { AuthContext } from '../../context/auth.context';
 import { UserDto } from '../../interfaces/User.dto';
-import { SigninSchema, SignupSchema } from '../../validationSchemas/authValidation';
+import {
+  SigninSchema,
+  SignupSchema
+} from '../../validationSchemas/authValidation';
 import './Home.scss';
 
 export class Home extends Component<RouterProps, any> {
@@ -19,9 +21,9 @@ export class Home extends Component<RouterProps, any> {
     maxWidth: '20rem',
     opacity: 0.9
   };
-  private signUpSnputSettings: InputSettings[] = [
+  private signUpInputSettings: InputSettings[] = [
     {
-      field_name: 'fullName',
+      field_name: 'fullname',
       label_value: 'Your name',
       placeholder: 'John',
       type: 'text'
@@ -64,7 +66,6 @@ export class Home extends Component<RouterProps, any> {
     super(props);
   }
 
-
   public submitSignUpRequest(data: UserDto): Promise<string> {
     return signUp(data);
   }
@@ -80,8 +81,7 @@ export class Home extends Component<RouterProps, any> {
     return (
       <div className='Home-content'>
         <div className='container'>
-          <div className='row'>
-          </div>
+          <div className='row' />
           <div className='row'>
             <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 d-sm-flex col d-none align-self-center'>
               <div className='Home-heading d-flex flex-column align-items-baseline'>
@@ -92,25 +92,37 @@ export class Home extends Component<RouterProps, any> {
             <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12'>
               <div className='Home__auth'>
                 <AuthContext.Consumer>
-                  {({ authorized, authType, authorize, messages }) =>
+                  {({ authorized, authType, authorize, messages }) => (
                     <div>
-                      {!authorized && messages ?
-                        (<div className='alert alert-danger alert-dismissible fade show' role='alert'>
+                      {!authorized && messages ? (
+                        <div
+                          className='alert alert-danger alert-dismissible fade show'
+                          role='alert'
+                        >
                           <strong>Holy guacamole!</strong> {messages}
-                          <button type='button' className='close' data-dismiss='alert' aria-label='Close'>
+                          <button
+                            type='button'
+                            className='close'
+                            data-dismiss='alert'
+                            aria-label='Close'
+                          >
                             <span aria-hidden='true'>&times;</span>
                           </button>
-                        </div>) : null}
+                        </div>
+                      ) : null}
                       {!authorized && authType === 'signUp' ? (
                         <Dialog
                           validationSchema={SignupSchema}
                           context={{ authorized, authorize, authType }}
                           handleSubmit={this.submitSignUpRequest}
-                          inputs={this.signUpSnputSettings}
+                          inputs={this.signUpInputSettings}
                           button_text='Sign up'
                           header='Sign up for adventures'
                           inline_styles={this.signUpDialogStyles}
-                          redirect={{ routerProps: this.props, redirectURL: '/confirm-yor-yo' }}
+                          redirect={{
+                            routerProps: this.props,
+                            redirectURL: '/confirm-yor-yo'
+                          }}
                         />
                       ) : !authorized && authType === 'signIn' ? (
                         <Dialog
@@ -133,15 +145,20 @@ export class Home extends Component<RouterProps, any> {
                                   <p>Google</p>
                                 </a>
                               </div>
-                              <Link to={'/recovery-password'}>Forgot password?</Link>
+                              <Link to={'/recovery-password'}>
+                                Forgot password?
+                              </Link>
                             </div>
                           }
                           inline_styles={this.signUpDialogStyles}
-                          redirect={{ routerProps: this.props, redirectURL: '/profile' }}
+                          redirect={{
+                            routerProps: this.props,
+                            redirectURL: '/profile'
+                          }}
                         />
                       ) : null}
-
-                    </div>}
+                    </div>
+                  )}
                 </AuthContext.Consumer>
               </div>
             </div>

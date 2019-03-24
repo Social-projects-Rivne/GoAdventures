@@ -8,16 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Type;
 @Service
 public class EventDtoBuilder {
+    @Autowired
+    private ModelMapper modelMapper;
 
-  @Autowired
-  private ModelMapper modelMapper;
-
-  public Page<EventDTO> convertToDto(Page<Event> event) {
-    return modelMapper.map(event, new TypeToken<Page<EventDTO>>() {}.getType());
-
-  }
-
+    public Page<EventDTO> convertToDto(Page<Event> event) {
+        return modelMapper.map(event, new TypeToken<Page<EventDTO>>() {}.getType());
+    }
 }
