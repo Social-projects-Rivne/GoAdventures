@@ -73,7 +73,7 @@ export const sentRecoveryEmail = async (data: any): Promise<boolean> => {
     })
         .then((res) => {
             if (res.status === 200) {
-                console.log("email recovery sent");
+                console.log('email recovery sent');
                 return true;
             } else {
                 return false;

@@ -1,8 +1,7 @@
-package io.softserve.goadventures.Gallery.model;
+package io.softserve.goadventures.gallery.model;
 
 import io.softserve.goadventures.event.model.Event;
 import lombok.*;
-
 import javax.persistence.*;
 
 @Entity
