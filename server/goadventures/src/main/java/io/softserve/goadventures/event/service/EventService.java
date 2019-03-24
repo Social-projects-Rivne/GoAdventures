@@ -1,67 +1,63 @@
 package io.softserve.goadventures.event.service;
-import java.util.*;
 
-import io.softserve.goadventures.gallery.model.Gallery;
-import io.softserve.goadventures.gallery.repository.GalleryRepository;
-import io.softserve.goadventures.event.category.Category;
-import io.softserve.goadventures.event.model.Event;
-import io.softserve.goadventures.event.dto.EventDTO;
-import io.softserve.goadventures.event.repository.EventRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.awt.print.Pageable;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import io.softserve.goadventures.event.repository.EventRepository;
+import io.softserve.goadventures.gallery.repository.GalleryRepository;
+import sun.jvm.hotspot.debugger.Page;
+
 @Service
-public class EventService{
+public class EventService {
     private final EventRepository eventRepository;
     private final GalleryRepository galleryRepository;
-    private Logger logger = LoggerFactory.getLogger(io.softserve.goadventures.auth.controller.AuthController.class);
 
     @Autowired
-    public EventService(EventRepository eventRepository,GalleryRepository galleryRepository){
+    public EventService(EventRepository eventRepository, GalleryRepository galleryRepository) {
         this.eventRepository = eventRepository;
-        this.galleryRepository=galleryRepository;
+        this.galleryRepository = galleryRepository;
     }
 
-    public Event getEventById(int id){
+    public Event getEventById(int id) {
         return eventRepository.findById(id);
     }
 
-    public Event getEventByTopic(String topic){
+    public Event getEventByTopic(String topic) {
         return eventRepository.findByTopic(topic);
     }
-    public Page<Event> getAllEventsByTopic(Pageable eventPageable, String topic){
-        return eventRepository.findAllByTopic(eventPageable,topic);
+
+    public Page<Event> getAllEventsByTopic(Pageable eventPageable, String topic) {
+        return eventRepository.findAllByTopic(eventPageable, topic);
     }
-//
-//    public Iterable<EventDTO> getEventsByLocation(String location){
-//        List<EventDTO> returnEvents = new ArrayList();
-//        for(Event event: eventRepository.findAll()) {
-//            if (event.getLocation().equals(location)) {
-//                Category category=event.getCategory();
-//
-//                List<String>gallery = new ArrayList<>();
-//
-//                for(Gallery gal:galleryRepository.findByEventId(event.getId()))
-//                    gallery.add(gal.getImageUrl());
-//
-//
-//            returnEvents.add(
-//                    new EventDTO(event.getId(),event.getTopic(),event.getStartDate(),
-//                                event.getEndDate(),event.getLocation(),event.getDescription(),
-//                                event.getStatusId(),
-//                                category.getCategoryName(),gallery
-//                    ));
-//            }
-//        }
-//        return returnEvents;
-//    }
+    //
+    // public Iterable<EventDTO> getEventsByLocation(String location){
+    // List<EventDTO> returnEvents = new ArrayList();
+    // for(Event event: eventRepository.findAll()) {
+    // if (event.getLocation().equals(location)) {
+    // Category category=event.getCategory();
+    //
+    // List<String>gallery = new ArrayList<>();
+    //
+    // for(Gallery gal:galleryRepository.findByEventId(event.getId()))
+    // gallery.add(gal.getImageUrl());
+    //
+    //
+    // returnEvents.add(
+    // new EventDTO(event.getId(),event.getTopic(),event.getStartDate(),
+    // event.getEndDate(),event.getLocation(),event.getDescription(),
+    // event.getStatusId(),
+    // category.getCategoryName(),gallery
+    // ));
+    // }
+    // }
+    // return returnEvents;
+    // }
 
-
-    public void addEvent(Event newEvent) {eventRepository.save(newEvent);}
+    public void addEvent(Event newEvent) {
+        eventRepository.save(newEvent);
+    }
 
     public void updateEvent(Event event) {
         eventRepository.save(event);

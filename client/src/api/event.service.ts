@@ -31,7 +31,7 @@ export const getEventList = async (nextPage?: string | null): Promise<any> => {
 };
 
 export const getEventData = async (): Promise<AxiosResponse> =>
-  await axios.get('http://localhost:8080/profile/getevent', {
+  await axios.get(`${serverUrl}/profile/getevent`, {
     headers: {
       'Authorization': `Bearer ${cookies.get('tk879n')}`,
       'Content-Type': 'application/json'
