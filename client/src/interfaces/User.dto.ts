@@ -13,6 +13,5 @@ export interface UserDto {
   statusId?: string;
   id?: string;
 
-  show?: boolean;
-  errorMesage?: boolean;
+  showEditForm?: boolean;
 }

@@ -1,4 +1,4 @@
-package io.softserve.goadventures.profile;
+package io.softserve.goadventures.errors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @NoArgsConstructor
 @AllArgsConstructor
 @Service
-public class ErrorMesage {
+public class InvalidPasswordErrorMesage {
     private String ErrorMesage = "Current password is wrong!";
 
 

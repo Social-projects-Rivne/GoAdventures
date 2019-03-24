@@ -1,14 +1,14 @@
-package io.softserve.goadventures.profile;
+package io.softserve.goadventures.user.controller;
 import io.softserve.goadventures.auth.service.JWTService;
+import io.softserve.goadventures.errors.InvalidPasswordErrorMesage;
 import io.softserve.goadventures.user.dto.UserDto;
 import io.softserve.goadventures.user.dto.UserUpdateDto;
 import io.softserve.goadventures.user.model.User;
+import io.softserve.goadventures.user.service.EmailValidator;
+import io.softserve.goadventures.user.service.PasswordValidator;
 import io.softserve.goadventures.user.service.UserNotFoundException;
 import io.softserve.goadventures.user.service.UserService;
-import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
-import org.modelmapper.spi.MatchingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class ProfileController {
     private final UserService userService;
     private final EmailValidator emailValidator ;
     private final PasswordValidator passwordValidator;
-    private final ErrorMesage errorMesage;
+    private final InvalidPasswordErrorMesage invalidPasswordErrorMesage;
     private final ModelMapper modelMapper;
 
     @Autowired
@@ -37,12 +37,12 @@ public class ProfileController {
                              UserService userService,
                              EmailValidator emailValidator,
                              PasswordValidator passwordValidator,
-                             ErrorMesage errorMesage, ModelMapper modelMapper) {
+                             InvalidPasswordErrorMesage invalidPasswordErrorMesage, ModelMapper modelMapper) {
         this.jwtService = jwtService;
         this.userService = userService;
         this.emailValidator = emailValidator;
         this.passwordValidator = passwordValidator;
-        this.errorMesage = errorMesage;
+        this.invalidPasswordErrorMesage = invalidPasswordErrorMesage;
         this.modelMapper = modelMapper;
     }
 
@@ -68,7 +68,7 @@ public class ProfileController {
                     logger.info("password changed, new password:  " + updateUser.getPassword());
                 }
             } else{
-                return ResponseEntity.badRequest().body(errorMesage.getErrorMesage());        //wrong password
+                return ResponseEntity.badRequest().body(invalidPasswordErrorMesage.getErrorMesage());        //wrong password
             }
         }
         modelMapper.map(updateUser, user);

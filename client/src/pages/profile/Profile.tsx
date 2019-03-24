@@ -7,14 +7,37 @@ import { UserDto } from '../../interfaces/User.dto';
 import { editProfileSchema } from '../../validationSchemas/authValidation';
 import './Profile.scss';
 import Sidebar from './sidebar/Sidebar';
+import AccountOverwiew from './accountOverview/accountOverview';
 
 interface ProfileState {
   userProfile: UserDto;
   userEventList: any;
-  showEditForm: boolean;
+  // sidebarFlags:any;
+   showEditForm: boolean;
+  // showInfoForm: boolean;
+  // showPassForm: boolean;
 }
 
 export class Profile extends Component<UserDto, ProfileState> {
+  constructor(props: UserDto) {
+    super(props);
+
+    this.state = { 
+      showEditForm: true,
+      userProfile: {
+        fullname: '',
+        username: '',
+        email: '',
+        avatarUrl: '',
+      },
+      userEventList: {
+        description: '',
+        topic: '',
+        start_date: ''
+      }
+    };
+    this.updateData = this.updateData.bind(this);
+  }
   private editFormInputSettings: InputSettings[] = [
     {
       field_name: 'fullname',
@@ -68,30 +91,19 @@ export class Profile extends Component<UserDto, ProfileState> {
 
   private editFormDialogStyles: CSSProperties = {
     opacity: 0.9,
-    width: '100%'
+    width: '100%',
+    
   };
 
-  // початкова ініціалізація(null)
-  constructor(props: any) {
-    super(props);
 
-    this.state = {
-      showEditForm: true,
-      userProfile: {
-        fullname: '',
-        username: '',
-        email: '',
-        avatarUrl: ''
-      },
-      userEventList: {
-        description: '',
-        topic: '',
-        start_date: ''
-      }
-    };
-  }
+  
 
-  public handleSubmit(data: UserDto): Promise<string> {
+  public updateData = (value: ProfileState) => {
+    // this.setState({showEditForm: false })
+    this.setState({showEditForm:true})
+ }
+
+  public handleSubmit(data: UserDto): Promise<string> {{}
     return changeUserData({ ...data });
   }
 
@@ -109,7 +121,7 @@ export class Profile extends Component<UserDto, ProfileState> {
     return (
       <div className='profile-page'>
         <div className='sidebar'>
-          <Sidebar {...this.state.userProfile} />
+          <Sidebar {...this.state.userProfile} updateData = {this.updateData} />          
         </div>
         <div className='Profile__content'>
           {this.state.showEditForm ? (
@@ -121,8 +133,8 @@ export class Profile extends Component<UserDto, ProfileState> {
               header='Edit your profile'
               inline_styles={this.editFormDialogStyles}
             />
-          ) : (
-            <div>User Event List</div>
+          ) : ( <div><AccountOverwiew {...this.state.userProfile}/> </div>
+
           )}
         </div>
       </div>

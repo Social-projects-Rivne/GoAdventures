@@ -4,39 +4,35 @@ import { UserDto } from '../../../interfaces/User.dto';
 import avatar from '../images/Person.png';
 import './Sidebar.scss';
 
-interface SelectProtected {
-  readonly wrapperElement: HTMLDivElement;
-  readonly inputElement: HTMLInputElement;
+interface SelectFlags {
+  userProfile: UserDto;
+  showEditForm: boolean;
+  
 }
 
-class Sidebar extends React.Component<UserDto, UserDto> {
+class Sidebar extends React.Component<any, SelectFlags>{
   //   private cookies: Cookies;
   constructor(props: any) {
     super(props);
     // this.cookies = props.cookies;
     this.state = {
-      fullname: '',
-      username: '',
-      email: '',
-      avatarUrl: '',
-      password: '',
-      newPassword: '',
-      show: false
+      showEditForm: true,
+      userProfile: {
+        fullname: '',
+        username: '',
+        email: '',
+        avatarUrl: ''
+      },
+  
     };
   }
-  public toggleEdit() {
-    this.setState({ show: true });
-  }
-  public toggleEvents() {
-    this.setState({ show: false });
-  }
+  
 
   public render() {
     // const { cookies } = this.props;
     return (
       <div className='Sidebar__card card text-white bg-dark'>
         <div className='card-header'>
-          <h2 className='title'> My Profile</h2>
           <div className='Sidebar__avatar'>
             <img src={avatar} alt='user_avatar' />
           </div>
@@ -44,6 +40,27 @@ class Sidebar extends React.Component<UserDto, UserDto> {
         </div>
 
         <div className='card-body'>
+          <div ><button 
+                type="button"
+                
+                className="btn btn-secondary sidebarBt">
+                Account Overview
+                </button>
+
+          </div>
+          <div ><button 
+                type="button" 
+                 
+                className="btn btn-secondary sidebarBt">Edit Profile
+                </button>
+
+          </div>
+          <div ><button 
+                type="button" 
+                className="btn btn-secondary sidebarBt">Change password
+                </button>
+
+          </div>
           <div className='list-group'>
             <a className='list-group-item list-group-item-action active'>
               <div className='d-flex w-100 justify-content-between'>
