@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -16,7 +17,7 @@ public class EventDTO {
 
     private String topic;
 
-    private String startDate;
+    private Date startDate;
 
     private String endDate;
 
