@@ -1,6 +1,10 @@
-package io.softserve.goadventures.profile;
+package io.softserve.goadventures.user.profile;
 
 import io.softserve.goadventures.auth.service.JWTService;
+import io.softserve.goadventures.event.dto.EventDTO;
+import io.softserve.goadventures.event.model.Event;
+import io.softserve.goadventures.event.service.EventDtoBuilder;
+import io.softserve.goadventures.event.service.EventService;
 import io.softserve.goadventures.user.dto.UserDto;
 import io.softserve.goadventures.user.dto.UserUpdateDto;
 import io.softserve.goadventures.user.model.User;
@@ -10,7 +14,11 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -27,19 +35,22 @@ public class ProfileController {
     private final PasswordValidator passwordValidator;
     private final ErrorMesage errorMesage;
     private final ModelMapper modelMapper;
+    private final EventService eventService;
+    private final EventDtoBuilder eventDtoBuilder;
 
     @Autowired
-    public ProfileController(JWTService jwtService,
-                             UserService userService,
-                             EmailValidator emailValidator,
-                             PasswordValidator passwordValidator,
-                             ErrorMesage errorMesage, ModelMapper modelMapper) {
+    public ProfileController(JWTService jwtService, UserService userService,
+                             EmailValidator emailValidator, PasswordValidator passwordValidator,
+                             ErrorMesage errorMesage, ModelMapper modelMapper,
+                             EventService eventService, EventDtoBuilder eventDtoBuilder) {
         this.jwtService = jwtService;
         this.userService = userService;
         this.emailValidator = emailValidator;
         this.passwordValidator = passwordValidator;
         this.errorMesage = errorMesage;
         this.modelMapper = modelMapper;
+        this.eventDtoBuilder = eventDtoBuilder;
+        this.eventService = eventService;
     }
 
     @GetMapping("/page")
@@ -75,5 +86,20 @@ public class ProfileController {
         responseHeaders.set("token", newToken);
 
         return ResponseEntity.ok().headers(responseHeaders).body("Data was changed");
+    }
+
+    @GetMapping("/all-events")
+    public ResponseEntity<?> getAllEvents(Pageable eventPageable,
+                                          @RequestHeader("Authorization") String token) throws UserNotFoundException {
+        User user = userService.getUserByEmail(jwtService.parseToken(token));
+
+        Page<Event> eventsPage = eventService.getAllEventsByOwner(eventPageable, user.getId());
+
+        if(eventsPage != null) {
+            return new ResponseEntity<Slice<EventDTO>>(eventDtoBuilder.convertToDto(eventsPage), HttpStatus.OK);
+        } else {
+            // TODO: wr1 3r c
+            return  ResponseEntity.badRequest().body("End of pages");
+        }
     }
 }

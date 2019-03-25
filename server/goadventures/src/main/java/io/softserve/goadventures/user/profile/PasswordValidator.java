@@ -1,4 +1,4 @@
-package io.softserve.goadventures.profile;
+package io.softserve.goadventures.user.profile;
 
 import org.springframework.stereotype.Service;
 import java.util.regex.Matcher;

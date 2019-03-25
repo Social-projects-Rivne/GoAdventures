@@ -12,13 +12,11 @@ import io.softserve.goadventures.gallery.model.Gallery;
 import io.softserve.goadventures.gallery.repository.GalleryRepository;
 import io.softserve.goadventures.user.service.UserNotFoundException;
 import io.softserve.goadventures.user.service.UserService;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -91,7 +89,7 @@ public class EventController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<?> getAllEvents(@PageableDefault(size = 15, sort = "id") Pageable eventPageable) {
+    public ResponseEntity<?> getAllEvents(/*@PageableDefault(size = 15, sort = "id")*/ Pageable eventPageable) {
         Page<Event> eventsPage = eventService.getAllEvents(eventPageable);
         if(eventsPage != null) {
             int nextPageNum = eventsPage.getNumber() + 1;

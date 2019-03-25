@@ -5,8 +5,12 @@ import io.softserve.goadventures.event.repository.EventRepository;
 import io.softserve.goadventures.gallery.repository.GalleryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class EventService{
@@ -36,5 +40,16 @@ public class EventService{
     public Page<Event> getAllEvents(Pageable eventPageable) {
         Page<Event> eventPage = eventRepository.findAll(eventPageable);
         return eventPage;
+    }
+
+    public Page<Event> getAllEventsByOwner(Pageable pageable, Integer id) {
+        List<Event> list = new ArrayList<>();
+
+        for (Event e : eventRepository.findAll(pageable)) {
+            if (id.equals(e.getOwner().getId())) {
+                list.add(e);
+            }
+        }
+        return new PageImpl<>(list);
     }
 }

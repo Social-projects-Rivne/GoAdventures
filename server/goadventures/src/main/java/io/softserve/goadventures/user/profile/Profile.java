@@ -1,4 +1,4 @@
-package io.softserve.goadventures.profile;
+package io.softserve.goadventures.user.profile;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -78,7 +78,7 @@ public class Event {
                 ", location='" + location + '\'' +
                 ", description='" + description + '\'' +
                 ", statusId=" + statusId +
-                ", category=" + category +
+                ", category=" + category.getCategoryName() +
                 ", participants=" + participants +
                 '}';
     }
