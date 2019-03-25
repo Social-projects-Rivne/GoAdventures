@@ -77,9 +77,9 @@ public class Event {
                 ", endDate='" + endDate + '\'' +
                 ", location='" + location + '\'' +
                 ", description='" + description + '\'' +
-                ", statusId=" + statusId +
+                ", statusId=" + statusId +/*
                 ", category=" + category.getCategoryName() +
-                ", participants=" + participants +
+                ", participants=" + participants +*/
                 '}';
     }
 }
