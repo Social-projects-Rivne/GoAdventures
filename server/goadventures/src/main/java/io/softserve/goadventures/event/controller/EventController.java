@@ -2,7 +2,6 @@ package io.softserve.goadventures.event.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import io.softserve.goadventures.event.category.Category;
 import io.softserve.goadventures.event.model.Event;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import io.softserve.goadventures.event.dto.EventDTO;
 import io.softserve.goadventures.event.repository.CategoryRepository;
 import io.softserve.goadventures.event.repository.EventRepository;
@@ -54,21 +52,14 @@ public class EventController {
         event.setCategory(category);
         eventService.addEvent(event);
         HttpHeaders httpHeaders = new HttpHeaders();
-        // event.setStatusId(EventStatus.CREATED.getEventStatus());
-        // eventService.addEvent(event);
 
         return ResponseEntity.ok().headers(httpHeaders).body("Event created");
     }
-
-
-
 
     @PostMapping("/create/")
     public ResponseEntity<String> createEvent(@RequestBody Event event) {
         eventService.addEvent(event);
         HttpHeaders httpHeaders = new HttpHeaders();
-        // event.setStatusId(EventStatus.CREATED.getEventStatus());
-        // eventService.addEvent(event);
 
         return ResponseEntity.ok().headers(httpHeaders).body("Event created");
     }
