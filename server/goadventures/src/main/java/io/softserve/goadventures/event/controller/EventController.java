@@ -1,13 +1,16 @@
 package io.softserve.goadventures.event.controller;
 
-import java.awt.print.Pageable;
-import java.net.http.HttpHeaders;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.sun.org.slf4j.internal.LoggerFactory;
-
+import io.softserve.goadventures.event.category.Category;
+import io.softserve.goadventures.event.model.Event;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +24,6 @@ import io.softserve.goadventures.event.service.EventDtoBuilder;
 import io.softserve.goadventures.event.service.EventService;
 import io.softserve.goadventures.gallery.model.Gallery;
 import io.softserve.goadventures.gallery.repository.GalleryRepository;
-import sun.jvm.hotspot.debugger.Page;
 
 @CrossOrigin
 @RestController
@@ -50,6 +52,19 @@ public class EventController {
             @RequestBody Event event) {
         Category category = categoryRepository.findByCategoryName(categoryId);
         event.setCategory(category);
+        eventService.addEvent(event);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        // event.setStatusId(EventStatus.CREATED.getEventStatus());
+        // eventService.addEvent(event);
+
+        return ResponseEntity.ok().headers(httpHeaders).body("Event created");
+    }
+
+
+
+
+    @PostMapping("/create/")
+    public ResponseEntity<String> createEvent(@RequestBody Event event) {
         eventService.addEvent(event);
         HttpHeaders httpHeaders = new HttpHeaders();
         // event.setStatusId(EventStatus.CREATED.getEventStatus());

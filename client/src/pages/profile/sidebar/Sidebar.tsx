@@ -1,15 +1,9 @@
 import React from 'react';
-import { withCookies } from 'react-cookie';
 import { UserDto } from '../../../interfaces/User.dto';
 import avatar from '../images/Person.png';
 import './Sidebar.scss';
 
-interface SelectProtected {
-  readonly wrapperElement: HTMLDivElement;
-  readonly inputElement: HTMLInputElement;
-}
-
-class Sidebar extends React.Component<UserDto, UserDto> {
+export class Sidebar extends React.Component<UserDto, UserDto> {
   //   private cookies: Cookies;
   constructor(props: any) {
     super(props);
@@ -79,5 +73,3 @@ class Sidebar extends React.Component<UserDto, UserDto> {
     );
   }
 }
-
-export default withCookies(Sidebar);

@@ -6,8 +6,7 @@ import { InputSettings } from '../../components/dialog-window/interfaces/input.i
 import { UserDto } from '../../interfaces/User.dto';
 import { editProfileSchema } from '../../validationSchemas/authValidation';
 import './Profile.scss';
-import Sidebar from './sidebar/Sidebar';
-
+import { Sidebar } from './sidebar/Sidebar';
 interface ProfileState {
   userProfile: UserDto;
   userEventList: any;
@@ -70,8 +69,6 @@ export class Profile extends Component<UserDto, ProfileState> {
     opacity: 0.9,
     width: '100%'
   };
-
-  // початкова ініціалізація(null)
   constructor(props: any) {
     super(props);
 
@@ -105,7 +102,6 @@ export class Profile extends Component<UserDto, ProfileState> {
   }
 
   public render() {
-    // рендер екземпляров сайдбар і юзерівенліст
     return (
       <div className='profile-page'>
         <div className='sidebar'>

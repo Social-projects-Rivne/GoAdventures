@@ -1,11 +1,12 @@
 package io.softserve.goadventures.event.repository;
 
-import java.awt.print.Pageable;
 
+import io.softserve.goadventures.event.model.Event;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-import sun.jvm.hotspot.debugger.Page;
 
 @Repository
 public interface EventRepository extends PagingAndSortingRepository<Event, Integer> {

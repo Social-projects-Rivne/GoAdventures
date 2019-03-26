@@ -1,13 +1,13 @@
 package io.softserve.goadventures.event.service;
 
-import java.awt.print.Pageable;
-
+import io.softserve.goadventures.event.model.Event;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import io.softserve.goadventures.event.repository.EventRepository;
 import io.softserve.goadventures.gallery.repository.GalleryRepository;
-import sun.jvm.hotspot.debugger.Page;
 
 @Service
 public class EventService {
