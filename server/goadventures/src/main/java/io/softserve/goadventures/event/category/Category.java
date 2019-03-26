@@ -2,8 +2,10 @@ package io.softserve.goadventures.event.category;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.softserve.goadventures.event.model.Event;
-import lombok.*;
-
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import javax.persistence.*;
 import java.util.Set;
 

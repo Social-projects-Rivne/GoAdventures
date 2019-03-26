@@ -12,20 +12,9 @@ public class Profile {
     private String location;
     private int phone;
 
-    @Override
-    public String toString() {
-        return "Profile{" +
-                "fullName='" + fullName + '\'' +
-                ", userName='" + userName + '\'' +
-                ", email='" + email + '\'' +
-                '}';
-    }
-
     public Profile(String fullName, String userName, String email) {
         this.fullName = fullName;
         this.userName = userName;
         this.email = email;
-
-
     }
 }
