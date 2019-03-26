@@ -46,7 +46,7 @@ export class EventsDetail extends Component<any, any> {
           </div>
           <div className='col-6'>
             <div className='jumboton jumbotron-fluid'>
-              <Gallery />
+              <Gallery {...this.state.eventProps.gallery} />
             </div>
           </div>
           <div className='col-3'>Participants</div>

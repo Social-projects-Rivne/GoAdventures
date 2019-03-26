@@ -2,6 +2,7 @@ package io.softserve.goadventures.event.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.softserve.goadventures.event.category.Category;
 import io.softserve.goadventures.gallery.model.Gallery;
 import io.softserve.goadventures.user.model.User;
@@ -42,9 +43,10 @@ public class Event {
     @Column(name = "status_id")
     private int statusId;
 
-    @JsonBackReference(value = "gallery_id")
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "gallery_id", referencedColumnName = "id")
+//    @JsonBackReference(value = "gallery_id")
+    @JsonManagedReference
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "eventId")
+    @JoinColumn(name = "gallery", referencedColumnName = "id")
     private Gallery gallery;
 
     @JsonBackReference

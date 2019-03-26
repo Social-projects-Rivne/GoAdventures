@@ -20,8 +20,14 @@ export class Events extends Component<EventDto, EventState> {
         {
           description: '',
           endDate: '',
+          gallery: {
+            id: undefined,
+            imageUrls: ['https://via.placeholder.com/250'],
+            isDeleted: undefined
+          },
           id: 0,
           location: '',
+          participants: [],
           startDate: '',
           topic: ''
         }

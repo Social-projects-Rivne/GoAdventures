@@ -106,8 +106,10 @@ public class EventController {
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.set("nextpage", uriComponentsBuilder.toString());
             System.out.println(eventDtoBuilder.convertToDto(eventsPage));
-
-            return new ResponseEntity<Slice<EventDTO>>(eventDtoBuilder.convertToDto(eventsPage), httpHeaders,
+            Slice<EventDTO> t = eventDtoBuilder.convertToDto(eventsPage);
+            logger.info("Event converted to dto", t.getContent());
+            logger.info("Event converted to dto", t.getContent().get(0));
+            return new ResponseEntity<Slice<EventDTO>>(t, httpHeaders,
                     HttpStatus.OK);
         } else {
             // TODO: wr1 3r c
@@ -126,7 +128,7 @@ public class EventController {
     }
 
     @GetMapping("/gallery/{eventId}")
-    public Iterable<Gallery> getAllGalleryByEventId(@PathVariable(value = "eventId") int eventId, Pageable pageable) {
+    public Gallery getAllGalleryByEventId(@PathVariable(value = "eventId") int eventId) {
         Event event = eventRepository.findById(eventId);
         return galleryRepository.findByEventId(event.getId());
     }
