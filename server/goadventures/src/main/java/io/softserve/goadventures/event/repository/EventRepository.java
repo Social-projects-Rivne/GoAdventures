@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface EventRepository extends PagingAndSortingRepository<Event, Integer> {
     Event findByTopic(String topic);
     Event findById(int id);
+    Event deleteById(int id);
     Page<Event> findByCategoryId(int eventId, Pageable pageable);
 }
 

@@ -33,6 +33,10 @@ public class EventService{
         eventRepository.save(event);
     }
 
+    public Event deleteEvent(int id){
+        return eventRepository.deleteById(id);
+    }
+
     public Page<Event> getAllEvents(Pageable eventPageable) {
         Page<Event> eventPage = eventRepository.findAll(eventPageable);
         return eventPage;

@@ -71,6 +71,16 @@ public class EventController {
         return ResponseEntity.ok().headers(httpHeaders).body("Event created");
     }
 
+    @DeleteMapping("/delete/{eventId}")
+    public ResponseEntity<String> deleteEvent(@PathVariable(value = "eventId") int eventId){
+
+        eventService.deleteEvent(eventId);
+        
+        HttpHeaders httpHeaders = new HttpHeaders();
+
+        return ResponseEntity.ok().headers(httpHeaders).body("Event deleted");
+    }
+
     @PostMapping("/category")
     public ResponseEntity<String> createCategory(@RequestBody Category category) {
         category.setEvents(null);

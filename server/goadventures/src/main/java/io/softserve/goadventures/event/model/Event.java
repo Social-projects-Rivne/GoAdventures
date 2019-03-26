@@ -42,11 +42,11 @@ public class Event {
     private int statusId;
 
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.REMOVE)
     @JoinTable(
             name = "event_participants",
             joinColumns = { @JoinColumn(name = "event_id", referencedColumnName = "id") },
@@ -55,7 +55,7 @@ public class Event {
     private Set<User> participants = new HashSet<>();
 
     @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "owner")
     private User owner;
 
