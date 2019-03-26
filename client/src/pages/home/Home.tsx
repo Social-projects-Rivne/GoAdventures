@@ -1,3 +1,4 @@
+
 import React, { Component, CSSProperties } from 'react';
 import { RouterProps } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -8,10 +9,7 @@ import { Dialog } from '../../components/';
 import { InputSettings } from '../../components/dialog-window/interfaces/input.interface';
 import { AuthContext } from '../../context/auth.context';
 import { UserDto } from '../../interfaces/User.dto';
-import {
-  SigninSchema,
-  SignupSchema
-} from '../../validationSchemas/authValidation';
+import { SigninSchema, SignupSchema } from '../../validationSchemas/authValidation';
 import './Home.scss';
 
 export class Home extends Component<RouterProps, any> {
