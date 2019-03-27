@@ -9,6 +9,14 @@ html {
   height: 100%;
 }
 
+
+img.rounded-avatar-sm {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin: 0 10px 0 10px;
+}
+
 /*
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',

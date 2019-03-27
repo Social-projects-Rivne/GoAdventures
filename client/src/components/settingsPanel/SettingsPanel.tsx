@@ -18,9 +18,9 @@ export class SettingsPanel extends Component<PanelProps, any> {
         const { left, middle, right } = this.props.children;
         return (
             <div className='jumbotron jumbotron-fluid SettingsPanel'>
-                {left ? <div>{left}</div> : null}
-                {middle ? <div>{middle}</div> : null}
-                {right ? <div>{right}</div> : null}
+                {left ? <div className='d-flex flex-column h-100'>{left}</div> : null}
+                {middle ? <div className='d-flex flex-column h-100'>{middle}</div> : null}
+                {right ? <div className='d-flex flex-column h-100'>{right}</div> : null}
             </div>
         );
     }
