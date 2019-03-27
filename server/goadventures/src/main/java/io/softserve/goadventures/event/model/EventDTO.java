@@ -17,11 +17,15 @@ public class EventDTO {
 
     private String topic;
 
-    private Date startDate;
+    private String startDate;
 
     private String endDate;
 
     private String location;
+
+    private Double latitude;
+
+    private Double longitude;
 
     private String description;
 

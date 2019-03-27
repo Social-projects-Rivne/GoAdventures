@@ -20,9 +20,8 @@ public class Event {
     @Column(name = "topic")
     private String topic;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "start_date")
-    private Date startDate;
+    private String startDate;
 
     @Column(name = "end_date")
     private String endDate;
@@ -30,7 +29,13 @@ public class Event {
     @Column(name = "location")
     private String location;
 
-    @Column(name = "description")
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
+
+    @Column(name = "description", columnDefinition="TEXT")
     private String description;
 
     @Column(name = "status_id")
@@ -41,11 +46,13 @@ public class Event {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    public Event(String topic, Date startDate, String endDate, String location, String description, Category category) {
+    public Event(String topic, String startDate, String endDate, String location, Double latitude, Double longitude, String description, Category category) {
         setTopic(topic);
         setStartDate(startDate);
         setEndDate(endDate);
         setLocation(location);
+        setLatitude(latitude);
+        setLongitude(longitude);
         setDescription(description);
         setCategory(category);
     }

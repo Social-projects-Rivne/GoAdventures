@@ -48,7 +48,7 @@ public class EventService{
 
             returnEvents.add(
                     new EventDTO(event.getId(),event.getTopic(),event.getStartDate(),
-                                event.getEndDate(),event.getLocation(),event.getDescription(),
+                                event.getEndDate(),event.getLocation(),event.getLatitude(),event.getLongitude(), event.getDescription(),
                                 event.getStatusId(),
                                 category.getCategoryName(),gallery
                     ));

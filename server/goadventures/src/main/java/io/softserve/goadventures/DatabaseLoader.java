@@ -28,21 +28,42 @@ public class DatabaseLoader implements CommandLineRunner {
 
     @Override
     public void run(String... strings) throws Exception{
-        Long count = categoryRepository.countByCategoryName("Winter");
+        Long count = categoryRepository.countByCategoryName("Skateboarding");
         if (count == 0)
-        this.categoryRepository.save(new Category(1, "Winter", null));
-        count = categoryRepository.countByCategoryName("Summer");
+        this.categoryRepository.save(new Category(1, "Skateboarding", null));
+        count = categoryRepository.countByCategoryName("Motocross");
         if (count == 0)
-            this.categoryRepository.save(new Category(2, "Summer", null));
-        count = categoryRepository.countByCategoryName("Spring");
+            this.categoryRepository.save(new Category(2, "Motocross", null));
+        count = categoryRepository.countByCategoryName("Mountain biking");
         if (count == 0)
-            this.categoryRepository.save(new Category(3, "Spring", null));
-        count = categoryRepository.countByCategoryName("Autumn");
+            this.categoryRepository.save(new Category(3, "Mountain biking", null));
+        count = categoryRepository.countByCategoryName("Rock climbing");
         if (count == 0)
-            this.categoryRepository.save(new Category(4, "Autumn", null));
-        count = userRepository.countByFullname("Josh");
+            this.categoryRepository.save(new Category(4, "Rock climbing", null));
+        count = categoryRepository.countByCategoryName("Parkour");
         if (count == 0)
-        this.userRepository.save(new User("Josh","email@gmail.com","password"));
+            this.categoryRepository.save(new Category(5, "Parkour", null));
+        count = categoryRepository.countByCategoryName("Surfing");
+        if (count == 0)
+            this.categoryRepository.save(new Category(6, "Surfing", null));
+        count = categoryRepository.countByCategoryName("Kayaking");
+        if (count == 0)
+            this.categoryRepository.save(new Category(7, "Kayaking", null));
+        count = categoryRepository.countByCategoryName("Bungee jumpnig");
+        if (count == 0)
+            this.categoryRepository.save(new Category(8, "Bungee jumping", null));
+        count = categoryRepository.countByCategoryName("Sky diving");
+        if (count == 0)
+            this.categoryRepository.save(new Category(9, "Sky diving", null));
+        count = categoryRepository.countByCategoryName("Snowboarding");
+        if (count == 0)
+            this.categoryRepository.save(new Category(10, "Snowboarding", null));
+        count = categoryRepository.countByCategoryName("Other");
+        if (count == 0)
+            this.categoryRepository.save(new Category(11, "Other", null));
+        count = userRepository.countByFullname("Ioann");
+        if (count == 0)
+        this.userRepository.save(new User("Ioann","email@gmail.com","password"));
         User user = userService.getUserByEmail("email@gmail.com");
         user.setStatusId(UserStatus.ACTIVE.getUserStatus());
         this.userService.updateUser(user);
