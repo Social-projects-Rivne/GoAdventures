@@ -8,10 +8,15 @@ import L from 'leaflet';
 import LCG from 'leaflet-control-geocoder';
 import { DropDown } from '../../components';
 import DatePicker from "react-datepicker";
+import { RefObject } from 'react';
 
-var category = 'Skateboarding';
-var leafletMap = createRef<LeafletMap>();
-var Rows = 3;
+interface ExtendetRef extends RefObject<LeafletMap> {
+    leafletElement: any;
+}
+
+let category = 'Skateboarding';
+let leafletMap = createRef<LeafletMap>() as ExtendetRef;
+let Rows = 3;
 
 export class CreateEvent extends Component<any, any> {
 
