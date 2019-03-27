@@ -18,9 +18,6 @@ class Sidebar extends React.Component<UserDto, UserDto> {
     };
   }
 
-  public toggleEvents() {
-  }
-
   public render() {
     return (
       <ProfileContext.Consumer>
@@ -70,13 +67,10 @@ class Sidebar extends React.Component<UserDto, UserDto> {
               <button className="btn btn-secondary disabled events" onClick={togleMyEvents}>My events</button>
             </div>
           </div>
-          
-          
         </div>
         )}
       </ProfileContext.Consumer>
     );
   }
 }
-
 export default withCookies(Sidebar);

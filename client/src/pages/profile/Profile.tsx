@@ -136,18 +136,20 @@ export class Profile extends Component<UserDto, ProfileState> {
           <Sidebar {...this.state.userProfile} />
         </div>
         <div className='Profile__content'>
-          {this.state.choose === "events" ? (
-            <ShowEvents {...this.state.userEventList}/>
-          ) : (
-            <Dialog
-              validationSchema={editProfileSchema}
-              handleSubmit={this.handleSubmit}
-              inputs={this.editFormInputSettings}
-              button_text='Update'
-              header='Edit your profile'
-              inline_styles={this.editFormDialogStyles}
-            />
-          )}
+          {
+            this.state.choose === "events" ? (
+              <ShowEvents {...this.state.userEventList}/>
+            ) : (
+              <Dialog
+                validationSchema={editProfileSchema}
+                handleSubmit={this.handleSubmit}
+                inputs={this.editFormInputSettings}
+                button_text='Update'
+                header='Edit your profile'
+                inline_styles={this.editFormDialogStyles}
+              />
+            )
+          }
         </div>
       </div>
     </ProfileContext.Provider>

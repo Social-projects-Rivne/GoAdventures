@@ -10,10 +10,12 @@ import io.softserve.goadventures.event.service.EventDtoBuilder;
 import io.softserve.goadventures.event.service.EventService;
 import io.softserve.goadventures.gallery.model.Gallery;
 import io.softserve.goadventures.gallery.repository.GalleryRepository;
+import io.softserve.goadventures.user.model.User;
 import io.softserve.goadventures.user.service.UserNotFoundException;
 import io.softserve.goadventures.user.service.UserService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.mongo.ReactiveStreamsMongoClientDependsOnBeanFactoryPostProcessor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -129,5 +131,30 @@ public class EventController {
     @GetMapping("/{eventId}")
     public Event getEvent(@PathVariable(value = "eventId") int eventId) {
         return eventService.getEventById(eventId);
+    }
+
+    @DeleteMapping("delete")
+    public ResponseEntity<?> deleteEventOwner(@RequestHeader(value = "Authorization") String token,
+                                              @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
+        Event event = eventService.getEventById(eventId);
+        User user = userService.getUserByEmail(jwtService.parseToken(token));
+        if (eventService.delete(user, event)) {
+            return ResponseEntity.ok("Event deleted");
+        } else {
+            return ResponseEntity.badRequest().body("Delete doesn't work");
+        }
+    }
+
+    @PostMapping("isOwner")
+    public ResponseEntity<?> isOwner(@RequestHeader(value = "Authorization") String token,
+                                     @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
+        LoggerFactory.getLogger("IS OWNER EVENT").info("Event ID is : " + eventId
+                + " , OwnerId is : " + userService.getUserByEmail(jwtService.parseToken(token)).getId());
+        Event event = eventService.getEventById(eventId);
+        User user = userService.getUserByEmail(jwtService.parseToken(token));
+
+        return user.getId() == event.getOwner().getId() ?
+                ResponseEntity.ok().body("IS OWNER") :
+                ResponseEntity.badRequest().body("IS NOT OWNER");
     }
 }

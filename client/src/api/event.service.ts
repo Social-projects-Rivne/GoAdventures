@@ -62,3 +62,21 @@ export const getEventData = async (): Promise<AxiosResponse> =>
       'Content-Type': 'application/json'
     }
   });
+
+export const deleteEvent = async (data: number): Promise<any> => 
+  await axios.delete(`${serverUrl}/event/delete`, {
+    headers: {
+      'EventId': data,
+      'Authorization': `Bearer ${cookies.get('tk879n')}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
+export const isOwner = async (data: number): Promise<any> => 
+  await axios.post(`${serverUrl}/event/isOwner`, null, {
+    headers: {
+      'EventId': data,
+      'Authorization': `Bearer ${cookies.get('tk879n')}`,
+      'Content-Type': 'application/json'
+    }
+  });

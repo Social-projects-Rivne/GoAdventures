@@ -3,6 +3,7 @@ package io.softserve.goadventures.event.service;
 import io.softserve.goadventures.event.model.Event;
 import io.softserve.goadventures.event.repository.EventRepository;
 import io.softserve.goadventures.gallery.repository.GalleryRepository;
+import io.softserve.goadventures.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -51,5 +52,14 @@ public class EventService{
             }
         }
         return new PageImpl<>(list);
+    }
+
+    public boolean delete(User user, Event event) {
+        if (user.getId() == event.getOwner().getId()) {
+            eventRepository.delete(event);
+            return true;
+        } else {
+            return false;
+        }
     }
 }
