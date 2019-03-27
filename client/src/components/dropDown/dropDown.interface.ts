@@ -1,6 +1,5 @@
 export interface DropDownSettings {
     categories?: DropDownCategory[];
-    categ?:string;
 }
 
 export interface DropDownCategory {

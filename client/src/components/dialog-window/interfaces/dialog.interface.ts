@@ -9,11 +9,10 @@ export interface DialogSettings {
     validationSchema?: object;
     inputs: InputSettings[];
     inline_styles?: CSSProperties;
-    handleSubmit: (data: any, categ?:string) => Promise<string>;
+    handleSubmit: (data: any) => Promise<string>;
     redirect?: {
         routerProps: RouterProps,
         redirectURL: string;
     };
     childComponents?: ReactNode;
-    event?:boolean;
 }

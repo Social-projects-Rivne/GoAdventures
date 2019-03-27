@@ -9,4 +9,3 @@ export * from './contextRoute/ContextRoute';
 export * from './dropDown/DropDown';
 export * from './settingsPanel/SettingsPanel';
 export * from '../pages/profile/sidebar/Sidebar';
-export * from './Datepicker/Datepicker';
