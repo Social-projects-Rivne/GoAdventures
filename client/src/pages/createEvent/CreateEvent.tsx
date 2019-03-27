@@ -91,107 +91,119 @@ export class CreateEvent extends Component<any, any> {
     public render() {
         return (
 
-            
-
-                <div className='container-fluid'>
-
-                    <div className="row">
-                        <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12'>
-                            
-
-                                <div className="form-group row">
-                                    <label className='col-sm-2 col-form-label' htmlFor="Topic">Name of event</label>
-                                    <div className="col-sm-10">
-                                        <input type="text" className="form-control" id="Topic"
-                                            placeholder="enter name of event"
-                                            onChange={this.handleTopicChange} value={this.state.topic} />
-                                    </div>
-                                </div>
 
 
-                                <div className="form-group-row">
-                                    <label className='col-sm-2 col-form-label' htmlFor="Description">Description</label>
-                                    <div className="col-sm-10">
-                                        <textarea className="form-control" id="Description" placeholder="Enter description" rows={Rows} onChange={this.handleDescriptionChange}></textarea>
-                                    </div>
-                                </div>
+            <div className='container'>
 
-                                <div className="form-group row">
-                                <label className='col-sm-2 col-form-label' htmlFor="Location">
-                                    Location
-                                    </label>
-                                    <div className="col-sm-10">
-                        <input type="text" className="form-control" id="Location"
-                                        aria-describedby="LocationHelp" placeholder="Choose location on map"
-                                        onChange={this.handleLocationChange} value={this.state.location} readOnly />
-                                </div>
-                                </div>
 
-                                <label className='list-group-item' htmlFor="Location">
-                                    Choose category for the event
-                    <DropDown onCategoryChange={this.handleCategory} />
-                                </label>
-                                <label className='list-group-item' htmlFor="Location">
-                                    Choose start date
-                                    <p></p>
-                                    <DatePicker
-                                        selected={this.state.startDate}
-                                        onChange={this.handleStartDate}
-                                        showTimeSelect
-                                        timeFormat="HH:mm"
-                                        timeIntervals={15}
-                                        timeCaption="time"
-                                        dateFormat="MMMM d, yyyy h:mm aa"
-                                    />
-                                </label>
-                                <label className='list-group-item' htmlFor="Location">
-                                    Choose end date
-                                    <p></p>
-                                    <DatePicker
-                                        selected={this.state.endDate}
-                                        onChange={this.handleEndDate}
-                                        showTimeSelect
-                                        timeFormat="HH:mm"
-                                        timeIntervals={15}
-                                        timeCaption="time"
-                                        dateFormat="MMMM d, yyyy h:mm aa"
-                                    />
-                                </label>
-                                <button type="button" className="btn btn-primary" onClick={this.handleSubmit} > Save </button>
-                            
-                        </div>
-                    </div>
-                    <div className='row' id='map'>
-                        <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 d-sm-flex col d-none align-self-center'>
-                            <LeafletMap
-                                center={[50.37, 26.13]}
-                                zoom={6}
-                                attributionControl={true}
-                                zoomControl={true}
-                                doubleClickZoom={true}
-                                scrollWheelZoom={true}
-                                dragging={true}
-                                animate={true}
-                                easeLinearity={0.35}
-                                onClick={this.handleCoord}
-                                ref={(el: any) => leafletMap = el}
-                            >
-                                <TileLayer
-                                    url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
-                                />
-                                {this.state.currentPos && <Marker position={this.state.currentPos} draggable={true}>
-                                    <Popup position={this.state.currentPos}>
-                                        Current location: <pre>{JSON.stringify(this.state.currentPos, null, 2)}</pre>
-                                    </Popup>
-                                </Marker>}
-                            </LeafletMap>
-                            <div className='Home-heading d-flex flex-column align-items-baseline'>
-                            </div>
 
-                        </div>
+
+                <h1 className="text-center">New Event</h1>
+                <div className="form-group row">
+                    <label className='col-sm-4 col-form-label text-right' htmlFor="Topic">Name of event</label>
+                    <div className="col-sm-8">
+                        <input type="text" className="form-control" id="Topic"
+                            placeholder="enter name of event"
+                            onChange={this.handleTopicChange} value={this.state.topic} />
                     </div>
                 </div>
-            
+
+
+                <div className="form-group row">
+                    <label className='col-sm-4 col-form-label text-right' htmlFor="Description">Description</label>
+                    <div className="col-sm-8">
+                        <textarea className="form-control" id="Description" placeholder="Enter description" rows={Rows} onChange={this.handleDescriptionChange}></textarea>
+                    </div>
+                </div>
+
+                <div className="form-group row">
+                    <label className='col-sm-4 col-form-label text-right' htmlFor="Location">Location</label>
+                    <div className="col-sm-8">
+                        <input type="text" className="form-control" id="Location"
+                            aria-describedby="LocationHelp" placeholder="Choose location on map"
+                            onChange={this.handleLocationChange} value={this.state.location} readOnly />
+                    </div>
+                </div>
+
+
+
+
+                <div className="form-group row">
+                    <label className='col-sm-4 col-form-label text-right' htmlFor="Category">Choose category for the event</label>
+                    <div className="col-sm-8">
+                        <DropDown id="Category" onCategoryChange={this.handleCategory} />
+                    </div>
+
+                </div>
+                <div className="form-group row">
+                    <label className='col-sm-4 col-form-label text-right' htmlFor="StartDate">Start date</label>
+                    <div className="col-sm-3">
+                        <DatePicker
+                            id="StartDate"
+                            selected={this.state.startDate}
+                            onChange={this.handleStartDate}
+                            showTimeSelect
+                            timeFormat="HH:mm"
+                            timeIntervals={15}
+                            timeCaption="time"
+                            withPortal
+                            dateFormat="MMMM d, yyyy h:mm aa"
+                        />
+                    </div>
+
+
+                    <label className='col-sm-2 col-form-label text-right' htmlFor="EndDate">End date</label>
+                    <div className="col-sm-3">
+                        <DatePicker
+                            id="EndDate"
+                            selected={this.state.endDate}
+                            onChange={this.handleEndDate}
+                            showTimeSelect
+                            timeFormat="HH:mm"
+                            timeIntervals={15}
+                            timeCaption="time"
+                            withPortal
+                            dateFormat="MMMM d, yyyy h:mm aa"
+
+                        />
+                    </div>
+
+                </div>
+
+                <div className='row' >
+                    <div className='col' id="map" >
+                        <LeafletMap
+                            center={[50.37, 26.13]}
+                            zoom={6}
+                            attributionControl={true}
+                            zoomControl={true}
+                            doubleClickZoom={true}
+                            scrollWheelZoom={true}
+                            dragging={true}
+                            animate={true}
+                            easeLinearity={0.35}
+                            onClick={this.handleCoord}
+                            ref={(el: any) => leafletMap = el}
+                        >
+                            <TileLayer
+                                url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
+                            />
+                            {this.state.currentPos && <Marker position={this.state.currentPos} draggable={true}>
+                                <Popup position={this.state.currentPos}>
+                                    Current location: <pre>{JSON.stringify(this.state.currentPos, null, 2)}</pre>
+                                </Popup>
+                            </Marker>}
+                        </LeafletMap>
+                        <div className='Home-heading d-flex flex-column align-items-baseline'>
+                        </div>
+
+                    </div>
+                </div>
+                <div className="row justify-content-center btns-content">
+                    <button type="button" className="btn btn-primary col-lg-2 col-sm-12" onClick={this.handleSubmit} > Save </button>
+                </div>
+            </div>
+
         );
     }
 }
