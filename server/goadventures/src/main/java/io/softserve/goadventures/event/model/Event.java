@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -42,11 +43,11 @@ public class Event {
     private int statusId;
 
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "event_participants",
             joinColumns = { @JoinColumn(name = "event_id", referencedColumnName = "id") },
@@ -55,7 +56,7 @@ public class Event {
     private Set<User> participants = new HashSet<>();
 
     @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "owner")
     private User owner;
 
@@ -77,9 +78,28 @@ public class Event {
                 ", endDate='" + endDate + '\'' +
                 ", location='" + location + '\'' +
                 ", description='" + description + '\'' +
-                ", statusId=" + statusId +
-                ", category=" + category +
-                ", participants=" + participants +
+                ", statusId=" + statusId + '\'' +
+                ", owner=" + owner + '\'' +/*
+                ", category=" + category.getCategoryName() +
+                ", participants=" + participants +*/
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Event event = (Event) o;
+        return id == event.id &&
+                topic.equals(event.topic) &&
+                startDate.equals(event.startDate) &&
+                endDate.equals(event.endDate) &&
+                location.equals(event.location) &&
+                category.equals(event.category);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, topic, startDate, endDate, location, category);
     }
 }

@@ -1,17 +1,52 @@
 import React, { Component } from 'react';
 import { Gallery, SettingsPanel } from '../../../components';
 import { EventDto } from '../../../interfaces/Event.dto';
+import { deleteEvent, isOwner } from '../../../api/event.service';
+import { AxiosResponse } from 'axios';
 
 export class EventsDetail extends Component<any, any> {
   constructor(props: EventDto) {
     super(props);
     this.state = {
-      eventProps: { ...this.props.routerProps.location.state }
+      eventProps: { ...this.props.routerProps.location.state },
+      isOwner: false
     };
+    
+    this.handleDelete = this.handleDelete.bind(this);
+  }
+
+  public componentDidMount() {
+    isOwner(this.state.eventProps.id).then(
+      (res: AxiosResponse): any => {
+        console.log(res.status + " | " + res.statusText);
+        if(res.status >= 200 && res.status <= 300) {
+          this.setState({
+            isOwner: true
+          })
+        } else {
+          this.setState({
+            isOwner: false
+          })
+        }
+      }
+    )
+  }
+
+  public handleDelete() {
+    deleteEvent(this.state.eventProps.id)
+      .then(
+        (res: AxiosResponse): any => {
+          console.log(res.status);
+          if(res.status >= 200 && res.status <= 300) {
+            this.props.routerProps.history.push('/profile');
+          } else {
+            
+          }
+        }
+      )
   }
 
   public render() {
-    console.debug(this.props);
     return (
       <div className='container-fluid'>
         <SettingsPanel>
@@ -19,9 +54,19 @@ export class EventsDetail extends Component<any, any> {
             left: <h2>{this.state.eventProps.topic}</h2>,
             middle: <h2>{this.state.eventProps.location}</h2>,
             right: (
-              <button type='button' className='btn btn-success'>
-                Edit
-              </button>
+              <div>
+                {
+                  this.state.isOwner ? 
+                    (<div>
+                      <button type='button' className='btn btn-success'>
+                        Edit
+                      </button>
+                      <button onClick={this.handleDelete} type='button' className='btn btn-danger'>
+                        Delete
+                      </button>
+                    </div>) : null
+                }
+              </div> 
             )
           }}
         </SettingsPanel>
