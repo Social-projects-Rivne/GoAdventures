@@ -12,9 +12,8 @@ import AccountOverwiew from './accountOverview/accountOverview';
 interface ProfileState {
   userProfile: UserDto;
   userEventList: any;
-  // sidebarFlags:any;
-   showEditForm: boolean;
-  // showInfoForm: boolean;
+  showEditForm: boolean;
+  showInfoForm: boolean;
   // showPassForm: boolean;
 }
 
@@ -22,8 +21,9 @@ export class Profile extends Component<UserDto, ProfileState> {
   constructor(props: UserDto) {
     super(props);
 
-    this.state = { 
-      showEditForm: true,
+    this.state = {
+      showEditForm: false,
+      showInfoForm: true,
       userProfile: {
         fullname: '',
         username: '',
@@ -92,18 +92,20 @@ export class Profile extends Component<UserDto, ProfileState> {
   private editFormDialogStyles: CSSProperties = {
     opacity: 0.9,
     width: '100%',
-    
+
   };
 
 
-  
+
 
   public updateData = (value: ProfileState) => {
-    // this.setState({showEditForm: false })
-    this.setState({showEditForm:true})
- }
+    //this.setState({showEditForm: value.showEditForm})
+    this.setState({ showEditForm: true })
 
-  public handleSubmit(data: UserDto): Promise<string> {{}
+  }
+
+  public handleSubmit(data: UserDto): Promise<string> {
+    { }
     return changeUserData({ ...data });
   }
 
@@ -121,7 +123,7 @@ export class Profile extends Component<UserDto, ProfileState> {
     return (
       <div className='profile-page'>
         <div className='sidebar'>
-          <Sidebar {...this.state.userProfile} updateData = {this.updateData} />          
+          <Sidebar {...this.state.userProfile} updateData={this.updateData} />
         </div>
         <div className='Profile__content'>
           {this.state.showEditForm ? (
@@ -133,9 +135,9 @@ export class Profile extends Component<UserDto, ProfileState> {
               header='Edit your profile'
               inline_styles={this.editFormDialogStyles}
             />
-          ) : ( <div><AccountOverwiew {...this.state.userProfile}/> </div>
+          ) : (<div><AccountOverwiew {...this.state.userProfile} /> </div>
 
-          )}
+            )}
         </div>
       </div>
     );

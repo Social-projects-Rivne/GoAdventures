@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 @NoArgsConstructor
 @AllArgsConstructor
 @Service
-public class InvalidPasswordErrorMesage {
-    private String ErrorMesage = "Current password is wrong!";
+public class InvalidPasswordErrorMessage extends RuntimeException{
+    private String ErrorMessage = "Current password is wrong!";
 
 
 }

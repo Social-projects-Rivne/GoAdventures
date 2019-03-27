@@ -37,7 +37,7 @@ public class User {
     private String role;
 
     @Column(name = "avatar")
-    private String avatar;
+    private String avatarUrl;
 
 
     @Column(name = "status_id")

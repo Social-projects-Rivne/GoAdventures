@@ -1,95 +1,114 @@
-import React from 'react';
-import { withCookies } from 'react-cookie';
+import React, { SyntheticEvent, ChangeEvent } from 'react';
+import { withCookies, Cookies } from 'react-cookie';
 import { UserDto } from '../../../interfaces/User.dto';
-import avatar from '../images/Person.png';
 import './Sidebar.scss';
+import axios, { AxiosResponse } from 'axios';
+import { serverUrl } from '../../../api/url.config';
 
-interface SelectFlags {
+
+interface SidebarState {
   userProfile: UserDto;
   showEditForm: boolean;
-  
+  showInfoForm: boolean;
+  avatar: any;
 }
 
-class Sidebar extends React.Component<any, SelectFlags>{
-  //   private cookies: Cookies;
+
+const cookies: Cookies = new Cookies();
+class Sidebar extends React.Component<any, SidebarState>{
   constructor(props: any) {
     super(props);
-    // this.cookies = props.cookies;
     this.state = {
-      showEditForm: true,
+      avatar: null,
+      showEditForm: false,
+      showInfoForm: true,
       userProfile: {
         fullname: '',
         username: '',
         email: '',
         avatarUrl: ''
       },
-  
-    };
-  }
-  
 
+    };
+    this.uploadHandler = this.uploadHandler.bind(this);
+    this.fileSelectHandler = this.fileSelectHandler.bind(this);
+  }
+  public fileSelectHandler(event: ChangeEvent<HTMLInputElement>): void {
+    //console.log(event.target.files[0]);
+    !!event.target.files ?
+      this.setState({
+        avatar: event.target.files[0]
+      }) : null;
+
+  }
+  public uploadHandler() {
+    const formdata = new FormData();
+    formdata.append('image', this.state.avatar, "name");
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${cookies.get('tk879n')}`
+      }
+    };
+    axios.post(
+      `${serverUrl}/uploadAvatar`,
+      { params: { file: formdata } },
+      config
+    ).then(response => {
+      console.log(response);
+    }
+    )
+
+  }
   public render() {
-    // const { cookies } = this.props;
+
     return (
       <div className='Sidebar__card card text-white bg-dark'>
         <div className='card-header'>
           <div className='Sidebar__avatar'>
-            <img src={avatar} alt='user_avatar' />
+            <img src={this.props.avatarUrl || "..images/Person.png"} alt='user_avatar' />
           </div>
-          {/* <input type='file' onClick={this.fileSelectHandler}></input> */}
+          <input
+            type='file'
+            onChange={this.fileSelectHandler}
+
+          >
+          </input>
+          <button
+            onClick={this.uploadHandler}
+          >Upload</button>
         </div>
 
         <div className='card-body'>
-          <div ><button 
-                type="button"
-                
-                className="btn btn-secondary sidebarBt">
-                Account Overview
+          <div ><button
+            type="button"
+            id="special"
+            onClick={() => {
+              this.props.updateData(this.state.showInfoForm);
+            }
+            }
+            className="btn btn-secondary">
+            Account Overview
                 </button>
 
           </div>
-          <div ><button 
-                type="button" 
-                 
-                className="btn btn-secondary sidebarBt">Edit Profile
+          <div ><button
+            type="button"
+            onClick={() => {
+              this.props.updateData(this.state.showEditForm);
+            }
+            }
+            id="special"
+            className="btn btn-secondary">Edit Profile
                 </button>
 
           </div>
-          <div ><button 
-                type="button" 
-                className="btn btn-secondary sidebarBt">Change password
+          <div ><button
+            type="button"
+            id="special"
+            className="btn btn-secondary">Change password
                 </button>
 
-          </div>
-          <div className='list-group'>
-            <a className='list-group-item list-group-item-action active'>
-              <div className='d-flex w-100 justify-content-between'>
-                <h5 className='mb-1'>
-                  <p>Email:</p>
-                  {this.props.email}
-                </h5>
-              </div>
-            </a>
-          </div>
-          <div className='list-group'>
-            <a className='list-group-item list-group-item-action active'>
-              <div className='d-flex w-100 justify-content-between'>
-                <h5 className='mb-1'>
-                  <p>Username:</p>
-                  {this.props.username}
-                </h5>
-              </div>
-            </a>
-          </div>
-          <div className='list-group'>
-            <a className='list-group-item list-group-item-action active'>
-              <div className='d-flex w-100 justify-content-between'>
-                <h5 className='mb-1'>
-                  <p>Fullname:</p>
-                  {this.props.fullname}
-                </h5>
-              </div>
-            </a>
           </div>
         </div>
       </div>
