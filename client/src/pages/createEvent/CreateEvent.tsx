@@ -11,7 +11,7 @@ import DatePicker from "react-datepicker";
 
 var category = 'Skateboarding';
 var leafletMap = createRef<LeafletMap>();
-var Rows = 4;
+var Rows = 3;
 
 export class CreateEvent extends Component<any, any> {
 
@@ -68,7 +68,7 @@ export class CreateEvent extends Component<any, any> {
     }
 
     handleCoord(e: any) {
-        const map = leafletMap.current;
+        const map = leafletMap.leafletElement;
         const geocoder = LCG.L.Control.Geocoder.nominatim();
         if (map != null) {
             geocoder.reverse(e.latlng, (map as any).options.crs.scale((map as any).getZoom()), (results: any) => {
@@ -84,23 +84,30 @@ export class CreateEvent extends Component<any, any> {
     }
 
     handleSubmit(event: any) {
-        createEventReq({ ...this.state }, category);
-        console.debug(this.state);
+        if (this.state.startDate < this.state.endDate) {
+            createEventReq({ ...this.state }, category);
+            console.debug(this.state);
+        }
+        else {
+            console.log('startDate > endDate ');
+            alert("End date must be greater than the start date!");
+        }
     }
 
     public render() {
+        const isDisabled = this.state.topic.length > 0 && this.state.description.length > 0;
+        console.log('Isdisabled ', isDisabled);
+        var inputClass = 'invalid';
+        if (!isDisabled)
+            inputClass = 'valid';
+
         return (
-
-
 
             <div className='container'>
 
-
-
-
                 <h1 className="text-center">New Event</h1>
                 <div className="form-group row">
-                    <label className='col-sm-4 col-form-label text-right' htmlFor="Topic">Name of event</label>
+                    <label className='col-sm-4 col-form-label text-right' htmlFor="Topic">Name of event(required)</label>
                     <div className="col-sm-8">
                         <input type="text" className="form-control" id="Topic"
                             placeholder="enter name of event"
@@ -110,7 +117,7 @@ export class CreateEvent extends Component<any, any> {
 
 
                 <div className="form-group row">
-                    <label className='col-sm-4 col-form-label text-right' htmlFor="Description">Description</label>
+                    <label className='col-sm-4 col-form-label text-right' htmlFor="Description">Description(required)</label>
                     <div className="col-sm-8">
                         <textarea className="form-control" id="Description" placeholder="Enter description" rows={Rows} onChange={this.handleDescriptionChange}></textarea>
                     </div>
@@ -124,9 +131,6 @@ export class CreateEvent extends Component<any, any> {
                             onChange={this.handleLocationChange} value={this.state.location} readOnly />
                     </div>
                 </div>
-
-
-
 
                 <div className="form-group row">
                     <label className='col-sm-4 col-form-label text-right' htmlFor="Category">Choose category for the event</label>
@@ -194,13 +198,11 @@ export class CreateEvent extends Component<any, any> {
                                 </Popup>
                             </Marker>}
                         </LeafletMap>
-                        <div className='Home-heading d-flex flex-column align-items-baseline'>
-                        </div>
 
                     </div>
                 </div>
                 <div className="row justify-content-center btns-content">
-                    <button type="button" className="btn btn-primary col-lg-2 col-sm-12" onClick={this.handleSubmit} > Save </button>
+                    <button type="button" className="btn btn-primary col-lg-2 col-sm-12" onClick={this.handleSubmit} disabled={!isDisabled}> Save </button>
                 </div>
             </div>
 
