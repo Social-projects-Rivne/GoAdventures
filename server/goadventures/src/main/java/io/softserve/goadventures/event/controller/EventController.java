@@ -1,5 +1,9 @@
 package io.softserve.goadventures.event.controller;
 
+import io.softserve.goadventures.auth.service.JWTService;
+import io.softserve.goadventures.user.model.User;
+import io.softserve.goadventures.user.service.UserNotFoundException;
+import io.softserve.goadventures.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import io.softserve.goadventures.event.category.Category;
@@ -9,6 +13,7 @@ import org.springframework.boot.autoconfigure.data.mongo.ReactiveStreamsMongoCli
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,23 +38,34 @@ public class EventController {
     private final CategoryRepository categoryRepository;
     private final GalleryRepository galleryRepository;
     private final EventDtoBuilder eventDtoBuilder;
+    private final JWTService jwtService;
+    private final UserService userService;
 
     @Autowired
     public EventController(EventService eventService, EventRepository eventRepository,
             CategoryRepository categoryRepository, GalleryRepository galleryRepository,
-            EventDtoBuilder eventDtoBuilder) {
+            EventDtoBuilder eventDtoBuilder, UserService userService, JWTService jwtService) {
         this.eventService = eventService;
         this.eventRepository = eventRepository;
         this.categoryRepository = categoryRepository;
         this.galleryRepository = galleryRepository;
         this.eventDtoBuilder = eventDtoBuilder;
+        this.jwtService = jwtService;
+        this.userService = userService;
     }
 
     @PostMapping("/create/{categoryId}")
     public ResponseEntity<String> createEvent(@PathVariable(value = "categoryId") String categoryId,
-            @RequestBody Event event) {
+                                              @RequestHeader(value = "Authorization") String token,
+                                              @RequestBody Event event) {
         Category category = categoryRepository.findByCategoryName(categoryId);
         event.setCategory(category);
+        try {
+            LoggerFactory.getLogger("Create Event Controller: ").info(userService.getUserByEmail(jwtService.parseToken(token)).toString());
+            event.setOwner(userService.getUserByEmail(jwtService.parseToken(token)));
+        } catch (UserNotFoundException e) {
+            e.printStackTrace();
+        }
         eventService.addEvent(event);
         HttpHeaders httpHeaders = new HttpHeaders();
 
