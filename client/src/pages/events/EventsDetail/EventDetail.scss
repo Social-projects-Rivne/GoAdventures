@@ -1,0 +1,12 @@
+.EventDetail {
+    & h2 {
+        font-size: 2vw;
+        font-weight: 700;
+    }
+
+    & .SettingsPanel {
+        & .content-column {
+            justify-content: center;
+        }
+    }
+}

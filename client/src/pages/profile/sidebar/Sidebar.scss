@@ -1,27 +1,40 @@
-.Sidebar-wrapper {
-  width: 30em;
-  max-width: 31em;
+.sidebar {
+  align-items: stretch;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-  height: 30em;
+  flex: 1 3;
 
+  & .Sidebar__card {
+    flex: 1 1 auto;
+  }
+  
   & .Sidebar__avatar {
-    width: 420px;
+    width: 100%;
     height: 250px;
+    display: flex;
+    justify-content: center;  
+  }
 
     & img {
       width: 250px;
       height: 250px;
       border-radius: 50%;
+      align-content: center;
     }
-  }
+}
 
-  .title{
-    color: white;
+.btn-choice {
+  text-align: center;
+  & button {
+    width: 45%;
+    font-size: 1.2em;
   }
 }
 
-.otstup {
-  margin-top: 20px;
+.edit {
+  margin-right: 0.5em;
+}
+
+.events {
+  margin-left: 0.5em;
 }

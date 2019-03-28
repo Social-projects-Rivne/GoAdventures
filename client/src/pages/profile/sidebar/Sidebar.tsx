@@ -1,56 +1,76 @@
 import React from 'react';
-
-import './Sidebar.scss';
 import { UserDto } from '../../../interfaces/User.dto';
 import avatar from '../images/Person.png';
-import { EditForm } from "./EditForm";
-import { withCookies, Cookies } from 'react-cookie';
+import './Sidebar.scss';
+import { ProfileContext } from '../../../context/profile.context';
+import { withCookies } from 'react-cookie';
 
-class Sidebar extends React.Component<any, UserDto>{
+class Sidebar extends React.Component<UserDto, UserDto> {
+  constructor(props: any) {
 
-    constructor(props: any) {
-        super(props);
-        
-        this.state = {
-            fullName: '',
-            userName: '',
-            email: '',
-            avatarUrl: '',
-            show: false
-        };
-    }
+    super(props);
+    this.state = {
+      fullname: '',
+      username: '',
+      email: '',
+      avatarUrl: '',
+      password: '',
+      newPassword: '',
+    };
+  }
 
-    toggle() {
-        this.setState({ show: !this.state.show });
-    }
-
-    render() {
-        const { cookies } = this.props;
-        return (
-            <div className='Sidebar-wrapper' >
-                <ul className="list-group list-group-flush">
-                    <li className="list-group-item">
-                        <h2 className="title"> My Profile  </h2>
-                    </li>
-                    <li className="list-group-item">
-
-                        <div className='Sidebar__avatar'>
-                            <img src={avatar} alt="user_avatar" />
-                        </div>
-                    </li>
-                    <li className="list-group-item">email: {this.props.email}</li>
-                    <li className="list-group-item">username: {this.props.userName} </li>
-                    <li className="list-group-item">fullname: {this.props.fullName}</li>
-                    <li className="list-group-item">
-                        <button type="button" className="btn btn-success disabled" onClick={this.toggle.bind(this)}>
-                            Edit Profile
-                        </button>
-                        {this.state.show ? <EditForm cookies={cookies}/> : null}
-                    </li>
-                </ul>
+  public render() {
+    return (
+      <ProfileContext.Consumer>
+        {({ togleMyEvents, togleEditProfile }) => (
+          <div className='Sidebar__card card text-white bg-dark'>
+            <div className='card-header'>
+              <h2 className='title'>My Profile</h2>
+              <div className='Sidebar__avatar'>
+                <img src={avatar} alt='user_avatar' />
+              </div>
             </div>
-        );
-    }
+            <div className='card-body'>
+              <div className='list-group'>
+                <a className='list-group-item list-group-item-action active'>
+                  <div className='d-flex w-100 justify-content-between'>
+                    <h5 className='mb-1'>
+                      <p>Email:</p>
+                      {this.props.email}
+                    </h5>
+                  </div>
+                </a>
+              </div>
+              <div className='list-group'>
+                <a className='list-group-item list-group-item-action active'>
+                  <div className='d-flex w-100 justify-content-between'>
+                    <h5 className='mb-1'>
+                      <p>Username:</p>
+                      {this.props.username}
+                    </h5>
+                  </div>
+                </a>
+              </div>
+              <div className='list-group'>
+                <a className='list-group-item list-group-item-action active'>
+                  <div className='d-flex w-100 justify-content-between'>
+                    <h5 className='mb-1'>
+                      <p>Fullname:</p>
+                      {this.props.fullname}
+                    </h5>
+                  </div>
+                </a>
+              </div>
+              <div className="btn-choice">
+                <button className="btn btn-secondary disabled edit" onClick={togleEditProfile}>Edit profile</button>
+                <button className="btn btn-secondary disabled events" onClick={togleMyEvents}>My events</button>
+              </div>
+            </div>
+          </div>
+        )}
+      </ProfileContext.Consumer>
+    );
+  }
 }
 
-export default withCookies(Sidebar)
+export default withCookies(Sidebar);

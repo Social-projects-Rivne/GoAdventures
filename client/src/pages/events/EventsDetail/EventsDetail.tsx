@@ -1,46 +1,180 @@
+import { Field, FieldProps, Form, Formik, FormikProps } from 'formik';
 import React, { Component } from 'react';
-import { Gallery, SettingsPanel } from '../../../components';
+import { MdDone } from 'react-icons/md';
+import { Comments, Gallery, SettingsPanel } from '../../../components';
 import { EventDto } from '../../../interfaces/Event.dto';
+import { commentsSchema } from '../../../validationSchemas/commentValidation';
+import './EventDetail.scss';
+import { deleteEvent, isOwner } from '../../../api/event.service';
+import { AxiosResponse } from 'axios';
 
-export class EventsDetail extends Component<EventDto, any> {
+interface FormValue {
+  comment: string;
+}
+
+export class EventsDetail extends Component<any, any> {
   constructor(props: EventDto) {
     super(props);
+    this.state = {
+      eventProps: { ...this.props.routerProps.location.state },
+      isOwner: false
+    };
+
+    this.handleDelete = this.handleDelete.bind(this);
+  }
+
+  public componentDidMount() {
+    isOwner(this.state.eventProps.id).then(
+      (res: AxiosResponse): any => {
+        console.log(res.status + " | " + res.statusText);
+        if (res.status >= 200 && res.status <= 300) {
+          this.setState({
+            isOwner: true
+          })
+        } else {
+          this.setState({
+            isOwner: false
+          })
+        }
+      }
+    )
+  }
+
+  public handleDelete() {
+    deleteEvent(this.state.eventProps.id)
+      .then(
+        (res: AxiosResponse): any => {
+          console.log(res.status);
+          if (res.status >= 200 && res.status <= 300) {
+            this.props.routerProps.history.push('/profile');
+          } else {
+
+          }
+        }
+      )
   }
 
   public render() {
-    console.debug(this.props);
     return (
-      <div className='container-fluid'>
-            <SettingsPanel>
-              {{
-                left: <h2>{this.props.topic}</h2>,
-                middle: <h2>{this.props.location}</h2>,
-                right: <button type='button' className='btn btn-success'>Edit</button>,
-              }}
-            </SettingsPanel>
+      <div className='container-fluid EventDetail'>
         <div className='row'>
-          <div className='col-3'>
-            <div className='jumboton jumbotron-fluid'>
-              <h2>Description</h2>
-              <p className='lead'>{this.props.description}</p>
-              <hr className='my-4' />
-              <p>Start: {this.props.startDate} - {this.props.endDate}</p>
-              <hr className='my-4' />
-              <p>Location: <a>{this.props.location} <small>View map</small></a>  </p>
-
-            </div>
-        </div>
           <div className='col-6'>
-          <div className='jumboton jumbotron-fluid'>
-              <Gallery />
+            <Gallery {...this.state.eventProps.gallery} />
+          </div>
+          <div className='col-6'>
+            <div className='jumboton jumbotron-fluid'>
+              <SettingsPanel>
+                {{
+                  left: (
+                    <div>
+                      <div className='d-flex flex-row align-content-center'>
+                        <img
+                          className='rounded-avatar-sm'
+                          src='https://www.kidzone.ws/animal-facts/whales/images/beluga-whale-3.jpg'
+                        />
+                        <h2>{this.state.eventProps.topic}</h2>
+                      </div>
+                      <p>Friday,19 April 2019</p>
+                    </div>
+                  ),
+                  right: (
+                    <button
+                      type='button'
+                      className='btn btn-outline-info btn-sm'
+                    >
+                      Subscribe
+                    </button>
+                  )
+                }}
+              </SettingsPanel>
+              <hr className='my-4' />
+              <span className='lead'>{this.state.eventProps.description}</span>
+              <hr className='my-4' />
+              <p>
+                Start: {this.state.eventProps.startDate} -{' '}
+                {this.state.eventProps.endDate}
+              </p>
+              <hr className='my-4' />
+              <div className='map'>
+                <h2>Location and Destination points</h2>
+                <div>MAP</div>
+                {this.state.eventProps.location}
+              </div>
+
+              {
+                this.state.isOwner ? <div>
+                  <button type='button' className='btn btn-success'>
+                    Edit
+                  </button>
+                  <button onClick={this.handleDelete} type='button' className='btn btn-danger'>
+                    Delete
+                  </button>
+                </div> : <div></div>
+              }
+
+              <hr className='my-4' />
+              <div>
+                <h2>Comments</h2>
+                <div>
+                  <Formik
+                    validationSchema={commentsSchema}
+                    initialValues={{ comment: '' }}
+                    enableReinitialize={true}
+                    validateOnBlur={true}
+                    validateOnChange={true}
+                    onSubmit={() => {
+                      console.debug('request');
+                    }}
+                    render={(props: FormikProps<FormValue>) => (
+                      <Form>
+                        <Field
+                          name='comment'
+                          render={({ field, form }: FieldProps<FormValue>) => {
+                            return (
+                              <div>
+                                <input
+                                  className='form-control'
+                                  type='text'
+                                  {...field}
+                                  placeholder='Comment...'
+                                  name='comment'
+                                />
+                                {form.touched.comment &&
+                                  form.errors.comment &&
+                                  form.errors.comment ? (
+                                    <div className='invalid-feedback'>
+                                      {form.errors.comment}
+                                    </div>
+                                  ) : (
+                                    <div className='valid-feedback'>
+                                      <MdDone /> Press enter to add comment
+                                  </div>
+                                  )}
+                              </div>
+                            );
+                          }}
+                        />
+                      </Form>
+                    )}
+                  />
+                </div>
+                <hr className='my-4' />
+                <div>
+                  <Comments
+                    {...{
+                      avatar:
+                        'https://www.kidzone.ws/animal-facts/whales/images/beluga-whale-3.jpg',
+                      participant: 'Jeremy Mafioznik',
+                      text: 'Dolore ipsum',
+                      hashtags: ['pussy', 'money', 'weed']
+                    }}
+                  />
+                </div>
+              </div>
             </div>
-        </div>
-          <div className='col-3'>
-            Participants
-        </div>
+          </div>
         </div>
       </div>
-
     );
   }
 }

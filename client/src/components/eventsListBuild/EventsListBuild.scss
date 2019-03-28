@@ -1,6 +1,10 @@
-.even_tcard{
-   margin: 7px;
-   border-radius: 15px;
-   
-}
+.Events_card {
+   border-radius: 0.25rem !important;
+   cursor: pointer;
+   padding: 0 !important;
 
+   & img {
+      border-radius: 0.25rem;
+   }
+
+}

@@ -1,4 +1,5 @@
 package io.softserve.goadventures.user.repository;
+
 import io.softserve.goadventures.user.model.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -9,4 +10,5 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     User findByUsername(String userName);
     boolean existsByEmail(String email);
     Long countByFullname(String name);
+    User findUserById(Integer id);
 }

@@ -16,8 +16,10 @@ class App extends Component<any, Auth> {
         const request: string = await reqType({ ...data });
         if (request === 'ok') {
           this.setState({
-            authorized: this.cookies.get(('tk879n')) && this.state.authorized === false ?
-              !this.state.authorized : false
+            authorized:
+              this.cookies.get('tk879n') && this.state.authorized === false
+                ? !this.state.authorized
+                : false
           });
         } else {
           this.setState({
@@ -33,11 +35,9 @@ class App extends Component<any, Auth> {
     };
   }
 
-
   public componentWillMount() {
-    this.setState({ authorized: !!this.cookies.get(('tk879n'))});
+    this.setState({ authorized: !!this.cookies.get('tk879n') });
   }
-
 
   public render() {
     return (

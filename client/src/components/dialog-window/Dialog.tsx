@@ -2,33 +2,18 @@ import { Field, Form, Formik, FormikProps } from 'formik';
 import axios from 'axios';
 import React, { Component } from 'react';
 import {DropDown, Datepicker} from '..';
-
+import { MdDone } from 'react-icons/md';
 import './Dialog.scss';
 import { DialogSettings } from './interfaces/dialog.interface';
-
-
 
 export class Dialog extends Component<DialogSettings, any> {
   constructor(props: DialogSettings) {
     super(props);
-    this.state = {category:'',
-    categories: []
-    };
+    this.state = { category: '' };
     //  :*D
     this.getInitialValues = this.getInitialValues.bind(this);
-    this.handleCategory = this.handleCategory.bind(this);
   }
 
-    handleCategory(fromChild:any) {
-        console.log("DIALOG " + fromChild);
-        this.setState({category:fromChild});
-        console.log("CATEGORY " + this.state.category);
-    }
-
-    handleDate(fromChild:any) {
-      console.log("DIALOG " + fromChild);
-    
-  }
 
   public getInitialValues = (): object => {
     const initialValues: { [key: string]: string } = {};
@@ -41,14 +26,14 @@ export class Dialog extends Component<DialogSettings, any> {
   }
 
   public render(): JSX.Element {
-      return (
-          <div
-              className='Dialog__window card border-success mb-3 mt-3'
-              style={this.props.inline_styles ? this.props.inline_styles : {}}
-          >
-            <div className='card-header'>
-              <h3>{this.props.header}</h3>
-            </div>
+    return (
+      <div
+        className='Dialog__window card border-success mb-3 mt-3'
+        style={this.props.inline_styles ? this.props.inline_styles : {}}
+      >
+        <div className='card-header'>
+          <h3>{this.props.header}</h3>
+        </div>
             <div className='card-body'>
               <Formik
                   enableReinitialize={true}
@@ -103,11 +88,6 @@ export class Dialog extends Component<DialogSettings, any> {
                 }}
               </Formik>
               {this.props.childComponents ? (this.props.childComponents) : null}
-              {this.props.event ?
-                  <div>
-                <DropDown onCategoryChange={this.handleCategory}/>
-                  <Datepicker onDateChange={this.handleDate}/>
-                  </div> : null}
             </div>
             <div className='card-footer text-muted d-flex justify-content-center'>
               <button type='submit' form='dialog' className='btn btn-success'>
@@ -117,6 +97,4 @@ export class Dialog extends Component<DialogSettings, any> {
           </div>
       );
   }
-      // }
-
-  }
+}

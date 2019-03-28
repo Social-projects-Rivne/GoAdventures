@@ -1,15 +1,18 @@
 export interface UserDto {
-    fullName: string;
-    userName: string;
-    email: string;
-    avatarUrl?: string;
-    password?: string;
-    location?: string;
+  fullname: string;
+  username: string;
+  email: string;
+  avatarUrl?: string;
+  password?: string;
+  location?: string;
+  newPassword?: string;
+  repeatNewPassword?: string;
 
-    phone?: string;
-    role?: string;
-    statusId?: string;
-    id?: string;
+  phone?: string;
+  role?: string;
+  statusId?: string;
+  id?: string;
 
-    show?: boolean;
+  show?: boolean;
+  errorMesage?: boolean;
 }

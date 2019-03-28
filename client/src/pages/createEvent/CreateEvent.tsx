@@ -1,6 +1,5 @@
 import React, { Component, createRef } from 'react';
 import { createEventReq } from '../../api/requestCreateEvent';
-import { EventSchema } from '../../validationSchemas/eventValidation';
 import './CreateEvent.scss';
 import './Leaflet.scss';
 import { Map as LeafletMap, TileLayer, Marker, Popup } from 'react-leaflet';
@@ -212,7 +211,7 @@ export class CreateEvent extends Component<any, any> {
                     {this.state.redirect ? (
                             <Redirect
                                 to={{
-                                    pathname: `/events`
+                                    pathname: `/profile`
                                 }}
                             />
                         ) : null}
