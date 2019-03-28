@@ -1,11 +1,10 @@
 import { Field, Form, Formik, FormikProps } from 'formik';
 import axios from 'axios';
 import React, { Component } from 'react';
-import {DropDown, Datepicker} from '..';
+
 
 import './Dialog.scss';
 import { DialogSettings } from './interfaces/dialog.interface';
-
 
 
 export class Dialog extends Component<DialogSettings, any> {
@@ -41,6 +40,7 @@ export class Dialog extends Component<DialogSettings, any> {
   }
 
   public render(): JSX.Element {
+
       return (
           <div
               className='Dialog__window card border-success mb-3 mt-3'
@@ -103,11 +103,6 @@ export class Dialog extends Component<DialogSettings, any> {
                 }}
               </Formik>
               {this.props.childComponents ? (this.props.childComponents) : null}
-              {this.props.event ?
-                  <div>
-                <DropDown onCategoryChange={this.handleCategory}/>
-                  <Datepicker onDateChange={this.handleDate}/>
-                  </div> : null}
             </div>
             <div className='card-footer text-muted d-flex justify-content-center'>
               <button type='submit' form='dialog' className='btn btn-success'>
@@ -117,6 +112,4 @@ export class Dialog extends Component<DialogSettings, any> {
           </div>
       );
   }
-      // }
-
   }
