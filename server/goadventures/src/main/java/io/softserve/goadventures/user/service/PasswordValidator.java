@@ -1,15 +1,13 @@
-package io.softserve.goadventures.profile;
+package io.softserve.goadventures.user.service;
 
 import org.springframework.stereotype.Service;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 @Service
 public class PasswordValidator{
-
     private Pattern pattern;
     private Matcher matcher;
-
     private static final String PASSWORD_PATTERN =
             "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})";
 
@@ -18,9 +16,7 @@ public class PasswordValidator{
     }
 
     public boolean validatePassword(final String password){
-
         matcher = pattern.matcher(password);
         return matcher.matches();
-
     }
 }

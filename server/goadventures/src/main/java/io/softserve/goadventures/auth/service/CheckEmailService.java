@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 @Service
 public class CheckEmailService {
     private Logger logger = LoggerFactory.getLogger(io.softserve.goadventures.auth.service.CheckEmailService.class);
-
     private final UserService userService;
+
     @Autowired
     public CheckEmailService(UserService userService){
         this.userService=userService;

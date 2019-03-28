@@ -3,7 +3,6 @@ package io.softserve.goadventures.auth.service;
 import io.softserve.goadventures.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -33,7 +32,6 @@ public class EmailSenderService {
         Session session = Session.getInstance(props, null);
         this.transport = session.getTransport("smtp");
         this.msg = new MimeMessage(session);
-
         try {
             this.msg.setFrom(new InternetAddress(username, "GoAdventures support"));
         } catch (MessagingException | UnsupportedEncodingException e) {
@@ -45,9 +43,7 @@ public class EmailSenderService {
         InternetAddress toAddress = new InternetAddress(user.getEmail());
         msg.setRecipient(Message.RecipientType.TO, toAddress);
         msg.setSubject("Please confirm your account");
-
         msg.setContent(contentBuilder.signUp(user.getFullname(), confirmationToken), "text/html");
-
         closeTransport();
     }
 
@@ -55,9 +51,7 @@ public class EmailSenderService {
         InternetAddress toAddress = new InternetAddress(email);
         msg.setRecipient(Message.RecipientType.TO, toAddress);
         msg.setSubject("New password for GoAdventure");
-
         msg.setContent(contentBuilder.sendNewPasswordMail(email, password), "text/html");
-
         closeTransport();
     }
 
@@ -65,9 +59,7 @@ public class EmailSenderService {
         InternetAddress toAddress = new InternetAddress(email);
         msg.setRecipient(Message.RecipientType.TO, toAddress);
         msg.setSubject("Reset link");
-
         msg.setContent(contentBuilder.recoveryMail(email, token), "text/html");
-
         closeTransport();
     }
 

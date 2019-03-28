@@ -1,6 +1,5 @@
 package io.softserve.goadventures.auth.controller;
 
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -19,10 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServlet;
-import java.io.UnsupportedEncodingException;
 
 @CrossOrigin
 @RestController
@@ -48,12 +45,14 @@ public class AuthController extends HttpServlet {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<String> signUp(@RequestBody User user) throws MessagingException, UnsupportedEncodingException {
+    public ResponseEntity<String> signUp(@RequestBody User user) throws MessagingException {
         HttpHeaders httpHeaders = new HttpHeaders();
         logger.info(String.valueOf(user));
         if (!checkEmailService.checkingEmail(user.getEmail())) {
             user.setStatusId(UserStatus.PENDING.getUserStatus());
             user.setUsername(user.getEmail().split("@")[0]);
+            user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
+            user.setSelfEvents(null);
             userService.addUser(user);
             logger.info("\nsignUp: New user create.");
             logger.info("\nsignUp detail: \n\t" +
@@ -66,20 +65,19 @@ public class AuthController extends HttpServlet {
             EmailSenderService emailSenderService = new EmailSenderService(mailContentBuilder);
             emailSenderService.sendEmail(confirmationToken, user);
             return ResponseEntity.ok().headers(httpHeaders).body("user created");
-
         } else {
             logger.info("\nsignUp: This user is already exist.");
             return ResponseEntity.badRequest().body("user already exist");
         }
     }
 
-
     /**
      * @param confirmationToken
      * @return ResponseEntity<T>  authToken *
      */
     @GetMapping("/confirm-account")
-    public ResponseEntity<String> confirmUserAccount(@RequestParam("token") String confirmationToken) throws UserNotFoundException {
+    public ResponseEntity<String> confirmUserAccount(@RequestParam("token") String confirmationToken)
+            throws UserNotFoundException {
         User user = userService.getUserByEmail(jwtService.parseToken(confirmationToken));
         if (user != null) {
             String authToken = jwtService.createToken(user);
@@ -88,9 +86,9 @@ public class AuthController extends HttpServlet {
             userService.updateUser(user);
             HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.setBearerAuth(authToken);
-            return ResponseEntity.ok().headers(responseHeaders).body("User verified"); //TODO page User Verified
+            return ResponseEntity.ok().headers(responseHeaders).body("User verified");
         } else {
-            return ResponseEntity.badRequest().body("The link is invalid or broken!"); // TODO page the link is invalid
+            return ResponseEntity.badRequest().body("The link is invalid or broken!");
         }
     }
 
@@ -103,7 +101,6 @@ public class AuthController extends HttpServlet {
     @PostMapping("/sign-in")
     public ResponseEntity<String> signIn(@RequestBody UserAuthDto userAuthDto)
             throws JsonProcessingException, UserNotFoundException {
-
         logger.info("add: Entered data = name = " +
                 "; email = " + userAuthDto.getEmail() + "; password = " + userAuthDto.getPassword());
 
@@ -114,15 +111,15 @@ public class AuthController extends HttpServlet {
             logger.info("checkEmail: " + user.toString());
             logger.info("Glory to Ukraine========" + userAuthDto.getPassword());
             if (BCrypt.checkpw(userAuthDto.getPassword(), user.getPassword())) {
-
-
-                if (user.getStatusId() == UserStatus.PENDING.getUserStatus())
+                if (user.getStatusId() == UserStatus.PENDING.getUserStatus()){
                     return ResponseEntity.badRequest().body("User is not confirm auth!");
-                if (user.getStatusId() == UserStatus.BANNED.getUserStatus())
+                }
+                if (user.getStatusId() == UserStatus.BANNED.getUserStatus()){
                     return ResponseEntity.badRequest().body("User is banned");
-                if (user.getStatusId() == UserStatus.DELETED.getUserStatus())
+                }
+                if (user.getStatusId() == UserStatus.DELETED.getUserStatus()){
                     return ResponseEntity.badRequest().body("User is deleted");
-
+                }
                 user.setStatusId(UserStatus.ACTIVE.getUserStatus());
                 userService.updateUser(user);
                 HttpHeaders responseHeaders = new HttpHeaders();
@@ -133,7 +130,6 @@ public class AuthController extends HttpServlet {
 
                 return ResponseEntity.ok().headers(responseHeaders).body(ow.writeValueAsString(user));
             } else return ResponseEntity.badRequest().body("User password is wrong");
-
         } else
             return ResponseEntity.badRequest().body("Not found user");
     }
@@ -165,7 +161,9 @@ public class AuthController extends HttpServlet {
         if (checkEmailService.checkingEmail(email)) {
             try {
                 User user = userService.getUserByEmail(email);
-                user.setPassword(passwordService.generatePassword(email, mailContentBuilder));
+                user.setPassword(BCrypt.hashpw(
+                                passwordService.generatePassword(email, mailContentBuilder),
+                                BCrypt.gensalt()));
                 userService.updateUser(user);
                 return ResponseEntity.status(200).body("Password changed.");
             } catch (UserNotFoundException e) {

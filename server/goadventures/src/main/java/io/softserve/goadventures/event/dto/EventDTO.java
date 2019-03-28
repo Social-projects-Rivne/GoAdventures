@@ -1,11 +1,10 @@
-package io.softserve.goadventures.event.model;
+package io.softserve.goadventures.event.dto;
 
-
-import io.softserve.goadventures.Gallery.model.Gallery;
+import io.softserve.goadventures.event.category.Category;
+import io.softserve.goadventures.gallery.model.Gallery;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.List;
 import java.util.Date;
 
@@ -31,9 +30,7 @@ public class EventDTO {
 
     private int statusId;
 
-    private String categoryName;
+    private int category;
 
-    private List<String> galleries;
-
-
+    private int gallery;
 }

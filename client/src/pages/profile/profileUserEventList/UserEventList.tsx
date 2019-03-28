@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import './UserEventList.scss';
+import React from 'react';
 import { EventDto } from '../../../interfaces/Event.dto';
+import './UserEventList.scss';
 
 export const UserEventList = (props: EventDto) => {
     return (

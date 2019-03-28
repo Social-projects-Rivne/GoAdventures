@@ -1,6 +1,5 @@
 import React, { Component, createRef } from 'react';
 import { createEventReq } from '../../api/requestCreateEvent';
-import { EventSchema } from '../../validationSchemas/eventValidation';
 import './CreateEvent.scss';
 import './Leaflet.scss';
 import { Map as LeafletMap, TileLayer, Marker, Popup } from 'react-leaflet';
@@ -33,6 +32,7 @@ export class CreateEvent extends Component<any, any> {
             longitude: 0,
             description: '',
             currentPos: null,
+            redirect: false
         };
         this.handleTopicChange = this.handleTopicChange.bind(this);
         this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
@@ -93,6 +93,7 @@ export class CreateEvent extends Component<any, any> {
         if (this.state.startDate < this.state.endDate) {
             createEventReq({ ...this.state }, category);
             console.debug(this.state);
+            this.setState({redirect: true});
         }
         else {
             console.log('startDate > endDate ');
@@ -103,9 +104,6 @@ export class CreateEvent extends Component<any, any> {
     public render() {
         const isDisabled = this.state.topic.length > 0 && this.state.description.length > 0;
         console.log('Isdisabled ', isDisabled);
-        var inputClass = 'invalid';
-        if (!isDisabled)
-            inputClass = 'valid';
 
         return (
 
