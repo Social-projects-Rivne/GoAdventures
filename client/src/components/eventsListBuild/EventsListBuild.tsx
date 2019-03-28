@@ -16,6 +16,7 @@ export class EventsListBuild extends React.Component<EventDto, any> {
   public redirectTo() {
     this.setState({ redirect: true });
   }
+
   public render() {
     console.debug(this.props.gallery !== null ? this.props.gallery : false);
     return (

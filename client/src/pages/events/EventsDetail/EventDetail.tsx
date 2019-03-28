@@ -1,17 +1,21 @@
 import { Field, FieldProps, Form, Formik, FormikProps } from 'formik';
 import React, { Component } from 'react';
 import { MdDone } from 'react-icons/md';
+import { RouteComponentProps } from 'react-router';
 import { Comments, Gallery, SettingsPanel } from '../../../components';
-import { EventDto } from '../../../interfaces/Event.dto';
 import { commentsSchema } from '../../../validationSchemas/commentValidation';
 import './EventDetail.scss';
+
+interface EventDetailProps {
+  routerProps: RouteComponentProps;
+}
 
 interface FormValue {
   comment: string;
 }
 
-export class EventsDetail extends Component<any, any> {
-  constructor(props: EventDto) {
+export class EventDetail extends Component<EventDetailProps, any> {
+  constructor(props: EventDetailProps) {
     super(props);
     this.state = {
       eventProps: { ...this.props.routerProps.location.state }
@@ -21,12 +25,12 @@ export class EventsDetail extends Component<any, any> {
   public render() {
     console.debug(this.props);
     return (
-      <div className='container-fluid EventDetail'>
+      <div className='container EventDetail'>
         <div className='row'>
-          <div className='col-6'>
+          <div className='col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6'>
             <Gallery {...this.state.eventProps.gallery} />
           </div>
-          <div className='col-6'>
+          <div className='col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6'>
             <div className='jumboton jumbotron-fluid'>
               <SettingsPanel>
                 {{
