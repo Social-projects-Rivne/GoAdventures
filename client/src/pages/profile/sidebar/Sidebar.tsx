@@ -29,7 +29,6 @@ class Sidebar extends React.Component<UserDto, UserDto> {
                 <img src={avatar} alt='user_avatar' />
               </div>
             </div>
-
             <div className='card-body'>
               <div className='list-group'>
                 <a className='list-group-item list-group-item-action active'>
@@ -61,7 +60,6 @@ class Sidebar extends React.Component<UserDto, UserDto> {
                   </div>
                 </a>
               </div>
-
               <div className='btn-choice'>
                 <button
                   className='btn btn-secondary disabled edit'

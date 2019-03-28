@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashSet;
 import java.util.Set;
 
+
+
 @CrossOrigin
 @RestController
 @RequestMapping("gallery")
@@ -27,8 +29,9 @@ public class GalleryController {
     Event event = eventService.getEventById(eventId);
     Set<String> imageUrls = new HashSet<>();
     imageUrls.add("https://www.railway-technology.com/wp-content/uploads/sites/24/2017/10/1-image-2.jpg");
-    imageUrls.add("https://2static1.fjcdn.com/thumbnails/comments/For+"
-        + "those+who+want+it+_f5bc15a12dc73ef31d8adb5357552a60.jpg");
+    imageUrls.add("https://d2eip9sf3oo6c2.cloudfront.net/tags/images/000/000/256/full/nodejslogo.png");
+    imageUrls.add("https://d2eip9sf3oo6c2.cloudfront.net/tags/images/000/000/256/full/nodejslogo.png");
+    imageUrls.add("https://d2eip9sf3oo6c2.cloudfront.net/tags/images/000/000/256/full/nodejslogo.png");
     Gallery mockGallery = new Gallery(0, event, imageUrls, false);
     galleryRepository.save(mockGallery);
     event.setGallery(mockGallery);

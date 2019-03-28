@@ -37,7 +37,7 @@ public class EventController {
   private final CategoryRepository categoryRepository;
   private final GalleryRepository galleryRepository;
   private final EventDtoBuilder eventDtoBuilder;
-  private  final UserService userService;
+  private final UserService userService;
   private final JWTService jwtService;
 
   @Autowired

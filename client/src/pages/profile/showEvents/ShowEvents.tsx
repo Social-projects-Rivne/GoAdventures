@@ -24,12 +24,12 @@ export class ShowEvents extends Component<EventDto, EventState> {
           location: '',
           startDate: '',
           topic: '',
+          participants: [],
           gallery: {
             id: undefined,
-            imageUrls: [],
+            imageUrls: ['https://via.placeholder.com/250'],
             isDeleted: undefined
-          },
-          participants: []
+          }
         }
       ],
       pageSettings: {

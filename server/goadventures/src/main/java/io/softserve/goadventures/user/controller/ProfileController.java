@@ -91,8 +91,9 @@ public class ProfileController {
     @GetMapping("/all-events")
     public ResponseEntity<?> getAllEvents(Pageable eventPageable,
                                           @RequestHeader("Authorization") String token) throws UserNotFoundException {
+        LoggerFactory.getLogger("Profile Event List: ").info(token);
         User user = userService.getUserByEmail(jwtService.parseToken(token));
-
+        LoggerFactory.getLogger("Profile Event List: ").info(user.toString());
         Page<Event> eventsPage = eventService.getAllEventsByOwner(eventPageable, user.getId());
 
         if(eventsPage != null) {

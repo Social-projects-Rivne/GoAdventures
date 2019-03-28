@@ -1,7 +1,9 @@
+import { AxiosResponse } from 'axios';
 import { Field, FieldProps, Form, Formik, FormikProps } from 'formik';
 import React, { Component } from 'react';
 import { MdDone } from 'react-icons/md';
 import { RouteComponentProps } from 'react-router';
+import { deleteEvent, isOwner } from '../../../api/event.service';
 import { Comments, Gallery, SettingsPanel } from '../../../components';
 import { commentsSchema } from '../../../validationSchemas/commentValidation';
 import './EventDetail.scss';
@@ -20,6 +22,39 @@ export class EventDetail extends Component<EventDetailProps, any> {
     this.state = {
       eventProps: { ...this.props.routerProps.location.state }
     };
+
+    this.handleDelete = this.handleDelete.bind(this);
+  }
+
+  public componentDidMount() {
+    isOwner(this.state.eventProps.id).then(
+      (res: AxiosResponse): any => {
+        console.log(res.status + ' | ' + res.statusText);
+        if (res.status >= 200 && res.status <= 300) {
+          this.setState({
+            isOwner: true
+          });
+        } else {
+          this.setState({
+            isOwner: false
+          });
+        }
+      }
+    );
+  }
+
+  public handleDelete() {
+    deleteEvent(this.state.eventProps.id)
+      .then(
+        (res: AxiosResponse): any => {
+          console.log(res.status);
+          if (res.status >= 200 && res.status <= 300) {
+            this.props.routerProps.history.push('/profile');
+          } else {
+
+          }
+        }
+      );
   }
 
   public render() {
@@ -69,9 +104,18 @@ export class EventDetail extends Component<EventDetailProps, any> {
                 <div>MAP</div>
                 {this.state.eventProps.location}
               </div>
-              <button type='button' className='btn btn-success'>
-                Edit
-              </button>
+
+              {
+                this.state.isOwner ? <div>
+                  <button type='button' className='btn btn-success'>
+                    Edit
+                  </button>
+                  <button onClick={this.handleDelete} type='button' className='btn btn-danger'>
+                    Delete
+                  </button>
+                </div> : <div></div>
+              }
+
               <hr className='my-4' />
               <div>
                 <h2>Comments</h2>
@@ -100,16 +144,16 @@ export class EventDetail extends Component<EventDetailProps, any> {
                                   name='comment'
                                 />
                                 {form.touched.comment &&
-                                form.errors.comment &&
-                                form.errors.comment ? (
-                                  <div className='invalid-feedback'>
-                                    {form.errors.comment}
+                                  form.errors.comment &&
+                                  form.errors.comment ? (
+                                    <div className='invalid-feedback'>
+                                      {form.errors.comment}
+                                    </div>
+                                  ) : (
+                                    <div className='valid-feedback'>
+                                      <MdDone /> Press enter to add comment
                                   </div>
-                                ) : (
-                                  <div className='valid-feedback'>
-                                    <MdDone /> Press enter to add comment
-                                  </div>
-                                )}
+                                  )}
                               </div>
                             );
                           }}
