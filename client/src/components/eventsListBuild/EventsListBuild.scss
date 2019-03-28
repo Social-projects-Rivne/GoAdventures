@@ -1,5 +1,10 @@
 .Events_card {
-   border-radius: 15px;
+   border-radius: 0.25rem !important;
    cursor: pointer;
+   padding: 0 !important;
+
+   & img {
+      border-radius: 0.25rem;
+   }
 
 }

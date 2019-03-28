@@ -21,7 +21,7 @@ export class EventsListBuild extends React.Component<EventDto, any> {
     return (
       <div
         onClick={this.redirectTo.bind(this)}
-        className='col card Events_card '
+        className='Events_card col card'
       >
         {this.state.redirect ? (
           <Redirect

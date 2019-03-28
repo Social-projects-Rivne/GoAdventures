@@ -1,7 +1,7 @@
-import { AddEventBtn } from '../../components/addEventBtn/AddEventBtn';
 import React, { Component } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { getEventList } from '../../api/event.service';
+import { AddEventBtn } from '../../components/addEventBtn/AddEventBtn';
 import { EventsListBuild } from '../../components/eventsListBuild/EventsListBuild';
 import { EventDto } from '../../interfaces/Event.dto';
 

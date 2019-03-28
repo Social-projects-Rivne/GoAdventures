@@ -11,14 +11,19 @@ export const Gallery = (props?: GalleryDto): JSX.Element => {
       className='carousel slide'
       data-ride='carousel'
     >
-      <div className='carousel-inner'>
+      <div className='carousel-inner rounded'>
         {!!props!.imageUrls && props!.imageUrls.length > 0 ? (
           props!.imageUrls.map((imageUrl, index) => (
             <div
               key={index}
               className={`carousel-item ${index === 0 ? 'active' : ''}`}
             >
-              <img src={imageUrl} className='d-block w-100' alt='...' />
+              <img
+                style={{ height: '500px' }}
+                src={imageUrl}
+                className='d-block w-100 h-'
+                alt='...'
+              />
             </div>
           ))
         ) : (
@@ -48,9 +53,6 @@ export const Gallery = (props?: GalleryDto): JSX.Element => {
       >
         <span className='carousel-control-next-icon' aria-hidden='true' />
         <span className='sr-only'>Next</span>
-      </a>
-      <a id='' className='btn btn-success carousel-indicators' role='button'>
-        Add images
       </a>
     </div>
   );

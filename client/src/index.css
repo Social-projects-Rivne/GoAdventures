@@ -1,5 +1,6 @@
 @import './theme/bootstrap.min.css';
- body {
+
+body {
   margin: 0;
   padding: 0;
   height: 100%;
@@ -15,6 +16,15 @@ img.rounded-avatar-sm {
   height: 30px;
   border-radius: 50%;
   margin: 0 10px 0 10px;
+}
+
+
+.btn {
+  border-radius: 0.25rem;
+}
+
+input {
+  border-radius: 0.25rem !important;
 }
 
 /*

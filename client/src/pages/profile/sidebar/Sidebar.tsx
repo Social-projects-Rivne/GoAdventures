@@ -34,7 +34,6 @@ export class Sidebar extends React.Component<UserDto, UserDto> {
           <div className='Sidebar__avatar'>
             <img src={avatar} alt='user_avatar' />
           </div>
-          {/* <input type='file' onClick={this.fileSelectHandler}></input> */}
         </div>
 
         <div className='card-body'>
