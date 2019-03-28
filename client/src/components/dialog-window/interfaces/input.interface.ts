@@ -4,4 +4,5 @@ export interface InputSettings {
     type: string;
     inital_value?: string;
     field_name: string;
+    component?: string;
 }

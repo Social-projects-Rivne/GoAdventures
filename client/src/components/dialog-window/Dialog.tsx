@@ -1,4 +1,5 @@
 import { Field, Form, Formik, FormikProps } from 'formik';
+import axios from 'axios';
 import React, { Component } from 'react';
 import { MdDone } from 'react-icons/md';
 import { DropDown } from '..';
@@ -11,13 +12,6 @@ export class Dialog extends Component<DialogSettings, any> {
     this.state = { category: '' };
     //  :*D
     this.getInitialValues = this.getInitialValues.bind(this);
-    this.handleCategory = this.handleCategory.bind(this);
-  }
-
-  public handleCategory(fromChild: any) {
-    console.log('DIALOG ' + fromChild);
-    this.setState({ category: fromChild });
-    console.log('CATEGORY ' + this.state.category);
   }
 
   public getInitialValues = (): object => {
@@ -109,11 +103,6 @@ export class Dialog extends Component<DialogSettings, any> {
             }}
           </Formik>
           {this.props.childComponents ? this.props.childComponents : null}
-          {this.props.event ? (
-            <div>
-              <DropDown onTemperatureChange={this.handleCategory} />
-            </div>
-          ) : null}
         </div>
         <div className='card-footer text-muted d-flex justify-content-center'>
           <button type='submit' form='dialog' className='btn btn-success'>
@@ -123,5 +112,4 @@ export class Dialog extends Component<DialogSettings, any> {
       </div>
     );
   }
-  // }
 }

@@ -1,5 +1,4 @@
 package io.softserve.goadventures.event.controller;
-
 import io.softserve.goadventures.auth.service.JWTService;
 import io.softserve.goadventures.event.category.Category;
 import io.softserve.goadventures.event.dto.EventDTO;
