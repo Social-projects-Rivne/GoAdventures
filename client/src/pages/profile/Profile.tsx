@@ -75,8 +75,6 @@ export class Profile extends Component<UserDto, ProfileState> {
     opacity: 0.9,
     width: '100%'
   };
-
-  // початкова ініціалізація(null)
   constructor(props: any) {
     super(props);
 
@@ -128,7 +126,6 @@ export class Profile extends Component<UserDto, ProfileState> {
   }
 
   public render() {
-    // рендер екземпляров сайдбар і юзерівенліст
     return (
     <ProfileContext.Provider value={this.state}>
       <div className='profile-page'>

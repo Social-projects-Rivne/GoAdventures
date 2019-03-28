@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { getEventList } from '../../api/event.service';
+import { AddEventBtn } from '../../components/addEventBtn/AddEventBtn';
 import { EventsListBuild } from '../../components/eventsListBuild/EventsListBuild';
 import { EventDto } from '../../interfaces/Event.dto';
 
@@ -20,8 +21,14 @@ export class Events extends Component<EventDto, EventState> {
         {
           description: '',
           endDate: '',
+          gallery: {
+            id: undefined,
+            imageUrls: ['https://via.placeholder.com/250'],
+            isDeleted: undefined
+          },
           id: 0,
           location: '',
+          participants: [],
           startDate: '',
           topic: ''
         }
@@ -55,7 +62,7 @@ export class Events extends Component<EventDto, EventState> {
     return (
       <div className='container-fluid'>
         <h1 className='text-center'>Event List</h1>
-
+        <AddEventBtn />
         <div className='row'>
           <div className='col'>
             <InfiniteScroll

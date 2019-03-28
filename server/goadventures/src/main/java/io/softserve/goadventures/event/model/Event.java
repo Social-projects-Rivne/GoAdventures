@@ -2,7 +2,9 @@ package io.softserve.goadventures.event.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.softserve.goadventures.event.category.Category;
+import io.softserve.goadventures.gallery.model.Gallery;
 import io.softserve.goadventures.user.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -41,6 +43,11 @@ public class Event {
 
     @Column(name = "status_id")
     private int statusId;
+
+    @JsonManagedReference
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "eventId")
+    @JoinColumn(name = "gallery", referencedColumnName = "id")
+    private Gallery gallery;
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)

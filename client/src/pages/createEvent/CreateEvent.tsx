@@ -1,7 +1,5 @@
-import React, { Component } from 'react';
-import { CSSProperties } from 'react';
+import React, { Component, CSSProperties } from 'react';
 import { createEventReq } from '../../api/requestCreateEvent';
-import { DropDown } from '../../components/';
 import { Dialog } from '../../components/';
 import { InputSettings } from '../../components/dialog-window/interfaces/input.interface';
 import { EventSchema } from '../../validationSchemas/eventValidation';
@@ -51,7 +49,7 @@ export class CreateEvent extends Component<any, any> {
         console.debug(props);
     }
 
-    public submitCreateEventRequest(data: object, categ?:string): Promise<string> {
+    public submitCreateEventRequest(data: object, categ?: string): Promise<string> {
         return createEventReq(data, categ);
     }
 
