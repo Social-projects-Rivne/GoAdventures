@@ -5,11 +5,14 @@ import io.softserve.goadventures.event.category.Category;
 import io.softserve.goadventures.event.repository.CategoryRepository;
 import io.softserve.goadventures.event.repository.EventRepository;
 import io.softserve.goadventures.user.model.User;
+import io.softserve.goadventures.event.model.Event;
 import io.softserve.goadventures.user.service.UserService;
+import io.softserve.goadventures.event.service.EventService;
 import io.softserve.goadventures.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 @Component
 public class DatabaseLoader implements CommandLineRunner {
@@ -17,13 +20,15 @@ public class DatabaseLoader implements CommandLineRunner {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
     private final UserService userService;
+    private final EventService eventService;
 
     @Autowired
-    public DatabaseLoader(UserRepository userRepository, EventRepository eventRepository, CategoryRepository categoryRepository, UserService userService){
+    public DatabaseLoader(UserRepository userRepository, EventRepository eventRepository, EventService eventService, CategoryRepository categoryRepository, UserService userService){
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
         this.categoryRepository = categoryRepository;
         this.userService = userService;
+        this.eventService = eventService;
     }
 
     @Override
@@ -62,10 +67,13 @@ public class DatabaseLoader implements CommandLineRunner {
         if (count == 0)
             this.categoryRepository.save(new Category(11, "Other", null));
         count = userRepository.countByFullname("Ioann");
-        if (count == 0)
-        this.userRepository.save(new User("Ioann","email@gmail.com","password"));
-        User user = userService.getUserByEmail("email@gmail.com");
-        user.setStatusId(UserStatus.ACTIVE.getUserStatus());
-        this.userService.updateUser(user);
+        User user = new User("Ioann", "email@gmail.com", "password");
+        if (count == 0){
+        user.setPassword(BCrypt.hashpw("password", BCrypt.gensalt()));
+        this.userRepository.save(user);
+        }
+        User userQ = userService.getUserByEmail("email@gmail.com");
+        userQ.setStatusId(UserStatus.ACTIVE.getUserStatus());
+        this.userService.updateUser(userQ);
     }
 }
