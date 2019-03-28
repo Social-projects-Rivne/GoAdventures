@@ -61,19 +61,19 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", fullname='" + fullname + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", location='" + location + '\'' +
-                ", email='" + email + '\'' +
-                ", phone=" + phone +
-                ", role='" + role + '\'' +
-                ", avatar='" + avatar + '\'' +
-                ", statusId=" + statusId +
-                ", participantsEvent=" + participantsEvent +
-                '}';
+        return "\nUser{" +
+                "\n\tid=" + id +
+                ", \n\tfullname='" + fullname + '\'' +
+                ", \n\tusername='" + username + '\'' +
+                ", \n\tpassword='" + password + '\'' +
+                ", \n\tlocation='" + location + '\'' +
+                ", \n\temail='" + email + '\'' +
+                ", \n\tphone=" + phone +
+                ", \n\trole='" + role + '\'' +
+                ", \n\tavatar='" + avatar + '\'' +
+                ", \n\tstatusId=" + statusId +
+                ", \n\tparticipantsEvent=" + participantsEvent +
+                "\n}";
     }
 
     @Override

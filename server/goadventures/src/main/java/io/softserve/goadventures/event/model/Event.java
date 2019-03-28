@@ -78,18 +78,18 @@ public class Event {
 
     @Override
     public String toString() {
-        return "Event{" +
-                "id=" + id +
-                ", topic='" + topic + '\'' +
-                ", startDate='" + startDate + '\'' +
-                ", endDate='" + endDate + '\'' +
-                ", location='" + location + '\'' +
-                ", description='" + description + '\'' +
-                ", statusId=" + statusId + '\'' +
-                ", owner=" + owner + '\'' +/*
-                ", category=" + category.getCategoryName() +
-                ", participants=" + participants +*/
-                '}';
+        return "\nEvent{" +
+                "\n\tid=" + id +
+                ", \n\ttopic='" + topic + '\'' +
+                ", \n\tstartDate='" + startDate + '\'' +
+                ", \n\tendDate='" + endDate + '\'' +
+                ", \n\tlocation='" + location + '\'' +
+                ", \n\tdescription='" + description + '\'' +
+                ", \n\tstatusId=" + statusId + '\'' +
+                ", \n\towner=" + owner + '\'' +
+                ", \n\tcategory=" + category.getCategoryName() +
+                ", \n\tparticipants=" + participants +
+                "\n}";
     }
 
     @Override

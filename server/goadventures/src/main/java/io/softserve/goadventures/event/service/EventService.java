@@ -1,5 +1,6 @@
 package io.softserve.goadventures.event.service;
 
+import io.softserve.goadventures.event.category.Category;
 import io.softserve.goadventures.event.model.Event;
 import io.softserve.goadventures.event.repository.EventRepository;
 import io.softserve.goadventures.gallery.repository.GalleryRepository;
@@ -68,5 +69,9 @@ public class EventService {
         } else {
             return false;
         }
+    }
+
+    public Page<Event> getAllEventsByCategory(Pageable pageable, Category category) {
+        return eventRepository.findAllByCategory(pageable, category);
     }
 }

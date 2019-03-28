@@ -98,12 +98,23 @@ public class EventController {
         galleryRepository.save(gallery);
         return ResponseEntity.ok().headers(httpHeaders).body("gallery created");
     }
-    @GetMapping({ "/all/{search}", "/all" })
-    public ResponseEntity<?> getAllEvents(@PathVariable(value = "search", required = false) String search,
-            @PageableDefault(size = 15, sort = "id") Pageable eventPageable) {
 
-        Page<Event> eventsPage = search == null ? eventService.getAllEvents(eventPageable)
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllEvents(@RequestParam(value = "search", required = false) String search,
+                                          @RequestParam(value = "category", required = false) String category,
+                                          @PageableDefault(size = 15, sort = "id") Pageable eventPageable) {
+
+        LoggerFactory.getLogger("PARAMETERS").info("\nsearch: " + search + "\ncategory: " + category);
+
+        LoggerFactory.getLogger("EVENT FROM CATEGORY").
+                info(eventService.getAllEventsByCategory(eventPageable, categoryRepository.findByCategoryName(category)).toString());
+
+        Page<Event> eventsPage = (search == null) ?
+                (category == null) ?
+                        eventService.getAllEvents(eventPageable) :
+                        eventService.getAllEventsByCategory(eventPageable, categoryRepository.findByCategoryName(category))
                 : eventService.getAllEventsByTopic(eventPageable, search);
+
         if (eventsPage != null) {
             int nextPageNum = eventsPage.getNumber() + 1;
             UriComponents uriComponentsBuilder = UriComponentsBuilder.newInstance().path("/event/all")
@@ -112,8 +123,7 @@ public class EventController {
             httpHeaders.set("nextpage", uriComponentsBuilder.toString());
             System.out.println(eventDtoBuilder.convertToDto(eventsPage));
             Slice<EventDTO> t = eventDtoBuilder.convertToDto(eventsPage);
-            logger.info("Event converted to dto", t.getContent());
-            logger.info("Event converted to dto", t.getContent().get(0));
+            logger.info("Event converted to dto" + t.getContent());
             return new ResponseEntity<Slice<EventDTO>>(t, httpHeaders,
                     HttpStatus.OK);
         } else {

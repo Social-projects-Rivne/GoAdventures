@@ -1,6 +1,7 @@
 package io.softserve.goadventures.event.repository;
 
 
+import io.softserve.goadventures.event.category.Category;
 import io.softserve.goadventures.event.model.Event;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,4 +18,6 @@ public interface EventRepository extends PagingAndSortingRepository<Event, Integ
     Page<Event> findByCategoryId(int eventId, Pageable pageable);
 
     Page<Event> findAllByTopic(Pageable pageable, String topic);
+
+    Page<Event> findAllByCategory(Pageable pageable, Category category);
 }
