@@ -1,7 +1,6 @@
 package io.softserve.goadventures.gallery.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.softserve.goadventures.event.model.Event;
 import lombok.*;
 
@@ -22,7 +21,7 @@ public class Gallery {
 
   @JsonBackReference
   @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "event_id")
+  @JoinColumn(name = "events_id")
   private Event eventId;
 
   @ElementCollection()

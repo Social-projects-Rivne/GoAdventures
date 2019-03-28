@@ -3,14 +3,20 @@ import React, { Component, CSSProperties } from 'react';
 import { changeUserData, getUserData } from '../../api/user.service';
 import { Dialog } from '../../components';
 import { InputSettings } from '../../components/dialog-window/interfaces/input.interface';
+import { ProfileContext } from '../../context/profile.context';
 import { UserDto } from '../../interfaces/User.dto';
 import { editProfileSchema } from '../../validationSchemas/authValidation';
 import './Profile.scss';
-import { Sidebar } from './sidebar/Sidebar';
+import ShowEvents from './showEvents/ShowEvents';
+import Sidebar from './sidebar/Sidebar';
+
 interface ProfileState {
   userProfile: UserDto;
   userEventList: any;
   showEditForm: boolean;
+  choose: 'edit-profile' | 'events' | 'default';
+  togleEditProfile: () => void;
+  togleMyEvents: () => void;
 }
 
 export class Profile extends Component<UserDto, ProfileState> {
@@ -82,8 +88,26 @@ export class Profile extends Component<UserDto, ProfileState> {
       },
       userEventList: {
         description: '',
-        topic: '',
-        start_date: ''
+        endDate: '',
+        id: 0,
+        location: '',
+        startDate: '',
+        topic: ''
+      },
+      choose: 'events',
+      togleEditProfile: () => {
+        // logic
+        this.setState((state) => ({
+          choose: 'edit-profile'
+        }));
+        console.log(this.state.choose);
+      },
+      togleMyEvents: () => {
+        // logic
+        this.setState((state) => ({
+          choose: 'events'
+        }));
+        console.log(this.state.choose);
       }
     };
   }
@@ -103,25 +127,27 @@ export class Profile extends Component<UserDto, ProfileState> {
 
   public render() {
     return (
-      <div className='profile-page'>
-        <div className='sidebar'>
-          <Sidebar {...this.state.userProfile} />
+      <ProfileContext.Provider value={this.state}>
+        <div className='profile-page'>
+          <div className='sidebar'>
+            <Sidebar {...this.state.userProfile} />
+          </div>
+          <div className='Profile__content'>
+            {this.state.choose === 'events' ? (
+              <ShowEvents {...this.state.userEventList} />
+            ) : (
+              <Dialog
+                validationSchema={editProfileSchema}
+                handleSubmit={this.handleSubmit}
+                inputs={this.editFormInputSettings}
+                button_text='Update'
+                header='Edit your profile'
+                inline_styles={this.editFormDialogStyles}
+              />
+            )}
+          </div>
         </div>
-        <div className='Profile__content'>
-          {this.state.showEditForm ? (
-            <Dialog
-              validationSchema={editProfileSchema}
-              handleSubmit={this.handleSubmit}
-              inputs={this.editFormInputSettings}
-              button_text='Update'
-              header='Edit your profile'
-              inline_styles={this.editFormDialogStyles}
-            />
-          ) : (
-            <div>User Event List</div>
-          )}
-        </div>
-      </div>
+      </ProfileContext.Provider>
     );
   }
 }
