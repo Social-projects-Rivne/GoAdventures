@@ -4,8 +4,9 @@ import { DropDownSettings } from './dropDown.interface';
 
 export class DropDown extends Component<any, DropDownSettings> {
 
-    state: DropDownSettings = {
-        categories: []
+    public state: DropDownSettings = {
+        categories: [],
+        categ: ''
     };
 
     constructor(props: DropDownSettings) {
@@ -13,7 +14,14 @@ export class DropDown extends Component<any, DropDownSettings> {
         this.handleChange = this.handleChange.bind(this);
     }
 
-    componentDidMount() {
+    public componentDidMount() {
+        axios.get(`http://localhost:8080/event/allCategory`)
+            .then((res) => {
+                const categories = res.data;
+                this.setState({ categories });
+            });
+    }
+    public componentWillMount() {
         axios.get(`http://localhost:8080/event/allCategory`)
             .then((res) => {
                 const categories = res.data;
@@ -21,33 +29,28 @@ export class DropDown extends Component<any, DropDownSettings> {
             });
     }
 
-    componentWillMount() {
-        axios.get(`http://localhost:8080/event/allCategory`)
-            .then((res) => {
-                const categories = res.data;
-                this.setState({ categories });
-            });
-    }
-
-    handleChange(e: any) {
+    handleChange(e:any) {
         this.props.onCategoryChange(e.target.value);
     }
 
-    render() {
-        if (typeof this.state.categories === 'undefined') {
+    public render() {
+        if(typeof this.state.categories === 'undefined') {
             console.log('I during componentDidMount ' + this.state.categories);
-            return (
+            return(
                 <div>
+
                 </div>
             );
         } else {
-            return <div>
-                <select onChange={this.handleChange}>{
-                    this.state.categories.map((option) =>
-                        <option value={option.categoryName}>{option.categoryName}</option>)
-                }
-                </select>
-            </div>;
-        }
+        return <div>
+            
+            <select onChange={this.handleChange}>{
+                this.state.categories.map((option) =>
+                <option value = {option.categoryName}>{option.categoryName}</option>)
+            }
+            </select>
+        </div>;
     }
+}
+
 }

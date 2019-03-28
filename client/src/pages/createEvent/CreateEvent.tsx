@@ -1,21 +1,21 @@
-import React, { Component, createRef, RefObject } from 'react';
-import { Map, TileLayer, Marker, Popup } from 'react-leaflet';
-import DatePicker from "react-datepicker";
-import { Redirect } from 'react-router';
-import LCG from 'leaflet-control-geocoder';
-import { createEvent } from '../../api/event.service';
-import { DropDown } from '../../components';
+import React, { Component, createRef } from 'react';
+import { createEventReq } from '../../api/requestCreateEvent';
+import { EventSchema } from '../../validationSchemas/eventValidation';
 import './CreateEvent.scss';
 import './Leaflet.scss';
+import { Map as LeafletMap, TileLayer, Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
+import LCG from 'leaflet-control-geocoder';
+import { DropDown } from '../../components';
+import DatePicker from "react-datepicker";
+import { RefObject } from 'react';
 
-/**
- * Dont delete this interface!
- */
-interface ExtendedRef extends RefObject<Map> {
+interface ExtendetRef extends RefObject<LeafletMap> {
     leafletElement: any;
 }
 
-let leafletMap = createRef<Map>() as ExtendedRef;
+let category = 'Skateboarding';
+let leafletMap = createRef<LeafletMap>() as ExtendetRef;
 let Rows = 3;
 
 export class CreateEvent extends Component<any, any> {
@@ -31,18 +31,16 @@ export class CreateEvent extends Component<any, any> {
             latitude: 0,
             longitude: 0,
             description: '',
-            categ: 'Skateboarding',
             currentPos: null,
-            redirect: false
         };
         this.handleTopicChange = this.handleTopicChange.bind(this);
         this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
         this.handleLocationChange = this.handleLocationChange.bind(this);
-        this.handleCategoryChange = this.handleCategoryChange.bind(this);
+        this.handleCategory = this.handleCategory.bind(this);
         this.handleStartDate = this.handleStartDate.bind(this);
         this.handleEndDate = this.handleEndDate.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleCoords = this.handleCoords.bind(this);
+        this.handleCoord = this.handleCoord.bind(this);
     }
 
     handleTopicChange(event: any) {
@@ -57,24 +55,24 @@ export class CreateEvent extends Component<any, any> {
         this.setState({ location: event.target.value });
     }
 
-    handleCategoryChange(Category: any) {
-        console.log("Category ", Category);
-        this.setState({ category : Category});
+    handleCategory(Category: any) {
+        console.log("Category " + Category);
+        category = Category;
     }
 
     handleStartDate(StartDate: any) {
-        console.log("StartDate ", StartDate);
+        console.log("DIALOG " + StartDate);
         this.setState({ startDate: StartDate });
         console.log('startDate ', this.state.startDate);
         console.log('startDateToLocaleString ', this.state.startDate.toLocaleString());
     }
 
     handleEndDate(EndDate: any) {
-        console.log("EndDate ", EndDate);
+        console.log("DIALOG " + EndDate);
         this.setState({ endDate: EndDate });
     }
 
-    handleCoords(e: any) {
+    handleCoord(e: any) {
         const map = leafletMap.leafletElement;
         const geocoder = LCG.L.Control.Geocoder.nominatim();
         if (map != null) {
@@ -92,17 +90,21 @@ export class CreateEvent extends Component<any, any> {
 
     handleSubmit(event: any) {
         if (this.state.startDate < this.state.endDate) {
-            createEvent({ ...this.state }, this.state.category);
+            createEventReq({ ...this.state }, category);
             console.debug(this.state);
-            this.setState({ redirect: true });
         }
         else {
+            console.log('startDate > endDate ');
             alert("End date must be greater than the start date!");
         }
     }
 
     public render() {
         const isDisabled = this.state.topic.length > 0 && this.state.description.length > 0;
+        console.log('Isdisabled ', isDisabled);
+        var inputClass = 'invalid';
+        if (!isDisabled)
+            inputClass = 'valid';
 
         return (
 
@@ -118,6 +120,7 @@ export class CreateEvent extends Component<any, any> {
                     </div>
                 </div>
 
+
                 <div className="form-group row">
                     <label className='col-sm-4 col-form-label text-right' htmlFor="Description">Description(required)</label>
                     <div className="col-sm-8">
@@ -128,7 +131,8 @@ export class CreateEvent extends Component<any, any> {
                 <div className="form-group row">
                     <label className='col-sm-4 col-form-label text-right' htmlFor="Location">Location</label>
                     <div className="col-sm-8">
-                        <input type="text" className="form-control" id="Location" placeholder="Choose location on map"
+                        <input type="text" className="form-control" id="Location"
+                            aria-describedby="LocationHelp" placeholder="Choose location on map"
                             onChange={this.handleLocationChange} value={this.state.location} readOnly />
                     </div>
                 </div>
@@ -136,10 +140,10 @@ export class CreateEvent extends Component<any, any> {
                 <div className="form-group row">
                     <label className='col-sm-4 col-form-label text-right' htmlFor="Category">Choose category for the event</label>
                     <div className="col-sm-8">
-                        <DropDown id="Category" onCategoryChange={this.handleCategoryChange} />
+                        <DropDown id="Category" onCategoryChange={this.handleCategory} />
                     </div>
-                </div>
 
+                </div>
                 <div className="form-group row">
                     <label className='col-sm-4 col-form-label text-right' htmlFor="StartDate">Start date</label>
                     <div className="col-sm-3">
@@ -156,6 +160,7 @@ export class CreateEvent extends Component<any, any> {
                         />
                     </div>
 
+
                     <label className='col-sm-2 col-form-label text-right' htmlFor="EndDate">End date</label>
                     <div className="col-sm-3">
                         <DatePicker
@@ -168,13 +173,15 @@ export class CreateEvent extends Component<any, any> {
                             timeCaption="time"
                             withPortal
                             dateFormat="MMMM d, yyyy h:mm aa"
+
                         />
                     </div>
+
                 </div>
 
                 <div className='row' >
                     <div className='col' id="map" >
-                        <Map
+                        <LeafletMap
                             center={[50.37, 26.13]}
                             zoom={6}
                             attributionControl={true}
@@ -184,33 +191,26 @@ export class CreateEvent extends Component<any, any> {
                             dragging={true}
                             animate={true}
                             easeLinearity={0.35}
-                            onClick={this.handleCoords}
+                            onClick={this.handleCoord}
                             ref={(el: any) => leafletMap = el}
                         >
                             <TileLayer
-                                url='https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png'
+                                url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
                             />
                             {this.state.currentPos && <Marker position={this.state.currentPos} draggable={true}>
                                 <Popup position={this.state.currentPos}>
                                     Current location: <pre>{JSON.stringify(this.state.currentPos, null, 2)}</pre>
                                 </Popup>
                             </Marker>}
-                        </Map>
+                        </LeafletMap>
+
                     </div>
                 </div>
-
                 <div className="row justify-content-center btns-content">
-                    <button type="button" className="btn btn-primary col-lg-2 col-sm-12" onClick={this.handleSubmit} disabled={!isDisabled}> Save
-                    {this.state.redirect ? (
-                            <Redirect
-                                to={{
-                                    pathname: `/events`
-                                }}
-                            />
-                        ) : null}
-                    </button>
+                    <button type="button" className="btn btn-primary col-lg-2 col-sm-12" onClick={this.handleSubmit} disabled={!isDisabled}> Save </button>
                 </div>
             </div>
+
         );
     }
 }

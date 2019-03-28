@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { sentRecoveryEmail } from "../../api/auth.service";
-import { Redirect } from "react-router";
+import React, { Component} from 'react';
+import {sentRecoveryEmail} from "../../api/auth.service";
+import {Redirect} from "react-router";
 
 export class SendRecoveryEmail extends Component<any, any> {
     private token: string;
@@ -20,6 +20,6 @@ export class SendRecoveryEmail extends Component<any, any> {
     }
 
     render(): React.ReactNode {
-        return <Redirect to='/' />;
+        return <Redirect to='/'/>;
     }
 }
