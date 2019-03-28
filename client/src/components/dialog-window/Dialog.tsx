@@ -1,8 +1,6 @@
 import { Field, Form, Formik, FormikProps } from 'formik';
-import axios from 'axios';
 import React, { Component } from 'react';
 import { MdDone } from 'react-icons/md';
-import { DropDown } from '..';
 import './Dialog.scss';
 import { DialogSettings } from './interfaces/dialog.interface';
 

@@ -38,7 +38,7 @@ export class EventsListBuild extends React.Component<EventDto, any> {
         <img
           className='card-img-top'
           src={
-            this.props.gallery !== null
+            this.props.gallery !== null && this.props.gallery
               ? this.props.gallery.imageUrls[0]
               : 'https://via.placeholder.com/250'
           }

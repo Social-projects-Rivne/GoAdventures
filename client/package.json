@@ -20,13 +20,11 @@
     "bootstrap-loader": "^3.0.2",
     "dotenv": "^6.2.0",
     "formik": "^1.5.1",
-    "i": "^0.3.6",
     "jquery": "^3.3.1",
     "leaflet": "1.4.0",
     "leaflet-control-geocoder": "^1.6.0",
     "material-design-icons-iconfont": "^4.0.5",
     "material-icons-react": "^1.0.4",
-    "ng2-float-btn": "0.0.3",
     "node-sass": "^4.11.0",
     "npm": "^6.9.0",
     "popper.js": "^1.14.7",
@@ -40,7 +38,6 @@
     "react-infinite-scroll-component": "^4.5.1",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.5",
-    "rxjs": "^6.4.0",
     "tether": "^1.4.5",
     "typescript": "3.3.3",
     "yup": "^0.26.10"
@@ -60,6 +57,5 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ],
-  "devDependencies": {}
+  ]
 }
