@@ -5,6 +5,8 @@ import { Comments, Gallery, SettingsPanel } from '../../../components';
 import { EventDto } from '../../../interfaces/Event.dto';
 import { commentsSchema } from '../../../validationSchemas/commentValidation';
 import './EventDetail.scss';
+import { deleteEvent, isOwner } from '../../../api/event.service';
+import { AxiosResponse } from 'axios';
 
 interface FormValue {
   comment: string;
@@ -14,12 +16,45 @@ export class EventsDetail extends Component<any, any> {
   constructor(props: EventDto) {
     super(props);
     this.state = {
-      eventProps: { ...this.props.routerProps.location.state }
+      eventProps: { ...this.props.routerProps.location.state },
+      isOwner: false
     };
+    
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
+  public componentDidMount() {
+    isOwner(this.state.eventProps.id).then(
+      (res: AxiosResponse): any => {
+        console.log(res.status + " | " + res.statusText);
+        if(res.status >= 200 && res.status <= 300) {
+          this.setState({
+            isOwner: true
+          })
+        } else {
+          this.setState({
+            isOwner: false
+          })
+        }
+      }
+    )
+  }
+
+  public handleDelete() {
+    deleteEvent(this.state.eventProps.id)
+      .then(
+        (res: AxiosResponse): any => {
+          console.log(res.status);
+          if(res.status >= 200 && res.status <= 300) {
+            this.props.routerProps.history.push('/profile');
+          } else {
+            
+          }
+        }
+      )
+  }
+  
   public render() {
-    console.debug(this.props);
     return (
       <div className='container-fluid EventDetail'>
         <div className='row'>

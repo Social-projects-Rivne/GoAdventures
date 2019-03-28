@@ -21,4 +21,20 @@
       border-radius: 50%;
       align-content: center;
     }
+}
+
+.btn-choice {
+  text-align: center;
+  & button {
+    width: 45%;
+    font-size: 1.2em;
   }
+}
+
+.edit {
+  margin-right: 0.5em;
+}
+
+.events {
+  margin-left: 0.5em;
+}

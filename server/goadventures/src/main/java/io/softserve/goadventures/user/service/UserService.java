@@ -3,7 +3,6 @@ package io.softserve.goadventures.user.service;
 import io.softserve.goadventures.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
 import io.softserve.goadventures.user.model.User;
 
 @Service
@@ -15,8 +14,8 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public Optional<User> getUserById(int id){
-        return userRepository.findById(id);
+    public User getUserById(int id){
+        return userRepository.findUserById(id);
     }
 
     public User getUserByEmail(String email) throws UserNotFoundException {
