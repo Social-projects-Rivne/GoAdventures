@@ -9,6 +9,7 @@ import LCG from 'leaflet-control-geocoder';
 import { DropDown } from '../../components';
 import DatePicker from "react-datepicker";
 import { RefObject } from 'react';
+import { Redirect } from 'react-router';
 
 interface ExtendetRef extends RefObject<LeafletMap> {
     leafletElement: any;
@@ -195,7 +196,7 @@ export class CreateEvent extends Component<any, any> {
                             ref={(el: any) => leafletMap = el}
                         >
                             <TileLayer
-                                url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
+                                url='https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png'
                             />
                             {this.state.currentPos && <Marker position={this.state.currentPos} draggable={true}>
                                 <Popup position={this.state.currentPos}>
@@ -208,6 +209,13 @@ export class CreateEvent extends Component<any, any> {
                 </div>
                 <div className="row justify-content-center btns-content">
                     <button type="button" className="btn btn-primary col-lg-2 col-sm-12" onClick={this.handleSubmit} disabled={!isDisabled}> Save </button>
+                    {this.state.redirect ? (
+                            <Redirect
+                                to={{
+                                    pathname: `/events`
+                                }}
+                            />
+                        ) : null}
                 </div>
             </div>
 
