@@ -24,6 +24,7 @@ import io.softserve.goadventures.event.repository.CategoryRepository;
 import io.softserve.goadventures.event.repository.EventRepository;
 import io.softserve.goadventures.event.service.EventDtoBuilder;
 import io.softserve.goadventures.event.service.EventService;
+import io.softserve.goadventures.event.enums.EventStatus;
 import io.softserve.goadventures.gallery.model.Gallery;
 import io.softserve.goadventures.gallery.repository.GalleryRepository;
 
@@ -61,7 +62,6 @@ public class EventController {
         event.setCategory(category);
         event.setStatusId(EventStatus.CREATED.getEventStatus());
         eventService.addEvent(event);
-        HttpHeaders httpHeaders = new HttpHeaders();
         try {
             LoggerFactory.getLogger("Create Event Controller: ").info(userService.getUserByEmail(jwtService.parseToken(token)).toString());
             event.setOwner(userService.getUserByEmail(jwtService.parseToken(token)));

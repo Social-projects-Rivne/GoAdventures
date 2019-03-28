@@ -32,6 +32,7 @@ export class CreateEvent extends Component<any, any> {
             longitude: 0,
             description: '',
             currentPos: null,
+            redirect: false
         };
         this.handleTopicChange = this.handleTopicChange.bind(this);
         this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
@@ -92,6 +93,7 @@ export class CreateEvent extends Component<any, any> {
         if (this.state.startDate < this.state.endDate) {
             createEventReq({ ...this.state }, category);
             console.debug(this.state);
+            this.setState({ redirect: true })
         }
         else {
             console.log('startDate > endDate ');
