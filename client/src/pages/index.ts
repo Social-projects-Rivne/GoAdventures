@@ -2,7 +2,7 @@ export * from './about/About';
 export * from './confirm-account/Confirm';
 export * from './createEvent/CreateEvent';
 export * from './events/Events';
-export * from './events/EventsDetail/EventDetail';
+export * from './events/event/Event';
 export * from './forgot-password/ForgotPassword';
 export * from './forgot-password/SendRecoveryEmail';
 export * from './home/Home';

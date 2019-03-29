@@ -1,7 +1,5 @@
 import React from 'react';
 
-const EditEvent = () => {
-  return <div />;
+export const EditEvent = (props: any) => {
+  return <div> Edit </div>;
 };
-
-export default EditEvent;

@@ -1,12 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { RouteComponentProps } from 'react-router';
+import { EventDetail } from '../EventsDetail/EventDetail';
+import { EditEvent } from '../editEvent/EditEvent';
 interface EventProps {
   routerProps: RouteComponentProps;
 }
 
-const Event = (props: EventProps) => {
-  const event = props.routerProps.location.state;
-  return <div />;
+export const Event = (props: EventProps) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const [event, setEvent] = useState({
+    ...props.routerProps.location.state,
+    setEdit,
+    setIsLoading
+  });
+  console.debug(edit);
+  return (
+    <div>
+      {edit ? (
+        isLoading ? (
+          <div className='spinner-border text-primary' role='status'>
+            <span className='sr-only'>Loading...</span>
+          </div>
+        ) : (
+          <EditEvent {...{ event, setEvent }} />
+        )
+      ) : (
+        <EventDetail {...event} />
+      )}
+    </div>
+  );
 };
-
-export default Event;

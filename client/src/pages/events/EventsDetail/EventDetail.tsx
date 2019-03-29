@@ -1,29 +1,36 @@
 import { AxiosResponse } from 'axios';
-import { Field, FieldProps, Form, Formik, FormikProps } from 'formik';
 import React, { Component } from 'react';
+import { Field, FieldProps, Form, Formik, FormikProps } from 'formik';
+import { TileLayer, Map, Marker, Popup } from 'react-leaflet';
 import { MdDone } from 'react-icons/md';
-import { RouteComponentProps } from 'react-router';
+import moment from 'moment';
 import { deleteEvent, isOwner } from '../../../api/event.service';
 import { Comments, Gallery, SettingsPanel } from '../../../components';
 import { commentsSchema } from '../../../validationSchemas/commentValidation';
 import './EventDetail.scss';
 
-interface EventDetailProps {
-  routerProps: RouteComponentProps;
-}
-
 interface FormValue {
   comment: string;
 }
 
-export class EventDetail extends Component<EventDetailProps, any> {
-  constructor(props: EventDetailProps) {
+export class EventDetail extends Component<any, any> {
+  constructor(props: any) {
     super(props);
     this.state = {
-      eventProps: { ...this.props.routerProps.location.state }
+      eventProps: { ...this.props },
+      isOwner: false
     };
 
     this.handleDelete = this.handleDelete.bind(this);
+  }
+
+  public convertTime(date: string) {
+    console.debug(date);
+    const dateFormat = 'dddd, DD MMMM YYYY';
+    return moment(date)
+      .local()
+      .format(dateFormat)
+      .toString();
   }
 
   public componentDidMount() {
@@ -76,7 +83,16 @@ export class EventDetail extends Component<EventDetailProps, any> {
                         />
                         <h2>{this.state.eventProps.topic}</h2>
                       </div>
-                      <p>Friday,19 April 2019</p>
+                      <p>
+                        Start:
+                        {this.convertTime(
+                          this.state.eventProps.startDate.toString()
+                        )}
+                        Ends:
+                        {this.convertTime(
+                          this.state.eventProps.endDate.toString()
+                        )}
+                      </p>
                     </div>
                   ),
                   right: (
@@ -92,22 +108,39 @@ export class EventDetail extends Component<EventDetailProps, any> {
               <hr className='my-4' />
               <span className='lead'>{this.state.eventProps.description}</span>
               <hr className='my-4' />
-              <p>
-                Start: {this.state.eventProps.startDate} -{' '}
-                {this.state.eventProps.endDate}
-              </p>
-              <hr className='my-4' />
               <div className='map'>
                 <h2>Location and Destination points</h2>
-                <div>MAP</div>
+                <div className='rounded'>
+                  <Map
+                    className='rounded'
+                    center={[this.props.latitude, this.props.longitude]}
+                    zoom={13}
+                  >
+                    <TileLayer
+                      attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                      url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                    />
+                    <Marker
+                      position={[this.props.latitude, this.props.longitude]}
+                    >
+                      <Popup>
+                        A pretty CSS3 popup. <br /> Easily customizable.
+                      </Popup>
+                    </Marker>
+                  </Map>
+                </div>
                 {this.state.eventProps.location}
               </div>
+              <button
+                onClick={() => this.state.eventProps.setEdit(true)}
+                type='button'
+                className='btn btn-success'
+              >
+                Edit
+              </button>
 
               {this.state.isOwner ? (
                 <div>
-                  <button type='button' className='btn btn-success'>
-                    Edit
-                  </button>
                   <button
                     onClick={this.handleDelete}
                     type='button'

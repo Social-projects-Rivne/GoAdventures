@@ -5,7 +5,7 @@ import {
   About,
   Confirm,
   CreateEvent,
-  EventDetail,
+  Event,
   Events,
   ForgotPassword,
   Home,
@@ -40,7 +40,7 @@ export const Content = () => {
             <ContextProtectedRoute
               exact
               path='/events/detail/:name'
-              component={EventDetail}
+              component={Event}
             />
             <ContextProtectedRoute
               exact
