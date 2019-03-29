@@ -1,12 +1,14 @@
-import LCG from 'leaflet-control-geocoder';
-import React, { Component, createRef, RefObject } from 'react';
-import DatePicker from 'react-datepicker';
-import { Map as LeafletMap, Marker, Popup, TileLayer } from 'react-leaflet';
-import { Redirect } from 'react-router';
+import React, { Component, createRef } from 'react';
 import { createEventReq } from '../../api/requestCreateEvent';
-import { DropDown } from '../../components';
 import './CreateEvent.scss';
 import './Leaflet.scss';
+import { Map as LeafletMap, TileLayer, Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
+import LCG from 'leaflet-control-geocoder';
+import { DropDown } from '../../components';
+import DatePicker from 'react-datepicker';
+import { RefObject } from 'react';
+import { Redirect } from 'react-router';
 
 interface ExtendetRef extends RefObject<LeafletMap> {
   leafletElement: any;
@@ -76,7 +78,7 @@ export class CreateEvent extends Component<any, any> {
   public handleCoord(e: any) {
     const map = leafletMap.leafletElement;
     const geocoder = LCG.L.Control.Geocoder.nominatim();
-    if (map !== null) {
+    if (map != null) {
       geocoder.reverse(
         e.latlng,
         (map as any).options.crs.scale((map as any).getZoom()),
@@ -101,7 +103,6 @@ export class CreateEvent extends Component<any, any> {
     if (this.state.startDate < this.state.endDate) {
       createEventReq({ ...this.state }, category);
       console.debug(this.state);
-
       this.setState({ redirect: true });
     } else {
       console.log('startDate > endDate ');
@@ -113,6 +114,10 @@ export class CreateEvent extends Component<any, any> {
     const isDisabled =
       this.state.topic.length > 0 && this.state.description.length > 0;
     console.log('Isdisabled ', isDisabled);
+    let inputClass = 'invalid';
+    if (!isDisabled) {
+      inputClass = 'valid';
+    }
 
     return (
       <div className='container'>

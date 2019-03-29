@@ -8,7 +8,7 @@ import { EventDto } from '../../interfaces/Event.dto';
 interface EventState {
   events: EventDto[];
   pageSettings: {
-    isLast: true | false
+    isLast: true | false | undefined
     nextPage: string | null
   };
 }
@@ -34,11 +34,11 @@ export class Events extends Component<EventDto, EventState> {
         }
       ],
       pageSettings: {
-        isLast: false,
+        isLast: undefined,
         nextPage: ''
       }
     };
-    this.fetchEvents.bind(this);
+    this.fetchEvents = this.fetchEvents.bind(this);
   }
 
   public componentDidMount() {
@@ -46,9 +46,10 @@ export class Events extends Component<EventDto, EventState> {
   }
 
   public async fetchEvents(): Promise<void> {
+    console.debug(this.state);
     const response = await getEventList(this.state.pageSettings.nextPage);
     this.setState({
-      events: [...response.content],
+      events: [...this.state.events, ...response.content],
       pageSettings: {
         isLast: response.last,
         nextPage: !!sessionStorage.getItem('nextpage')
@@ -56,6 +57,7 @@ export class Events extends Component<EventDto, EventState> {
           : '/event/all'
       }
     });
+    console.debug(this.state);
   }
 
   public render() {
@@ -72,19 +74,27 @@ export class Events extends Component<EventDto, EventState> {
                 WebkitColumnGap: '0.5em',
                 WebkitColumnWidth: '15em'
               }}
-              dataLength={this.state.events.length} // This is important field to render the next data
+              dataLength={this.state.events ? this.state.events.length : 0}
               next={this.fetchEvents}
               hasMore={!this.state.pageSettings.isLast}
-              loader={<h4>Loading...</h4>}
+              loader={
+                <div className='spinner-border text-primary' role='status'>
+                  <span className='sr-only'>Loading...</span>
+                </div>
+              }
               endMessage={
                 <p style={{ textAlign: 'center' }}>
                   <b>Yay! You have seen it all</b>
                 </p>
               }
             >
-              {this.state.events.map((event, index) => (
-                <EventsListBuild {...event} key={index} />
-              ))}
+              {this.state.events.map((event, index) => {
+                if (event.id !== undefined) {
+                  return <EventsListBuild {...event} key={index} />;
+                } else {
+                  return null;
+                }
+              })}
             </InfiniteScroll>
           </div>
         </div>

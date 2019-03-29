@@ -1,5 +1,19 @@
 package io.softserve.goadventures.event.controller;
 
+import io.softserve.goadventures.auth.service.JWTService;
+import io.softserve.goadventures.event.category.Category;
+import io.softserve.goadventures.event.dto.EventDTO;
+import io.softserve.goadventures.event.enums.EventStatus;
+import io.softserve.goadventures.event.model.Event;
+import io.softserve.goadventures.event.repository.CategoryRepository;
+import io.softserve.goadventures.event.repository.EventRepository;
+import io.softserve.goadventures.event.service.EventDtoBuilder;
+import io.softserve.goadventures.event.service.EventService;
+import io.softserve.goadventures.gallery.model.Gallery;
+import io.softserve.goadventures.gallery.repository.GalleryRepository;
+import io.softserve.goadventures.user.model.User;
+import io.softserve.goadventures.user.service.UserNotFoundException;
+import io.softserve.goadventures.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,21 +27,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import src.main.java.io.softserve.goadventures.auth.service.JWTService;
-import src.main.java.io.softserve.goadventures.event.category.Category;
-import src.main.java.io.softserve.goadventures.event.dto.EventDTO;
-import src.main.java.io.softserve.goadventures.event.enums.EventStatus;
-import src.main.java.io.softserve.goadventures.event.model.Event;
-import src.main.java.io.softserve.goadventures.event.repository.CategoryRepository;
-import src.main.java.io.softserve.goadventures.event.repository.EventRepository;
-import src.main.java.io.softserve.goadventures.event.service.EventDtoBuilder;
-import src.main.java.io.softserve.goadventures.event.service.EventService;
-import src.main.java.io.softserve.goadventures.gallery.model.Gallery;
-import src.main.java.io.softserve.goadventures.gallery.repository.GalleryRepository;
-import src.main.java.io.softserve.goadventures.user.model.User;
-import src.main.java.io.softserve.goadventures.user.service.UserNotFoundException;
-import src.main.java.io.softserve.goadventures.user.service.UserService;
 
 @CrossOrigin
 @RestController
@@ -44,8 +43,8 @@ public class EventController {
 
   @Autowired
   public EventController(EventService eventService, EventRepository eventRepository,
-      CategoryRepository categoryRepository, GalleryRepository galleryRepository, EventDtoBuilder eventDtoBuilder,
-      UserService userService, JWTService jwtService) {
+                         CategoryRepository categoryRepository, GalleryRepository galleryRepository, EventDtoBuilder eventDtoBuilder,
+                         UserService userService, JWTService jwtService) {
     this.eventService = eventService;
     this.eventRepository = eventRepository;
     this.categoryRepository = categoryRepository;
@@ -57,14 +56,14 @@ public class EventController {
 
   @PostMapping("/create/{categoryId}")
   public ResponseEntity<String> createEvent(@PathVariable(value = "categoryId") String categoryId,
-      @RequestHeader(value = "Authorization") String token, @RequestBody Event event) {
+                                            @RequestHeader(value = "Authorization") String token, @RequestBody Event event) {
     Category category = categoryRepository.findByCategoryName(categoryId);
     event.setCategory(category);
     event.setStatusId(EventStatus.CREATED.getEventStatus());
     eventService.addEvent(event);
     try {
       LoggerFactory.getLogger("Create Event Controller: ")
-          .info(userService.getUserByEmail(jwtService.parseToken(token)).toString());
+              .info(userService.getUserByEmail(jwtService.parseToken(token)).toString());
       event.setOwner(userService.getUserByEmail(jwtService.parseToken(token)));
     } catch (UserNotFoundException e) {
       e.printStackTrace();
@@ -93,7 +92,7 @@ public class EventController {
 
   @PostMapping("/gallery/{eventId}")
   public ResponseEntity<String> createGallery(@PathVariable(value = "eventId") int eventId,
-      @RequestBody Gallery gallery) {
+                                              @RequestBody Gallery gallery) {
     Event event = eventRepository.findById(eventId);
     HttpHeaders httpHeaders = new HttpHeaders();
     gallery.setEventId(event);
@@ -101,16 +100,16 @@ public class EventController {
     return ResponseEntity.ok().headers(httpHeaders).body("gallery created");
   }
 
-  @GetMapping({ "/all/{search}", "/all" })
+  @GetMapping({"/all/{search}", "/all"})
   public ResponseEntity<?> getAllEvents(@PathVariable(value = "search", required = false) String search,
-      @PageableDefault(size = 15, sort = "id") Pageable eventPageable) {
+                                        @PageableDefault(size = 15, sort = "id") Pageable eventPageable) {
 
     Page<Event> eventsPage = search == null ? eventService.getAllEvents(eventPageable)
-        : eventService.getAllEventsByTopic(eventPageable, search);
+            : eventService.getAllEventsByTopic(eventPageable, search);
     if (eventsPage != null) {
       int nextPageNum = eventsPage.getNumber() + 1;
       UriComponents uriComponentsBuilder = UriComponentsBuilder.newInstance().path("/event/all").query("page={keyword}")
-          .buildAndExpand(nextPageNum);
+              .buildAndExpand(nextPageNum);
       HttpHeaders httpHeaders = new HttpHeaders();
       httpHeaders.set("nextpage", uriComponentsBuilder.toString());
       System.out.println(eventDtoBuilder.convertToDto(eventsPage));
@@ -147,7 +146,7 @@ public class EventController {
 
   @DeleteMapping("delete")
   public ResponseEntity<?> deleteEventOwner(@RequestHeader(value = "Authorization") String token,
-      @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
+                                            @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
     Event event = eventService.getEventById(eventId);
     User user = userService.getUserByEmail(jwtService.parseToken(token));
     if (eventService.delete(user, event)) {
@@ -159,27 +158,13 @@ public class EventController {
 
   @PostMapping("isOwner")
   public ResponseEntity<?> isOwner(@RequestHeader(value = "Authorization") String token,
-      @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
+                                   @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
     LoggerFactory.getLogger("IS OWNER EVENT").info("Event ID is : " + eventId + " , OwnerId is : "
-        + userService.getUserByEmail(jwtService.parseToken(token)).getId());
+            + userService.getUserByEmail(jwtService.parseToken(token)).getId());
     Event event = eventService.getEventById(eventId);
     User user = userService.getUserByEmail(jwtService.parseToken(token));
 
     return user.getId() == event.getOwner().getId() ? ResponseEntity.ok().body("IS OWNER")
-        : ResponseEntity.badRequest().body("IS NOT OWNER");
-  }
-
-  }
-
-  @PostMapping("isOwner")
-  public ResponseEntity<?> isOwner(@RequestHeader(value = "Authorization") String token,
-      @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
-    LoggerFactory.getLogger("IS OWNER EVENT").info("Event ID is : " + eventId + " , OwnerId is : "
-        + userService.getUserByEmail(jwtService.parseToken(token)).getId());
-    Event event = eventService.getEventById(eventId);
-    User user = userService.getUserByEmail(jwtService.parseToken(token));
-
-    return user.getId() == event.getOwner().getId() ? ResponseEntity.ok().body("IS OWNER")
-        : ResponseEntity.badRequest().body("IS NOT OWNER");
+            : ResponseEntity.badRequest().body("IS NOT OWNER");
   }
 }

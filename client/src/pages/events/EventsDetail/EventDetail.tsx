@@ -44,17 +44,15 @@ export class EventDetail extends Component<EventDetailProps, any> {
   }
 
   public handleDelete() {
-    deleteEvent(this.state.eventProps.id)
-      .then(
-        (res: AxiosResponse): any => {
-          console.log(res.status);
-          if (res.status >= 200 && res.status <= 300) {
-            this.props.routerProps.history.push('/profile');
-          } else {
-
-          }
+    deleteEvent(this.state.eventProps.id).then(
+      (res: AxiosResponse): any => {
+        console.log(res.status);
+        if (res.status >= 200 && res.status <= 300) {
+          this.props.routerProps.history.push('/profile');
+        } else {
         }
-      );
+      }
+    );
   }
 
   public render() {
@@ -105,16 +103,22 @@ export class EventDetail extends Component<EventDetailProps, any> {
                 {this.state.eventProps.location}
               </div>
 
-              {
-                this.state.isOwner ? <div>
+              {this.state.isOwner ? (
+                <div>
                   <button type='button' className='btn btn-success'>
                     Edit
                   </button>
-                  <button onClick={this.handleDelete} type='button' className='btn btn-danger'>
+                  <button
+                    onClick={this.handleDelete}
+                    type='button'
+                    className='btn btn-danger'
+                  >
                     Delete
                   </button>
-                </div> : <div></div>
-              }
+                </div>
+              ) : (
+                <div />
+              )}
 
               <hr className='my-4' />
               <div>
@@ -144,16 +148,16 @@ export class EventDetail extends Component<EventDetailProps, any> {
                                   name='comment'
                                 />
                                 {form.touched.comment &&
-                                  form.errors.comment &&
-                                  form.errors.comment ? (
-                                    <div className='invalid-feedback'>
-                                      {form.errors.comment}
-                                    </div>
-                                  ) : (
-                                    <div className='valid-feedback'>
-                                      <MdDone /> Press enter to add comment
+                                form.errors.comment &&
+                                form.errors.comment ? (
+                                  <div className='invalid-feedback'>
+                                    {form.errors.comment}
                                   </div>
-                                  )}
+                                ) : (
+                                  <div className='valid-feedback'>
+                                    <MdDone /> Press enter to add comment
+                                  </div>
+                                )}
                               </div>
                             );
                           }}

@@ -1,22 +1,20 @@
 package io.softserve.goadventures.event.model;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-
-import javax.persistence.*;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-
+import io.softserve.goadventures.event.category.Category;
+import io.softserve.goadventures.gallery.model.Gallery;
+import io.softserve.goadventures.user.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import src.main.java.io.softserve.goadventures.event.category.Category;
-import src.main.java.io.softserve.goadventures.gallery.model.Gallery;
-import src.main.java.io.softserve.goadventures.user.model.User;
+
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "events")
