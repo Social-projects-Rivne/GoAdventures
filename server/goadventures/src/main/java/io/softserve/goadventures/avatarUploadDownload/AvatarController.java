@@ -35,7 +35,7 @@ public class AvatarController {
         this.jwtService = jwtService;
     }
 
-    @PostMapping("/uploadAvatar")
+    @PostMapping(path = "/uploadAvatar", consumes = {"multipart/form-data"})
     public UploadFileResponse uploadAvatar(@RequestHeader(value = "Authorization") String authorizationHeader,
                                          @RequestParam("file") MultipartFile file) throws UserNotFoundException {
 

@@ -1,27 +1,25 @@
-import React, { SyntheticEvent, ChangeEvent } from 'react';
-import { withCookies, Cookies } from 'react-cookie';
-import { UserDto } from '../../../interfaces/User.dto';
-import './Sidebar.scss';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
+import React, { ChangeEvent } from 'react';
+import { Cookies, withCookies } from 'react-cookie';
 import { serverUrl } from '../../../api/url.config';
-
+import { ProfileContext } from '../../../context/profile.context';
+import { UserDto } from '../../../interfaces/User.dto';
+import avatar from '../images/Person.png';
+import './Sidebar.scss';
 
 interface SidebarState {
   userProfile: UserDto;
-  showEditForm: boolean;
-  showInfoForm: boolean;
-  avatar: any;
+  avatar: string | Blob;
 }
 
 
 const cookies: Cookies = new Cookies();
-class Sidebar extends React.Component<any, SidebarState>{
+class Sidebar extends React.Component<UserDto, SidebarState> {
+
   constructor(props: any) {
     super(props);
     this.state = {
-      avatar: null,
-      showEditForm: false,
-      showInfoForm: true,
+      avatar: '',
       userProfile: {
         fullname: '',
         username: '',
@@ -35,15 +33,15 @@ class Sidebar extends React.Component<any, SidebarState>{
   }
   public fileSelectHandler(event: ChangeEvent<HTMLInputElement>): void {
     //console.log(event.target.files[0]);
+    console.debug(event.target.files);
     !!event.target.files ?
       this.setState({
         avatar: event.target.files[0]
       }) : null;
-
   }
   public uploadHandler() {
-    const formdata = new FormData();
-    formdata.append('image', this.state.avatar, "name");
+    const formdata: FormData = new FormData();
+    formdata.set('file', this.state.avatar);
     const config = {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -52,7 +50,7 @@ class Sidebar extends React.Component<any, SidebarState>{
     };
     axios.post(
       `${serverUrl}/uploadAvatar`,
-      { params: { file: formdata } },
+      formdata,
       config
     ).then(response => {
       console.log(response);
@@ -60,60 +58,55 @@ class Sidebar extends React.Component<any, SidebarState>{
     )
 
   }
+
   public render() {
-
     return (
-      <div className='Sidebar__card card text-white bg-dark'>
-        <div className='card-header'>
-          <div className='Sidebar__avatar'>
-            <img src={this.props.avatarUrl || "..images/Person.png"} alt='user_avatar' />
-          </div>
-          <input
-            type='file'
-            onChange={this.fileSelectHandler}
+      <ProfileContext.Consumer>
+        {({ togleMyEvents, togleEditProfile, toogleAccountOverView }) => (
+          <div className='Sidebar__card card text-white bg-dark'>
+            <div className='card-header'>
+              <h2 className='title'>My Profile</h2>
+              <div className='Sidebar__avatar'>
+                <img
+                  src={this.props.avatarUrl !== '' ? this.props.avatarUrl : avatar}
+                  alt='user_avatar' />
+              </div>
+              <input
+                // style={{ display: 'none' }}
+                type='file'
+                onChange={this.fileSelectHandler}
+              // ref={(fileInput) => this.inputFile = fileInput} 
+              />
+              {/* <button onClick={() => this.fileInput.click()} > Pick File </button> */}
+              <button
+                onClick={this.uploadHandler}
+              >Upload</button>
+            </div>
 
-          >
-          </input>
-          <button
-            onClick={this.uploadHandler}
-          >Upload</button>
-        </div>
+            <div className='card-body'>
 
-        <div className='card-body'>
-          <div ><button
-            type="button"
-            id="special"
-            onClick={() => {
-              this.props.updateData(this.state.showInfoForm);
-            }
-            }
-            className="btn btn-secondary">
-            Account Overview
+              <div className='btn-choice'>
+                <button className='btn btn-secondary disabled edit'
+                  id='sidebarBtn'
+                  onClick={togleEditProfile}>
+                  Edit profile
                 </button>
-
-          </div>
-          <div ><button
-            type="button"
-            onClick={() => {
-              this.props.updateData(this.state.showEditForm);
-            }
-            }
-            id="special"
-            className="btn btn-secondary">Edit Profile
+                <button className='btn btn-secondary disabled events'
+                  id='sidebarBtn'
+                  onClick={togleMyEvents}>
+                  My events
                 </button>
-
+                <button className='btn btn-secondary'
+                  id='sidebarBtn'
+                  onClick={toogleAccountOverView}>
+                  Account OverView
+                 </button>
+              </div>
+            </div>
           </div>
-          <div ><button
-            type="button"
-            id="special"
-            className="btn btn-secondary">Change password
-                </button>
-
-          </div>
-        </div>
-      </div>
+        )}
+      </ProfileContext.Consumer>
     );
   }
 }
-
 export default withCookies(Sidebar);

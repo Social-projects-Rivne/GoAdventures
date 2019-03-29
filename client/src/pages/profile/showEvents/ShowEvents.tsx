@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { getEventList } from '../../api/event.service';
-import { EventsListBuild } from '../../components/eventsListBuild/EventsListBuild';
-import { EventDto } from '../../interfaces/Event.dto';
+import { getOwnerEventList } from '../../../api/event.service';
+import { EventsListBuild } from '../../../components/eventsListBuild/EventsListBuild';
+import { EventDto } from '../../../interfaces/Event.dto';
 
 interface EventState {
   events: EventDto[];
@@ -12,7 +12,7 @@ interface EventState {
   };
 }
 
-export class Events extends Component<EventDto, EventState> {
+export class ShowEvents extends Component<EventDto, EventState> {
   constructor(props: any) {
     super(props);
     this.state = {
@@ -39,7 +39,7 @@ export class Events extends Component<EventDto, EventState> {
   }
 
   public async fetchEvents(): Promise<void> {
-    const response = await getEventList(this.state.pageSettings.nextPage);
+    const response = await getOwnerEventList(this.state.pageSettings.nextPage);
     this.setState({
       events: [...response.content],
       pageSettings: {
@@ -54,7 +54,7 @@ export class Events extends Component<EventDto, EventState> {
   public render() {
     return (
       <div className='container-fluid'>
-        <h1 className='text-center'>Event List</h1>
+        <h1 className='text-center'>Events where you are owner</h1>
 
         <div className='row'>
           <div className='col'>
@@ -71,7 +71,7 @@ export class Events extends Component<EventDto, EventState> {
               loader={<h4>Loading...</h4>}
               endMessage={
                 <p style={{ textAlign: 'center' }}>
-                  <b>Yay! You have seen it all</b>
+                  
                 </p>
               }
             >
@@ -84,4 +84,5 @@ export class Events extends Component<EventDto, EventState> {
       </div>
     );
   }
-}
+} 
+export default ShowEvents;

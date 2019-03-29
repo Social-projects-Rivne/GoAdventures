@@ -3,42 +3,32 @@ import React, { Component, CSSProperties } from 'react';
 import { changeUserData, getUserData } from '../../api/user.service';
 import { Dialog } from '../../components';
 import { InputSettings } from '../../components/dialog-window/interfaces/input.interface';
+import { ProfileContext } from '../../context/profile.context';
 import { UserDto } from '../../interfaces/User.dto';
 import { editProfileSchema } from '../../validationSchemas/authValidation';
+import AccountOverwiew from './accountOverview/AccountOverview';
 import './Profile.scss';
+import ShowEvents from './showEvents/ShowEvents';
 import Sidebar from './sidebar/Sidebar';
-import AccountOverwiew from './accountOverview/accountOverview';
 
 interface ProfileState {
   userProfile: UserDto;
   userEventList: any;
   showEditForm: boolean;
-  showInfoForm: boolean;
-  // showPassForm: boolean;
+  choose: 'edit-profile' | 'events' | 'default' | 'account-overview';
+  togleEditProfile: () => void;
+  togleMyEvents: () => void;
+  toogleAccountOverView: () => void;
 }
 
 export class Profile extends Component<UserDto, ProfileState> {
-  constructor(props: UserDto) {
-    super(props);
-
-    this.state = {
-      showEditForm: false,
-      showInfoForm: true,
-      userProfile: {
-        fullname: '',
-        username: '',
-        email: '',
-        avatarUrl: '',
-      },
-      userEventList: {
-        description: '',
-        topic: '',
-        start_date: ''
-      }
-    };
-    this.updateData = this.updateData.bind(this);
-  }
   private editFormInputSettings: InputSettings[] = [
+    {
+      field_name: 'avatarUrl',
+      label_value: 'Change avatar',
+      placeholder: 'avatar',
+      type: 'file'
+    },
     {
       field_name: 'fullname',
       label_value: 'Changed your name?',
@@ -91,21 +81,52 @@ export class Profile extends Component<UserDto, ProfileState> {
 
   private editFormDialogStyles: CSSProperties = {
     opacity: 0.9,
-    width: '100%',
-
+    width: '100%'
   };
 
+  // початкова ініціалізація(null)
+  constructor(props: any) {
+    super(props);
 
-
-
-  public updateData = (value: ProfileState) => {
-    //this.setState({showEditForm: value.showEditForm})
-    this.setState({ showEditForm: true })
-
+    this.state = {
+      showEditForm: true,
+      userProfile: {
+        fullname: '',
+        username: '',
+        email: '',
+        avatarUrl: ''
+      },
+      userEventList: {
+        description: '',
+        endDate: '',
+        id: 0,
+        location: '',
+        startDate: '',
+        topic: ''
+      },
+      choose: 'events',
+      togleEditProfile: () => {
+        this.setState(state => ({
+          choose: 'edit-profile'
+        }));
+        console.log(this.state.choose)
+      },
+      togleMyEvents: () => {
+        this.setState(state => ({
+          choose: 'events'
+        }));
+        console.log(this.state.choose)
+      },
+      toogleAccountOverView: () => {
+        this.setState(state => ({
+          choose: 'account-overview'
+        }));
+        console.log(this.state.choose)
+      }
+    };
   }
 
   public handleSubmit(data: UserDto): Promise<string> {
-    { }
     return changeUserData({ ...data });
   }
 
@@ -121,25 +142,34 @@ export class Profile extends Component<UserDto, ProfileState> {
   public render() {
     // рендер екземпляров сайдбар і юзерівенліст
     return (
-      <div className='profile-page'>
-        <div className='sidebar'>
-          <Sidebar {...this.state.userProfile} updateData={this.updateData} />
-        </div>
-        <div className='Profile__content'>
-          {this.state.showEditForm ? (
-            <Dialog
-              validationSchema={editProfileSchema}
-              handleSubmit={this.handleSubmit}
-              inputs={this.editFormInputSettings}
-              button_text='Update'
-              header='Edit your profile'
-              inline_styles={this.editFormDialogStyles}
-            />
-          ) : (<div><AccountOverwiew {...this.state.userProfile} /> </div>
+      <ProfileContext.Provider value={this.state}>
+        <div className='profile-page'>
+          <div className='sidebar'>
+            <Sidebar {...this.state.userProfile} />
+          </div>
+          <div className='Profile__content'>
+            {
+              this.state.choose === 'events'
+                ? <ShowEvents {...this.state.userEventList} />
+                : (this.state.choose === 'edit-profile'
+                  ? <Dialog
+                    validationSchema={editProfileSchema}
+                    handleSubmit={this.handleSubmit}
+                    inputs={this.editFormInputSettings}
+                    button_text='Update'
+                    header='Edit your profile'
+                    inline_styles={this.editFormDialogStyles}
+                  />
+                  : (this.state.choose === 'account-overview'
+                    ? <AccountOverwiew {...this.state.userProfile} />
+                    : null
 
-            )}
+                  )
+                )
+            }
+          </div>
         </div>
-      </div>
+      </ProfileContext.Provider>
     );
   }
 }
