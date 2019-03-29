@@ -1,5 +1,4 @@
 package io.softserve.goadventures.event.controller;
-
 import io.softserve.goadventures.auth.service.JWTService;
 import io.softserve.goadventures.user.model.User;
 import io.softserve.goadventures.user.service.UserNotFoundException;
@@ -25,6 +24,7 @@ import io.softserve.goadventures.event.repository.CategoryRepository;
 import io.softserve.goadventures.event.repository.EventRepository;
 import io.softserve.goadventures.event.service.EventDtoBuilder;
 import io.softserve.goadventures.event.service.EventService;
+import io.softserve.goadventures.event.enums.EventStatus;
 import io.softserve.goadventures.gallery.model.Gallery;
 import io.softserve.goadventures.gallery.repository.GalleryRepository;
 
@@ -60,6 +60,8 @@ public class EventController {
                                               @RequestBody Event event) {
         Category category = categoryRepository.findByCategoryName(categoryId);
         event.setCategory(category);
+        event.setStatusId(EventStatus.CREATED.getEventStatus());
+        eventService.addEvent(event);
         try {
             LoggerFactory.getLogger("Create Event Controller: ").info(userService.getUserByEmail(jwtService.parseToken(token)).toString());
             event.setOwner(userService.getUserByEmail(jwtService.parseToken(token)));
@@ -68,7 +70,6 @@ public class EventController {
         }
         eventService.addEvent(event);
         HttpHeaders httpHeaders = new HttpHeaders();
-
         return ResponseEntity.ok().headers(httpHeaders).body("Event created");
     }
 

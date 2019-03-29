@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import javax.persistence.*;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -38,7 +39,13 @@ public class Event {
     @Column(name = "location")
     private String location;
 
-    @Column(name = "description")
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
+
+    @Column(name = "description", columnDefinition="TEXT")
     private String description;
 
     @Column(name = "status_id")
@@ -67,11 +74,13 @@ public class Event {
     @JoinColumn(name = "owner")
     private User owner;
 
-    public Event(String topic, String startDate, String endDate, String location, String description, Category category) {
+    public Event(String topic, String startDate, String endDate, String location, Double latitude, Double longitude, String description, Category category) {
         setTopic(topic);
         setStartDate(startDate);
         setEndDate(endDate);
         setLocation(location);
+        setLatitude(latitude);
+        setLongitude(longitude);
         setDescription(description);
         setCategory(category);
     }
@@ -84,6 +93,8 @@ public class Event {
                 ", startDate='" + startDate + '\'' +
                 ", endDate='" + endDate + '\'' +
                 ", location='" + location + '\'' +
+                ", latitude='" + latitude + '\'' +
+                ", longitude='" + longitude + '\'' +
                 ", description='" + description + '\'' +
                 ", statusId=" + statusId + '\'' +
                 ", owner=" + owner + '\'' +/*
@@ -107,6 +118,6 @@ public class Event {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, topic, startDate, endDate, location, category);
+        return Objects.hash(id, topic, startDate, endDate, location, latitude, longitude, category);
     }
 }
