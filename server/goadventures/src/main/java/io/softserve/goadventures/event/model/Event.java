@@ -1,9 +1,17 @@
 package io.softserve.goadventures.event.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.softserve.goadventures.event.category.Category;
-import lombok.*;
+import io.softserve.goadventures.user.model.User;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "events")
@@ -35,9 +43,22 @@ public class Event {
     private int statusId;
 
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(
+            name = "event_participants",
+            joinColumns = { @JoinColumn(name = "event_id", referencedColumnName = "id") },
+            inverseJoinColumns = { @JoinColumn(name = "users_id", referencedColumnName = "id") }
+    )
+    private Set<User> participants = new HashSet<>();
+
+    @JsonIgnore
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "owner")
+    private User owner;
 
     public Event(String topic, String startDate, String endDate, String location, String description, Category category) {
         setTopic(topic);
@@ -46,5 +67,39 @@ public class Event {
         setLocation(location);
         setDescription(description);
         setCategory(category);
+    }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "id=" + id +
+                ", topic='" + topic + '\'' +
+                ", startDate='" + startDate + '\'' +
+                ", endDate='" + endDate + '\'' +
+                ", location='" + location + '\'' +
+                ", description='" + description + '\'' +
+                ", statusId=" + statusId + '\'' +
+                ", owner=" + owner + '\'' +/*
+                ", category=" + category.getCategoryName() +
+                ", participants=" + participants +*/
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Event event = (Event) o;
+        return id == event.id &&
+                topic.equals(event.topic) &&
+                startDate.equals(event.startDate) &&
+                endDate.equals(event.endDate) &&
+                location.equals(event.location) &&
+                category.equals(event.category);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, topic, startDate, endDate, location, category);
     }
 }

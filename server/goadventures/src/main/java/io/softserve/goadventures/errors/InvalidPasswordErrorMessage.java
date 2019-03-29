@@ -10,6 +10,4 @@ import org.springframework.stereotype.Service;
 @Service
 public class InvalidPasswordErrorMessage extends RuntimeException{
     private String ErrorMessage = "Current password is wrong!";
-
-
 }

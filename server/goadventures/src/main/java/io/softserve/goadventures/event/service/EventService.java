@@ -1,23 +1,22 @@
 package io.softserve.goadventures.event.service;
-import java.util.*;
 
-import io.softserve.goadventures.Gallery.model.Gallery;
-import io.softserve.goadventures.Gallery.repository.GalleryRepository;
-import io.softserve.goadventures.event.category.Category;
 import io.softserve.goadventures.event.model.Event;
-import io.softserve.goadventures.event.model.EventDTO;
-import io.softserve.goadventures.event.repository.CategoryRepository;
 import io.softserve.goadventures.event.repository.EventRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.softserve.goadventures.gallery.repository.GalleryRepository;
+import io.softserve.goadventures.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class EventService{
     private final EventRepository eventRepository;
     private final GalleryRepository galleryRepository;
-    private Logger logger = LoggerFactory.getLogger(io.softserve.goadventures.auth.controller.AuthController.class);
 
     @Autowired
     public EventService(EventRepository eventRepository,GalleryRepository galleryRepository){
@@ -33,38 +32,34 @@ public class EventService{
         return eventRepository.findByTopic(topic);
     }
 
-    public Iterable<EventDTO> getEventsByLocation(String location){
-        List<EventDTO> returnEvents = new ArrayList();
-        for(Event event: eventRepository.findAll()) {
-            if (event.getLocation().equals(location)) {
-                Category category=event.getCategory();
-
-                List<String>gallery = new ArrayList<>();
-
-                for(Gallery gal:galleryRepository.findByEventId(event.getId()))
-                    gallery.add(gal.getImageUrl());
-
-
-
-            returnEvents.add(
-                    new EventDTO(event.getId(),event.getTopic(),event.getStartDate(),
-                                event.getEndDate(),event.getLocation(),event.getDescription(),
-                                event.getStatusId(),
-                                category.getCategoryName(),gallery
-                    ));
-            }
-        }
-        return returnEvents;
-    }
-
-
     public void addEvent(Event newEvent) {eventRepository.save(newEvent);}
 
     public void updateEvent(Event event) {
         eventRepository.save(event);
     }
 
-    public Iterable<Event> getAllEvents() {
-        return eventRepository.findAll();
+    public Page<Event> getAllEvents(Pageable eventPageable) {
+        Page<Event> eventPage = eventRepository.findAll(eventPageable);
+        return eventPage;
+    }
+
+    public Page<Event> getAllEventsByOwner(Pageable pageable, Integer id) {
+        List<Event> list = new ArrayList<>();
+
+        for (Event e : eventRepository.findAll(pageable)) {
+            if (id.equals(e.getOwner().getId())) {
+                list.add(e);
+            }
+        }
+        return new PageImpl<>(list);
+    }
+
+    public boolean delete(User user, Event event) {
+        if (user.getId() == event.getOwner().getId()) {
+            eventRepository.delete(event);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

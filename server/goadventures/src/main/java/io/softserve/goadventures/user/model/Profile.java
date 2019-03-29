@@ -1,4 +1,4 @@
-package io.softserve.goadventures.user.controller;
+package io.softserve.goadventures.user.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,12 +11,10 @@ public class Profile {
     private String email;
     private String location;
     private int phone;
-    private String avatarUrl;
 
-    public Profile(String fullName, String userName, String email,String avatarUrl) {
+    public Profile(String fullName, String userName, String email) {
         this.fullName = fullName;
         this.userName = userName;
         this.email = email;
-        this.avatarUrl = avatarUrl;
     }
 }

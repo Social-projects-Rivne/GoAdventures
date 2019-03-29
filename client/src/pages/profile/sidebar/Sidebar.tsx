@@ -27,6 +27,7 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
         avatarUrl: ''
       },
 
+
     };
     this.uploadHandler = this.uploadHandler.bind(this);
     this.fileSelectHandler = this.fileSelectHandler.bind(this);
@@ -104,6 +105,7 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
               </div>
             </div>
           </div>
+
         )}
       </ProfileContext.Consumer>
     );

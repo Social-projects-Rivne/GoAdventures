@@ -5,4 +5,4 @@ export const ProfileContext = React.createContext({
     togleEditProfile: () => { },
     togleMyEvents: () => { },
     toogleAccountOverView: () => { }
-});
+})

@@ -11,14 +11,18 @@ import './Profile.scss';
 import ShowEvents from './showEvents/ShowEvents';
 import Sidebar from './sidebar/Sidebar';
 
+
+
 interface ProfileState {
   userProfile: UserDto;
   userEventList: any;
   showEditForm: boolean;
+
   choose: 'edit-profile' | 'events' | 'default' | 'account-overview';
   togleEditProfile: () => void;
   togleMyEvents: () => void;
   toogleAccountOverView: () => void;
+
 }
 
 export class Profile extends Component<UserDto, ProfileState> {
@@ -121,6 +125,7 @@ export class Profile extends Component<UserDto, ProfileState> {
         this.setState(state => ({
           choose: 'account-overview'
         }));
+
         console.log(this.state.choose)
       }
     };
@@ -170,6 +175,7 @@ export class Profile extends Component<UserDto, ProfileState> {
           </div>
         </div>
       </ProfileContext.Provider>
+
     );
   }
 }

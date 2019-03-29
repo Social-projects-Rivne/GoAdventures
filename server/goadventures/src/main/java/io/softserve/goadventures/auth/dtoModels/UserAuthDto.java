@@ -12,6 +12,4 @@ public class UserAuthDto {
     private String password;
     private String userName;
     private String fullName;
-
-
 }
