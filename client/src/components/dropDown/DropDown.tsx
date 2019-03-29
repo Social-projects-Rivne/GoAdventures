@@ -30,7 +30,7 @@ export class DropDown extends Component<any, DropDownSettings> {
     }
 
     handleChange(e:any) {
-        this.props.onTemperatureChange(e.target.value);
+        this.props.onCategoryChange(e.target.value);
     }
 
     public render() {
@@ -43,7 +43,7 @@ export class DropDown extends Component<any, DropDownSettings> {
             );
         } else {
         return <div>
-            <label> Choose category for the event</label>
+            
             <select onChange={this.handleChange}>{
                 this.state.categories.map((option) =>
                 <option value = {option.categoryName}>{option.categoryName}</option>)

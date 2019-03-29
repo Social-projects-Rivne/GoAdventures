@@ -16,7 +16,9 @@ interface SidebarState {
 const cookies: Cookies = new Cookies();
 class Sidebar extends React.Component<UserDto, SidebarState> {
 
+
   constructor(props: any) {
+
     super(props);
     this.state = {
       avatar: '',
@@ -26,6 +28,7 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
         email: '',
         avatarUrl: ''
       },
+
 
 
     };
@@ -60,54 +63,59 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
 
   }
 
+
   public render() {
     return (
       <ProfileContext.Consumer>
-        {({ togleMyEvents, togleEditProfile, toogleAccountOverView }) => (
-          <div className='Sidebar__card card text-white bg-dark'>
-            <div className='card-header'>
-              <h2 className='title'>My Profile</h2>
-              <div className='Sidebar__avatar'>
-                <img
-                  src={this.props.avatarUrl !== '' ? this.props.avatarUrl : avatar}
-                  alt='user_avatar' />
+        {
+          ({ togleMyEvents, togleEditProfile, toogleAccountOverView }) => (
+            <div className='Sidebar__card card text-white bg-dark'>
+              <div className='card-header'>
+                <h2 className='title'>My Profile</h2>
+                <div className='Sidebar__avatar'>
+
+                  <img
+                    src={this.props.avatarUrl !== '' ? this.props.avatarUrl : avatar}
+                    alt='user_avatar' />
+                </div>
+                <input
+                  // style={{ display: 'none' }}
+                  type='file'
+                  onChange={this.fileSelectHandler}
+                // ref={(fileInput) => this.inputFile = fileInput} 
+                />
+                {/* <button onClick={() => this.fileInput.click()} > Pick File </button> */}
+                <button
+                  onClick={this.uploadHandler}
+                >Upload</button>
               </div>
-              <input
-                // style={{ display: 'none' }}
-                type='file'
-                onChange={this.fileSelectHandler}
-              // ref={(fileInput) => this.inputFile = fileInput} 
-              />
-              {/* <button onClick={() => this.fileInput.click()} > Pick File </button> */}
-              <button
-                onClick={this.uploadHandler}
-              >Upload</button>
-            </div>
 
-            <div className='card-body'>
+              <div className='card-body'>
 
-              <div className='btn-choice'>
-                <button className='btn btn-secondary disabled edit'
-                  id='sidebarBtn'
-                  onClick={togleEditProfile}>
-                  Edit profile
+                <div className='btn-choice'>
+                  <button className='btn btn-secondary disabled edit'
+                    id='sidebarBtn'
+                    onClick={togleEditProfile}>
+                    Edit profile
                 </button>
-                <button className='btn btn-secondary disabled events'
-                  id='sidebarBtn'
-                  onClick={togleMyEvents}>
-                  My events
+                  <button className='btn btn-secondary disabled events'
+                    id='sidebarBtn'
+                    onClick={togleMyEvents}>
+                    My events
                 </button>
-                <button className='btn btn-secondary'
-                  id='sidebarBtn'
-                  onClick={toogleAccountOverView}>
-                  Account OverView
+                  <button className='btn btn-secondary'
+                    id='sidebarBtn'
+                    onClick={toogleAccountOverView}>
+                    Account OverView
                  </button>
+                </div>
               </div>
-            </div>
-          </div>
+            </div >
 
-        )}
-      </ProfileContext.Consumer>
+
+          )
+        }
+      </ProfileContext.Consumer >
     );
   }
 }

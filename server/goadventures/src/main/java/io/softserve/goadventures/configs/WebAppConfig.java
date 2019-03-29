@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 
+
 @Configuration
 @ComponentScan
 @EnableAutoConfiguration
@@ -30,4 +31,5 @@ public class WebAppConfig {
   public MultipartResolver multipartResolver() {
     return new StandardServletMultipartResolver();
   }
+
 }

@@ -23,16 +23,11 @@ interface ProfileState {
   togleMyEvents: () => void;
   toogleAccountOverView: () => void;
 
+
 }
 
 export class Profile extends Component<UserDto, ProfileState> {
   private editFormInputSettings: InputSettings[] = [
-    {
-      field_name: 'avatarUrl',
-      label_value: 'Change avatar',
-      placeholder: 'avatar',
-      type: 'file'
-    },
     {
       field_name: 'fullname',
       label_value: 'Changed your name?',
@@ -87,8 +82,6 @@ export class Profile extends Component<UserDto, ProfileState> {
     opacity: 0.9,
     width: '100%'
   };
-
-  // початкова ініціалізація(null)
   constructor(props: any) {
     super(props);
 
@@ -108,7 +101,7 @@ export class Profile extends Component<UserDto, ProfileState> {
         startDate: '',
         topic: ''
       },
-      choose: 'events',
+      choose: 'account-overview',
       togleEditProfile: () => {
         this.setState(state => ({
           choose: 'edit-profile'
@@ -145,7 +138,6 @@ export class Profile extends Component<UserDto, ProfileState> {
   }
 
   public render() {
-    // рендер екземпляров сайдбар і юзерівенліст
     return (
       <ProfileContext.Provider value={this.state}>
         <div className='profile-page'>

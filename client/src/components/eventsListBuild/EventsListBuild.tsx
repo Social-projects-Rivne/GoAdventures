@@ -17,8 +17,13 @@ export class EventsListBuild extends React.Component<EventDto, any> {
     this.setState({ redirect: true });
   }
   public render() {
+
+    console.debug(this.props.gallery !== null ? this.props.gallery : false);
     return (
-      <div onClick={this.redirectTo.bind(this)} className='col card Events_card '>
+      <div
+        onClick={this.redirectTo.bind(this)}
+        className='Events_card col card'
+      >
         {this.state.redirect ? (
           <Redirect
             push
@@ -32,7 +37,11 @@ export class EventsListBuild extends React.Component<EventDto, any> {
         ) : null}
         <img
           className='card-img-top'
-          src='https://botw-pd.s3.amazonaws.com/styles/logo-thumbnail/s3/0016/1400/brand.gif?itok=AelJnUfh'
+          src={
+            this.props.gallery !== null
+              ? this.props.gallery.imageUrls[0]
+              : 'https://via.placeholder.com/250'
+          }
           alt='Card image cap'
         />
         <div className='card-body'>

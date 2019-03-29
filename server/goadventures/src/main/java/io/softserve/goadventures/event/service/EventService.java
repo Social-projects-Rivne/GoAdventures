@@ -13,26 +13,33 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Service
-public class EventService{
+public class EventService {
     private final EventRepository eventRepository;
     private final GalleryRepository galleryRepository;
 
     @Autowired
-    public EventService(EventRepository eventRepository,GalleryRepository galleryRepository){
+    public EventService(EventRepository eventRepository, GalleryRepository galleryRepository) {
         this.eventRepository = eventRepository;
-        this.galleryRepository=galleryRepository;
+        this.galleryRepository = galleryRepository;
     }
 
-    public Event getEventById(int id){
+    public Event getEventById(int id) {
         return eventRepository.findById(id);
     }
 
-    public Event getEventByTopic(String topic){
+    public Event getEventByTopic(String topic) {
         return eventRepository.findByTopic(topic);
     }
 
-    public void addEvent(Event newEvent) {eventRepository.save(newEvent);}
+    public Page<Event> getAllEventsByTopic(Pageable eventPageable, String topic) {
+        return eventRepository.findAllByTopic(eventPageable, topic);
+    }
+
+    public void addEvent(Event newEvent) {
+        eventRepository.save(newEvent);
+    }
 
     public void updateEvent(Event event) {
         eventRepository.save(event);

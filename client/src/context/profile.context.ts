@@ -6,3 +6,4 @@ export const ProfileContext = React.createContext({
     togleMyEvents: () => { },
     toogleAccountOverView: () => { }
 })
+

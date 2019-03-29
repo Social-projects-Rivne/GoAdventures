@@ -1,35 +1,38 @@
 package io.softserve.goadventures.event.controller;
-
 import io.softserve.goadventures.auth.service.JWTService;
-import io.softserve.goadventures.event.category.Category;
-import io.softserve.goadventures.event.dto.EventDTO;
-import io.softserve.goadventures.event.model.Event;
-import io.softserve.goadventures.event.repository.CategoryRepository;
-import io.softserve.goadventures.event.repository.EventRepository;
-import io.softserve.goadventures.event.service.EventDtoBuilder;
-import io.softserve.goadventures.event.service.EventService;
-import io.softserve.goadventures.gallery.model.Gallery;
-import io.softserve.goadventures.gallery.repository.GalleryRepository;
 import io.softserve.goadventures.user.model.User;
 import io.softserve.goadventures.user.service.UserNotFoundException;
 import io.softserve.goadventures.user.service.UserService;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import io.softserve.goadventures.event.category.Category;
+import io.softserve.goadventures.event.model.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.data.mongo.ReactiveStreamsMongoClientDependsOnBeanFactoryPostProcessor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
+import io.softserve.goadventures.event.dto.EventDTO;
+import io.softserve.goadventures.event.repository.CategoryRepository;
+import io.softserve.goadventures.event.repository.EventRepository;
+import io.softserve.goadventures.event.service.EventDtoBuilder;
+import io.softserve.goadventures.event.service.EventService;
+import io.softserve.goadventures.event.enums.EventStatus;
+import io.softserve.goadventures.gallery.model.Gallery;
+import io.softserve.goadventures.gallery.repository.GalleryRepository;
 
 @CrossOrigin
 @RestController
 @RequestMapping("event")
 public class EventController {
+    private Logger logger = LoggerFactory.getLogger(io.softserve.goadventures.event.controller.EventController.class);
     private final EventService eventService;
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
@@ -41,8 +44,7 @@ public class EventController {
     @Autowired
     public EventController(EventService eventService, EventRepository eventRepository,
                            CategoryRepository categoryRepository, GalleryRepository galleryRepository,
-                           JWTService jwtService, UserService userService,
-                           EventDtoBuilder eventDtoBuilder) {
+                           EventDtoBuilder eventDtoBuilder, UserService userService, JWTService jwtService) {
         this.eventService = eventService;
         this.eventRepository = eventRepository;
         this.categoryRepository = categoryRepository;
@@ -56,15 +58,23 @@ public class EventController {
     public ResponseEntity<String> createEvent(@PathVariable(value = "categoryId") String categoryId,
                                               @RequestHeader(value = "Authorization") String token,
                                               @RequestBody Event event) {
-        LoggerFactory.getLogger("eventController").info(event.toString());
-
         Category category = categoryRepository.findByCategoryName(categoryId);
         event.setCategory(category);
+        event.setStatusId(EventStatus.CREATED.getEventStatus());
+        eventService.addEvent(event);
         try {
+            LoggerFactory.getLogger("Create Event Controller: ").info(userService.getUserByEmail(jwtService.parseToken(token)).toString());
             event.setOwner(userService.getUserByEmail(jwtService.parseToken(token)));
         } catch (UserNotFoundException e) {
             e.printStackTrace();
         }
+        eventService.addEvent(event);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        return ResponseEntity.ok().headers(httpHeaders).body("Event created");
+    }
+
+    @PostMapping("/create/")
+    public ResponseEntity<String> createEvent(@RequestBody Event event) {
         eventService.addEvent(event);
         HttpHeaders httpHeaders = new HttpHeaders();
 
@@ -89,26 +99,27 @@ public class EventController {
         galleryRepository.save(gallery);
         return ResponseEntity.ok().headers(httpHeaders).body("gallery created");
     }
+    @GetMapping({ "/all/{search}", "/all" })
+    public ResponseEntity<?> getAllEvents(@PathVariable(value = "search", required = false) String search,
+                                          @PageableDefault(size = 15, sort = "id") Pageable eventPageable) {
 
-    @GetMapping("/all")
-    public ResponseEntity<?> getAllEvents(/*@PageableDefault(size = 15, sort = "id")*/ Pageable eventPageable) {
-        Page<Event> eventsPage = eventService.getAllEvents(eventPageable);
-        if(eventsPage != null) {
+        Page<Event> eventsPage = search == null ? eventService.getAllEvents(eventPageable)
+                : eventService.getAllEventsByTopic(eventPageable, search);
+        if (eventsPage != null) {
             int nextPageNum = eventsPage.getNumber() + 1;
-            UriComponents uriComponentsBuilder = UriComponentsBuilder.newInstance()
-                    .path("/event/all")
-                    .query("page={keyword}")
-                    .buildAndExpand(nextPageNum);
+            UriComponents uriComponentsBuilder = UriComponentsBuilder.newInstance().path("/event/all")
+                    .query("page={keyword}").buildAndExpand(nextPageNum);
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.set("nextpage", uriComponentsBuilder.toString());
             System.out.println(eventDtoBuilder.convertToDto(eventsPage));
-
-            return new ResponseEntity<Slice<EventDTO>>(eventDtoBuilder.convertToDto(eventsPage),
-                    httpHeaders,
+            Slice<EventDTO> t = eventDtoBuilder.convertToDto(eventsPage);
+            logger.info("Event converted to dto", t.getContent());
+            logger.info("Event converted to dto", t.getContent().get(0));
+            return new ResponseEntity<Slice<EventDTO>>(t, httpHeaders,
                     HttpStatus.OK);
         } else {
             // TODO: wr1 3r c
-            return  ResponseEntity.badRequest().body("End of pages");
+            return ResponseEntity.badRequest().body("End of pages");
         }
     }
 
@@ -123,7 +134,7 @@ public class EventController {
     }
 
     @GetMapping("/gallery/{eventId}")
-    public Iterable<Gallery> getAllGalleryByEventId(@PathVariable(value = "eventId") int eventId, Pageable pageable) {
+    public Gallery getAllGalleryByEventId(@PathVariable(value = "eventId") int eventId) {
         Event event = eventRepository.findById(eventId);
         return galleryRepository.findByEventId(event.getId());
     }

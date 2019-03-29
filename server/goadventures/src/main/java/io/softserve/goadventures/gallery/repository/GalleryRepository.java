@@ -8,6 +8,5 @@ import java.util.List;
 @Repository
 public interface GalleryRepository extends CrudRepository<Gallery, Integer> {
     Gallery findById(int id);
-
-    List<Gallery> findByEventId(int eventId);
+    Gallery findByEventId(int eventId);
 }

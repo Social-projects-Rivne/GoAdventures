@@ -28,14 +28,14 @@ const AccountOverwiew = (props: UserDto) => {
                     <p className='card-text info'>{props.email}</p>
                 </div>
 
-                <div className='dateBirth'>
-                    <label className='label-info' >Date Of bitrh </label>
-                    <p className='card-text info'>{props.phone}</p>
-                </div>
-
                 <div className='location'>
                     <label className='label-info' >Location </label>
                     <p className='card-text info'>{props.location}</p>
+                </div>
+
+                <div className='location'>
+                    <label className='label-info' >Phone </label>
+                    <p className='card-text info'>{props.phone}</p>
                 </div>
             </div>
 

@@ -23,7 +23,13 @@ export class ShowEvents extends Component<EventDto, EventState> {
           id: 0,
           location: '',
           startDate: '',
-          topic: ''
+          topic: '',
+          participants: [],
+          gallery: {
+            id: undefined,
+            imageUrls: ['https://via.placeholder.com/250'],
+            isDeleted: undefined
+          }
         }
       ],
       pageSettings: {
@@ -71,7 +77,7 @@ export class ShowEvents extends Component<EventDto, EventState> {
               loader={<h4>Loading...</h4>}
               endMessage={
                 <p style={{ textAlign: 'center' }}>
-                  
+
                 </p>
               }
             >
@@ -81,8 +87,8 @@ export class ShowEvents extends Component<EventDto, EventState> {
             </InfiniteScroll>
           </div>
         </div>
-      </div>
+      </div >
     );
   }
-} 
+}
 export default ShowEvents;

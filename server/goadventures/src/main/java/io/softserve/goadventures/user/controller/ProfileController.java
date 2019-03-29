@@ -1,7 +1,6 @@
 package io.softserve.goadventures.user.controller;
 
 import io.softserve.goadventures.auth.service.JWTService;
-import io.softserve.goadventures.errors.InvalidPasswordErrorMessage;
 import io.softserve.goadventures.event.dto.EventDTO;
 import io.softserve.goadventures.event.model.Event;
 import io.softserve.goadventures.event.service.EventDtoBuilder;
@@ -34,9 +33,8 @@ public class ProfileController {
     private final Logger logger = LoggerFactory.getLogger(ProfileController.class);
     private final JWTService jwtService;
     private final UserService userService;
-    private final EmailValidator emailValidator;
+    private final EmailValidator emailValidator ;
     private final PasswordValidator passwordValidator;
-    private final InvalidPasswordErrorMessage invalidPasswordErrorMessage;
     private final ModelMapper modelMapper;
     private final EventService eventService;
     private final EventDtoBuilder eventDtoBuilder;
@@ -44,13 +42,12 @@ public class ProfileController {
     @Autowired
     public ProfileController(JWTService jwtService, UserService userService,
                              EmailValidator emailValidator, PasswordValidator passwordValidator,
-                             EventDtoBuilder eventDtoBuilder, EventService eventService,
-                             InvalidPasswordErrorMessage invalidPasswordErrorMessage, ModelMapper modelMapper) {
+                             ModelMapper modelMapper,
+                             EventService eventService, EventDtoBuilder eventDtoBuilder) {
         this.jwtService = jwtService;
         this.userService = userService;
         this.emailValidator = emailValidator;
         this.passwordValidator = passwordValidator;
-        this.invalidPasswordErrorMessage = invalidPasswordErrorMessage;
         this.modelMapper = modelMapper;
         this.eventDtoBuilder = eventDtoBuilder;
         this.eventService = eventService;
@@ -72,12 +69,12 @@ public class ProfileController {
         if(!(updateUser.getPassword().equals(""))){
             if(BCrypt.checkpw(updateUser.getPassword(),user.getPassword())){    //check current pass
                 logger.info("current password correct");
-                if (passwordValidator.validatePassword(updateUser.getNewPassword())) {
+                if(passwordValidator.validatePassword(updateUser.getNewPassword())){
                     updateUser.setPassword(updateUser.getNewPassword());          //if valide, set new pass
                     logger.info("password changed, new password:  " + updateUser.getPassword());
                 }
-            } else {
-                return ResponseEntity.badRequest().body(invalidPasswordErrorMessage.getErrorMessage());        //wrong password
+            } else{
+                return ResponseEntity.badRequest().body("Current password is wrong!");        //wrong password
             }
         }
 
@@ -94,8 +91,9 @@ public class ProfileController {
     @GetMapping("/all-events")
     public ResponseEntity<?> getAllEvents(Pageable eventPageable,
                                           @RequestHeader("Authorization") String token) throws UserNotFoundException {
+        LoggerFactory.getLogger("Profile Event List: ").info(token);
         User user = userService.getUserByEmail(jwtService.parseToken(token));
-
+        LoggerFactory.getLogger("Profile Event List: ").info(user.toString());
         Page<Event> eventsPage = eventService.getAllEventsByOwner(eventPageable, user.getId());
 
         if(eventsPage != null) {
