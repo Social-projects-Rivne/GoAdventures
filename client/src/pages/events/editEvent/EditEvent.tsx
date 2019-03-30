@@ -17,6 +17,7 @@ import {
 } from 'formik';
 import { MdDone } from 'react-icons/md';
 import moment from 'moment';
+import { updateEvent } from '../../../api/event.service';
 
 interface EditEvent {
   event: EventDto;
@@ -32,9 +33,13 @@ interface EditEventInputState {
 }
 
 export const EditEvent = (props: EditEvent) => {
-  console.debug(props);
+  let submitNested: () => any;
   const zoom = 13;
   const geocoder = LCG.L.Control.Geocoder.nominatim();
+  const bindSubmit = (formikSubmit: any) => {
+    submitNested = formikSubmit;
+  };
+  /* TODO: Refactor */
   const [datepick, setDate] = useState({
     startDate: props.event.startDate,
     endDate: props.event.endDate
@@ -44,27 +49,30 @@ export const EditEvent = (props: EditEvent) => {
     gallery: props.event.gallery,
     topic: props.event.topic
   } as EditEventInputState);
-  const [desctription, setDescription] = useState(props.event.description);
+  const [description, setDescription] = useState(props.event.description);
   const [location, setLocation] = useState(props.event.location);
   const [mapCoordiantes, setMapCoordinates] = useState([
     props.event.latitude,
     props.event.longitude
   ]);
-  console.debug(props);
   const markerRef = createRef<Marker>();
+  const mapRef = createRef<Map>();
+  const formRef = createRef<Formik>();
   return (
-    <div className='row justify-center'>
+    <div className='row justify-content-center'>
       <h2>Edit Event</h2>
-      <strong>Adding gallery WIP!</strong>
+      {/* <strong>Adding gallery WIP!</strong> */}
       <div className='col-12'>
         <div className='row form-group'>
           <Formik
+            ref={formRef}
             validationSchema={eventSchema}
             initialValues={{ ...eventDialog }}
             enableReinitialize={true}
             validateOnBlur={true}
             validateOnChange={true}
             onSubmit={(values: any, actions) => {
+              setEventDialog({ ...values });
               actions.setSubmitting(false);
             }}
             render={(props: FormikProps<FormikValues>) => (
@@ -84,15 +92,15 @@ export const EditEvent = (props: EditEvent) => {
                                 placeholder='firstName'
                                 {...field}
                               />
-                              {form.touched.comment &&
-                              form.errors.comment &&
-                              form.errors.comment ? (
+                              {form.touched[input.field_name] &&
+                              form.errors[input.field_name] &&
+                              form.errors[input.field_name] ? (
                                 <div className='invalid-feedback'>
-                                  {form.errors.comment}
+                                  {form.errors[input.field_name]}
                                 </div>
                               ) : (
                                 <div className='valid-feedback'>
-                                  <MdDone /> Press enter to add comment
+                                  <MdDone /> Update info for your event
                                 </div>
                               )}
                             </div>
@@ -109,7 +117,9 @@ export const EditEvent = (props: EditEvent) => {
         <div className='row form-group'>
           <ValidatedTextarea
             {...{
-              initialValue: { textarea: desctription },
+              bindSubmit,
+              labelText: 'Description',
+              initialValue: { textarea: description },
               handleSubmit: setDescription
             }}
           />
@@ -175,6 +185,11 @@ export const EditEvent = (props: EditEvent) => {
         <label>{location}</label>
         <div>
           <Map
+            ref={mapRef}
+            onclick={(e) => {
+              // const mapCurrent = mapRef.current;
+              setMapCoordinates([e.latlng.lat, e.latlng.lng]);
+            }}
             center={[mapCoordiantes[0], mapCoordiantes[1]]}
             zoom={zoom}
             className='rounded'
@@ -201,6 +216,51 @@ export const EditEvent = (props: EditEvent) => {
             </Marker>
           </Map>
         </div>
+      </div>
+      <div className='d-flex flex-row justify-content-around align-center w-100 mt-3 mb-3'>
+        <button
+          type='button'
+          name='cancel'
+          className='btn btn-danger'
+          onClick={() => {
+            props.setEdit(false);
+          }}
+        >
+          Cancel
+        </button>
+        <button
+          type='button'
+          name='update'
+          className='btn btn-success'
+          onClick={() => {
+            const formCurrent = formRef.current;
+            if (formCurrent) {
+              formCurrent.submitForm();
+              submitNested();
+              /* TODO: Validate object before sending && refactor */
+              useEffect(() => {
+                const response = (async () => {
+                  props.setIsLoading(true);
+                  return await updateEvent({
+                    ...props.event,
+                    ...eventDialog,
+                    ...datepick,
+                    category,
+                    description,
+                    location,
+                    latitude: mapCoordiantes[0],
+                    longitude: mapCoordiantes[1]
+                  });
+                })();
+                props.setEvent(response);
+                props.setEdit(false);
+                props.setIsLoading(false);
+              });
+            }
+          }}
+        >
+          Update
+        </button>
       </div>
     </div>
   );

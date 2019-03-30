@@ -5,58 +5,72 @@ import {
   Field,
   FieldProps,
   FormikProps,
-  FormikValues
+  FormikValues,
+  FormikActions
 } from 'formik';
-import { textareSchema } from '../../validationSchemas/textareaValidation';
+import { textAreaSchema } from '../../validationSchemas/textareaValidation';
 import { MdDone } from 'react-icons/md';
 
 interface ValidatedTextareaProps {
+  labelText: string;
   initialValue?: { textarea: string | undefined };
   handleSubmit: any;
+  bindSubmit?: (formikSubmit: any) => void;
 }
 
 export function ValidatedTextarea(props: ValidatedTextareaProps) {
+  const { bindSubmit } = props;
   return (
-    <Formik
-      validationSchema={textareSchema}
-      initialValues={props.initialValue ? props.initialValue : { value: '' }}
-      enableReinitialize={true}
-      validateOnBlur={true}
-      validateOnChange={true}
-      onSubmit={(value: any, actions) => {
-        props.handleSubmit(value);
-        actions.setSubmitting(false);
-      }}
-      render={(props: FormikProps<FormikValues>) => (
-        <Form className='w-100'>
-          <Field
-            name='comment'
-            render={({ field, form }: FieldProps<FormikValues>) => {
-              return (
-                <div>
-                  <textarea
-                    className='form-control rounded w-100'
-                    aria-label='textarea'
-                    {...field}
-                    name='textarea'
-                  />
-                  {form.touched.comment &&
-                  form.errors.comment &&
-                  form.errors.comment ? (
-                    <div className='invalid-feedback'>
-                      {form.errors.comment}
+    <label className='w-100'>
+      {props.labelText}
+      <Formik
+        validationSchema={textAreaSchema}
+        initialValues={
+          props.initialValue ? { ...props.initialValue } : { textarea: '' }
+        }
+        enableReinitialize={true}
+        validateOnBlur={true}
+        validateOnChange={true}
+        onSubmit={(value: any, actions) => {
+          props.handleSubmit(value);
+          actions.setSubmitting(false);
+        }}
+        render={(formikProps: any) => {
+          if (!!bindSubmit) {
+            bindSubmit(formikProps.submitForm);
+          }
+          return (
+            <Form className='w-100'>
+              <Field
+                name='textarea'
+                render={({ field, form }: FieldProps<FormikValues>) => {
+                  console.debug(form.errors);
+                  return (
+                    <div>
+                      <textarea
+                        className='form-control rounded w-100'
+                        aria-label='textarea'
+                        {...field}
+                      />
+                      {form.touched.textarea &&
+                      form.errors.textarea &&
+                      form.errors.textarea ? (
+                        <div className='invalid-feedback'>
+                          {form.errors.textarea}
+                        </div>
+                      ) : (
+                        <div className='valid-feedback'>
+                          <MdDone /> Edit your description
+                        </div>
+                      )}
                     </div>
-                  ) : (
-                    <div className='valid-feedback'>
-                      <MdDone /> Press enter to add comment
-                    </div>
-                  )}
-                </div>
-              );
-            }}
-          />
-        </Form>
-      )}
-    />
+                  );
+                }}
+              />
+            </Form>
+          );
+        }}
+      />
+    </label>
   );
 }

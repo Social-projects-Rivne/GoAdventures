@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { RouteComponentProps } from 'react-router';
 import { EventDetail } from '../EventsDetail/EventDetail';
 import { EditEvent } from '../editEvent/EditEvent';
+import { EventDto } from '../../../interfaces/Event.dto';
 interface EventProps {
   routerProps: RouteComponentProps;
 }
@@ -11,7 +12,7 @@ export const Event = (props: EventProps) => {
   const [edit, setEdit] = useState(false);
   const [event, setEvent] = useState({
     ...props.routerProps.location.state
-  });
+  } as EventDto);
   console.debug(edit);
   return (
     <div className='container'>

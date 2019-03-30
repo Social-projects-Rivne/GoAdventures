@@ -1,6 +1,7 @@
 package io.softserve.goadventures.event.controller;
 
 import io.softserve.goadventures.auth.service.JWTService;
+import io.softserve.goadventures.error.ErrorMessageManager;
 import io.softserve.goadventures.event.category.Category;
 import io.softserve.goadventures.event.dto.EventDTO;
 import io.softserve.goadventures.event.enums.EventStatus;
@@ -14,6 +15,7 @@ import io.softserve.goadventures.gallery.repository.GalleryRepository;
 import io.softserve.goadventures.user.model.User;
 import io.softserve.goadventures.user.service.UserNotFoundException;
 import io.softserve.goadventures.user.service.UserService;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.IOException;
+
 @CrossOrigin
 @RestController
 @RequestMapping("event")
@@ -40,11 +44,12 @@ public class EventController {
   private final EventDtoBuilder eventDtoBuilder;
   private final JWTService jwtService;
   private final UserService userService;
+  private final ModelMapper modelMapper;
 
   @Autowired
   public EventController(EventService eventService, EventRepository eventRepository,
                          CategoryRepository categoryRepository, GalleryRepository galleryRepository, EventDtoBuilder eventDtoBuilder,
-                         UserService userService, JWTService jwtService) {
+                         UserService userService, JWTService jwtService, ModelMapper modelMapper) {
     this.eventService = eventService;
     this.eventRepository = eventRepository;
     this.categoryRepository = categoryRepository;
@@ -52,6 +57,7 @@ public class EventController {
     this.eventDtoBuilder = eventDtoBuilder;
     this.jwtService = jwtService;
     this.userService = userService;
+    this.modelMapper = modelMapper;
   }
 
   @PostMapping("/create/{categoryId}")
@@ -120,6 +126,23 @@ public class EventController {
     } else {
       // TODO: wr1 3r c
       return ResponseEntity.badRequest().body("End of pages");
+    }
+  }
+
+  @PutMapping("update/{eventId}")
+  public ResponseEntity<?> updateEvent(@PathVariable("eventId") int eventId, @RequestBody EventDTO updatedEvent) {
+    try {
+        Event event = eventService.getEventById(eventId);
+        if (event != null){
+          modelMapper.map(updatedEvent, event);
+           return ResponseEntity.ok().body(modelMapper.map(eventService.updateEvent(event), EventDTO.class));
+        } else {
+          throw new IOException("Event does not exist");
+        }
+    } catch (IOException error) {
+      logger.debug(error.toString());
+      return ResponseEntity.status(500).body(new ErrorMessageManager(
+              "Server error, try again later", error.toString()));
     }
   }
 
