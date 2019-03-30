@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import React, { Component } from 'react';
+import React, { Component, SyntheticEvent } from 'react';
 import { Field, FieldProps, Form, Formik, FormikProps } from 'formik';
 import { TileLayer, Map, Marker, Popup } from 'react-leaflet';
 import { MdDone } from 'react-icons/md';
@@ -136,7 +136,9 @@ export class EventDetail extends Component<any, any> {
                 {this.state.eventProps.event.location}
               </div>
               <button
-                onClick={() => this.state.eventProps.setEdit(true)}
+                onClick={() => {
+                  this.state.eventProps.setEdit(true);
+                }}
                 type='button'
                 className='btn btn-success'
               >

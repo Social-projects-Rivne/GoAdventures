@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  Formik,
-  Form,
-  Field,
-  FieldProps,
-  FormikProps,
-  FormikValues,
-  FormikActions
-} from 'formik';
+import { Formik, Form, Field, FieldProps, FormikValues } from 'formik';
 import { textAreaSchema } from '../../validationSchemas/textareaValidation';
 import { MdDone } from 'react-icons/md';
 
@@ -32,7 +24,7 @@ export function ValidatedTextarea(props: ValidatedTextareaProps) {
         validateOnBlur={true}
         validateOnChange={true}
         onSubmit={(value: any, actions) => {
-          props.handleSubmit(value);
+          props.handleSubmit(value.textarea);
           actions.setSubmitting(false);
         }}
         render={(formikProps: any) => {
@@ -44,7 +36,6 @@ export function ValidatedTextarea(props: ValidatedTextareaProps) {
               <Field
                 name='textarea'
                 render={({ field, form }: FieldProps<FormikValues>) => {
-                  console.debug(form.errors);
                   return (
                     <div>
                       <textarea

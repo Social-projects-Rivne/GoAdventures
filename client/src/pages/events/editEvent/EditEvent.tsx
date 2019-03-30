@@ -1,4 +1,4 @@
-import React, { createRef, useState, useEffect } from 'react';
+import React, { createRef, useState, useEffect, SyntheticEvent } from 'react';
 import { EventDto } from '../../../interfaces/Event.dto';
 import DatePicker from 'react-datepicker';
 import LCG from 'leaflet-control-geocoder';
@@ -18,6 +18,7 @@ import {
 import { MdDone } from 'react-icons/md';
 import moment from 'moment';
 import { updateEvent } from '../../../api/event.service';
+import { async } from 'rxjs/internal/scheduler/async';
 
 interface EditEvent {
   event: EventDto;
@@ -29,7 +30,7 @@ interface EditEvent {
 interface EditEventInputState {
   topic: string;
   location: string;
-  gallery: GalleryDto;
+  gallery: GalleryDto | undefined;
 }
 
 export const EditEvent = (props: EditEvent) => {
@@ -46,7 +47,7 @@ export const EditEvent = (props: EditEvent) => {
   });
   const [category, setCategory] = useState(props.event.category);
   const [eventDialog, setEventDialog] = useState({
-    gallery: props.event.gallery,
+    gallery: undefined,
     topic: props.event.topic
   } as EditEventInputState);
   const [description, setDescription] = useState(props.event.description);
@@ -55,6 +56,32 @@ export const EditEvent = (props: EditEvent) => {
     props.event.latitude,
     props.event.longitude
   ]);
+  const [fetch, setFetch] = useState(false);
+
+  useEffect(() => {
+    if (fetch) {
+      const response = async (): Promise<any> => {
+        props.setIsLoading(true);
+        return await updateEvent({
+          ...props.event,
+          ...eventDialog,
+          ...datepick,
+          category,
+          description,
+          location,
+          latitude: mapCoordiantes[0],
+          longitude: mapCoordiantes[1]
+        });
+      };
+      setFetch(false);
+      props.setEvent(response());
+      props.setEdit(false);
+      props.setIsLoading(false);
+    } else {
+      return;
+    }
+  }, [fetch]);
+
   const markerRef = createRef<Marker>();
   const mapRef = createRef<Map>();
   const formRef = createRef<Formik>();
@@ -75,7 +102,7 @@ export const EditEvent = (props: EditEvent) => {
               setEventDialog({ ...values });
               actions.setSubmitting(false);
             }}
-            render={(props: FormikProps<FormikValues>) => (
+            render={(formikProps: FormikProps<FormikValues>) => (
               <Form className='d-flex flex-column'>
                 {editEventFormInputSettings.map((input, index) => {
                   return (
@@ -232,30 +259,14 @@ export const EditEvent = (props: EditEvent) => {
           type='button'
           name='update'
           className='btn btn-success'
-          onClick={() => {
+          onClick={async () => {
             const formCurrent = formRef.current;
             if (formCurrent) {
-              formCurrent.submitForm();
-              submitNested();
+              await submitNested();
+              await formCurrent.submitForm();
               /* TODO: Validate object before sending && refactor */
-              useEffect(() => {
-                const response = (async () => {
-                  props.setIsLoading(true);
-                  return await updateEvent({
-                    ...props.event,
-                    ...eventDialog,
-                    ...datepick,
-                    category,
-                    description,
-                    location,
-                    latitude: mapCoordiantes[0],
-                    longitude: mapCoordiantes[1]
-                  });
-                })();
-                props.setEvent(response);
-                props.setEdit(false);
-                props.setIsLoading(false);
-              });
+              /* Pass validation status to fetch, ya no */
+              setFetch(true);
             }
           }}
         >

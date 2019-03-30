@@ -76,12 +76,16 @@ export const deleteEvent = async (data: number): Promise<any> =>
 
 export const updateEvent = async (data: EventDto): Promise<EventDto | object> =>
   await axios
-    .put(`${serverUrl}/event/update/${data.id}`, {
-      headers: {
-        'Authorization': `Bearer ${cookies.get('tk879n')}`,
-        'Content-Type': 'application/json'
+    .put(
+      `${serverUrl}/event/update/${data.id}`,
+      { data },
+      {
+        headers: {
+          'Authorization': `Bearer ${cookies.get('tk879n')}`,
+          'Content-Type': 'application/json'
+        }
       }
-    })
+    )
     .then((res: AxiosResponse<EventDto>) => {
       if (res.status >= 200 && res.status <= 300) {
         return res.data;
