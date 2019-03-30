@@ -41,7 +41,7 @@ public class User {
     private String role;
 
     @Column(name = "avatar")
-    private String avatar;
+    private String avatarUrl;
 
     @Column(name = "status_id")
     private int statusId;
@@ -70,7 +70,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", phone=" + phone +
                 ", role='" + role + '\'' +
-                ", avatar='" + avatar + '\'' +
+                ", avatar='" + avatarUrl + '\'' +
                 ", statusId=" + statusId +
                 ", participantsEvent=" + participantsEvent +
                 '}';

@@ -43,8 +43,8 @@ public class EventController {
 
     @Autowired
     public EventController(EventService eventService, EventRepository eventRepository,
-            CategoryRepository categoryRepository, GalleryRepository galleryRepository,
-            EventDtoBuilder eventDtoBuilder, UserService userService, JWTService jwtService) {
+                           CategoryRepository categoryRepository, GalleryRepository galleryRepository,
+                           EventDtoBuilder eventDtoBuilder, UserService userService, JWTService jwtService) {
         this.eventService = eventService;
         this.eventRepository = eventRepository;
         this.categoryRepository = categoryRepository;
@@ -92,7 +92,7 @@ public class EventController {
 
     @PostMapping("/gallery/{eventId}")
     public ResponseEntity<String> createGallery(@PathVariable(value = "eventId") int eventId,
-            @RequestBody Gallery gallery) {
+                                                @RequestBody Gallery gallery) {
         Event event = eventRepository.findById(eventId);
         HttpHeaders httpHeaders = new HttpHeaders();
         gallery.setEventId(event);
@@ -101,7 +101,7 @@ public class EventController {
     }
     @GetMapping({ "/all/{search}", "/all" })
     public ResponseEntity<?> getAllEvents(@PathVariable(value = "search", required = false) String search,
-            @PageableDefault(size = 15, sort = "id") Pageable eventPageable) {
+                                          @PageableDefault(size = 15, sort = "id") Pageable eventPageable) {
 
         Page<Event> eventsPage = search == null ? eventService.getAllEvents(eventPageable)
                 : eventService.getAllEventsByTopic(eventPageable, search);
