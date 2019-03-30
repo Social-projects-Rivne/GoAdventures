@@ -1,13 +1,10 @@
 package io.softserve.goadventures.gallery.controller;
-
 import java.util.HashSet;
 import java.util.Set;
-
 import io.softserve.goadventures.event.model.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import io.softserve.goadventures.event.service.EventService;
 import io.softserve.goadventures.gallery.model.Gallery;
 import io.softserve.goadventures.gallery.repository.GalleryRepository;
@@ -34,5 +31,4 @@ public class GalleryController {
     galleryRepository.save(mockGallery);
     return ResponseEntity.ok().body(mockGallery);
   }
-
 }

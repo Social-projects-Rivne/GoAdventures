@@ -105,8 +105,7 @@ export class CreateEvent extends Component<any, any> {
         const isDisabled = this.state.topic.length > 0 && this.state.description.length > 0;
         console.log('Isdisabled ', isDisabled);
         var inputClass = 'invalid';
-        if (!isDisabled)
-            inputClass = 'valid';
+        if (!isDisabled) { inputClass = 'valid' };
 
         return (
 
@@ -144,7 +143,6 @@ export class CreateEvent extends Component<any, any> {
                     <div className="col-sm-8">
                         <DropDown id="Category" onCategoryChange={this.handleCategory} />
                     </div>
-
                 </div>
                 <div className="form-group row">
                     <label className='col-sm-4 col-form-label text-right' htmlFor="StartDate">Start date</label>

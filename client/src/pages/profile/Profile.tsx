@@ -128,6 +128,7 @@ export class Profile extends Component<UserDto, ProfileState> {
     return changeUserData({ ...data });
   }
 
+
   public componentDidMount() {
     // сеттер на пропси зверху з api
     getUserData().then((response: AxiosResponse<UserDto>) =>
@@ -136,6 +137,7 @@ export class Profile extends Component<UserDto, ProfileState> {
       })
     );
   }
+
 
   public render() {
     return (

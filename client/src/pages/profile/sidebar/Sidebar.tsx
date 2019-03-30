@@ -11,12 +11,11 @@ interface SidebarState {
   userProfile: UserDto;
   avatar: string | Blob;
 }
+interface AppRefs {
 
-
+}
 const cookies: Cookies = new Cookies();
 class Sidebar extends React.Component<UserDto, SidebarState> {
-
-
   constructor(props: any) {
 
     super(props);
@@ -60,8 +59,8 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
       console.log(response);
     }
     )
-
   }
+
 
 
   public render() {
@@ -75,14 +74,14 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
                 <div className='Sidebar__avatar'>
 
                   <img
-                    src={this.props.avatarUrl !== '' ? this.props.avatarUrl : avatar}
+                    src={this.props.avatarUrl != undefined ? this.props.avatarUrl : avatar}
                     alt='user_avatar' />
                 </div>
                 <input
-                  // style={{ display: 'none' }}
+                  style={{ display: 'none' }}
                   type='file'
                   onChange={this.fileSelectHandler}
-                // ref={(fileInput) => this.inputFile = fileInput} 
+                // ref={}
                 />
                 {/* <button onClick={() => this.fileInput.click()} > Pick File </button> */}
                 <button
@@ -93,12 +92,12 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
               <div className='card-body'>
 
                 <div className='btn-choice'>
-                  <button className='btn btn-secondary disabled edit'
+                  <button className='btn btn-secondary'
                     id='sidebarBtn'
                     onClick={togleEditProfile}>
                     Edit profile
                 </button>
-                  <button className='btn btn-secondary disabled events'
+                  <button className='btn btn-secondaryS'
                     id='sidebarBtn'
                     onClick={togleMyEvents}>
                     My events
