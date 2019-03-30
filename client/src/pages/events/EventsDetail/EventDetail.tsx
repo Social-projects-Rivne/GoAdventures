@@ -25,7 +25,6 @@ export class EventDetail extends Component<any, any> {
   }
 
   public convertTime(date: string) {
-    console.debug(date);
     const dateFormat = 'dddd, DD MMMM YYYY';
     return moment(date)
       .local()
@@ -34,7 +33,7 @@ export class EventDetail extends Component<any, any> {
   }
 
   public componentDidMount() {
-    isOwner(this.state.eventProps.id).then(
+    isOwner(this.state.eventProps.event.id).then(
       (res: AxiosResponse): any => {
         console.log(res.status + ' | ' + res.statusText);
         if (res.status >= 200 && res.status <= 300) {
@@ -51,7 +50,7 @@ export class EventDetail extends Component<any, any> {
   }
 
   public handleDelete() {
-    deleteEvent(this.state.eventProps.id).then(
+    deleteEvent(this.state.eventProps.event.id).then(
       (res: AxiosResponse): any => {
         console.log(res.status);
         if (res.status >= 200 && res.status <= 300) {
@@ -63,14 +62,14 @@ export class EventDetail extends Component<any, any> {
   }
 
   public render() {
-    console.debug(this.props);
+    console.debug(this.state);
     return (
       <div className='container EventDetail'>
         <div className='row'>
-          <div className='col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6'>
-            <Gallery {...this.state.eventProps.gallery} />
+          <div className='col-12 col-sm-12 col-md-6 col-lg-7 col-xl-7'>
+            <Gallery {...this.state.eventProps.event.gallery} />
           </div>
-          <div className='col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6'>
+          <div className='col-12 col-sm-12 col-md-6 col-lg-5 col-xl-5'>
             <div className='jumboton jumbotron-fluid'>
               <SettingsPanel>
                 {{
@@ -81,16 +80,16 @@ export class EventDetail extends Component<any, any> {
                           className='rounded-avatar-sm'
                           src='https://www.kidzone.ws/animal-facts/whales/images/beluga-whale-3.jpg'
                         />
-                        <h2>{this.state.eventProps.topic}</h2>
+                        <h2>{this.state.eventProps.event.topic}</h2>
                       </div>
                       <p>
                         Start:
                         {this.convertTime(
-                          this.state.eventProps.startDate.toString()
+                          this.state.eventProps.event.startDate.toString()
                         )}
                         Ends:
                         {this.convertTime(
-                          this.state.eventProps.endDate.toString()
+                          this.state.eventProps.event.endDate.toString()
                         )}
                       </p>
                     </div>
@@ -106,22 +105,27 @@ export class EventDetail extends Component<any, any> {
                 }}
               </SettingsPanel>
               <hr className='my-4' />
-              <span className='lead'>{this.state.eventProps.description}</span>
+              <span className='lead'>
+                {this.state.eventProps.event.description}
+              </span>
               <hr className='my-4' />
               <div className='map'>
                 <h2>Location and Destination points</h2>
                 <div className='rounded'>
                   <Map
                     className='rounded'
-                    center={[this.props.latitude, this.props.longitude]}
+                    center={[
+                      this.state.eventProps.event.latitude,
+                      this.state.eventProps.event.longitude
+                    ]}
                     zoom={13}
                   >
-                    <TileLayer
-                      attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                      url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-                    />
+                    <TileLayer url='https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png' />
                     <Marker
-                      position={[this.props.latitude, this.props.longitude]}
+                      position={[
+                        this.state.eventProps.event.latitude,
+                        this.state.eventProps.event.longitude
+                      ]}
                     >
                       <Popup>
                         A pretty CSS3 popup. <br /> Easily customizable.
@@ -129,7 +133,7 @@ export class EventDetail extends Component<any, any> {
                     </Marker>
                   </Map>
                 </div>
-                {this.state.eventProps.location}
+                {this.state.eventProps.event.location}
               </div>
               <button
                 onClick={() => this.state.eventProps.setEdit(true)}

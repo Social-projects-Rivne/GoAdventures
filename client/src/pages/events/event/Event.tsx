@@ -10,23 +10,21 @@ export const Event = (props: EventProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [edit, setEdit] = useState(false);
   const [event, setEvent] = useState({
-    ...props.routerProps.location.state,
-    setEdit,
-    setIsLoading
+    ...props.routerProps.location.state
   });
   console.debug(edit);
   return (
-    <div>
+    <div className='container'>
       {edit ? (
         isLoading ? (
           <div className='spinner-border text-primary' role='status'>
             <span className='sr-only'>Loading...</span>
           </div>
         ) : (
-          <EditEvent {...{ event, setEvent }} />
+          <EditEvent {...{ event, setEvent, setIsLoading, setEdit }} />
         )
       ) : (
-        <EventDetail {...event} />
+        <EventDetail {...{ event, setEdit, setIsLoading }} />
       )}
     </div>
   );

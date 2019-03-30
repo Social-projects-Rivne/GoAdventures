@@ -11,10 +11,10 @@ interface Comment {
 export const Comments = (props: Comment): JSX.Element => (
   <div className='Comment'>
     <div className='row'>
-      <div className='col'>
+      <div className=''>
         <img className='rounded-avatar-sm' src={props.avatar} />
       </div>
-      <div className='col'>
+      <div className='col-10'>
         <div className='Comment__wrapper'>
           <div className='toast-header'>
             <strong>{props.participant}</strong>

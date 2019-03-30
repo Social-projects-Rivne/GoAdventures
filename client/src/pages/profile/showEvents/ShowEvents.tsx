@@ -18,10 +18,13 @@ export class ShowEvents extends Component<EventDto, EventState> {
     this.state = {
       events: [
         {
+          category: '',
           description: '',
           endDate: '',
           id: 0,
           location: '',
+          longitude: 0,
+          latitude: 0,
           startDate: '',
           topic: '',
           participants: [],

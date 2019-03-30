@@ -28,9 +28,12 @@ export class Events extends Component<EventDto, EventState> {
           },
           id: undefined,
           location: undefined,
+          latitude: 0,
+          longitude: 0,
           participants: [],
           startDate: undefined,
-          topic: undefined
+          topic: undefined,
+          category: undefined,
         }
       ],
       pageSettings: {

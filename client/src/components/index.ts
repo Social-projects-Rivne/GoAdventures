@@ -11,3 +11,5 @@ export * from './gallery/Gallery';
 export * from './navbar/Navbar';
 export * from './settingsPanel/SettingsPanel';
 export * from './toast/Toast';
+export * from './validatedTextarea/ValidatedTextarea';
+
