@@ -17,25 +17,7 @@ export class Events extends Component<EventDto, EventState> {
   constructor(props: any) {
     super(props);
     this.state = {
-      events: [
-        {
-          description: undefined,
-          endDate: undefined,
-          gallery: {
-            id: undefined,
-            imageUrls: ['https://via.placeholder.com/250'],
-            isDeleted: undefined
-          },
-          id: undefined,
-          location: undefined,
-          latitude: 0,
-          longitude: 0,
-          participants: [],
-          startDate: undefined,
-          topic: undefined,
-          category: undefined
-        }
-      ],
+      events: [],
       pageSettings: {
         isLast: undefined,
         nextPage: ''
@@ -60,7 +42,6 @@ export class Events extends Component<EventDto, EventState> {
           : '/event/all'
       }
     });
-    console.debug(this.state);
   }
 
   public render() {
