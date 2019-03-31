@@ -78,7 +78,7 @@ export const updateEvent = async (data: EventDto): Promise<EventDto | object> =>
   await axios
     .put(
       `${serverUrl}/event/update/${data.id}`,
-      { data },
+      { ...data },
       {
         headers: {
           'Authorization': `Bearer ${cookies.get('tk879n')}`,
@@ -95,7 +95,7 @@ export const updateEvent = async (data: EventDto): Promise<EventDto | object> =>
     })
     .catch((err) => {
       console.error(err);
-      return { responseStatus: 'Something went wrong, try again later' };
+      return { responseStatus: err };
     });
 
 export const isOwner = async (data: number): Promise<any> =>

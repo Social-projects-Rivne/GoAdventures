@@ -14,6 +14,13 @@ interface FormValue {
 }
 
 export class EventDetail extends Component<any, any> {
+  public static getDerivedStateFromProps(nextProps: any, prevState: any): any {
+    if (Object.is(nextProps.event, prevState.eventProps.event) === false) {
+      return { ...prevState, eventProps: { ...nextProps } };
+    } else {
+      return false;
+    }
+  }
   constructor(props: any) {
     super(props);
     this.state = {
@@ -35,7 +42,6 @@ export class EventDetail extends Component<any, any> {
   public componentDidMount() {
     isOwner(this.state.eventProps.event.id).then(
       (res: AxiosResponse): any => {
-        console.log(res.status + ' | ' + res.statusText);
         if (res.status >= 200 && res.status <= 300) {
           this.setState({
             isOwner: true
@@ -52,7 +58,6 @@ export class EventDetail extends Component<any, any> {
   public handleDelete() {
     deleteEvent(this.state.eventProps.event.id).then(
       (res: AxiosResponse): any => {
-        console.log(res.status);
         if (res.status >= 200 && res.status <= 300) {
           this.props.routerProps.history.push('/profile');
         } else {
@@ -62,7 +67,6 @@ export class EventDetail extends Component<any, any> {
   }
 
   public render() {
-    console.debug(this.state);
     return (
       <div className='container EventDetail'>
         <div className='row'>
@@ -169,9 +173,7 @@ export class EventDetail extends Component<any, any> {
                     enableReinitialize={true}
                     validateOnBlur={true}
                     validateOnChange={true}
-                    onSubmit={() => {
-                      console.debug('request');
-                    }}
+                    onSubmit={() => {}}
                     render={(props: FormikProps<FormValue>) => (
                       <Form>
                         <Field

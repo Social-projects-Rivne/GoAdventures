@@ -18,7 +18,6 @@ import {
 import { MdDone } from 'react-icons/md';
 import moment from 'moment';
 import { updateEvent } from '../../../api/event.service';
-import { async } from 'rxjs/internal/scheduler/async';
 
 interface EditEvent {
   event: EventDto;
@@ -60,9 +59,9 @@ export const EditEvent = (props: EditEvent) => {
 
   useEffect(() => {
     if (fetch) {
-      const response = async (): Promise<any> => {
+      const update = async () => {
         props.setIsLoading(true);
-        return await updateEvent({
+        const response = await updateEvent({
           ...props.event,
           ...eventDialog,
           ...datepick,
@@ -72,9 +71,10 @@ export const EditEvent = (props: EditEvent) => {
           latitude: mapCoordiantes[0],
           longitude: mapCoordiantes[1]
         });
+        props.setEvent({ ...response });
       };
       setFetch(false);
-      props.setEvent(response());
+      update();
       props.setEdit(false);
       props.setIsLoading(false);
     } else {

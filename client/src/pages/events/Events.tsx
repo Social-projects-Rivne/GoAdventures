@@ -33,7 +33,7 @@ export class Events extends Component<EventDto, EventState> {
           participants: [],
           startDate: undefined,
           topic: undefined,
-          category: undefined,
+          category: undefined
         }
       ],
       pageSettings: {
@@ -49,7 +49,6 @@ export class Events extends Component<EventDto, EventState> {
   }
 
   public async fetchEvents(): Promise<void> {
-    console.debug(this.state);
     const response = await getEventList(this.state.pageSettings.nextPage);
     this.setState({
       events: [...this.state.events, ...response.content],
@@ -60,7 +59,6 @@ export class Events extends Component<EventDto, EventState> {
           : '/event/all'
       }
     });
-    console.debug(this.state);
   }
 
   public render() {
