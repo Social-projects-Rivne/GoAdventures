@@ -49,6 +49,7 @@ export class Events extends Component<EventDto, EventState> {
   }
 
   public async fetchEvents(): Promise<void> {
+    console.debug(this.state);
     const response = await getEventList(this.state.pageSettings.nextPage);
     this.setState({
       events: [...this.state.events, ...response.content],
@@ -59,6 +60,7 @@ export class Events extends Component<EventDto, EventState> {
           : '/event/all'
       }
     });
+    console.debug(this.state);
   }
 
   public render() {
@@ -78,11 +80,7 @@ export class Events extends Component<EventDto, EventState> {
               dataLength={this.state.events ? this.state.events.length : 0}
               next={this.fetchEvents}
               hasMore={!this.state.pageSettings.isLast}
-              loader={
-                <div className='spinner-border text-primary' role='status'>
-                  <span className='sr-only'>Loading...</span>
-                </div>
-              }
+              loader={<h4>Loading...</h4>}
               endMessage={
                 <p style={{ textAlign: 'center' }}>
                   <b>Yay! You have seen it all</b>
@@ -90,7 +88,7 @@ export class Events extends Component<EventDto, EventState> {
               }
             >
               {this.state.events.map((event, index) => {
-                if (event.id !== undefined) {
+                if (event) {
                   return <EventsListBuild {...event} key={index} />;
                 } else {
                   return null;
