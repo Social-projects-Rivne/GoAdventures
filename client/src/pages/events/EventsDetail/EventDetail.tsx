@@ -27,7 +27,6 @@ export class EventDetail extends Component<any, any> {
       eventProps: { ...this.props },
       isOwner: false
     };
-
     this.handleDelete = this.handleDelete.bind(this);
   }
 

@@ -28,6 +28,7 @@ export const SigninSchema = Yup.object().shape({
     .required('Required')
     .min(5, 'Password is to short')
 });
+const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
 export const editProfileSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email'),
@@ -40,9 +41,8 @@ export const editProfileSchema = Yup.object().shape({
   location: Yup.string()
     .min(2, 'Too Short!')
     .max(35, 'Too Long!'),
-  phone: Yup.number()
-    .max(10, 'Password is to long')
-    .min(10, 'Password is to short'),
+  phone: Yup.string().matches(phoneRegExp, 'Phone number is not valid'),
+
   newPassword: Yup.string()
     .max(18, 'Password is to long')
     .min(5, 'Password is to short'),

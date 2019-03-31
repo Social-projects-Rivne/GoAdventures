@@ -2,7 +2,7 @@ export interface UserDto {
   fullname: string;
   username: string;
   email: string;
-  avatarUrl?: string;
+  avatarUrl: string;
   password?: string;
   location?: string;
   newPassword?: string;

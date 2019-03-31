@@ -48,8 +48,8 @@ public class EventController {
 
   @Autowired
   public EventController(EventService eventService, EventRepository eventRepository,
-                         CategoryRepository categoryRepository, GalleryRepository galleryRepository, EventDtoBuilder eventDtoBuilder,
-                         UserService userService, JWTService jwtService, ModelMapper modelMapper) {
+      CategoryRepository categoryRepository, GalleryRepository galleryRepository, EventDtoBuilder eventDtoBuilder,
+      UserService userService, JWTService jwtService, ModelMapper modelMapper) {
     this.eventService = eventService;
     this.eventRepository = eventRepository;
     this.categoryRepository = categoryRepository;
@@ -62,14 +62,14 @@ public class EventController {
 
   @PostMapping("/create/{categoryId}")
   public ResponseEntity<String> createEvent(@PathVariable(value = "categoryId") String categoryId,
-                                            @RequestHeader(value = "Authorization") String token, @RequestBody Event event) {
+      @RequestHeader(value = "Authorization") String token, @RequestBody Event event) {
     Category category = categoryRepository.findByCategoryName(categoryId);
     event.setCategory(category);
     event.setStatusId(EventStatus.CREATED.getEventStatus());
     eventService.addEvent(event);
     try {
       LoggerFactory.getLogger("Create Event Controller: ")
-              .info(userService.getUserByEmail(jwtService.parseToken(token)).toString());
+          .info(userService.getUserByEmail(jwtService.parseToken(token)).toString());
       event.setOwner(userService.getUserByEmail(jwtService.parseToken(token)));
     } catch (UserNotFoundException e) {
       e.printStackTrace();
@@ -98,7 +98,7 @@ public class EventController {
 
   @PostMapping("/gallery/{eventId}")
   public ResponseEntity<String> createGallery(@PathVariable(value = "eventId") int eventId,
-                                              @RequestBody Gallery gallery) {
+      @RequestBody Gallery gallery) {
     Event event = eventRepository.findById(eventId);
     HttpHeaders httpHeaders = new HttpHeaders();
     gallery.setEventId(event);
@@ -106,16 +106,16 @@ public class EventController {
     return ResponseEntity.ok().headers(httpHeaders).body("gallery created");
   }
 
-  @GetMapping({"/all/{search}", "/all"})
+  @GetMapping({ "/all/{search}", "/all" })
   public ResponseEntity<?> getAllEvents(@PathVariable(value = "search", required = false) String search,
-                                        @PageableDefault(size = 15, sort = "id") Pageable eventPageable) {
+      @PageableDefault(size = 15, sort = "id") Pageable eventPageable) {
 
     Page<Event> eventsPage = search == null ? eventService.getAllEvents(eventPageable)
-            : eventService.getAllEventsByTopic(eventPageable, search);
+        : eventService.getAllEventsByTopic(eventPageable, search);
     if (eventsPage != null) {
       int nextPageNum = eventsPage.getNumber() + 1;
       UriComponents uriComponentsBuilder = UriComponentsBuilder.newInstance().path("/event/all").query("page={keyword}")
-              .buildAndExpand(nextPageNum);
+          .buildAndExpand(nextPageNum);
       HttpHeaders httpHeaders = new HttpHeaders();
       httpHeaders.set("nextpage", uriComponentsBuilder.toString());
       System.out.println(eventDtoBuilder.convertToDto(eventsPage));
@@ -132,17 +132,17 @@ public class EventController {
   @PutMapping("update/{eventId}")
   public ResponseEntity<?> updateEvent(@PathVariable("eventId") int eventId, @RequestBody EventDTO updatedEvent) {
     try {
-        Event event = eventService.getEventById(eventId);
-        if (event != null){
-          modelMapper.map(updatedEvent, event);
-           return ResponseEntity.ok().body(modelMapper.map(eventService.updateEvent(event), EventDTO.class));
-        } else {
-          throw new IOException("Event does not exist");
-        }
+      Event event = eventService.getEventById(eventId);
+      if (event != null) {
+        modelMapper.map(updatedEvent, event);
+        return ResponseEntity.ok().body(modelMapper.map(eventService.updateEvent(event), EventDTO.class));
+      } else {
+        throw new IOException("Event does not exist");
+      }
     } catch (IOException error) {
       logger.debug(error.toString());
-      return ResponseEntity.status(500).body(new ErrorMessageManager(
-              "Server error, try again later", error.toString()));
+      return ResponseEntity.status(500)
+          .body(new ErrorMessageManager("Server error, try again later", error.toString()));
     }
   }
 
@@ -169,7 +169,7 @@ public class EventController {
 
   @DeleteMapping("delete")
   public ResponseEntity<?> deleteEventOwner(@RequestHeader(value = "Authorization") String token,
-                                            @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
+      @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
     Event event = eventService.getEventById(eventId);
     User user = userService.getUserByEmail(jwtService.parseToken(token));
     if (eventService.delete(user, event)) {
@@ -181,13 +181,13 @@ public class EventController {
 
   @PostMapping("isOwner")
   public ResponseEntity<?> isOwner(@RequestHeader(value = "Authorization") String token,
-                                   @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
+      @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
     LoggerFactory.getLogger("IS OWNER EVENT").info("Event ID is : " + eventId + " , OwnerId is : "
-            + userService.getUserByEmail(jwtService.parseToken(token)).getId());
+        + userService.getUserByEmail(jwtService.parseToken(token)).getId());
     Event event = eventService.getEventById(eventId);
     User user = userService.getUserByEmail(jwtService.parseToken(token));
 
     return user.getId() == event.getOwner().getId() ? ResponseEntity.ok().body("IS OWNER")
-            : ResponseEntity.badRequest().body("IS NOT OWNER");
+        : ResponseEntity.badRequest().body("IS NOT OWNER");
   }
 }
