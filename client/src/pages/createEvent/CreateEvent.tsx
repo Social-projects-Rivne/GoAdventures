@@ -1,4 +1,4 @@
-import React, { Component, createRef } from 'react';
+import React, { Component, createRef , RefObject } from 'react';
 import { createEventReq } from '../../api/requestCreateEvent';
 import './CreateEvent.scss';
 import './Leaflet.scss';
@@ -7,7 +7,6 @@ import L from 'leaflet';
 import LCG from 'leaflet-control-geocoder';
 import { DropDown } from '../../components';
 import DatePicker from "react-datepicker";
-import { RefObject } from 'react';
 import { Redirect } from 'react-router';
 
 interface ExtendetRef extends RefObject<LeafletMap> {
@@ -93,7 +92,7 @@ export class CreateEvent extends Component<any, any> {
         if (this.state.startDate < this.state.endDate) {
             createEventReq({ ...this.state }, category);
             console.debug(this.state);
-            this.setState({ redirect: true })
+            this.setState({ redirect: true });
         }
         else {
             console.log('startDate > endDate ');
@@ -101,11 +100,17 @@ export class CreateEvent extends Component<any, any> {
         }
     }
 
+componentDidMount() {
+        setTimeout(() => {
+            if (leafletMap) {
+                leafletMap.leafletElement.invalidateSize();
+            }
+        }, 50);
+    }
+
     public render() {
         const isDisabled = this.state.topic.length > 0 && this.state.description.length > 0;
         console.log('Isdisabled ', isDisabled);
-        var inputClass = 'invalid';
-        if (!isDisabled) { inputClass = 'valid' };
 
         return (
 
@@ -209,12 +214,14 @@ export class CreateEvent extends Component<any, any> {
                 <div className="row justify-content-center btns-content">
                     <button type="button" className="btn btn-primary col-lg-2 col-sm-12" onClick={this.handleSubmit} disabled={!isDisabled}> Save </button>
                     {this.state.redirect ? (
-                        <Redirect
-                            to={{
-                                pathname: `/profile`
-                            }}
-                        />
-                    ) : null}
+                            <Redirect push
+                                to={{
+                                    pathname: `/events`,
+                                    state: {
+                                         ...this.state}
+                                }}
+                            />
+                        ) : null}
                 </div>
             </div>
 
