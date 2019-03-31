@@ -78,7 +78,7 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
                     alt='user_avatar' />
                 </div>
                 <input
-                  style={{ display: 'none' }}
+                  style={{ display: 'inline' }}
                   type='file'
                   onChange={this.fileSelectHandler}
                 // ref={}
