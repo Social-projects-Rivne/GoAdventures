@@ -10,7 +10,9 @@ interface EventProps {
 export const Event = (props: EventProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [event, setEvent] = useState({} as EventDto);
+  const [event, setEvent] = useState({
+    ...props.routerProps.location.state
+  } as EventDto);
   return (
     <div className='container'>
       {edit ? (
@@ -22,10 +24,7 @@ export const Event = (props: EventProps) => {
           <EditEvent {...{ event, setEvent, setIsLoading, setEdit }} />
         )
       ) : (
-        () => {
-          setEvent(props.routerProps.location.state);
-          return <EventDetail {...{ event, setEdit, setIsLoading }} />;
-        }
+        <EventDetail {...{ event, setEdit, setIsLoading }} />
       )}
     </div>
   );

@@ -79,7 +79,7 @@ export class EventDetail extends Component<any, any> {
                 {{
                   left: (
                     <div>
-                      <div className='d-flex flex-row align-content-center'>
+                      <div className='d-flex flex-row align-content-center mt-3'>
                         <img
                           className='rounded-avatar-sm'
                           src='https://www.kidzone.ws/animal-facts/whales/images/beluga-whale-3.jpg'
@@ -91,6 +91,8 @@ export class EventDetail extends Component<any, any> {
                         {this.convertTime(
                           this.state.eventProps.event.startDate.toString()
                         )}
+                      </p>
+                      <p>
                         Ends:
                         {this.convertTime(
                           this.state.eventProps.event.endDate.toString()
