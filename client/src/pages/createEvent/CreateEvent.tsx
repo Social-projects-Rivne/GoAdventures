@@ -148,7 +148,6 @@ componentDidMount() {
                     <div className="col-sm-8">
                         <DropDown id="Category" onCategoryChange={this.handleCategory} />
                     </div>
-
                 </div>
                 <div className="form-group row">
                     <label className='col-sm-4 col-form-label text-right' htmlFor="StartDate">Start date</label>
@@ -218,8 +217,8 @@ componentDidMount() {
                             <Redirect push
                                 to={{
                                     pathname: `/events`,
-state: {
-...this.state}
+                                    state: {
+                                         ...this.state}
                                 }}
                             />
                         ) : null}

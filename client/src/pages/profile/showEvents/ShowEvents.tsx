@@ -4,8 +4,6 @@ import { getOwnerEventList } from '../../../api/event.service';
 import { EventsListBuild } from '../../../components/eventsListBuild/EventsListBuild';
 import { EventDto } from '../../../interfaces/Event.dto';
 
-
-
 interface EventState {
   events: EventDto[];
   pageSettings: {
@@ -75,7 +73,6 @@ export class ShowEvents extends Component<EventDto, EventState> {
               }}
               dataLength={this.state.events.length} // This is important field to render the next data
               next={this.fetchEvents}
-
               hasMore={!this.state.pageSettings.isLast}
               loader={<h4>Loading...</h4>}
               endMessage={

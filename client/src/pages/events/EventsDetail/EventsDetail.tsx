@@ -1,17 +1,16 @@
+import { AxiosResponse } from 'axios';
 import { Field, FieldProps, Form, Formik, FormikProps } from 'formik';
 import React, { Component } from 'react';
 import { MdDone } from 'react-icons/md';
+import { deleteEvent, isOwner } from '../../../api/event.service';
 import { Comments, Gallery, SettingsPanel } from '../../../components';
 import { EventDto } from '../../../interfaces/Event.dto';
 import { commentsSchema } from '../../../validationSchemas/commentValidation';
 import './EventDetail.scss';
-import { deleteEvent, isOwner } from '../../../api/event.service';
-import { AxiosResponse } from 'axios';
 
 interface FormValue {
   comment: string;
 }
-
 export class EventsDetail extends Component<any, any> {
   constructor(props: EventDto) {
     super(props);
@@ -19,7 +18,6 @@ export class EventsDetail extends Component<any, any> {
       eventProps: { ...this.props.routerProps.location.state },
       isOwner: false
     };
-
     this.handleDelete = this.handleDelete.bind(this);
   }
 

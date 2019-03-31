@@ -15,24 +15,24 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Gallery {
-  @Id
-  @Column(name = "id")
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private int id;
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
 
-  @JsonBackReference
-  @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "event_id")
-  private Event eventId;
+    @JsonBackReference
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event_id")
+    private Event eventId;
 
-  @ElementCollection()
-  @Column(name = "image_urls")
-  private Set<String> imageUrls = new HashSet<>();
+    @ElementCollection()
+    @Column(name = "image_urls")
+    private Set<String> imageUrls = new HashSet<>();
 
-  @Column(name = "is_deleted")
-  private Boolean isDeleted;
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
 
-  public void setEventId(Event eventId) {
-    this.eventId = eventId;
-  }
+    public void setEventId(Event eventId) {
+        this.eventId = eventId;
+    }
 }
