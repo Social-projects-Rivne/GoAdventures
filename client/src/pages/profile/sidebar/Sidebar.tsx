@@ -65,18 +65,20 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
                       ? this.props.avatarUrl
                       : avatar
                   }
-                  alt='user_avatar'
+                  alt='user_avatar'/>
+                </div>
+                <input
+                  style={{ display: 'inline' }}
+                  type='file'
+                  onChange={this.fileSelectHandler}
                 />
               </div>
               <input
                 style={{ display: 'none' }}
                 type='file'
                 onChange={this.fileSelectHandler}
-                // ref={}
               />
-              {/* <button onClick={() => this.fileInput.click()} > Pick File </button> */}
               <button onClick={this.uploadHandler}>Upload</button>
-            </div>
 
             <div className='card-body'>
               <div className='btn-choice'>
