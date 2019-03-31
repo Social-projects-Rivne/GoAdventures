@@ -4,4 +4,12 @@
     width: 100%;
    
 }
-
+.leaflet-container.crosshair-cursor-enabled {
+    cursor:crosshair;
+}
+.leaflet-interactive {
+  cursor: pointer;
+}
+.leaflet-grab {
+ cursor: pointer;
+}
