@@ -70,8 +70,9 @@ public class ProfileController {
             if(BCrypt.checkpw(updateUser.getPassword(),user.getPassword())){    //check current pass
                 logger.info("current password correct");
                 if(passwordValidator.validatePassword(updateUser.getNewPassword())){
-                    updateUser.setPassword(updateUser.getNewPassword());          //if valide, set new pass
-                    logger.info("password changed, new password:  " + updateUser.getPassword());
+                    //user.setPassword(BCrypt.hashpw( BCrypt.gensalt(),updateUser.getPassword())); //if valide, set new pass
+                    user.setPassword(BCrypt.hashpw(updateUser.getPassword(), BCrypt.gensalt()));
+                    logger.info("password changed, new password:  " + updateUser.getNewPassword());
                 }
             } else{
                 return ResponseEntity.badRequest().body("Current password is wrong!");        //wrong password

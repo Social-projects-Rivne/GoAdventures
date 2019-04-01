@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { Cookies } from 'react-cookie';
 import { serverUrl } from './url.config';
+import { async } from 'rxjs/internal/scheduler/async';
 
 const cookies: Cookies = new Cookies();
 
@@ -29,6 +30,7 @@ export const changeUserData = async (data: any): Promise<string> => {
     })
     .catch((err) => {
       console.error(err);
-      return 'error';
+      return 'wrong current password!';
     });
 };
+

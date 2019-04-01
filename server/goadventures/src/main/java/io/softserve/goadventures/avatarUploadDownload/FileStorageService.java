@@ -1,5 +1,6 @@
 package io.softserve.goadventures.avatarUploadDownload;
 
+import io.softserve.goadventures.errors.FileSizeException;
 import io.softserve.goadventures.errors.FileStorageException;
 import io.softserve.goadventures.errors.MyFileNotFoundException;
 import io.softserve.goadventures.errors.WrongImageTypeException;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -60,10 +62,19 @@ public class FileStorageService {
             throw new FileStorageException("Could not store file " + finalFileName + ". Please try again!", ex);
         }
     }
-    public String checkFileType(MultipartFile file){    //check file type
+    public ResponseEntity<String> checkFileType(MultipartFile file){    //check file type
         String contentType = file.getContentType();
         if(!(contentType.startsWith("image/"))){
             throw new WrongImageTypeException("Could not be uploaded, it is not an image!");
+            //return ResponseEntity.badRequest().body("Could not be uploaded, it is not an image!");
+        }
+        return null;
+    }
+    public String checkFileSize(MultipartFile file){
+        long fileSize = file.getSize();
+        //logger.info("file size "+fileSize );
+        if(fileSize > 5242880){
+            throw new FileSizeException("Maximum image size 5 mb!"+ "Your file size is "+ fileSize);
         }
         return null;
     }

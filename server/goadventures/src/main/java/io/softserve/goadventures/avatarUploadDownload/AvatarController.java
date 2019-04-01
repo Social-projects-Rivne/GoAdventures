@@ -36,11 +36,11 @@ public class AvatarController {
     }
 
     @PostMapping(path = "/uploadAvatar", consumes = {"multipart/form-data"})
-    public UploadFileResponse uploadAvatar(@RequestHeader(value = "Authorization") String authorizationHeader,
+    public ResponseEntity<String> uploadAvatar(@RequestHeader(value = "Authorization") String authorizationHeader,
                                          @RequestParam("file") MultipartFile file) throws UserNotFoundException {
 
         fileStorageService.checkFileType(file);
-
+        fileStorageService.checkFileSize(file);
         User user = userService.getUserByEmail(jwtService.parseToken(authorizationHeader));
 
         if(user.getAvatarUrl()!=null){                                              //delete current avatar image
@@ -55,7 +55,7 @@ public class AvatarController {
         user.setAvatarUrl(fileDownloadUri);
         userService.updateUser(user);
 
-        return new UploadFileResponse(fileName, fileDownloadUri, file.getContentType(), file.getSize());
+        return ResponseEntity.ok("Image uploaded sucesfully");
 
     }
 
