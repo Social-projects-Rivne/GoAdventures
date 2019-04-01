@@ -215,7 +215,15 @@ export const EditEvent = (props: EditEvent) => {
             ref={mapRef}
             onclick={(e) => {
               // const mapCurrent = mapRef.current;
-              setMapCoordinates([e.latlng.lat, e.latlng.lng]);
+              const currentMarker = markerRef.current;
+              if (!!currentMarker) {
+                const latLng = currentMarker.leafletElement.getLatLng();
+                geocoder.reverse(latLng, zoom, (result: any) => {
+                  setLocation(result[0].name);
+                });
+                setMapCoordinates([latLng.lat, latLng.lng]);
+                setMapCoordinates([e.latlng.lat, e.latlng.lng]);
+              }
             }}
             center={[mapCoordiantes[0], mapCoordiantes[1]]}
             zoom={zoom}
