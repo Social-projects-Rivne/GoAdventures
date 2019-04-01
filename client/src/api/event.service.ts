@@ -30,7 +30,9 @@ export const getEventList = async (nextPage?: string | null): Promise<any> => {
     });
 };
 
-export const getOwnerEventList = async (nextPage?: string | null): Promise<any> => {
+export const getOwnerEventList = async (
+  nextPage?: string | null
+): Promise<any> => {
   const defaultUrl = '/profile/all-events';
   return await axios
     .get(`${serverUrl}${!!nextPage ? nextPage : defaultUrl}`, {
@@ -63,7 +65,7 @@ export const getEventData = async (): Promise<AxiosResponse> =>
     }
   });
 
-export const deleteEvent = async (data: number): Promise<any> => 
+export const deleteEvent = async (data: number): Promise<any> =>
   await axios.delete(`${serverUrl}/event/delete`, {
     headers: {
       'EventId': data,
@@ -72,7 +74,31 @@ export const deleteEvent = async (data: number): Promise<any> =>
     }
   });
 
-export const isOwner = async (data: number): Promise<any> => 
+export const updateEvent = async (data: EventDto): Promise<EventDto | object> =>
+  await axios
+    .put(
+      `${serverUrl}/event/update/${data.id}`,
+      { ...data },
+      {
+        headers: {
+          'Authorization': `Bearer ${cookies.get('tk879n')}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+    .then((res: AxiosResponse<EventDto>) => {
+      if (res.status >= 200 && res.status <= 300) {
+        return res.data;
+      } else {
+        throw Error('Something went wrong, try again later');
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      return { responseStatus: err };
+    });
+
+export const isOwner = async (data: number): Promise<any> =>
   await axios.post(`${serverUrl}/event/isOwner`, null, {
     headers: {
       'EventId': data,

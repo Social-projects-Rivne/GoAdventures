@@ -6,8 +6,8 @@ import io.softserve.goadventures.gallery.repository.GalleryRepository;
 import io.softserve.goadventures.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -41,8 +41,8 @@ public class EventService {
         eventRepository.save(newEvent);
     }
 
-    public void updateEvent(Event event) {
-        eventRepository.save(event);
+    public Event updateEvent(Event event) {
+       return eventRepository.save(event);
     }
 
     public Page<Event> getAllEvents(Pageable eventPageable) {

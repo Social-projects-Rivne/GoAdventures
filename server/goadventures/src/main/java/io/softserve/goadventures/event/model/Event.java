@@ -10,8 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import javax.persistence.*;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -45,7 +45,7 @@ public class Event {
     @Column(name = "longitude")
     private Double longitude;
 
-    @Column(name = "description", columnDefinition="TEXT")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "status_id")
@@ -62,11 +62,9 @@ public class Event {
     private Category category;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(
-            name = "event_participants",
-            joinColumns = { @JoinColumn(name = "event_id", referencedColumnName = "id") },
-            inverseJoinColumns = { @JoinColumn(name = "users_id", referencedColumnName = "id") }
-    )
+    @JoinTable(name = "event_participants", joinColumns = {
+            @JoinColumn(name = "event_id", referencedColumnName = "id") }, inverseJoinColumns = {
+                    @JoinColumn(name = "users_id", referencedColumnName = "id") })
     private Set<User> participants = new HashSet<>();
 
     @JsonIgnore
@@ -74,7 +72,8 @@ public class Event {
     @JoinColumn(name = "owner")
     private User owner;
 
-    public Event(String topic, String startDate, String endDate, String location, Double latitude, Double longitude, String description, Category category) {
+    public Event(String topic, String startDate, String endDate, String location, Double latitude, Double longitude,
+            String description, Category category) {
         setTopic(topic);
         setStartDate(startDate);
         setEndDate(endDate);
@@ -87,33 +86,25 @@ public class Event {
 
     @Override
     public String toString() {
-        return "Event{" +
-                "id=" + id +
-                ", topic='" + topic + '\'' +
-                ", startDate='" + startDate + '\'' +
-                ", endDate='" + endDate + '\'' +
-                ", location='" + location + '\'' +
-                ", latitude='" + latitude + '\'' +
-                ", longitude='" + longitude + '\'' +
-                ", description='" + description + '\'' +
-                ", statusId=" + statusId + '\'' +
-                ", owner=" + owner + '\'' +/*
-                ", category=" + category.getCategoryName() +
-                ", participants=" + participants +*/
+        return "Event{" + "id=" + id + ", topic='" + topic + '\'' + ", startDate='" + startDate + '\'' + ", endDate='"
+                + endDate + '\'' + ", location='" + location + '\'' + ", latitude='" + latitude + '\'' + ", longitude='"
+                + longitude + '\'' + ", description='" + description + '\'' + ", statusId=" + statusId + '\''
+                + ", owner=" + owner + '\'' + /*
+                                               * ", category=" + category.getCategoryName() + ", participants=" +
+                                               * participants +
+                                               */
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Event event = (Event) o;
-        return id == event.id &&
-                topic.equals(event.topic) &&
-                startDate.equals(event.startDate) &&
-                endDate.equals(event.endDate) &&
-                location.equals(event.location) &&
-                category.equals(event.category);
+        return id == event.id && topic.equals(event.topic) && startDate.equals(event.startDate)
+                && endDate.equals(event.endDate) && location.equals(event.location) && category.equals(event.category);
     }
 
     @Override

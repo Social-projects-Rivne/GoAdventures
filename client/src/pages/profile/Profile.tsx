@@ -11,8 +11,6 @@ import './Profile.scss';
 import ShowEvents from './showEvents/ShowEvents';
 import Sidebar from './sidebar/Sidebar';
 
-
-
 interface ProfileState {
   userProfile: UserDto;
   userEventList: any;
@@ -22,8 +20,6 @@ interface ProfileState {
   togleEditProfile: () => void;
   togleMyEvents: () => void;
   toogleAccountOverView: () => void;
-
-
 }
 
 export class Profile extends Component<UserDto, ProfileState> {
@@ -103,23 +99,23 @@ export class Profile extends Component<UserDto, ProfileState> {
       },
       choose: 'account-overview',
       togleEditProfile: () => {
-        this.setState(state => ({
+        this.setState((state) => ({
           choose: 'edit-profile'
         }));
-        console.log(this.state.choose)
+        console.log(this.state.choose);
       },
       togleMyEvents: () => {
-        this.setState(state => ({
+        this.setState((state) => ({
           choose: 'events'
         }));
-        console.log(this.state.choose)
+        console.log(this.state.choose);
       },
       toogleAccountOverView: () => {
-        this.setState(state => ({
+        this.setState((state) => ({
           choose: 'account-overview'
         }));
 
-        console.log(this.state.choose)
+        console.log(this.state.choose);
       }
     };
   }
@@ -127,7 +123,6 @@ export class Profile extends Component<UserDto, ProfileState> {
   public handleSubmit(data: UserDto): Promise<string> {
     return changeUserData({ ...data });
   }
-
 
   public componentDidMount() {
     // сеттер на пропси зверху з api
@@ -138,7 +133,6 @@ export class Profile extends Component<UserDto, ProfileState> {
     );
   }
 
-
   public render() {
     return (
       <ProfileContext.Provider value={this.state}>
@@ -147,29 +141,23 @@ export class Profile extends Component<UserDto, ProfileState> {
             <Sidebar {...this.state.userProfile} />
           </div>
           <div className='Profile__content'>
-            {
-              this.state.choose === 'events'
-                ? <ShowEvents {...this.state.userEventList} />
-                : (this.state.choose === 'edit-profile'
-                  ? <Dialog
-                    validationSchema={editProfileSchema}
-                    handleSubmit={this.handleSubmit}
-                    inputs={this.editFormInputSettings}
-                    button_text='Update'
-                    header='Edit your profile'
-                    inline_styles={this.editFormDialogStyles}
-                  />
-                  : (this.state.choose === 'account-overview'
-                    ? <AccountOverwiew {...this.state.userProfile} />
-                    : null
-
-                  )
-                )
-            }
+            {this.state.choose === 'events' ? (
+              <ShowEvents {...this.state.userEventList} />
+            ) : this.state.choose === 'edit-profile' ? (
+              <Dialog
+                validationSchema={editProfileSchema}
+                handleSubmit={this.handleSubmit}
+                inputs={this.editFormInputSettings}
+                button_text='Update'
+                header='Edit your profile'
+                inline_styles={this.editFormDialogStyles}
+              />
+            ) : this.state.choose === 'account-overview' ? (
+              <AccountOverwiew {...this.state.userProfile} />
+            ) : null}
           </div>
         </div>
       </ProfileContext.Provider>
-
     );
   }
 }
