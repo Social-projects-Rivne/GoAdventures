@@ -13,6 +13,7 @@ import io.softserve.goadventures.user.service.PasswordValidator;
 import io.softserve.goadventures.user.service.UserNotFoundException;
 import io.softserve.goadventures.user.service.UserService;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,10 +49,17 @@ public class ProfileController {
         this.userService = userService;
         this.emailValidator = emailValidator;
         this.passwordValidator = passwordValidator;
-        this.modelMapper = modelMapper;
         this.eventDtoBuilder = eventDtoBuilder;
         this.eventService = eventService;
+        this.modelMapper = modelMapper;
+        this.modelMapper.addMappings(skipModifiedFieldsMap);
     }
+    PropertyMap<UserUpdateDto, User> skipModifiedFieldsMap = new PropertyMap<UserUpdateDto, User>() {
+        protected void configure() {
+            skip().setPassword(null);
+
+        }
+    };
 
     @GetMapping("/page")
     public UserDto getProfileUser(@RequestHeader("Authorization") String token) throws UserNotFoundException {
@@ -70,13 +78,15 @@ public class ProfileController {
             if(BCrypt.checkpw(updateUser.getPassword(),user.getPassword())){    //check current pass
                 logger.info("current password correct");
                 if(passwordValidator.validatePassword(updateUser.getNewPassword())){
-                    updateUser.setPassword(updateUser.getNewPassword());          //if valide, set new pass
-                    logger.info("password changed, new password:  " + updateUser.getPassword());
+                    //if valide, set new pass
+                    user.setPassword(BCrypt.hashpw(updateUser.getNewPassword(), BCrypt.gensalt()));
+                    logger.info("password changed, new password:  " + updateUser.getNewPassword());
                 }
             } else{
                 return ResponseEntity.badRequest().body("Current password is wrong!");        //wrong password
             }
         }
+
 
         modelMapper.map(updateUser, user);
         userService.updateUser(user);
