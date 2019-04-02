@@ -4,7 +4,10 @@ import io.softserve.goadventures.models.Event;
 import io.softserve.goadventures.services.EventService;
 import io.softserve.goadventures.models.Gallery;
 import io.softserve.goadventures.repositories.GalleryRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,12 +16,30 @@ import java.util.Set;
 
 @CrossOrigin
 @RestController
-@RequestMapping("gallery")
+@RequestMapping(value = "event/gallery")
 public class GalleryController {
+    private Logger logger = LoggerFactory.getLogger(GalleryController.class);
     @Autowired
     private GalleryRepository galleryRepository;
     @Autowired
     private EventService eventService;
+
+
+    @PostMapping("/gallery/{eventId}")
+    public ResponseEntity<String> createGallery(@PathVariable(value = "eventId") int eventId,
+                                                @RequestBody Gallery gallery) {
+        Event event = eventRepository.findById(eventId);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        gallery.setEventId(event);
+        galleryRepository.save(gallery);
+        return ResponseEntity.ok().headers(httpHeaders).body("gallery created");
+    }
+
+    @GetMapping("/gallery/{eventId}")
+    public Gallery getAllGalleryByEventId(@PathVariable(value = "eventId") int eventId) {
+        Event event = eventRepository.findById(eventId);
+        return galleryRepository.findByEventId(event.getId());
+    }
 
     @PostMapping("/add-new/{eventId}")
     public ResponseEntity<?> addNewGallery(@PathVariable("eventId") int eventId) {
