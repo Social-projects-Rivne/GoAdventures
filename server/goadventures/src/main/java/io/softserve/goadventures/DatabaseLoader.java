@@ -1,79 +1,57 @@
 package io.softserve.goadventures;
 
-import io.softserve.goadventures.auth.enums.UserStatus;
-import io.softserve.goadventures.event.category.Category;
-import io.softserve.goadventures.event.repository.CategoryRepository;
-import io.softserve.goadventures.event.repository.EventRepository;
-import io.softserve.goadventures.user.model.User;
-import io.softserve.goadventures.event.model.Event;
-import io.softserve.goadventures.user.service.UserService;
-import io.softserve.goadventures.event.service.EventService;
-import io.softserve.goadventures.user.repository.UserRepository;
+import io.softserve.goadventures.dto.UserAuthDto;
+import io.softserve.goadventures.models.Category;
+import io.softserve.goadventures.repositories.CategoryRepository;
+import io.softserve.goadventures.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import org.springframework.security.crypto.bcrypt.BCrypt;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 public class DatabaseLoader implements CommandLineRunner {
-    private final UserRepository userRepository;
-    private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
     private final UserService userService;
-    private final EventService eventService;
 
     @Autowired
-    public DatabaseLoader(UserRepository userRepository, EventRepository eventRepository, EventService eventService, CategoryRepository categoryRepository, UserService userService){
-        this.userRepository = userRepository;
-        this.eventRepository = eventRepository;
+    public DatabaseLoader(CategoryRepository categoryRepository, UserService userService){
         this.categoryRepository = categoryRepository;
         this.userService = userService;
-        this.eventService = eventService;
     }
 
     @Override
     public void run(String... strings) throws Exception{
-        Long count = categoryRepository.countByCategoryName("Skateboarding");
-        if (count == 0)
-        this.categoryRepository.save(new Category(1, "Skateboarding", null));
-        count = categoryRepository.countByCategoryName("Motocross");
-        if (count == 0)
-            this.categoryRepository.save(new Category(2, "Motocross", null));
-        count = categoryRepository.countByCategoryName("Mountain biking");
-        if (count == 0)
-            this.categoryRepository.save(new Category(3, "Mountain biking", null));
-        count = categoryRepository.countByCategoryName("Rock climbing");
-        if (count == 0)
-            this.categoryRepository.save(new Category(4, "Rock climbing", null));
-        count = categoryRepository.countByCategoryName("Parkour");
-        if (count == 0)
-            this.categoryRepository.save(new Category(5, "Parkour", null));
-        count = categoryRepository.countByCategoryName("Surfing");
-        if (count == 0)
-            this.categoryRepository.save(new Category(6, "Surfing", null));
-        count = categoryRepository.countByCategoryName("Kayaking");
-        if (count == 0)
-            this.categoryRepository.save(new Category(7, "Kayaking", null));
-        count = categoryRepository.countByCategoryName("Bungee jumpnig");
-        if (count == 0)
-            this.categoryRepository.save(new Category(8, "Bungee jumping", null));
-        count = categoryRepository.countByCategoryName("Sky diving");
-        if (count == 0)
-            this.categoryRepository.save(new Category(9, "Sky diving", null));
-        count = categoryRepository.countByCategoryName("Snowboarding");
-        if (count == 0)
-            this.categoryRepository.save(new Category(10, "Snowboarding", null));
-        count = categoryRepository.countByCategoryName("Other");
-        if (count == 0)
-            this.categoryRepository.save(new Category(11, "Other", null));
-        count = userRepository.countByFullname("Ioann");
-        User user = new User("Ioann", "email@gmail.com", "password");
-        if (count == 0){
-        user.setPassword(BCrypt.hashpw("password", BCrypt.gensalt()));
-        this.userRepository.save(user);
+        Set<String> categories = new HashSet<>();
+        categories.add("Skateboarding");
+        categories.add("Motocross");
+        categories.add("Mountain biking");
+        categories.add("Rock climbing");
+        categories.add("Parkour");
+        categories.add("Surfing");
+        categories.add("Kayaking");
+        categories.add("Bungee jumpnig");
+        categories.add("Sky diving");
+        categories.add("Snowboarding");
+        categories.add("Other");
+
+        for (String s : categories) {
+            if (this.categoryRepository.countByCategoryName(s) == 0) {
+                this.categoryRepository.save(new Category(s));
+            }
         }
-        User userQ = userService.getUserByEmail("email@gmail.com");
-        userQ.setStatusId(UserStatus.ACTIVE.getUserStatus());
-        this.userService.updateUser(userQ);
+
+        Set<UserAuthDto> users = new HashSet<>();
+        users.add(new UserAuthDto("hirotaka@scrum.com", "password", "Hirotaka Takeuchi"));
+        users.add(new UserAuthDto("nonaka@scrum.com", "password", "Ikujiro Nonaka"));
+        users.add(new UserAuthDto("eragon@gmail.com", "password", "Christopher Paolini"));
+        users.add(new UserAuthDto("lord.of.the.rings@gmail.com", "password", "John R.R. Tolkien"));
+
+        for (UserAuthDto authDto : users) {
+            userService.addUser(authDto);
+            userService.confirmUser(authDto.getEmail());
+        }
     }
 }
