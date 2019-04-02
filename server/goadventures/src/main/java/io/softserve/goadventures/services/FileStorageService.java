@@ -13,6 +13,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -37,15 +38,15 @@ public class FileStorageService {
             throw new FileStorageException("Could not create the directory where the uploaded files will be stored.", ex);
         }
     }
-
-    public String storeFile(MultipartFile file) {       // Create unique file name, check invalid characters and copy file to directory
+    // Create unique file name, check invalid characters and copy file to directory
+    public String storeFile(MultipartFile file) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         String uuidFile = UUID.randomUUID().toString();
         String finalFileName = uuidFile + "." + fileName;
 
         try {
             // Check if the file's name contains invalid characters
-            if(finalFileName.contains("..")) {
+            if (finalFileName.contains("..")) {
                 throw new FileStorageException("Sorry! Filename contains invalid path sequence " + finalFileName);
             }
 
@@ -59,9 +60,9 @@ public class FileStorageService {
         }
     }
 
-    public String checkFileType(MultipartFile file){    //check file type
+    public String checkFileType(MultipartFile file) {    //check file type
         String contentType = file.getContentType();
-        if(!(contentType.startsWith("image/"))){
+        if (!(contentType.startsWith("image/"))) {
             throw new WrongImageTypeException("Could not be uploaded, it is not an image!");
         }
         return null;
@@ -71,7 +72,7 @@ public class FileStorageService {
         try {
             Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
             Resource resource = new UrlResource(filePath.toUri());
-            if(resource.exists()) {
+            if (resource.exists()) {
                 return resource;
             } else {
                 throw new MyFileNotFoundException("File not found " + fileName);
@@ -83,9 +84,9 @@ public class FileStorageService {
 
     public void deleteFile(String fileUri) {
         String fileName = FilenameUtils.getName(fileUri);
-        logger.info("name"+fileName);
+        logger.info("name" + fileName);
         String filePath = fileStorageLocation + "/" + fileName;
-        logger.info("file path" + filePath );
+        logger.info("file path" + filePath);
         try {
             Files.delete(Paths.get(filePath));
         } catch (IOException e) {

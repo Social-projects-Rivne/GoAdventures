@@ -17,12 +17,12 @@ import java.util.List;
 @Service
 public class EventService {
     private final EventRepository eventRepository;
-    private final GalleryRepository galleryRepository;
+//    private final GalleryRepository galleryRepository;
 
     @Autowired
-    public EventService(EventRepository eventRepository, GalleryRepository galleryRepository) {
+    public EventService(EventRepository eventRepository /*, GalleryRepository galleryRepository */) {
         this.eventRepository = eventRepository;
-        this.galleryRepository = galleryRepository;
+//        this.galleryRepository = galleryRepository;
     }
 
     public Event getEventById(int id) {

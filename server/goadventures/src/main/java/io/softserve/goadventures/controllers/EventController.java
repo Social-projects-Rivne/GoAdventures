@@ -115,7 +115,7 @@ public class EventController {
             return new ResponseEntity<Slice<EventDTO>>(t, httpHeaders, HttpStatus.OK);
         } else {
             return ResponseEntity.badRequest().body(new ErrorMessageManager(
-                    "Server error, try again later", "Module /all/"));
+                    "Server error, try again later", "Pageable error"));
         }
     }
 
