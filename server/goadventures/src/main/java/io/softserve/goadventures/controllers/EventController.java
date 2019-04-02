@@ -101,19 +101,11 @@ public class EventController {
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllEvents(@RequestParam(value = "search", required = false) String search,
-                                          @RequestParam(value = "category", required = false) String category,
                                           @PageableDefault(size = 15, sort = "id") Pageable eventPageable) {
 
-        LoggerFactory.getLogger("PARAMETERS").info("\nsearch: " + search + "\ncategory: " + category);
-
-        LoggerFactory.getLogger("EVENT FROM CATEGORY").
-                info(eventService.getAllEventsByCategory(eventPageable, categoryRepository.findByCategoryName(category)).toString());
-
-        Page<Event> eventsPage = (search == null) ?
-                (category == null) ?
-                        eventService.getAllEvents(eventPageable) :
-                        eventService.getAllEventsByCategory(eventPageable, categoryRepository.findByCategoryName(category))
-                : eventService.getAllEventsByTopic(eventPageable, search);
+        Page<Event> eventsPage = (search == null)
+                ? eventService.getAllEvents(eventPageable) :
+                eventService.getAllEventBySearch(eventPageable, search);
 
         if (eventsPage != null) {
             int nextPageNum = eventsPage.getNumber() + 1;
