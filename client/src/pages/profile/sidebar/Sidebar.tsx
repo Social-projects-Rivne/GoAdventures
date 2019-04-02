@@ -1,69 +1,108 @@
-import React from 'react';
+import axios from 'axios';
+import React, { ChangeEvent } from 'react';
+import { Cookies, withCookies } from 'react-cookie';
+import { serverUrl } from '../../../api/url.config';
+import { ProfileContext } from '../../../context/profile.context';
 import { UserDto } from '../../../interfaces/User.dto';
 import avatar from '../images/Person.png';
 import './Sidebar.scss';
-import { ProfileContext } from '../../../context/profile.context';
-import { withCookies } from 'react-cookie';
 
-class Sidebar extends React.Component<UserDto, UserDto> {
+interface SidebarState {
+  userProfile: UserDto;
+  avatar: string | Blob;
+}
+interface AppRefs {}
+const cookies: Cookies = new Cookies();
+class Sidebar extends React.Component<UserDto, SidebarState> {
   constructor(props: any) {
-
     super(props);
     this.state = {
-      fullname: '',
-      username: '',
-      email: '',
-      avatarUrl: '',
-      password: '',
-      newPassword: '',
+      avatar: '',
+      userProfile: {
+        fullname: '',
+        username: '',
+        email: '',
+        avatarUrl: ''
+      }
     };
+    this.uploadHandler = this.uploadHandler.bind(this);
+    this.fileSelectHandler = this.fileSelectHandler.bind(this);
+  }
+  public fileSelectHandler(event: ChangeEvent<HTMLInputElement>): void {
+    // console.log(event.target.files[0]);
+    console.debug(event.target.files);
+    !!event.target.files
+      ? this.setState({
+          avatar: event.target.files[0]
+        })
+      : null;
+  }
+  public uploadHandler() {
+    const formdata: FormData = new FormData();
+    formdata.set('file', this.state.avatar);
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${cookies.get('tk879n')}`
+      }
+    };
+    axios.post(`${serverUrl}/uploadAvatar`, formdata, config).then((response) => {
+      console.log(response);
+    });
   }
 
   public render() {
     return (
       <ProfileContext.Consumer>
-        {({ togleMyEvents, togleEditProfile }) => (
+        {({ togleMyEvents, togleEditProfile, toogleAccountOverView }) => (
           <div className='Sidebar__card card text-white bg-dark'>
             <div className='card-header'>
               <h2 className='title'>My Profile</h2>
               <div className='Sidebar__avatar'>
-                <img src={avatar} alt='user_avatar' />
+                <img
+                  src={
+                    this.props.avatarUrl != undefined
+                      ? this.props.avatarUrl
+                      : avatar
+                  }
+                  alt='user_avatar'/>
+                </div>
+                <input
+                  style={{ display: 'inline' }}
+                  type='file'
+                  onChange={this.fileSelectHandler}
+                />
               </div>
-            </div>
+              <input
+                style={{ display: 'none' }}
+                type='file'
+                onChange={this.fileSelectHandler}
+              />
+              <button onClick={this.uploadHandler}>Upload</button>
+
             <div className='card-body'>
-              <div className='list-group'>
-                <a className='list-group-item list-group-item-action active'>
-                  <div className='d-flex w-100 justify-content-between'>
-                    <h5 className='mb-1'>
-                      <p>Email:</p>
-                      {this.props.email}
-                    </h5>
-                  </div>
-                </a>
-              </div>
-              <div className='list-group'>
-                <a className='list-group-item list-group-item-action active'>
-                  <div className='d-flex w-100 justify-content-between'>
-                    <h5 className='mb-1'>
-                      <p>Username:</p>
-                      {this.props.username}
-                    </h5>
-                  </div>
-                </a>
-              </div>
-              <div className='list-group'>
-                <a className='list-group-item list-group-item-action active'>
-                  <div className='d-flex w-100 justify-content-between'>
-                    <h5 className='mb-1'>
-                      <p>Fullname:</p>
-                      {this.props.fullname}
-                    </h5>
-                  </div>
-                </a>
-              </div>
-              <div className="btn-choice">
-                <button className="btn btn-secondary disabled edit" onClick={togleEditProfile}>Edit profile</button>
-                <button className="btn btn-secondary disabled events" onClick={togleMyEvents}>My events</button>
+              <div className='btn-choice'>
+                <button
+                  className='btn btn-secondary'
+                  id='sidebarBtn'
+                  onClick={togleEditProfile}
+                >
+                  Edit profile
+                </button>
+                <button
+                  className='btn btn-secondaryS'
+                  id='sidebarBtn'
+                  onClick={togleMyEvents}
+                >
+                  My events
+                </button>
+                <button
+                  className='btn btn-secondary'
+                  id='sidebarBtn'
+                  onClick={toogleAccountOverView}
+                >
+                  Account OverView
+                </button>
               </div>
             </div>
           </div>
@@ -72,5 +111,4 @@ class Sidebar extends React.Component<UserDto, UserDto> {
     );
   }
 }
-
 export default withCookies(Sidebar);

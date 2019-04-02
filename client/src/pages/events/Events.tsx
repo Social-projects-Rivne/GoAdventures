@@ -9,7 +9,7 @@ import './Events.scss';
 interface EventState {
   events: EventDto[];
   pageSettings: {
-    isLast: true | false
+    isLast: true | false | undefined
     nextPage: string | null
   };
 }
@@ -18,28 +18,13 @@ export class Events extends Component<EventDto, EventState> {
   constructor(props: any) {
     super(props);
     this.state = {
-      events: [
-        {
-          description: '',
-          endDate: '',
-          gallery: {
-            id: undefined,
-            imageUrls: ['https://via.placeholder.com/250'],
-            isDeleted: undefined
-          },
-          id: 0,
-          location: '',
-          participants: [],
-          startDate: '',
-          topic: ''
-        }
-      ],
+      events: [],
       pageSettings: {
-        isLast: false,
+        isLast: undefined,
         nextPage: ''
       }
     };
-    this.fetchEvents.bind(this);
+    this.fetchEvents = this.fetchEvents.bind(this);
   }
 
   public componentDidMount() {
@@ -47,9 +32,10 @@ export class Events extends Component<EventDto, EventState> {
   }
 
   public async fetchEvents(): Promise<void> {
+    console.debug(this.state);
     const response = await getEventList(this.state.pageSettings.nextPage);
     this.setState({
-      events: [...response.content],
+      events: [...this.state.events, ...response.content],
       pageSettings: {
         isLast: response.last,
         nextPage: !!sessionStorage.getItem('nextpage')
@@ -64,30 +50,36 @@ export class Events extends Component<EventDto, EventState> {
       <div className='container-fluid'>
         <h1 className='text-center'>Event List</h1>
         <AddEventBtn />
-
-        <InfiniteScroll
-
-          dataLength={this.state.events.length} // This is important field to render the next data
-          next={this.fetchEvents}
-          hasMore={!this.state.pageSettings.isLast}
-          loader={<h4>Loading...</h4>}
-          endMessage={
-            <p style={{ textAlign: 'center' }}>
-              <b>Yay! You have seen it all</b>
-            </p>
-          }
-        >
-          <div className='container'>
-            <div className='card-columns'>
-              {this.state.events.map((event, index) => (
-                <EventsListBuild {...event} key={index} />
-              ))}
-            </div>
+        <div className='row'>
+          <div className='col'>
+            <InfiniteScroll
+              style={{
+                MozColumnGap: '0.5em',
+                MozColumnWidth: '15em',
+                WebkitColumnGap: '0.5em',
+                WebkitColumnWidth: '15em'
+              }}
+              dataLength={this.state.events ? this.state.events.length : 0}
+              next={this.fetchEvents}
+              hasMore={!this.state.pageSettings.isLast}
+              loader={<h4>Loading...</h4>}
+              endMessage={
+                <p style={{ textAlign: 'center' }}>
+                  <b>Yay! You have seen it all</b>
+                </p>
+              }
+            >
+              {this.state.events.map((event, index) => {
+                if (event) {
+                  return <EventsListBuild {...event} key={index} />;
+                } else {
+                  return null;
+                }
+              })}
+            </InfiniteScroll>
           </div>
-        </InfiniteScroll>
-
+        </div>
       </div>
-
     );
   }
 }

@@ -15,5 +15,4 @@ export interface DialogSettings {
     redirectURL: string
   };
   childComponents?: ReactNode;
-  event?: boolean;
 }

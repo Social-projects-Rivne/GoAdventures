@@ -3,20 +3,23 @@ import React, { Component, CSSProperties } from 'react';
 import { changeUserData, getUserData } from '../../api/user.service';
 import { Dialog } from '../../components';
 import { InputSettings } from '../../components/dialog-window/interfaces/input.interface';
+import { ProfileContext } from '../../context/profile.context';
 import { UserDto } from '../../interfaces/User.dto';
 import { editProfileSchema } from '../../validationSchemas/authValidation';
+import AccountOverwiew from './accountOverview/AccountOverview';
 import './Profile.scss';
-import Sidebar from './sidebar/Sidebar';
-import {ProfileContext} from '../../context/profile.context';
 import ShowEvents from './showEvents/ShowEvents';
+import Sidebar from './sidebar/Sidebar';
 
 interface ProfileState {
   userProfile: UserDto;
   userEventList: any;
   showEditForm: boolean;
-  choose: 'edit-profile' | 'events' | 'default',
-  togleEditProfile: () => void,
-  togleMyEvents: () => void
+
+  choose: 'edit-profile' | 'events' | 'default' | 'account-overview';
+  togleEditProfile: () => void;
+  togleMyEvents: () => void;
+  toogleAccountOverView: () => void;
 }
 
 export class Profile extends Component<UserDto, ProfileState> {
@@ -88,26 +91,31 @@ export class Profile extends Component<UserDto, ProfileState> {
       },
       userEventList: {
         description: '',
-          endDate: '',
-          id: 0,
-          location: '',
-          startDate: '',
-          topic: ''
+        endDate: '',
+        id: 0,
+        location: '',
+        startDate: '',
+        topic: ''
       },
-      choose: 'events',
+      choose: 'account-overview',
       togleEditProfile: () => {
-        // logic
-        this.setState( state => ({
-          choose: "edit-profile" 
-        }))
-        console.log(this.state.choose)
+        this.setState((state) => ({
+          choose: 'edit-profile'
+        }));
+        console.log(this.state.choose);
       },
       togleMyEvents: () => {
-        // logic
-        this.setState( state => ({
-          choose: "events" 
-        }))
-        console.log(this.state.choose)
+        this.setState((state) => ({
+          choose: 'events'
+        }));
+        console.log(this.state.choose);
+      },
+      toogleAccountOverView: () => {
+        this.setState((state) => ({
+          choose: 'account-overview'
+        }));
+
+        console.log(this.state.choose);
       }
     };
   }
@@ -127,16 +135,15 @@ export class Profile extends Component<UserDto, ProfileState> {
 
   public render() {
     return (
-    <ProfileContext.Provider value={this.state}>
-      <div className='profile-page'>
-        <div className='sidebar'>
-          <Sidebar {...this.state.userProfile} />
-        </div>
-        <div className='Profile__content'>
-          {
-            this.state.choose === "events" ? (
-              <ShowEvents {...this.state.userEventList}/>
-            ) : (
+      <ProfileContext.Provider value={this.state}>
+        <div className='profile-page'>
+          <div className='sidebar'>
+            <Sidebar {...this.state.userProfile} />
+          </div>
+          <div className='Profile__content'>
+            {this.state.choose === 'events' ? (
+              <ShowEvents {...this.state.userEventList} />
+            ) : this.state.choose === 'edit-profile' ? (
               <Dialog
                 validationSchema={editProfileSchema}
                 handleSubmit={this.handleSubmit}
@@ -145,11 +152,12 @@ export class Profile extends Component<UserDto, ProfileState> {
                 header='Edit your profile'
                 inline_styles={this.editFormDialogStyles}
               />
-            )
-          }
+            ) : this.state.choose === 'account-overview' ? (
+              <AccountOverwiew {...this.state.userProfile} />
+            ) : null}
+          </div>
         </div>
-      </div>
-    </ProfileContext.Provider>
+      </ProfileContext.Provider>
     );
   }
 }

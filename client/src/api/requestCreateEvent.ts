@@ -4,6 +4,7 @@ import { serverUrl } from './url.config';
 
 const cookies: Cookies = new Cookies();
 
+
 export const createEventReq = async (
   data: any,
   categ?: string

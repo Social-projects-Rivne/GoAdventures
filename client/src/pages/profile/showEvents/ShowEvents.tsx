@@ -4,8 +4,6 @@ import { getOwnerEventList } from '../../../api/event.service';
 import { EventsListBuild } from '../../../components/eventsListBuild/EventsListBuild';
 import { EventDto } from '../../../interfaces/Event.dto';
 
-
-
 interface EventState {
   events: EventDto[];
   pageSettings: {
@@ -20,10 +18,13 @@ export class ShowEvents extends Component<EventDto, EventState> {
     this.state = {
       events: [
         {
+          category: '',
           description: '',
           endDate: '',
           id: 0,
           location: '',
+          longitude: 0,
+          latitude: 0,
           startDate: '',
           topic: '',
           participants: [],
@@ -75,14 +76,9 @@ export class ShowEvents extends Component<EventDto, EventState> {
               }}
               dataLength={this.state.events.length} // This is important field to render the next data
               next={this.fetchEvents}
-
               hasMore={!this.state.pageSettings.isLast}
               loader={<h4>Loading...</h4>}
-              endMessage={
-                <p style={{ textAlign: 'center' }}>
-
-                </p>
-              }
+              endMessage={<p style={{ textAlign: 'center' }} />}
             >
               {this.state.events.map((event, index) => (
                 <EventsListBuild {...event} key={index} />
@@ -90,7 +86,7 @@ export class ShowEvents extends Component<EventDto, EventState> {
             </InfiniteScroll>
           </div>
         </div>
-      </div >
+      </div>
     );
   }
 }

@@ -11,7 +11,7 @@ interface Comment {
 export const Comments = (props: Comment): JSX.Element => (
   <div className='Comment'>
     <div className='row'>
-      <div className='col-2'>
+      <div className=''>
         <img className='rounded-avatar-sm' src={props.avatar} />
       </div>
       <div className='col-10'>
