@@ -21,7 +21,24 @@ notifications:
       - "Execution time: *%{duration}*"
       - "Message: %{message}"
 
-before_script: cd server/goadventures
+services: 
+  - docker
+
+env:
+  - DOCKER_COMPOSE_VERSION=3.1
+
+before_install:
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+
+
+before_script: docker-compose up --build
 
 script: mvn test
+
+
+after_script:
+  - docker-compose down
 
