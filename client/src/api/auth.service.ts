@@ -33,7 +33,6 @@ export const signIn = async (data: UserDto): Promise<string> => {
         { headers: { 'Content-Type': 'application/json' } })
         .then((res) => {
             if (res.status === 200 && res.headers.hasOwnProperty('authorization')) {
-                localStorage.setItem('tkn879', res.headers.authorization.replace('Bearer ', ''));
                 setCookie(res);
                 return 'ok';
             } else {
@@ -54,7 +53,6 @@ export const confirmAccount = async (data: any): Promise<string> => {
     })
         .then((res: AxiosResponse) => {
             if (res.status === 200 && res.headers.hasOwnProperty('authorization')) {
-                localStorage.setItem('tkn879', res.headers.authorization.replace('Bearer ', ''));
                 setCookie(res);
                 return 'ok';
             } else {

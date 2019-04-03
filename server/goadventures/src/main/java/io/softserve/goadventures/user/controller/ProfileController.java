@@ -1,6 +1,9 @@
 package io.softserve.goadventures.user.controller;
 
+import io.softserve.goadventures.auth.service.CheckEmailService;
 import io.softserve.goadventures.auth.service.JWTService;
+import io.softserve.goadventures.errors.ErrorMessageManager;
+import io.softserve.goadventures.errors.InvalidPasswordErrorMessage;
 import io.softserve.goadventures.event.dto.EventDTO;
 import io.softserve.goadventures.event.model.Event;
 import io.softserve.goadventures.event.service.EventDtoBuilder;
@@ -8,6 +11,7 @@ import io.softserve.goadventures.event.service.EventService;
 import io.softserve.goadventures.user.dto.UserDto;
 import io.softserve.goadventures.user.dto.UserUpdateDto;
 import io.softserve.goadventures.user.model.User;
+import io.softserve.goadventures.user.repository.UserRepository;
 import io.softserve.goadventures.user.service.EmailValidator;
 import io.softserve.goadventures.user.service.PasswordValidator;
 import io.softserve.goadventures.user.service.UserNotFoundException;
@@ -27,6 +31,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @CrossOrigin
 @RestController
 @RequestMapping("profile")
@@ -39,24 +45,27 @@ public class ProfileController {
     private final ModelMapper modelMapper;
     private final EventService eventService;
     private final EventDtoBuilder eventDtoBuilder;
+    private final UserRepository userRepository;
 
     @Autowired
     public ProfileController(JWTService jwtService, UserService userService,
                              EmailValidator emailValidator, PasswordValidator passwordValidator,
                              ModelMapper modelMapper,
-                             EventService eventService, EventDtoBuilder eventDtoBuilder) {
+                             EventService eventService, EventDtoBuilder eventDtoBuilder, CheckEmailService checkEmailService, UserRepository userRepository) {
         this.jwtService = jwtService;
         this.userService = userService;
         this.emailValidator = emailValidator;
         this.passwordValidator = passwordValidator;
         this.eventDtoBuilder = eventDtoBuilder;
         this.eventService = eventService;
+        this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.modelMapper.addMappings(skipModifiedFieldsMap);
     }
     PropertyMap<UserUpdateDto, User> skipModifiedFieldsMap = new PropertyMap<UserUpdateDto, User>() {
         protected void configure() {
             skip().setPassword(null);
+            skip().setEmail(null);
 
         }
     };
@@ -69,23 +78,55 @@ public class ProfileController {
     }
 
     @PutMapping(path = "/edit-profile", produces = {MediaType.APPLICATION_JSON_VALUE} )
-    public ResponseEntity<String> EditProfileData(@RequestHeader(value="Authorization") String authorizationHeader,
+    public ResponseEntity<?> EditProfileData(@RequestHeader(value="Authorization") String authorizationHeader,
                                                   @RequestBody UserUpdateDto updateUser) throws UserNotFoundException{
         String newToken;
         User user = userService.getUserByEmail(jwtService.parseToken(authorizationHeader));   //user with old data
 
-        if(!(updateUser.getPassword().equals(""))){
-            if(BCrypt.checkpw(updateUser.getPassword(),user.getPassword())){    //check current pass
-                logger.info("current password correct");
-                if(passwordValidator.validatePassword(updateUser.getNewPassword())){
-                    //if valide, set new pass
-                    user.setPassword(BCrypt.hashpw(updateUser.getNewPassword(), BCrypt.gensalt()));
-                    logger.info("password changed, new password:  " + updateUser.getNewPassword());
-                }
-            } else{
-                return ResponseEntity.badRequest().body("Current password is wrong!");        //wrong password
+        if(!(updateUser.getEmail().equals(""))) {
+            if (!(userRepository.existsByEmail(updateUser.getEmail()))) {
+                logger.info("okok");
+                user.setEmail(updateUser.getEmail());
+            } else {
+                logger.info("This mailbox is already in use");
+                return ResponseEntity.badRequest().body("This mailbox is already in use");
             }
         }
+
+        try {
+            logger.info("try log");
+            if(!(updateUser.getPassword().equals(""))){
+                if(BCrypt.checkpw(updateUser.getPassword(),user.getPassword())){    //check current pass
+                    logger.info("current password correct");
+                    if(passwordValidator.validatePassword(updateUser.getNewPassword())){
+                        //if valide, set new pass
+                        user.setPassword(BCrypt.hashpw(updateUser.getNewPassword(), BCrypt.gensalt()));
+                        logger.info("password changed, new password:  " + updateUser.getNewPassword());
+                    }
+                }else{
+                    logger.info("wrong password");
+                    throw new InvalidPasswordErrorMessage();
+                    //throw  new IOException("Event does not exist");
+                }
+            }
+        }catch (InvalidPasswordErrorMessage error){
+                return ResponseEntity.status(500).body(new ErrorMessageManager("Current password is wrong!", error.toString()));
+
+        }
+
+//        if(!(updateUser.getPassword().equals(""))){
+//            if(BCrypt.checkpw(updateUser.getPassword(),user.getPassword())){    //check current pass
+//                logger.info("current password correct");
+//                if(passwordValidator.validatePassword(updateUser.getNewPassword())){
+//                    //if valide, set new pass
+//                    user.setPassword(BCrypt.hashpw(updateUser.getNewPassword(), BCrypt.gensalt()));
+//                    logger.info("password changed, new password:  " + updateUser.getNewPassword());
+//                }
+//            } else{
+//                return ResponseEntity.badRequest().body("Current password is wrong!");        //wrong password
+//
+//            }
+//        }
 
 
         modelMapper.map(updateUser, user);

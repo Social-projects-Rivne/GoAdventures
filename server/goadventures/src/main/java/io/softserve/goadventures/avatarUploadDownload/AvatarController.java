@@ -2,6 +2,9 @@ package io.softserve.goadventures.avatarUploadDownload;
 
 
 import io.softserve.goadventures.auth.service.JWTService;
+import io.softserve.goadventures.errors.ErrorMessageManager;
+import io.softserve.goadventures.errors.FileSizeException;
+import io.softserve.goadventures.errors.WrongImageTypeException;
 import io.softserve.goadventures.user.model.User;
 import io.softserve.goadventures.user.service.UserNotFoundException;
 import io.softserve.goadventures.user.service.UserService;
@@ -36,11 +39,26 @@ public class AvatarController {
     }
 
     @PostMapping(path = "/uploadAvatar", consumes = {"multipart/form-data"})
-    public UploadFileResponse uploadAvatar(@RequestHeader(value = "Authorization") String authorizationHeader,
+    public ResponseEntity<?> uploadAvatar(@RequestHeader(value = "Authorization") String authorizationHeader,
                                          @RequestParam("file") MultipartFile file) throws UserNotFoundException {
 
-        fileStorageService.checkFileType(file);
+        try {
+            if(!(fileStorageService.checkFileType(file))){
+                throw new WrongImageTypeException();
 
+            }
+        }catch (WrongImageTypeException error){
+            return ResponseEntity.status(403).body(new ErrorMessageManager("Could not be uploaded, it is not an image!",error.toString()));
+        }
+        try {
+            if (!fileStorageService.checkFileSize(file)) {
+                throw new FileSizeException();
+
+            }
+        }catch (FileSizeException err){
+            return ResponseEntity.status(403).body(new ErrorMessageManager("Maximum file size is 5mb!",err.toString()));
+
+        }
         User user = userService.getUserByEmail(jwtService.parseToken(authorizationHeader));
 
         if(user.getAvatarUrl()!=null){                                              //delete current avatar image
@@ -55,8 +73,7 @@ public class AvatarController {
         user.setAvatarUrl(fileDownloadUri);
         userService.updateUser(user);
 
-        return new UploadFileResponse(fileName, fileDownloadUri, file.getContentType(), file.getSize());
-
+        return ResponseEntity.ok(fileDownloadUri);
     }
 
 

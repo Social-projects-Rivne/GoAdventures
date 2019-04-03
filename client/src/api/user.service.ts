@@ -22,7 +22,7 @@ export const getUserData = async (): Promise<AxiosResponse> =>
     }
   });
 
-export const changeUserData = async (data: any): Promise<string> => {
+export const changeUserData = async (data: any): Promise<any> => {
   return await axios
     .put(
       `${serverUrl}/profile/edit-profile`,
@@ -35,13 +35,12 @@ export const changeUserData = async (data: any): Promise<string> => {
       }
     )
     .then((res) => {
-      //localStorage.setItem('tkn879', res.headers.authorization.replace('Bearer ', ''));
       setCookie(res);
       return 'ok';
 
     })
     .catch((err) => {
       console.error(err);
-      return 'error';
+      return err;
     });
 };

@@ -22,6 +22,7 @@ interface ProfileState {
   togleEditProfile: () => void;
   togleMyEvents: () => void;
   toogleAccountOverView: () => void;
+  // toogleSetProfileState: () => void;
 
 
 }
@@ -91,7 +92,6 @@ export class Profile extends Component<UserDto, ProfileState> {
         fullname: '',
         username: '',
         email: '',
-        avatarUrl: ''
       },
       userEventList: {
         description: '',
@@ -120,11 +120,11 @@ export class Profile extends Component<UserDto, ProfileState> {
         }));
 
         console.log(this.state.choose)
-      }
+      },
     };
   }
 
-  public handleSubmit(data: UserDto): Promise<string> {
+  public handleSubmit(data: UserDto): Promise<any> {
     return changeUserData({ ...data });
   }
 

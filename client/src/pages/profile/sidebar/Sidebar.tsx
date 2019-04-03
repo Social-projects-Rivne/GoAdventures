@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import React, { ChangeEvent } from 'react';
 import { Cookies, withCookies } from 'react-cookie';
 import { serverUrl } from '../../../api/url.config';
@@ -6,21 +6,30 @@ import { ProfileContext } from '../../../context/profile.context';
 import { UserDto } from '../../../interfaces/User.dto';
 import avatar from '../images/Person.png';
 import './Sidebar.scss';
-import { error } from 'util';
+import { ErrorMessage } from 'formik';
+import { getUserData } from '../../../api/user.service';
 
 interface SidebarState {
   userProfile: UserDto;
   avatar: string | Blob;
+  errorMesage: {
+    publicError: string;
+
+  };
 
 }
 const cookies: Cookies = new Cookies();
 class Sidebar extends React.Component<UserDto, SidebarState> {
+
   fileInput: any;
 
   constructor(props: any) {
     super(props);
     this.state = {
       avatar: '',
+      errorMesage: {
+        publicError: '',
+      },
       userProfile: {
         fullname: '',
         username: '',
@@ -29,13 +38,25 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
       },
 
 
-
     };
+
     this.uploadHandler = this.uploadHandler.bind(this);
     this.fileSelectHandler = this.fileSelectHandler.bind(this);
   }
+  public componentDidMount() {
+    getUserData().then((response: AxiosResponse<UserDto>) =>
+      this.setState({ userProfile: { ...response.data } })
+    )
+  }
+  // public componentDidUpdate(prevProps: any) {
+  //   if (Object.is(prevProps, this.props) === false) {
+  //     console.debug("first");
+  //     this.setState({ userProfile: { ...this.props } });
+  //   }
+  // }
+
+
   public fileSelectHandler(event: ChangeEvent<HTMLInputElement>): void {
-    //console.log(event.target.files[0]);
     console.debug(event.target.files);
     !!event.target.files ?
       this.setState({
@@ -57,12 +78,25 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
       formdata,
       config
     ).then(response => {
-      console.log(response);
+      this.setState({
+        userProfile: {
+          ...this.state.userProfile,
+          avatarUrl: response.data,
+        }
+      });
     }
     ).catch((err) => {
-      alert("Could not be uploaded, it is not an image!")
+      //this.setState({ errorMesage: "Could not be uploaded, it is not an image!" });
+
+      this.setState({ errorMesage: { ...err.response.data } });
+
+      console.debug(this.state.errorMesage);
+
     });
   }
+  // public clearErrorMessage() {
+  //   this.setState({ errorMesage: '' });
+  // }
 
   public render() {
     return (
@@ -71,11 +105,11 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
           ({ togleMyEvents, togleEditProfile, toogleAccountOverView }) => (
             <div className='Sidebar__card card text-white bg-dark'>
               <div className='card-header'>
-                <h2 id="sidebarTitle" className='title sidebarTitle'>{this.props.fullname}</h2>
+                <h2 id="sidebarTitle" className='title sidebarTitle'>{this.state.userProfile.fullname}</h2>
                 <div className='Sidebar__avatar'>
 
                   <img
-                    src={(this.props.avatarUrl != undefined && this.props.avatarUrl != '') ? this.props.avatarUrl : avatar}
+                    src={(this.state.userProfile.avatarUrl != undefined && this.state.userProfile.avatarUrl != '') ? this.state.userProfile.avatarUrl : avatar}
                     alt='user_avatar' />
                 </div>
                 <div className="change_avatar_btn">
@@ -94,6 +128,20 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
                     className="btn btn-warning"
                     onClick={this.uploadHandler}
                   >Upload</button>
+                </div>
+                <div className="Errors-messages avt444">
+                  {
+
+                    this.state.errorMesage.publicError !== ''
+                      ? <div className="alert alert-warning alert-dismissible fade show  errAvt777"
+                        role="alert">
+                        <strong>{this.state.errorMesage.publicError}</strong>
+                        <button type="button" className="close" data-dismiss="alert" aria-label="Close">
+
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      : null}
                 </div>
               </div>
 

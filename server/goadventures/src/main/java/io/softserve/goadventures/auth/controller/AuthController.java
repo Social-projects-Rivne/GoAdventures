@@ -48,6 +48,7 @@ public class AuthController extends HttpServlet {
     public ResponseEntity<String> signUp(@RequestBody User user) throws MessagingException {
         HttpHeaders httpHeaders = new HttpHeaders();
         logger.info(String.valueOf(user));
+
         if (!checkEmailService.checkingEmail(user.getEmail())) {
             user.setStatusId(UserStatus.PENDING.getUserStatus());
             user.setUsername(user.getEmail().split("@")[0]);
