@@ -21,64 +21,65 @@ import java.util.Set;
 
 @CrossOrigin
 @RestController
-@RequestMapping(value = "event/gallery")
+@RequestMapping("event/gallery")
 public class GalleryController {
-    private Logger logger = LoggerFactory.getLogger(GalleryController.class);
-    private final GalleryRepository galleryRepository;
-    private final EventService eventService;
-    private final FileStorageService fileStorageService;
-    private final ModelMapper modelMapper;
+  private Logger logger = LoggerFactory.getLogger(GalleryController.class);
+  private final GalleryRepository galleryRepository;
+  private final EventService eventService;
+  private final FileStorageService fileStorageService;
+  private final ModelMapper modelMapper;
 
-    @Autowired
-    public GalleryController(GalleryRepository galleryRepository,
-                             EventService eventService,
-                             FileStorageService fileStorageService,
-                             ModelMapper modelMapper) {
-        this.galleryRepository = galleryRepository;
-        this.eventService = eventService;
-        this.fileStorageService = fileStorageService;
-        this.modelMapper = modelMapper;
-    }
+  @Autowired
+  public GalleryController(GalleryRepository galleryRepository,
+                           EventService eventService,
+                           FileStorageService fileStorageService,
+                           ModelMapper modelMapper) {
+    this.galleryRepository = galleryRepository;
+    this.eventService = eventService;
+    this.fileStorageService = fileStorageService;
+    this.modelMapper = modelMapper;
+  }
 
-    @GetMapping("/gallery/{eventId}")
-    public Gallery getAllGalleryByEventId(@PathVariable(value = "eventId") int eventId) {
-        Event event = eventService.getEventById(eventId);
-        return galleryRepository.findByEventId(event.getId());
-    }
+  @GetMapping("/all/{eventId}")
+  public Gallery getAllGalleryByEventId(@PathVariable(value = "eventId") int eventId) {
+    Event event = eventService.getEventById(eventId);
+    return galleryRepository.findByEventId(event.getId());
+  }
 
-    @PostMapping("/add-new/{eventId}")
-    public ResponseEntity<?> addNewGallery(@PathVariable("eventId") int eventId, MultipartFile[] images) {
-        try {
-            Event event = eventService.getEventById(eventId);
-            if(event != null){
-                Set<String> imageUrls = new HashSet<>();
-                String newFileName;
-                String fileUrl;
-                for (MultipartFile uploadedImage: images) {
-                  newFileName = fileStorageService.storeFile(uploadedImage);
-                  fileUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
-                          .path("/galleries/")
-                          .path(newFileName)
-                          .toUriString();
-                  imageUrls.add(fileUrl);
-                }
-                Gallery gallery = new Gallery(0, event, imageUrls, false);
-                gallery = galleryRepository.save(gallery);
-                if (gallery != null){
-                   event.setGallery(gallery);
-                   eventService.updateEvent(event);
-                   return ResponseEntity.ok().body(modelMapper.map(gallery, Gallery.class));
-                } else {
-                    throw new IOException("Gallery malformed");
-                }
-            } else {
-                throw new IOException("Event doesn't founded or doesn't exist");
-            }
-        } catch (IOException error){
-            logger.debug(error.toString());
-            ResponseEntity.status(404).body(new ErrorMessageManager(
-                    "Something went wrong while uploading your files", error.toString()) );
+  @PostMapping("/add-new/{eventId}")
+  public ResponseEntity<?> addNewGallery(
+          @PathVariable("eventId") int eventId, @RequestParam("images") MultipartFile[] images) {
+    try {
+      Event event = eventService.getEventById(eventId);
+      if (event != null) {
+        Set<String> imageUrls = new HashSet<>();
+        String newFileName;
+        String fileUrl;
+        for (MultipartFile uploadedImage : images) {
+          newFileName = fileStorageService.storeFile(uploadedImage);
+          fileUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+                  .path("/galleries/")
+                  .path(newFileName)
+                  .toUriString();
+          imageUrls.add(fileUrl);
         }
-        return null;
+          logger.info(imageUrls.toString());
+        Gallery gallery = new Gallery(0, event, imageUrls, false);
+        gallery = galleryRepository.save(gallery);
+        if (gallery != null) {
+          event.setGallery(gallery);
+          eventService.updateEvent(event);
+          return ResponseEntity.ok().body(modelMapper.map(gallery, Gallery.class));
+        } else {
+          throw new IOException("Gallery malformed");
+        }
+      } else {
+        throw new IOException("Event doesn't founded or doesn't exist");
+      }
+    } catch (IOException error) {
+      logger.debug(error.toString());
+      return ResponseEntity.status(500).body(new ErrorMessageManager(
+              "Something went wrong while uploading your files", error.toString()));
     }
+  }
 }
