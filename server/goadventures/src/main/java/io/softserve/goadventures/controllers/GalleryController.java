@@ -116,6 +116,7 @@ public class GalleryController {
             Gallery gallery = galleryRepository.findById(galleryId);
             if (gallery != null) {
                 galleryCRUDService.updateGallery( modelMapper.createTypeMap(  ) );
+                /* typeMap.addMapping(src -> src.getPerson().getFirstName(), (dest, v) -> dest.getCustomer().setName(v));*/
                 return ResponseEntity.ok().body("val");
             } else {
                 throw new IOException(String.format("Gallery with id %s does not exist", galleryId));
