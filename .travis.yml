@@ -34,7 +34,7 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
 
 
-before_script: docker-compose up --build
+before_script: docker-compose up --build -d
 
 script: mvn test
 
