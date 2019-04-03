@@ -4,7 +4,7 @@ import { Field, FieldProps, Form, Formik, FormikProps } from 'formik';
 import { TileLayer, Map, Marker, Popup } from 'react-leaflet';
 import { MdDone } from 'react-icons/md';
 import moment from 'moment';
-import { deleteEvent, isOwner } from '../../../api/event.service';
+import { deleteEvent, isOwner, closeEvent, openEvent } from '../../../api/event.service';
 import { Comments, Gallery, SettingsPanel } from '../../../components';
 import { commentsSchema } from '../../../validationSchemas/commentValidation';
 import './EventDetail.scss';
@@ -28,6 +28,8 @@ export class EventDetail extends Component<any, any> {
       isOwner: false
     };
     this.handleDelete = this.handleDelete.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.handleOpen = this.handleOpen.bind(this);
   }
 
   public convertTime(date: string) {
@@ -56,6 +58,30 @@ export class EventDetail extends Component<any, any> {
 
   public handleDelete() {
     deleteEvent(this.state.eventProps.event.id).then(
+      (res: AxiosResponse): any => {
+        if (res.status >= 200 && res.status <= 300) {
+          this.props.routerProps.history.push('/profile');
+        } else {
+        }
+      }
+    );
+  }
+
+  public handleClose() {
+    console.log('status ', this.state.eventProps.event.statusId);
+    closeEvent(this.state.eventProps.event.id).then(
+      (res: AxiosResponse): any => {
+        if (res.status >= 200 && res.status <= 300) {
+          this.props.routerProps.history.push('/profile');
+        } else {
+        }
+      }
+    );
+  }
+
+  public handleOpen() {
+    console.log('status ', this.state.eventProps.event.statusId);
+    openEvent(this.state.eventProps.event.id).then(
       (res: AxiosResponse): any => {
         if (res.status >= 200 && res.status <= 300) {
           this.props.routerProps.history.push('/profile');
@@ -158,6 +184,24 @@ export class EventDetail extends Component<any, any> {
                   >
                     Edit
                   </button>
+                  {this.state.eventProps.event.statusId === 2 ? (
+                    <button
+                  onClick={this.handleOpen}
+                  type='button'
+                  className='btn btn-warning'
+                >
+                  Open
+                </button>
+                  )
+                  : (
+                    <button
+                    onClick={this.handleClose}
+                    type='button'
+                    className='btn btn-warning'
+                  >
+                    Close
+                  </button>
+                  )}
                 </div>
               ) : (
                 <div />

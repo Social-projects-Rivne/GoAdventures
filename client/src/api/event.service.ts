@@ -74,6 +74,24 @@ export const deleteEvent = async (data: number): Promise<any> =>
     }
   });
 
+export const closeEvent = async (data: number): Promise<any> =>
+  await axios.post(`${serverUrl}/event/close`, {data}, {
+    headers: {
+      'EventId': data,
+      'Authorization': `Bearer ${cookies.get('tk879n')}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
+  export const openEvent = async (data: number): Promise<any> =>
+  await axios.post(`${serverUrl}/event/open`, {data}, {
+    headers: {
+      'EventId': data,
+      'Authorization': `Bearer ${cookies.get('tk879n')}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
 export const updateEvent = async (data: EventDto): Promise<EventDto | object> =>
   await axios
     .put(
@@ -106,3 +124,30 @@ export const isOwner = async (data: number): Promise<any> =>
       'Content-Type': 'application/json'
     }
   });
+
+export const createEvent = async (
+    data: any
+  ): Promise<string> => {
+    return await axios
+      .post(
+        `${serverUrl}/event/create`,
+        { ...data },
+        {
+          headers: {
+            'Authorization': `Bearer ${cookies.get('tk879n')}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      )
+      .then((res) => {
+        if (res.status === 200) {
+          return 'ok';
+        } else {
+          return res.status.toString();
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        return 'server error';
+      });
+  };

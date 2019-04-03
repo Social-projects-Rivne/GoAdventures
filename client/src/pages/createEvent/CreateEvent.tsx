@@ -1,5 +1,5 @@
 import React, { Component, createRef , RefObject } from 'react';
-import { createEventReq } from '../../api/requestCreateEvent';
+import { createEvent } from '../../api/event.service';
 import './CreateEvent.scss';
 import './Leaflet.scss';
 import { Map as LeafletMap, TileLayer, Marker, Popup } from 'react-leaflet';
@@ -13,7 +13,6 @@ interface ExtendetRef extends RefObject<LeafletMap> {
   leafletElement: any;
 }
 
-let category = 'Skateboarding';
 let leafletMap = createRef<LeafletMap>() as ExtendetRef;
 const Rows = 3;
 
@@ -28,6 +27,7 @@ export class CreateEvent extends Component<any, any> {
       location: '',
       latitude: 0,
       longitude: 0,
+      category: 'Skateboarding',
       description: '',
       currentPos: null,
       redirect: false
@@ -56,7 +56,7 @@ export class CreateEvent extends Component<any, any> {
 
   public handleCategory(Category: any) {
     console.log('Category ' + Category);
-    category = Category;
+    this.setState({ category: Category });
   }
 
   public handleStartDate(StartDate: any) {
@@ -100,7 +100,7 @@ export class CreateEvent extends Component<any, any> {
 
   public handleSubmit(event: any) {
     if (this.state.startDate < this.state.endDate) {
-      createEventReq({ ...this.state }, category);
+      createEvent({ ...this.state });
       console.debug(this.state);
       this.setState({ redirect: true });
     } else {
@@ -110,7 +110,7 @@ export class CreateEvent extends Component<any, any> {
   }
 
 
-componentDidMount() {
+  componentDidMount() {
         setTimeout(() => {
             if (leafletMap) {
                 leafletMap.leafletElement.invalidateSize();
@@ -227,7 +227,7 @@ componentDidMount() {
                     {this.state.redirect ? (
                             <Redirect push
                                 to={{
-                                    pathname: `/events`,
+                                    pathname: `/profile`,
                                     state: {
                                          ...this.state}
                                 }}

@@ -1,9 +1,9 @@
 package io.softserve.goadventures.enums;
 
 public enum EventStatus {
-    CREATED(1),
-    COMPLETED(2),
-    DELETED(4);
+    OPENED(1),
+    CLOSED(2),
+    DELETED(3);
 
     private int eventStatus;
 
