@@ -1,0 +1,27 @@
+language: java
+jdk: openjdk11
+sudo: false
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+
+branches:
+  only:
+    - feature/close-reopen
+
+notifications:
+  email: false
+  slack:
+    rooms:
+      secure: dArqLCXKY1ZboR+T4QlmxENLcE+WBb1DZ17qhweBqRA8fmSLNCe6PvglYvX687hVgLAPzbLTFSJGgAdEL0/bGz8gRwZtSel6MkQ9a3vHt1jPFhScn3Zo5AMUcgef7gkYyKqHAWrH/4BgZ1lNCO11FMIrM+bXinNWmIFR/jK1rSGTw8/nlk1UDtUUi5267FN1U28m1s+DxQWT3IiM7q3N4Jrr4KEMCWQjseP3VTFnZs3yPiz+O6VgI5yCAIH4Cw1X1S/DpfYI5d/v5LVRUv7v/8KK7SwTWRBSnzXmwTveoJ19whViHV4wd0lJfAGMMKKuRUkAZtPKOk7Yh4vj1xnjJ5y2bd63zXdsizmtB4SUVf+fYHS35Ysd9Txi2o6FqHTgd6bnYy+dx0dOSq9qhaRsaqY6TMnDHG1mbFFxjnHhJzT6d3QXzzkyP3sA9C/CRM/6E2q61zV37sUbctz8tLQJbGpplIGbSUcDE72Rw+SGEKYXb9Lvu/XL1GIGA3AV2Nw+ywW4ry51nWVYkUzNo5GP4ZmhBe4SaKsk592FJ0IPy+Ym2NrTi8wb7cfuIfHGpLazYJGMM1GgLqqYnS0FqjYyMww4ZFeQaNjSJbI2fQWS0kViCR/Zg5Tx+HvpGmOjDS+Gua0zZqwWyBM0EQFqeIv+YWPbGaiAG+8dvQeCInLoOD0=
+    on_success: always 
+    on_failure: always 
+    template:
+      - "Repo `%{repository_slug}` *%{result}* build (<%{build_url}|#%{build_number}>) for commit (<%{compare_url}|%{commit}>) on branch `%{branch}` by %{author}."
+      - "Execution time: *%{duration}*"
+      - "Message: %{message}"
+
+before_script: cd server/goadventures
+
+script: mvn test
+
