@@ -1,7 +1,7 @@
 package io.softserve.goadventures.controllers;
 
 import io.softserve.goadventures.dto.EventDTO;
-import io.softserve.goadventures.dto.EventDtoBuilder;
+import io.softserve.goadventures.services.EventDtoBuilder;
 import io.softserve.goadventures.enums.EventStatus;
 import io.softserve.goadventures.errors.ErrorMessageManager;
 import io.softserve.goadventures.errors.UserNotFoundException;
@@ -108,11 +108,9 @@ public class EventController {
                     .buildAndExpand(nextPageNum);
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.set("nextpage", uriComponentsBuilder.toString());
-            System.out.println(eventDtoBuilder.convertToDto(eventsPage));
-            Slice<EventDTO> t = eventDtoBuilder.convertToDto(eventsPage);
-            logger.info("Event converted to dto", t.getContent());
-            logger.info("Event converted to dto", t.getContent().get(0));
-            return new ResponseEntity<Slice<EventDTO>>(t, httpHeaders, HttpStatus.OK);
+            Slice<EventDTO> eventDTOSlice = eventDtoBuilder.convertToDto(eventsPage);
+            logger.info("Event converted to dto", eventDTOSlice.getContent());
+            return new ResponseEntity<Slice<EventDTO>>(eventDTOSlice, httpHeaders, HttpStatus.OK);
         } else {
             return ResponseEntity.badRequest().body(new ErrorMessageManager(
                     "Server error, try again later", "Pageable error"));

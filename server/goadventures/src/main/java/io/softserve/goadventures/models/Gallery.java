@@ -6,18 +6,18 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "gallery")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Gallery {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private long id;
 
     @JsonBackReference
     @OneToOne(fetch = FetchType.LAZY)
@@ -26,12 +26,10 @@ public class Gallery {
 
     @ElementCollection()
     @Column(name = "image_urls")
-    private Set<String> imageUrls = new HashSet<>();
+    private HashSet<String> imageUrls;
 
     @Column(name = "is_deleted")
     private Boolean isDeleted;
 
-    public void setEventId(Event eventId) {
-        this.eventId = eventId;
-    }
+
 }

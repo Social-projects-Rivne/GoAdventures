@@ -3,7 +3,7 @@ package io.softserve.goadventures.controllers;
 import io.softserve.goadventures.services.JWTService;
 import io.softserve.goadventures.dto.EventDTO;
 import io.softserve.goadventures.models.Event;
-import io.softserve.goadventures.dto.EventDtoBuilder;
+import io.softserve.goadventures.services.EventDtoBuilder;
 import io.softserve.goadventures.services.EventService;
 import io.softserve.goadventures.dto.UserDto;
 import io.softserve.goadventures.dto.UserUpdateDto;
