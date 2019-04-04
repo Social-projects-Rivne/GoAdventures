@@ -34,7 +34,9 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
 
 
-before_script: docker-compose up --build -d
+before_script: 
+  - docker-compose up --build -d
+  - cd server/goadventures
 
 script: mvn test
 
