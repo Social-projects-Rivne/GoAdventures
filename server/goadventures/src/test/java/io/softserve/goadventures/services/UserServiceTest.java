@@ -13,6 +13,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -96,9 +97,9 @@ public class UserServiceTest {
 
     @Test
     public void singOut() {
-        when(userRepository.findByEmail("service@gmail.com")).thenReturn(user);
+        when(userRepository.findByEmail("service@test.com")).thenReturn(user);
 
-        userService.singOut("service@gmail.com");
+        userService.singOut("service@test.com");
 
         assertEquals(UserStatus.UNACTIVE.getUserStatus(), user.getStatusId());
     }
@@ -112,13 +113,13 @@ public class UserServiceTest {
         when(userRepository.findAll()).thenReturn(iterable);
 
         assertNotNull(iterable);
-        assertEquals(2, ((ArrayList<User>) iterable).size());
+        assertEquals(2, ((Collection<User>) userService.getAllUsers()).size());
     }
 
     @Test
     public void checkingEmail() {
-        when(userRepository.findByEmail("service@gmail.com")).thenReturn(user);
+        when(userRepository.findByEmail("service@test.com")).thenReturn(user);
 
-        assertFalse(userService.checkingEmail("service@gmail.com"));
+        assertFalse(userService.checkingEmail("service@test.com"));
     }
 }
