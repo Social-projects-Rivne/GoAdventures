@@ -119,8 +119,10 @@ export class EventDetail extends Component<any, any> {
                       </p>
                       <p>
                         Ends:
-                        {this.convertTime(
+                        {this.state.eventProps.event.endDate === '0' ? 'Push edit if you want to change end date' : (
+                          this.convertTime(
                           this.state.eventProps.event.endDate.toString()
+                        )
                         )}
                       </p>
                     </div>

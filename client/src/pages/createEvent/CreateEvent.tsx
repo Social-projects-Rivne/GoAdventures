@@ -1,4 +1,4 @@
-import React, { Component, createRef , RefObject } from 'react';
+import React, { Component, createRef, RefObject } from 'react';
 import { createEvent } from '../../api/event.service';
 import './CreateEvent.scss';
 import './Leaflet.scss';
@@ -10,107 +10,123 @@ import DatePicker from "react-datepicker";
 import { Redirect } from 'react-router';
 
 interface ExtendetRef extends RefObject<LeafletMap> {
-  leafletElement: any;
+    leafletElement: any;
 }
 
 let leafletMap = createRef<LeafletMap>() as ExtendetRef;
 const Rows = 3;
 
 export class CreateEvent extends Component<any, any> {
-  constructor(props: any) {
-    super(props);
-    console.debug(props);
-    this.state = {
-      topic: '',
-      startDate: new Date(),
-      endDate: new Date(),
-      location: '',
-      latitude: 0,
-      longitude: 0,
-      category: 'Skateboarding',
-      description: '',
-      currentPos: null,
-      redirect: false
-    };
-    this.handleTopicChange = this.handleTopicChange.bind(this);
-    this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
-    this.handleLocationChange = this.handleLocationChange.bind(this);
-    this.handleCategory = this.handleCategory.bind(this);
-    this.handleStartDate = this.handleStartDate.bind(this);
-    this.handleEndDate = this.handleEndDate.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleCoord = this.handleCoord.bind(this);
-  }
+    constructor(props: any) {
+        super(props);
+        console.debug(props);
+        this.state = {
+            topic: '',
+            startDate: new Date(),
+            endDate: 0,
+            location: '',
+            latitude: 0,
+            longitude: 0,
+            category: 'Skateboarding',
+            description: '',
+            currentPos: null,
+            redirect: false,
+            showEndDate: false
+        };
+        this.handleTopicChange = this.handleTopicChange.bind(this);
+        this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
+        this.handleLocationChange = this.handleLocationChange.bind(this);
+        this.handleCategory = this.handleCategory.bind(this);
+        this.handleStartDate = this.handleStartDate.bind(this);
+        this.handleEndDate = this.handleEndDate.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleCoord = this.handleCoord.bind(this);
+        this.showEndDate = this.showEndDate.bind(this);
+    }
 
-  public handleTopicChange(event: any) {
-    this.setState({ topic: event.target.value });
-  }
+    public handleTopicChange(event: any) {
+        this.setState({ topic: event.target.value });
+    }
 
-  public handleDescriptionChange(event: any) {
-    this.setState({ description: event.target.value });
-  }
+    public handleDescriptionChange(event: any) {
+        this.setState({ description: event.target.value });
+    }
 
-  public handleLocationChange(event: any) {
-    this.setState({ location: event.target.value });
-  }
+    public handleLocationChange(event: any) {
+        this.setState({ location: event.target.value });
+    }
 
-  public handleCategory(Category: any) {
-    console.log('Category ' + Category);
-    this.setState({ category: Category });
-  }
+    public handleCategory(Category: any) {
+        console.log('Category ' + Category);
+        this.setState({ category: Category });
+    }
 
-  public handleStartDate(StartDate: any) {
-    console.log('DIALOG ' + StartDate);
-    this.setState({ startDate: StartDate });
-    console.log('startDate ', this.state.startDate);
-    console.log(
-      'startDateToLocaleString ',
-      this.state.startDate.toLocaleString()
-    );
-  }
+    public handleStartDate(StartDate: any) {
+        console.log('DIALOG ' + StartDate);
+        this.setState({ startDate: StartDate });
+        console.log('startDate ', this.state.startDate);
+        console.log(
+            'startDateToLocaleString ',
+            this.state.startDate.toLocaleString()
+        );
+    }
 
-  public handleEndDate(EndDate: any) {
-    console.log('DIALOG ' + EndDate);
-    this.setState({ endDate: EndDate });
-  }
+    public handleEndDate(EndDate: any) {
+        console.log('DIALOG ' + EndDate);
+        console.log('endDate ', this.state.endDate);
+        this.setState({ endDate: EndDate });
+    }
 
-  public handleCoord(e: any) {
-    const map = leafletMap.leafletElement;
-    const geocoder = LCG.L.Control.Geocoder.nominatim();
-    if (map != null) {
-      geocoder.reverse(
-        e.latlng,
-        (map as any).options.crs.scale((map as any).getZoom()),
-        (results: any) => {
-          const r = results[0];
-          if (r) {
-            console.log('r ', r);
-            this.setState({
-              location: r.name,
-              latitude: r.center.lat,
-              longitude: r.center.lng
-            });
-            console.log('location: ', this.state.location);
-          }
+    public handleCoord(e: any) {
+        const map = leafletMap.leafletElement;
+        const geocoder = LCG.L.Control.Geocoder.nominatim();
+        if (map != null) {
+            geocoder.reverse(
+                e.latlng,
+                (map as any).options.crs.scale((map as any).getZoom()),
+                (results: any) => {
+                    const r = results[0];
+                    if (r) {
+                        console.log('r ', r);
+                        this.setState({
+                            location: r.name,
+                            latitude: r.center.lat,
+                            longitude: r.center.lng
+                        });
+                        console.log('location: ', this.state.location);
+                    }
+                }
+            );
         }
-      );
+        this.setState({ currentPos: e.latlng });
     }
-    this.setState({ currentPos: e.latlng });
-  }
 
-  public handleSubmit(event: any) {
-    if (this.state.startDate < this.state.endDate) {
-      createEvent({ ...this.state });
-      console.debug(this.state);
-      this.setState({ redirect: true });
-    } else {
-      console.log('startDate > endDate ');
-      alert('End date must be greater than the start date!');
+    public handleSubmit(event: any) {
+        if (this.state.endDate === 0){
+            createEvent({ ...this.state });
+            console.debug(this.state);
+            this.setState({ redirect: true });
+        }
+        else if (this.state.startDate < this.state.endDate) {
+            createEvent({ ...this.state });
+            console.debug(this.state);
+            this.setState({ redirect: true });
+        } else {
+            console.log('startDate > endDate ');
+            alert('End date must be greater than the start date!');
+        }
     }
-  }
 
+    public showEndDate(){
+        if (this.state.showEndDate === false)
+        this.setState({ showEndDate: true });
+        else{
+        this.setState({ showEndDate: false});
+        this.setState({ endDate: 0 });
+        }
+    }
 
-  componentDidMount() {
+    componentDidMount() {
         setTimeout(() => {
             if (leafletMap) {
                 leafletMap.leafletElement.invalidateSize();
@@ -123,6 +139,7 @@ export class CreateEvent extends Component<any, any> {
         console.log('Isdisabled ', isDisabled);
         let inputClass = 'invalid';
         if (!isDisabled) { inputClass = 'valid'; }
+        const style = !this.state.showEndDate ? { display: 'none' } : {};
 
         return (
             <div className='container'>
@@ -177,8 +194,12 @@ export class CreateEvent extends Component<any, any> {
                     </div>
 
 
-                    <label className='col-sm-2 col-form-label text-right' htmlFor='EndDate'>End date</label>
-                    <div className='col-sm-3'>
+                    <label className='col-sm-2 col-form-label text-right' htmlFor='EndDate'>
+                        <button className='btn btn-link' id='EndDate' onClick={this.showEndDate}>
+                            End date
+                        </button>
+                    </label>
+                    <div className='col-sm-3' style={style}>
                         <DatePicker
                             id='EndDate'
                             selected={this.state.endDate}
@@ -189,7 +210,6 @@ export class CreateEvent extends Component<any, any> {
                             timeCaption='time'
                             withPortal
                             dateFormat='MMMM d, yyyy h:mm aa'
-
                         />
                     </div>
 
@@ -225,18 +245,19 @@ export class CreateEvent extends Component<any, any> {
                 <div className='row justify-content-center btns-content'>
                     <button type='button' className='btn btn-primary col-lg-2 col-sm-12' onClick={this.handleSubmit} disabled={!isDisabled}> Save </button>
                     {this.state.redirect ? (
-                            <Redirect push
-                                to={{
-                                    pathname: `/profile`,
-                                    state: {
-                                         ...this.state}
-                                }}
-                            />
-                        ) : null}
+                        <Redirect push
+                            to={{
+                                pathname: `/profile`,
+                                state: {
+                                    ...this.state
+                                }
+                            }}
+                        />
+                    ) : null}
                 </div>
             </div>
 
         );
     }
-  }
+}
 
