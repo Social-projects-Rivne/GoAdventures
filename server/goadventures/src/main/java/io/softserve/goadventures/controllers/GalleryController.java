@@ -47,6 +47,11 @@ public class GalleryController {
         this.galleryCRUDService = galleryCRUDService;
     }
 
+    /**
+     * This method are for develop purpose only
+     *
+     * @return Iterable<Gallery>
+     */
     @GetMapping("/all")
     public Iterable<Gallery> getAllGalleries() {
         return galleryRepository.findAll();

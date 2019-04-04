@@ -1,12 +1,12 @@
-import React, { createRef, useState, useEffect, SyntheticEvent } from 'react';
-import { EventDto } from '../../../interfaces/Event.dto';
-import DatePicker from 'react-datepicker';
-import LCG from 'leaflet-control-geocoder';
-import { TileLayer, Popup, Marker, Map } from 'react-leaflet';
-import { ValidatedTextarea, DropDown } from '../../../components';
-import { eventSchema } from '../../../validationSchemas/eventValidation';
-import { editEventFormInputSettings } from './inputSettings';
-import { GalleryDto } from '../../../interfaces/Gallery.dto';
+import React, { createRef, useState, useEffect, SyntheticEvent } from "react";
+import { EventDto } from "../../../interfaces/Event.dto";
+import DatePicker from "react-datepicker";
+import LCG from "leaflet-control-geocoder";
+import { TileLayer, Popup, Marker, Map } from "react-leaflet";
+import { ValidatedTextarea, DropDown } from "../../../components";
+import { eventSchema } from "../../../validationSchemas/eventValidation";
+import { editEventFormInputSettings } from "./inputSettings";
+import { GalleryDto } from "../../../interfaces/Gallery.dto";
 import {
   Formik,
   Form,
@@ -14,10 +14,10 @@ import {
   FormikProps,
   FieldProps,
   FormikValues
-} from 'formik';
-import { MdDone } from 'react-icons/md';
-import moment from 'moment';
-import { updateEvent } from '../../../api/event.service';
+} from "formik";
+import { MdDone } from "react-icons/md";
+import moment from "moment";
+import { updateEvent } from "../../../api/event.service";
 
 interface EditEvent {
   event: EventDto;
@@ -86,11 +86,11 @@ export const EditEvent = (props: EditEvent) => {
   const mapRef = createRef<Map>();
   const formRef = createRef<Formik>();
   return (
-    <div className='row justify-content-center'>
+    <div className="row justify-content-center">
       <h2>Edit Event</h2>
       {/* <strong>Adding gallery WIP!</strong> */}
-      <div className='col-12'>
-        <div className='row form-group'>
+      <div className="col-12">
+        <div className="row form-group">
           <Formik
             ref={formRef}
             validationSchema={eventSchema}
@@ -103,7 +103,7 @@ export const EditEvent = (props: EditEvent) => {
               actions.setSubmitting(false);
             }}
             render={(formikProps: FormikProps<FormikValues>) => (
-              <Form className='d-flex flex-column'>
+              <Form className="d-flex flex-column">
                 {editEventFormInputSettings.map((input, index) => {
                   return (
                     <label key={index}>
@@ -112,21 +112,21 @@ export const EditEvent = (props: EditEvent) => {
                         name={input.field_name}
                         render={({ field, form }: FieldProps<FormikValues>) => {
                           return (
-                            <div className='mb-3'>
+                            <div className="mb-3">
                               <input
                                 type={input.type}
-                                className='form-control rounded'
-                                placeholder='firstName'
+                                className="form-control rounded"
+                                placeholder="firstName"
                                 {...field}
                               />
                               {form.touched[input.field_name] &&
                               form.errors[input.field_name] &&
                               form.errors[input.field_name] ? (
-                                <div className='invalid-feedback'>
+                                <div className="invalid-feedback">
                                   {form.errors[input.field_name]}
                                 </div>
                               ) : (
-                                <div className='valid-feedback'>
+                                <div className="valid-feedback">
                                   <MdDone /> Update info for your event
                                 </div>
                               )}
@@ -141,79 +141,79 @@ export const EditEvent = (props: EditEvent) => {
             )}
           />
         </div>
-        <div className='row form-group'>
+        <div className="row form-group">
           <ValidatedTextarea
             {...{
               bindSubmit,
-              labelText: 'Description',
+              labelText: "Description",
               initialValue: { textarea: description },
               handleSubmit: setDescription
             }}
           />
         </div>
-        <div className='form-group row'>
+        <div className="form-group row">
           <label
-            className='col-sm-4 col-form-label text-right'
-            htmlFor='Category'
+            className="col-sm-4 col-form-label text-right"
+            htmlFor="Category"
           >
             Choose category for the event
           </label>
-          <div className='col-sm-8'>
-            <DropDown id='Category' onCategoryChange={setCategory} />
+          <div className="col-sm-8">
+            <DropDown id="Category" onCategoryChange={setCategory} />
           </div>
         </div>
-        <div className='form-group row'>
+        <div className="form-group row">
           <label
-            className='col-sm-4 col-form-label text-right'
-            htmlFor='StartDate'
+            className="col-sm-4 col-form-label text-right"
+            htmlFor="StartDate"
           >
             Start date
           </label>
-          <div className='col-sm-3'>
+          <div className="col-sm-3">
             <DatePicker
-              id='StartDate'
+              id="StartDate"
               selected={moment(datepick.startDate).toDate()}
               onChange={(e: Date): void => {
                 setDate({ ...datepick, startDate: moment(e).toISOString() });
               }}
               showTimeSelect
-              timeFormat='HH:mm'
+              timeFormat="HH:mm"
               timeIntervals={15}
-              timeCaption='time'
+              timeCaption="time"
               withPortal
-              dateFormat='MMMM d, yyyy h:mm aa'
+              dateFormat="MMMM d, yyyy h:mm aa"
             />
           </div>
 
           <label
-            className='col-sm-2 col-form-label text-right'
-            htmlFor='EndDate'
+            className="col-sm-2 col-form-label text-right"
+            htmlFor="EndDate"
           >
             End date
           </label>
-          <div className='col-sm-3'>
+          <div className="col-sm-3">
             <DatePicker
-              id='EndDate'
+              id="EndDate"
               selected={moment(datepick.endDate).toDate()}
               onChange={(e: Date): void => {
                 setDate({ ...datepick, endDate: moment(e).toISOString() });
               }}
               showTimeSelect
-              timeFormat='HH:mm'
+              timeFormat="HH:mm"
               timeIntervals={15}
-              timeCaption='time'
+              timeCaption="time"
               withPortal
-              dateFormat='MMMM d, yyyy h:mm aa'
+              dateFormat="MMMM d, yyyy h:mm aa"
             />
           </div>
         </div>
       </div>
-      <div className='col-12'>
+      <div className="col-12">
         <label>{location}</label>
         <div>
           <Map
             ref={mapRef}
-            onclick={(e) => {
+            onclick={e => {
               // const mapCurrent = mapRef.current;
               const currentMarker = markerRef.current;
               if (!!currentMarker) {
@@ -227,9 +227,9 @@ export const EditEvent = (props: EditEvent) => {
             }}
             center={[mapCoordiantes[0], mapCoordiantes[1]]}
             zoom={zoom}
-            className='rounded'
+            className="rounded"
           >
-            <TileLayer url='https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png' />
+            <TileLayer url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png" />
             <Marker
               draggable={true}
               ondrag={() => {
@@ -252,11 +252,11 @@ export const EditEvent = (props: EditEvent) => {
           </Map>
         </div>
       </div>
-      <div className='d-flex flex-row justify-content-around align-center w-100 mt-3 mb-3'>
+      <div className="d-flex flex-row justify-content-around align-center w-100 mt-3 mb-3">
         <button
-          type='button'
-          name='cancel'
-          className='btn btn-danger'
+          type="button"
+          name="cancel"
+          className="btn btn-danger"
           onClick={() => {
             props.setEdit(false);
           }}
@@ -264,9 +264,9 @@ export const EditEvent = (props: EditEvent) => {
           Cancel
         </button>
         <button
-          type='button'
-          name='update'
-          className='btn btn-success'
+          type="button"
+          name="update"
+          className="btn btn-success"
           onClick={async () => {
             const formCurrent = formRef.current;
             if (formCurrent) {
