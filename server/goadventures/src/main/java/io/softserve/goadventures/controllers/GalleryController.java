@@ -20,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Set;
 
 @CrossOrigin
 @RestController
@@ -46,10 +47,9 @@ public class GalleryController {
         this.galleryCRUDService = galleryCRUDService;
     }
 
-    @GetMapping("/all/{eventId}")
-    public Gallery getAllGalleryByEventId(@PathVariable(value = "eventId") int eventId) {
-        Event event = eventService.getEventById(eventId);
-        return galleryRepository.findByEventId(event.getId());
+    @GetMapping("/all")
+    public Iterable<Gallery> getAllGalleries() {
+        return galleryRepository.findAll();
     }
 
     @PostMapping("/add-new/{eventId}")
@@ -58,7 +58,7 @@ public class GalleryController {
         try {
             Event event = eventService.getEventById(eventId);
             if (event != null) {
-                HashSet<String> imageUrls = new HashSet<>();
+                Set<String> imageUrls = new HashSet<>();
                 String newFileName;
                 String fileUrl;
                 for (MultipartFile uploadedImage : images) {
@@ -108,16 +108,16 @@ public class GalleryController {
         }
     }
 
-    @PutMapping("/remove-one/{galleryId}/{galleryImageIndex}")
+    @PutMapping("/remove/{galleryId}")
     public  ResponseEntity<?> removeOneImage(
             @PathVariable(value = "galleryId") long galleryId,
             @RequestBody GalleryDto mutatedGallery) {
         try {
             Gallery gallery = galleryRepository.findById(galleryId);
             if (gallery != null) {
-                galleryCRUDService.updateGallery( modelMapper.createTypeMap(  ) );
-                /* typeMap.addMapping(src -> src.getPerson().getFirstName(), (dest, v) -> dest.getCustomer().setName(v));*/
-                return ResponseEntity.ok().body("val");
+               modelMapper.map(mutatedGallery, gallery);
+                return ResponseEntity.ok().body(modelMapper.map(
+                        galleryCRUDService.updateGallery( gallery ), GalleryDto.class));
             } else {
                 throw new IOException(String.format("Gallery with id %s does not exist", galleryId));
             }

@@ -1,11 +1,13 @@
 package io.softserve.goadventures.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import io.softserve.goadventures.models.Event;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "gallery")
@@ -26,7 +28,7 @@ public class Gallery {
 
     @ElementCollection()
     @Column(name = "image_urls")
-    private HashSet<String> imageUrls;
+    private Set<String> imageUrls;
 
     @Column(name = "is_deleted")
     private Boolean isDeleted;
