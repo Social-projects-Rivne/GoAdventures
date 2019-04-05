@@ -92,6 +92,8 @@ export class EventDetail extends Component<any, any> {
   }
 
   public render() {
+    const style = this.state.eventProps.event.statusId === 2 ? { display: 'none' } : {};
+
     return (
       <div className='container EventDetail'>
         <div className='row'>
@@ -126,11 +128,12 @@ export class EventDetail extends Component<any, any> {
                         )}
                       </p>
                     </div>
-                  ),
+                  ),                    
                   right: (
                     <button
                       type='button'
                       className='btn btn-outline-info btn-sm'
+                      style={style}
                     >
                       Subscribe
                     </button>

@@ -195,6 +195,7 @@ export const EditEvent = (props: EditEvent) => {
             <div className='col-sm-3'>
             <DatePicker
               id='EndDate'
+              selected={datepick.endDate != '0' ? moment(datepick.endDate).toDate() : moment().toDate()}
               onChange={(e: Date): void => {
                 setDate({ ...datepick, endDate: moment(e).toISOString() });
               }}
@@ -205,11 +206,6 @@ export const EditEvent = (props: EditEvent) => {
               withPortal
               dateFormat='MMMM d, yyyy h:mm aa'
             />
-            <label> {moment(datepick.endDate)
-                    .local()
-                    .format('dddd, DD MMMM YYYY')
-                    .toString()}
-            </label>
           </div>
           ) : (
           <div className='col-sm-3'>

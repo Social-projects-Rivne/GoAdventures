@@ -137,8 +137,6 @@ export class CreateEvent extends Component<any, any> {
     public render() {
         const isDisabled = this.state.topic.length > 0 && this.state.description.length > 0;
         console.log('Isdisabled ', isDisabled);
-        let inputClass = 'invalid';
-        if (!isDisabled) { inputClass = 'valid'; }
         const style = !this.state.showEndDate ? { display: 'none' } : {};
 
         return (

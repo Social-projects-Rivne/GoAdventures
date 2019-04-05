@@ -48,6 +48,9 @@ export class EventsListBuild extends React.Component<EventDto, any> {
           <div className='row'>
             <h6 className='col-6'> {this.props.location}</h6>
             <div className='col-6'>
+            {this.props.statusId === 2 ? (
+              <p style = {{color:'red'}}>CLOSED</p>
+            ) : null}
               <p>Category</p>
             </div>
           </div>

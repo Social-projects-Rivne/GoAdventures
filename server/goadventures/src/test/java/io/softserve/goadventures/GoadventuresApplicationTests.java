@@ -1,4 +1,4 @@
-package io.softserve.goadventures;
+/*package io.softserve.goadventures;
 
 import org.testng.annotations.Test;
 import org.junit.runner.RunWith;
@@ -14,3 +14,4 @@ public class GoadventuresApplicationTests {
 	}
 
 }
+*/
