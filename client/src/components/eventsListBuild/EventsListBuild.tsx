@@ -45,12 +45,12 @@ export class EventsListBuild extends React.Component<EventDto, any> {
         />
         <div className='card-body'>
           <h5 className='card-title'>{this.props.topic}</h5>
-          <div className='row'>
-            <h6 className='col-6'> {this.props.location}</h6>
-            <div className='col-6'>
-              <p>Category</p>
-            </div>
+
+          <div className='row category'>
+            <p>Category:{this.props.category}</p>
           </div>
+          <h6 className=' row location' > {this.props.location}</h6>
+
         </div>
       </div>
     );

@@ -1,5 +1,14 @@
 .Events_card {
 
+   .location{
+      color: gray;
+
+   }
+   .category{
+      text-align: right;
+      color:green;
+   }
+
    border-radius: 0.25rem !important;
    cursor: pointer;
    padding: 0 !important;

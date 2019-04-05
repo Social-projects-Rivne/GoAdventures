@@ -1,28 +1,35 @@
 package io.softserve.goadventures.services;
 
+import io.softserve.goadventures.dto.EventDTO;
+import io.softserve.goadventures.enums.EventStatus;
+import io.softserve.goadventures.models.Category;
 import io.softserve.goadventures.models.Event;
+import io.softserve.goadventures.repositories.CategoryRepository;
 import io.softserve.goadventures.repositories.EventRepository;
 import io.softserve.goadventures.repositories.GalleryRepository;
 import io.softserve.goadventures.models.User;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
-
 
 @Service
 public class EventService {
     private final EventRepository eventRepository;
     private final GalleryRepository galleryRepository;
+    private final CategoryRepository categoryRepository;
 
     @Autowired
-    public EventService(EventRepository eventRepository, GalleryRepository galleryRepository) {
+    public EventService(EventRepository eventRepository, GalleryRepository galleryRepository,
+                        CategoryRepository categoryRepository) {
         this.eventRepository = eventRepository;
         this.galleryRepository = galleryRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     public Event getEventById(int id) {
@@ -68,5 +75,23 @@ public class EventService {
         } else {
             return false;
         }
+    }
+
+    public Page<Event> getAllEventsByCategory(Pageable pageable, Category category) {
+        return eventRepository.findAllByCategory(pageable, category);
+    }
+
+    public Page<Event> getAllEventBySearch(Pageable pageable, String search) {
+        Page<Event> events = eventRepository.findAll(pageable);
+
+        List<Event> list = new ArrayList<>();
+
+        for (Event event : events) {
+            if (event.toString().contains(search)) {
+                list.add(event);
+            }
+        }
+
+        return new PageImpl<>(list);
     }
 }

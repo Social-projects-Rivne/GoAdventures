@@ -1,9 +1,14 @@
 package io.softserve.goadventures;
 
+import io.softserve.goadventures.controllers.EventController;
 import io.softserve.goadventures.dto.UserAuthDto;
+import io.softserve.goadventures.enums.EventStatus;
+import io.softserve.goadventures.errors.UserNotFoundException;
 import io.softserve.goadventures.models.Category;
+import io.softserve.goadventures.models.Event;
 import io.softserve.goadventures.repositories.CategoryRepository;
 import io.softserve.goadventures.services.UserService;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -15,11 +20,14 @@ import java.util.Set;
 public class DatabaseLoader implements CommandLineRunner {
     private final CategoryRepository categoryRepository;
     private final UserService userService;
+    private final EventController eventController;
 
     @Autowired
-    public DatabaseLoader(CategoryRepository categoryRepository, UserService userService){
+    public DatabaseLoader(CategoryRepository categoryRepository, UserService userService,
+                          EventController eventController){
         this.categoryRepository = categoryRepository;
         this.userService = userService;
+        this.eventController = eventController;
     }
 
     @Override
@@ -54,4 +62,5 @@ public class DatabaseLoader implements CommandLineRunner {
             userService.confirmUser(authDto.getEmail());
         }
     }
+
 }
