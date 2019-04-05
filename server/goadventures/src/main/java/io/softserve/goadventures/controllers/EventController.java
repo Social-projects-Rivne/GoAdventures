@@ -115,12 +115,14 @@ public class EventController {
         return ResponseEntity.ok().headers(httpHeaders).body("gallery created");
     }
 
-    @GetMapping({ "/all/{search}", "/all" })
-    public ResponseEntity<?> getAllEvents(@PathVariable(value = "search", required = false) String search,
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllEvents(@RequestParam(value = "search", required = false) String search,
                                           @PageableDefault(size = 15, sort = "id") Pageable eventPageable) {
 
-        Page<Event> eventsPage = search == null ? eventService.getAllEvents(eventPageable)
-                : eventService.getAllEventsByTopic(eventPageable, search);
+        Page<Event> eventsPage = (search == null)
+                ? eventService.getAllEvents(eventPageable) :
+                eventService.getAllEventBySearch(eventPageable, search);
+
         if (eventsPage != null) {
             int nextPageNum = eventsPage.getNumber() + 1;
             UriComponents uriComponentsBuilder = UriComponentsBuilder.newInstance().path("/event/all").query("page={keyword}")
@@ -129,11 +131,10 @@ public class EventController {
             httpHeaders.set("nextpage", uriComponentsBuilder.toString());
             System.out.println(eventDtoBuilder.convertToDto(eventsPage));
             Slice<EventDTO> t = eventDtoBuilder.convertToDto(eventsPage);
-            logger.info("Event converted to dto", t.getContent());
-            logger.info("Event converted to dto", t.getContent().get(0));
+            logger.info("Event converted to dto" + t.getContent());
+
             return new ResponseEntity<Slice<EventDTO>>(t, httpHeaders, HttpStatus.OK);
         } else {
-            // TODO: wr1 3r c
             return ResponseEntity.badRequest().body("End of pages");
         }
     }

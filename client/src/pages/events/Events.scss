@@ -1,0 +1,14 @@
+.search-comp{
+    font-size: 1.5rem;
+    margin: 10px;
+    text-align: center;
+}
+.card-columns { 
+      column-count: 5 !important;
+      transition: background-color 1s ease-out 0.5s;
+           
+      :hover{
+          background-color: gainsboro;
+          border-color: #593196 ;
+      }
+  }

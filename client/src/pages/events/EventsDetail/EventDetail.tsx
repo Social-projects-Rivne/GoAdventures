@@ -149,6 +149,7 @@ export class EventDetail extends Component<any, any> {
                 <h2>Location and Destination points</h2>
                 <div className='rounded'>
                   <Map
+                  zoomControl={false}
                     className='rounded'
                     center={[
                       this.state.eventProps.event.latitude,
