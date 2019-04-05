@@ -1,4 +1,4 @@
-/*package io.softserve.goadventures;
+package io.softserve.goadventures;
 
 
 import org.junit.Test;
@@ -15,4 +15,3 @@ public class GoadventuresApplicationTests {
 	}
 
 }
-*/
