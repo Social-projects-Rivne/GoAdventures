@@ -29,9 +29,9 @@ export class ShowEvents extends Component<EventDto, EventState> {
           topic: '',
           participants: [],
           gallery: {
-            id: undefined,
+            id: 0,
             imageUrls: ['https://via.placeholder.com/250'],
-            isDeleted: undefined
+            isDeleted: true
           }
         }
       ],

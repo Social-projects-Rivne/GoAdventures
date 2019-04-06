@@ -1,5 +1,5 @@
 export interface GalleryDto {
-  id: number | undefined;
+  id: number;
   imageUrls: string[];
-  isDeleted: false | true | undefined;
+  isDeleted: false | true;
 }

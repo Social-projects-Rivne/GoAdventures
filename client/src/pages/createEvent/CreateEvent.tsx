@@ -6,7 +6,7 @@ import { Map as LeafletMap, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import LCG from 'leaflet-control-geocoder';
 import { DropDown } from '../../components';
-import DatePicker from "react-datepicker";
+import DatePicker from 'react-datepicker';
 import { Redirect } from 'react-router';
 
 interface ExtendetRef extends RefObject<LeafletMap> {
@@ -110,7 +110,7 @@ export class CreateEvent extends Component<any, any> {
   }
 
 
-componentDidMount() {
+public componentDidMount() {
         setTimeout(() => {
             if (leafletMap) {
                 leafletMap.leafletElement.invalidateSize();
@@ -201,7 +201,7 @@ componentDidMount() {
                             center={[50.37, 26.13]}
                             zoom={6}
                             attributionControl={true}
-                            zoomControl={true}
+                            zoomControl={false}
                             doubleClickZoom={true}
                             scrollWheelZoom={true}
                             dragging={true}
