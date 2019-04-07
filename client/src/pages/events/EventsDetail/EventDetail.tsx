@@ -118,13 +118,13 @@ export class EventDetail extends Component<any, any> {
                 <h2>Location and Destination points</h2>
                 <div className='rounded'>
                   <Map
-                  attributionControl={true}
-                  zoomControl={false}
-                  doubleClickZoom={true}
-                  scrollWheelZoom={true}
-                  dragging={true}
-                  animate={true}
-                  easeLinearity={0.35}
+                    attributionControl={true}
+                    zoomControl={false}
+                    doubleClickZoom={true}
+                    scrollWheelZoom={true}
+                    dragging={true}
+                    animate={true}
+                    easeLinearity={0.35}
                     className='rounded'
                     center={[
                       this.state.eventProps.event.latitude,
@@ -132,7 +132,10 @@ export class EventDetail extends Component<any, any> {
                     ]}
                     zoom={13}
                   >
-                    <TileLayer url='https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png' />
+                    <TileLayer
+                      attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                      url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                    />
                     <Marker
                       position={[
                         this.state.eventProps.event.latitude,

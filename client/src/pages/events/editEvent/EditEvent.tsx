@@ -3,7 +3,11 @@ import { EventDto } from '../../../interfaces/Event.dto';
 import DatePicker from 'react-datepicker';
 import LCG from 'leaflet-control-geocoder';
 import { TileLayer, Popup, Marker, Map } from 'react-leaflet';
-import { ValidatedTextarea, DropDown } from '../../../components';
+import {
+  ValidatedTextarea,
+  DropDown,
+  ErrorMessageComponent
+} from '../../../components';
 import { eventSchema } from '../../../validationSchemas/eventValidation';
 import { editEventFormInputSettings } from './inputSettings';
 import { GalleryDto } from '../../../interfaces/Gallery.dto';
@@ -21,6 +25,7 @@ import { updateEvent } from '../../../api/event.service';
 import EditGallery from '../../../components/gallery/edit-gallery/EditGallery';
 import { uploadGallery } from '../../../api/gallery.service';
 import './EditEvent.scss';
+import { ErrorMessage } from '../../../interfaces/ErrorMessage';
 
 interface EditEvent {
   event: EventDto;
@@ -36,16 +41,30 @@ interface EditEventInputState {
 }
 
 export const EditEvent = (props: EditEvent) => {
-  let submitNested: () => any;
   const zoom = 13;
   const geocoder = LCG.L.Control.Geocoder.nominatim();
+  let submitNested: () => any;
   const bindSubmit = (formikSubmit: any) => {
     submitNested = formikSubmit;
   };
+  const validateFile = (fileList: FileList): boolean => {
+    let file;
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < fileList.length; i++) {
+      file = fileList[i].type.match(/^.*\b(png|jpg|gif)\b.*$/);
+    }
+    if (file) {
+      return true;
+    } else {
+      setErrors({
+        errorMessage: 'You try to upload file with unsoported extension'
+      });
+      return false;
+    }
+  };
   /* TODO: Refactor */
 
-  const [errors, setErrors] = useState({});
-
+  const [errors, setErrors] = useState({} as ErrorMessage);
   const [datepick, setDate] = useState({
     startDate: props.event.startDate,
     endDate: props.event.endDate
@@ -83,8 +102,9 @@ export const EditEvent = (props: EditEvent) => {
       update();
       props.setEdit(false);
       props.setIsLoading(false);
+      return () => {};
     } else {
-      return;
+      return () => {};
     }
   }, [fetch]);
 
@@ -96,6 +116,7 @@ export const EditEvent = (props: EditEvent) => {
       <h2>Edit Event</h2>
       <div className='col-12'>
         <div className='row form-group'>
+          {errors.errorMessage ? <ErrorMessageComponent {...errors} /> : null}
           <Formik
             ref={formRef}
             validationSchema={eventSchema}
@@ -113,15 +134,27 @@ export const EditEvent = (props: EditEvent) => {
                   let customProps: {} | null;
                   if (input.type === 'file') {
                     customProps = {
-                      onChange: (e: ChangeEvent<HTMLInputElement>) => {
+                      onChange: async (
+                        e: ChangeEvent<HTMLInputElement>
+                      ): Promise<void> => {
                         const fileList = e.target.files;
                         if (fileList) {
                           const formData = new FormData();
-                          for (let i = 0; i < fileList.length; i++) {
-                            formData.append('files', fileList[i]);
+                          for (
+                            let i = 0;
+                            i < fileList.length && validateFile(fileList);
+                            i++
+                          ) {
+                            formData.append('images', fileList[i]);
                           }
-                          console.debug(formData);
-                          uploadGallery(formData, props.event.id);
+                          const response = await uploadGallery(
+                            formData,
+                            props.event.id
+                          );
+                          setEventDialog({
+                            ...eventDialog,
+                            gallery: { ...response }
+                          });
                         }
                       },
                       style: { color: 'transparent' }
@@ -146,9 +179,9 @@ export const EditEvent = (props: EditEvent) => {
                                 {...customProps}
                               />
                               {input.type === 'file' &&
-                              !!props.event.gallery ? (
+                              !!eventDialog.gallery ? (
                                 <div>
-                                  <EditGallery {...props.event.gallery} />
+                                  <EditGallery {...eventDialog.gallery} />
                                 </div>
                               ) : null}
                               {form.touched[input.field_name] &&
@@ -267,7 +300,10 @@ export const EditEvent = (props: EditEvent) => {
             zoom={zoom}
             className='rounded'
           >
-            <TileLayer url='https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png' />
+            <TileLayer
+              attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+              url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+            />
             <Marker
               draggable={true}
               ondrag={() => {
