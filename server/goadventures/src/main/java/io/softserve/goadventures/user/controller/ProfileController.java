@@ -31,8 +31,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-
 @CrossOrigin
 @RestController
 @RequestMapping("profile")
@@ -45,7 +43,6 @@ public class ProfileController {
     private final ModelMapper modelMapper;
     private final EventService eventService;
     private final EventDtoBuilder eventDtoBuilder;
-    private final UserRepository userRepository;
 
     @Autowired
     public ProfileController(JWTService jwtService, UserService userService,
@@ -58,7 +55,6 @@ public class ProfileController {
         this.passwordValidator = passwordValidator;
         this.eventDtoBuilder = eventDtoBuilder;
         this.eventService = eventService;
-        this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.modelMapper.addMappings(skipModifiedFieldsMap);
     }
@@ -84,7 +80,7 @@ public class ProfileController {
         User user = userService.getUserByEmail(jwtService.parseToken(authorizationHeader));   //user with old data
 
         if(!(updateUser.getEmail().equals(""))) {
-            if (!(userRepository.existsByEmail(updateUser.getEmail()))) {
+            if(!(userService.existsByEmail(updateUser.getEmail()))){
                 logger.info("okok");
                 user.setEmail(updateUser.getEmail());
             } else {
@@ -94,7 +90,6 @@ public class ProfileController {
         }
 
         try {
-            logger.info("try log");
             if(!(updateUser.getPassword().equals(""))){
                 if(BCrypt.checkpw(updateUser.getPassword(),user.getPassword())){    //check current pass
                     logger.info("current password correct");
@@ -128,7 +123,6 @@ public class ProfileController {
 //            }
 //        }
 
-
         modelMapper.map(updateUser, user);
         userService.updateUser(user);
         newToken = jwtService.createToken(user);
@@ -136,7 +130,8 @@ public class ProfileController {
         responseHeaders.setBearerAuth(newToken);
         responseHeaders.set("token", newToken);
 
-        return ResponseEntity.ok().headers(responseHeaders).body("Data was changed");
+        //return ResponseEntity.ok().headers(responseHeaders).body("Data was changed");
+        return ResponseEntity.ok().headers(responseHeaders).body(user);
     }
 
     @GetMapping("/all-events")

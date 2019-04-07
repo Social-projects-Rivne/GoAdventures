@@ -36,11 +36,10 @@ export const changeUserData = async (data: any): Promise<any> => {
     )
     .then((res) => {
       setCookie(res);
-      return 'ok';
+      return { ...res };
 
     })
     .catch((err) => {
-      console.error(err);
-      return err;
+      return { ...err.response.data };
     });
 };

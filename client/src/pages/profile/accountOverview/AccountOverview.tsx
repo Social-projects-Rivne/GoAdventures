@@ -6,7 +6,7 @@ import './AccountOverwiew.scss';
 
 const AccountOverwiew = (props: UserDto) => {
     return (
-        <div className='card border-primary mb-3' >
+        <div className='card border-primary mb-3 accOverCont' >
             <div className='card-header'><h2 className='header'>Account overview</h2></div>
             <div className='card-body'>
 

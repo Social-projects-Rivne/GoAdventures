@@ -86,12 +86,7 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
       });
     }
     ).catch((err) => {
-      //this.setState({ errorMesage: "Could not be uploaded, it is not an image!" });
-
       this.setState({ errorMesage: { ...err.response.data } });
-
-      console.debug(this.state.errorMesage);
-
     });
   }
   // public clearErrorMessage() {

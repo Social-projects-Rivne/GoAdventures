@@ -5,7 +5,13 @@ import io.softserve.goadventures.auth.service.JWTService;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
+@Configuration
+@EnableAsync
+@EnableScheduling
 @SpringBootApplication
 public class ApplicationConfiguration {
     @Bean

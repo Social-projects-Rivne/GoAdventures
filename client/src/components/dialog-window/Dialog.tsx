@@ -48,9 +48,7 @@ export class Dialog extends Component<DialogSettings, any> {
               if (this.props.context && this.props.context.authorize) {
                 await this.props.context.authorize(this.props.handleSubmit, { ...valuesMutadet });
               } else {
-
-                const res = await this.props.handleSubmit({ ...valuesMutadet }, this.state.category);
-                console.debug(res);
+                await this.props.handleSubmit({ ...valuesMutadet }, this.state.category);
               }
               if (this.props.redirect) {
                 this.props.redirect.routerProps.history.push(`${this.props.redirect.redirectURL}`);

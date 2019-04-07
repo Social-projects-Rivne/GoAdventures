@@ -17,7 +17,10 @@ interface ProfileState {
   userProfile: UserDto;
   userEventList: any;
   showEditForm: boolean;
+  errorMesage: {
+    publicError: string;
 
+  };
   choose: 'edit-profile' | 'events' | 'default' | 'account-overview';
   togleEditProfile: () => void;
   togleMyEvents: () => void;
@@ -88,6 +91,9 @@ export class Profile extends Component<UserDto, ProfileState> {
 
     this.state = {
       showEditForm: true,
+      errorMesage: {
+        publicError: '',
+      },
       userProfile: {
         fullname: '',
         username: '',
@@ -121,25 +127,54 @@ export class Profile extends Component<UserDto, ProfileState> {
 
         console.log(this.state.choose)
       },
+      // toogleSetProfileState: () => {         // set avatarUrl from sidebar
+      //   this.setState(state => ({
+      //     userProfile : {
+      //         avatarUrl: value
+
+      //     } 
+      //   }));
+
+      // },
+
     };
+    console.debug(this.state.userProfile)
   }
 
   public handleSubmit(data: UserDto): Promise<any> {
-    return changeUserData({ ...data });
+    return changeUserData({ ...data })
+      .then((response) =>
+        this.setState(
+          {
+            userProfile: {
+              ...this.state.userProfile,
+              ...response
+            }
+          }
+        )
+      )
+      .catch((err) => {
+        this.setState({ errorMesage: { ...err.response.data } });
+        alert('dasdsada!s')
+      });
+
   }
 
 
   public componentDidMount() {
     // сеттер на пропси зверху з api
-    getUserData().then((response: AxiosResponse<UserDto>) =>
-      this.setState({
-        userProfile: { ...response.data }
-      })
-    );
+    getUserData()
+      .then((response: AxiosResponse<UserDto>) =>
+        this.setState({
+          userProfile: { ...response.data }
+        })
+      );
   }
 
 
+
   public render() {
+    console.debug(this.state.userProfile)
     return (
       <ProfileContext.Provider value={this.state}>
         <div className='profile-page'>
@@ -148,6 +183,7 @@ export class Profile extends Component<UserDto, ProfileState> {
           </div>
           <div className='Profile__content'>
             {
+
               this.state.choose === 'events'
                 ? <ShowEvents {...this.state.userEventList} />
                 : (this.state.choose === 'edit-profile'
@@ -158,7 +194,25 @@ export class Profile extends Component<UserDto, ProfileState> {
                     button_text='Update'
                     header='Edit your profile'
                     inline_styles={this.editFormDialogStyles}
+                    childComponents={
+                      <div className="Errors-messages">
+                        {
+                          this.state.errorMesage.publicError !== ''
+                            ? <div className="alert alert-warning alert-dismissible fade show"
+                              role="alert">
+                              <strong>{this.state.errorMesage.publicError}</strong>
+                              <button type="button" className="close" data-dismiss="alert" aria-label="Close">
+
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+
+                            : null}
+                      </div>
+                    }
+
                   />
+
                   : (this.state.choose === 'account-overview'
                     ? <AccountOverwiew {...this.state.userProfile} />
                     : null

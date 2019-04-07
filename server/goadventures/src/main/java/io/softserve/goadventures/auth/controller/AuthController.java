@@ -110,7 +110,7 @@ public class AuthController extends HttpServlet {
         if (user != null) {
             String authToken = jwtService.createToken(user);
             logger.info("checkEmail: " + user.toString());
-            logger.info("Glory to Ukraine========" + userAuthDto.getPassword());
+            logger.info("Password " + userAuthDto.getPassword());
             if (BCrypt.checkpw(userAuthDto.getPassword(), user.getPassword())) {
                 if (user.getStatusId() == UserStatus.PENDING.getUserStatus()){
                     return ResponseEntity.badRequest().body("User is not confirm auth!");

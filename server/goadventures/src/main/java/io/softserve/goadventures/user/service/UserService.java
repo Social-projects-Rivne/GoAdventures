@@ -25,6 +25,9 @@ public class UserService {
             throw new UserNotFoundException("User not found");
         }
     }
+    public boolean existsByEmail(String email){
+        return userRepository.existsByEmail(email);
+    }
 
     public void addUser(User newUser) {userRepository.save(newUser);}
 

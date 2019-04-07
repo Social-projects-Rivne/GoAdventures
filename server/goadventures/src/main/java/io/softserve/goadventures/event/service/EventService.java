@@ -69,4 +69,7 @@ public class EventService {
             return false;
         }
     }
+    public List<Event> findAllEvents(){
+        return eventRepository.findAll();
+    }
 }
