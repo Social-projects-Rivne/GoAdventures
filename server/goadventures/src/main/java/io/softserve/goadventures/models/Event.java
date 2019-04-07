@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
@@ -57,11 +58,9 @@ public class Event {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(name = "event_participants", joinColumns = {
-            @JoinColumn(name = "event_id", referencedColumnName = "id") }, inverseJoinColumns = {
-                    @JoinColumn(name = "users_id", referencedColumnName = "id") })
-    private Set<User> participants = new HashSet<>();
+    @OneToMany(mappedBy = "event")
+    Set<EventParticipants> participants = new HashSet<>();
+
 
     @JsonIgnore
     @ManyToOne(cascade = CascadeType.PERSIST)
@@ -69,7 +68,7 @@ public class Event {
     private User owner;
 
     public Event(String topic, String startDate, String endDate, String location, Double latitude, Double longitude,
-            String description, Category category) {
+                 String description, Category category) {
         setTopic(topic);
         setStartDate(startDate);
         setEndDate(endDate);
@@ -82,18 +81,19 @@ public class Event {
 
     @Override
     public String toString() {
-        return "\nEvent{" +
-                "\n\tid=" + id +
-                ", \n\ttopic='" + topic + '\'' +
-                ", \n\tstartDate='" + startDate + '\'' +
-                ", \n\tendDate='" + endDate + '\'' +
-                ", \n\tlocation='" + location + '\'' +
-                ", \n\tdescription='" + description + '\'' +
-                ", \n\tstatusId=" + statusId + '\'' +
-                ", \n\towner=" + owner + '\'' +
-                ", \n\tcategory=" + category.getCategoryName() +
-                ", \n\tparticipants=" + participants +
-                "\n}";
+        return "Event{" + "id=" + id +
+                ", topic='" + topic + '\'' +
+                ", startDate='" + startDate + '\'' +
+                ", endDate='" + endDate + '\'' +
+                ", location='" + location + '\'' +
+                ", latitude='" + latitude + '\'' +
+                ", longitude='" + longitude + '\'' +
+                ", description='" + description + '\'' +
+                ", statusId='" + statusId + '\'' +
+                ", owner='" + owner + '\'' +
+                ", category='" + category.getCategoryName() + '\'' +
+                ", participants='" + participants + '\'' +
+                '}';
     }
 
     @Override

@@ -1,8 +1,11 @@
 package io.softserve.goadventures.controllers;
 
+import io.softserve.goadventures.repositories.EventParticipantsRepository;
+import io.softserve.goadventures.services.EventParticipantsService;
 import io.softserve.goadventures.services.JWTService;
 import io.softserve.goadventures.errors.ErrorMessageManager;
 import io.softserve.goadventures.models.Category;
+import io.softserve.goadventures.models.EventParticipants;
 import io.softserve.goadventures.dto.EventDTO;
 import io.softserve.goadventures.enums.EventStatus;
 import io.softserve.goadventures.models.Event;
@@ -37,7 +40,9 @@ import java.io.IOException;
 public class EventController {
     private Logger logger = LoggerFactory.getLogger(EventController.class);
     private final EventService eventService;
+    private final EventParticipantsService eventParticipantsService;
     private final EventRepository eventRepository;
+    private final EventParticipantsRepository eventParticipantsRepository;
     private final CategoryRepository categoryRepository;
     private final GalleryRepository galleryRepository;
     private final EventDtoBuilder eventDtoBuilder;
@@ -46,7 +51,8 @@ public class EventController {
     private final ModelMapper modelMapper;
 
     @Autowired
-    public EventController(EventService eventService, EventRepository eventRepository,
+    public EventController(EventService eventService, EventRepository eventRepository, EventParticipantsService eventParticipantsService,
+                           EventParticipantsRepository eventParticipantsRepository,
                            CategoryRepository categoryRepository, GalleryRepository galleryRepository,
                            EventDtoBuilder eventDtoBuilder, UserService userService,
                            JWTService jwtService, ModelMapper modelMapper) {
@@ -58,6 +64,8 @@ public class EventController {
         this.jwtService = jwtService;
         this.userService = userService;
         this.modelMapper = modelMapper;
+        this.eventParticipantsService = eventParticipantsService;
+        this.eventParticipantsRepository = eventParticipantsRepository;
     }
 
     @PostMapping("/create/{categoryId}")
@@ -80,6 +88,42 @@ public class EventController {
         return ResponseEntity.ok().headers(httpHeaders).body("Event created");
     }
 
+    @PostMapping("/create/")
+    public ResponseEntity<String> createEvent(@RequestBody Event event) {
+        eventService.addEvent(event);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+
+        return ResponseEntity.ok().headers(httpHeaders).body("Event created");
+    }
+
+    @PostMapping("/subscribe")
+    public ResponseEntity<String> addNewSubscriber(@RequestHeader(value = "Authorization") String token,
+                                                   @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
+        Event event = eventService.getEventById(eventId);
+        User user = userService.getUserByEmail(jwtService.parseToken(token));
+
+        eventParticipantsService.addParicipant(user, event);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        return ResponseEntity.ok().headers(httpHeaders).body("Added new Subscriber");
+    }
+
+    @PostMapping("/unsubscribe")
+    public ResponseEntity<String> deleteSubscriber(@RequestHeader(value = "ParticipantId") int participantId) {
+
+        EventParticipants eventParticipant = eventParticipantsService.getById(participantId);
+        eventParticipantsService.delete(eventParticipant);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        return ResponseEntity.ok().headers(httpHeaders).body("Deleted Subscriber");
+    }
+
+    @GetMapping("/allSubscribers")
+    public Iterable<EventParticipants> getAllSubcribers() {
+        return eventParticipantsRepository.findAll();
+    }
+
     @PostMapping("/category")
     public ResponseEntity<String> createCategory(@RequestBody Category category) {
         category.setEvents(null);
@@ -99,14 +143,12 @@ public class EventController {
         return ResponseEntity.ok().headers(httpHeaders).body("gallery created");
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<?> getAllEvents(@RequestParam(value = "search", required = false) String search,
+    @GetMapping({ "/all/{search}", "/all" })
+    public ResponseEntity<?> getAllEvents(@PathVariable(value = "search", required = false) String search,
                                           @PageableDefault(size = 15, sort = "id") Pageable eventPageable) {
 
-        Page<Event> eventsPage = (search == null)
-                ? eventService.getAllEvents(eventPageable) :
-                eventService.getAllEventBySearch(eventPageable, search);
-
+        Page<Event> eventsPage = search == null ? eventService.getAllEvents(eventPageable)
+                : eventService.getAllEventsByTopic(eventPageable, search);
         if (eventsPage != null) {
             int nextPageNum = eventsPage.getNumber() + 1;
             UriComponents uriComponentsBuilder = UriComponentsBuilder.newInstance().path("/event/all").query("page={keyword}")
@@ -115,10 +157,11 @@ public class EventController {
             httpHeaders.set("nextpage", uriComponentsBuilder.toString());
             System.out.println(eventDtoBuilder.convertToDto(eventsPage));
             Slice<EventDTO> t = eventDtoBuilder.convertToDto(eventsPage);
-            logger.info("Event converted to dto" + t.getContent());
-
+            logger.info("Event converted to dto", t.getContent());
+            logger.info("Event converted to dto", t.getContent().get(0));
             return new ResponseEntity<Slice<EventDTO>>(t, httpHeaders, HttpStatus.OK);
         } else {
+            // TODO: wr1 3r c
             return ResponseEntity.badRequest().body("End of pages");
         }
     }
