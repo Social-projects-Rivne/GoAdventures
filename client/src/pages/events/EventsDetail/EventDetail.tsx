@@ -102,6 +102,9 @@ export class EventDetail extends Component<any, any> {
           </div>
           <div className='col-12 col-sm-12 col-md-6 col-lg-5 col-xl-5'>
             <div className='jumboton jumbotron-fluid'>
+              {this.state.eventProps.event.statusId === 2 ? (
+                 <p style = {{color:'red'}}>CLOSED</p>
+               ) : null}
               <SettingsPanel>
                 {{
                   left: (
