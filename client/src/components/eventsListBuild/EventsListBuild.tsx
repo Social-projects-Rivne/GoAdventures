@@ -45,6 +45,9 @@ export class EventsListBuild extends React.Component<EventDto, any> {
         />
         <div className='card-body'>
           <h5 className='card-title'>{this.props.topic}</h5>
+          {this.props.statusId === 2 ? (
+              <p style = {{color:'red'}}>CLOSED</p>
+            ) : null}
 
           <div className='row category'>
             <p>Category:{this.props.category}</p>

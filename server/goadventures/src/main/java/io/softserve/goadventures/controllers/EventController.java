@@ -4,7 +4,6 @@ import io.softserve.goadventures.services.JWTService;
 import io.softserve.goadventures.errors.ErrorMessageManager;
 import io.softserve.goadventures.models.Category;
 import io.softserve.goadventures.dto.EventDTO;
-import io.softserve.goadventures.enums.EventStatus;
 import io.softserve.goadventures.models.Event;
 import io.softserve.goadventures.repositories.CategoryRepository;
 import io.softserve.goadventures.repositories.EventRepository;
@@ -60,24 +59,41 @@ public class EventController {
         this.modelMapper = modelMapper;
     }
 
-    @PostMapping("/create/{categoryId}")
-    public ResponseEntity<String> createEvent(@PathVariable(value = "categoryId") String categoryId,
-                                              @RequestHeader(value = "Authorization") String token,
-                                              @RequestBody Event event) {
-        Category category = categoryRepository.findByCategoryName(categoryId);
-        event.setCategory(category);
-        event.setStatusId(EventStatus.CREATED.getEventStatus());
-        eventService.addEvent(event);
+    @PostMapping("/create")
+    public ResponseEntity<String> createEvent(@RequestHeader(value = "Authorization") String token,
+                                              @RequestBody EventDTO eventDTO) {
         try {
-            LoggerFactory.getLogger("Create Event Controller: ")
-                    .info(userService.getUserByEmail(jwtService.parseToken(token)).toString());
-            event.setOwner(userService.getUserByEmail(jwtService.parseToken(token)));
-        } catch (UserNotFoundException e) {
+        LoggerFactory.getLogger("Create Event Controller: ")
+                .info(userService.getUserByEmail(jwtService.parseToken(token)).toString());
+        eventService.addEvent(eventDTO, token);
+    }catch (UserNotFoundException e) {
             e.printStackTrace();
         }
-        eventService.addEvent(event);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        return ResponseEntity.ok().headers(httpHeaders).body("Event created");
+        return ResponseEntity.ok("Event created");
+    }
+
+    @PostMapping("/close")
+    public ResponseEntity<String> closeEvent(@RequestHeader(value = "Authorization") String token,
+                                              @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
+        Event event = eventService.getEventById(eventId);
+        User user = userService.getUserByEmail(jwtService.parseToken(token));
+        if (eventService.closeEvent(user, event)) {
+            return ResponseEntity.ok("Event closed");
+        } else {
+            return ResponseEntity.badRequest().body("Close doesn't work");
+        }
+    }
+
+    @PostMapping("/open")
+    public ResponseEntity<String> openEvent(@RequestHeader(value = "Authorization") String token,
+                                             @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
+        Event event = eventService.getEventById(eventId);
+        User user = userService.getUserByEmail(jwtService.parseToken(token));
+        if (eventService.openEvent(user, event)) {
+            return ResponseEntity.ok("Event opened");
+        } else {
+            return ResponseEntity.badRequest().body("Open doesn't work");
+        }
     }
 
     @PostMapping("/category")
