@@ -11,6 +11,7 @@
             true,
             "single"
         ],
+        "ordered-imports": false,
         "interface-name": false,
         "semicolon": true,
         "trailing-comma": true,

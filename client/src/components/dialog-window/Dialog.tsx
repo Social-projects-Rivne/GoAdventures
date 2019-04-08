@@ -1,7 +1,5 @@
 import { Field, Form, Formik, FormikProps } from 'formik';
-import axios from 'axios';
 import React, { Component } from 'react';
-import { DropDown, Datepicker } from '..';
 import { MdDone } from 'react-icons/md';
 import './Dialog.scss';
 import { DialogSettings } from './interfaces/dialog.interface';
@@ -13,7 +11,6 @@ export class Dialog extends Component<DialogSettings, any> {
     //  :*D
     this.getInitialValues = this.getInitialValues.bind(this);
   }
-
 
   public getInitialValues = (): object => {
     const initialValues: { [key: string]: string } = {};
@@ -46,17 +43,30 @@ export class Dialog extends Component<DialogSettings, any> {
                 delete valuesMutadet!.confirmPassword;
               }
               if (this.props.context && this.props.context.authorize) {
-                await this.props.context.authorize(this.props.handleSubmit, { ...valuesMutadet });
+                await this.props.context.authorize(this.props.handleSubmit, {
+                  ...valuesMutadet
+                });
               } else {
-                await this.props.handleSubmit({ ...valuesMutadet }, this.state.category);
+                await this.props.handleSubmit(
+                  { ...valuesMutadet },
+                  this.state.category
+                );
               }
               if (this.props.redirect) {
-                this.props.redirect.routerProps.history.push(`${this.props.redirect.redirectURL}`);
+                this.props.redirect.routerProps.history.push(
+                  `${this.props.redirect.redirectURL}`
+                );
               }
               actions.setSubmitting(false);
             }}
           >
-            {({ errors, touched, handleBlur, handleChange, values }: FormikProps<any>) => {
+            {({
+              errors,
+              touched,
+              handleBlur,
+              handleChange,
+              values
+            }: FormikProps<any>) => {
               return (
                 <Form id='dialog'>
                   {this.props.inputs.map((input, index) => {
@@ -64,7 +74,6 @@ export class Dialog extends Component<DialogSettings, any> {
                       <label key={index}>
                         {input.label_value}
                         <Field
-                          component={input.component}
                           value={values[input.field_name]}
                           type={input.type}
                           placeholder={input.placeholder}
@@ -79,7 +88,11 @@ export class Dialog extends Component<DialogSettings, any> {
                             <div className='invalid-feedback'>
                               {errors[input.field_name]}
                             </div>
-                          ) : null}
+                          ) : (
+                            <div className='valid-feedback'>
+                              <MdDone />
+                            </div>
+                          )}
                       </label>
                     );
                   })}
@@ -87,7 +100,7 @@ export class Dialog extends Component<DialogSettings, any> {
               );
             }}
           </Formik>
-          {this.props.childComponents ? (this.props.childComponents) : null}
+          {this.props.childComponents ? this.props.childComponents : null}
         </div>
         <div className='card-footer text-muted d-flex justify-content-center'>
           <button type='submit' form='dialog' className='btn btn-success'>

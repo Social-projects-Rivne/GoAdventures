@@ -1,9 +1,9 @@
 package io.softserve.goadventures;
 
-import io.softserve.goadventures.auth.config.ApplicationConfiguration;
-import io.softserve.goadventures.configs.CorsConfiguration;
-import io.softserve.goadventures.configs.WebAppConfig;
-import io.softserve.goadventures.avatarUploadDownload.FileStorageProperties;
+import io.softserve.goadventures.configurations.ApplicationConfiguration;
+import io.softserve.goadventures.configurations.CorsConfiguration;
+import io.softserve.goadventures.configurations.WebAppConfig;
+import io.softserve.goadventures.configurations.FileStorageProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

@@ -18,13 +18,17 @@ export class ShowEvents extends Component<EventDto, EventState> {
     this.state = {
       events: [
         {
+          category: '',
           description: '',
           endDate: '',
           id: 0,
           location: '',
+          longitude: 0,
+          latitude: 0,
           startDate: '',
           topic: '',
           participants: [],
+          statusId: 0,
           gallery: {
             id: undefined,
             imageUrls: ['https://via.placeholder.com/250'],
@@ -75,11 +79,7 @@ export class ShowEvents extends Component<EventDto, EventState> {
               next={this.fetchEvents}
               hasMore={!this.state.pageSettings.isLast}
               loader={<h4>Loading...</h4>}
-              endMessage={
-                <p style={{ textAlign: 'center' }}>
-
-                </p>
-              }
+              endMessage={<p style={{ textAlign: 'center' }} />}
             >
               {this.state.events.map((event, index) => (
                 <EventsListBuild {...event} key={index} />
@@ -87,7 +87,7 @@ export class ShowEvents extends Component<EventDto, EventState> {
             </InfiniteScroll>
           </div>
         </div>
-      </div >
+      </div>
     );
   }
 }

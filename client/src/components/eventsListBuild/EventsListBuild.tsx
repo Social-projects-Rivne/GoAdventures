@@ -16,9 +16,8 @@ export class EventsListBuild extends React.Component<EventDto, any> {
   public redirectTo() {
     this.setState({ redirect: true });
   }
-  public render() {
 
-    console.debug(this.props.gallery !== null ? this.props.gallery : false);
+  public render() {
     return (
       <div
         onClick={this.redirectTo.bind(this)}
@@ -38,7 +37,7 @@ export class EventsListBuild extends React.Component<EventDto, any> {
         <img
           className='card-img-top'
           src={
-            this.props.gallery !== null
+            this.props.gallery !== null && this.props.gallery
               ? this.props.gallery.imageUrls[0]
               : 'https://via.placeholder.com/250'
           }
@@ -46,12 +45,15 @@ export class EventsListBuild extends React.Component<EventDto, any> {
         />
         <div className='card-body'>
           <h5 className='card-title'>{this.props.topic}</h5>
-          <div className='row'>
-            <h6 className='col-6'> {this.props.location}</h6>
-            <div className='col-6'>
-              <p>Category</p>
-            </div>
+          {this.props.statusId === 2 ? (
+              <p style = {{color:'red'}}>CLOSED</p>
+            ) : null}
+
+          <div className='row category'>
+            <p>Category:{this.props.category}</p>
           </div>
+          <h6 className=' row location' > {this.props.location}</h6>
+
         </div>
       </div>
     );
