@@ -17,7 +17,7 @@ jobs:
           paths:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pom.xml" }}
-      - run: mvn clean test
+      - run: mvn test
 
   client_test:
     docker:
