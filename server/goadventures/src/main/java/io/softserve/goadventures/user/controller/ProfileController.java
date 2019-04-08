@@ -79,15 +79,19 @@ public class ProfileController {
         String newToken;
         User user = userService.getUserByEmail(jwtService.parseToken(authorizationHeader));   //user with old data
 
-        if(!(updateUser.getEmail().equals(""))) {
-            if(!(userService.existsByEmail(updateUser.getEmail()))){
-                logger.info("okok");
-                user.setEmail(updateUser.getEmail());
-            } else {
-                logger.info("This mailbox is already in use");
-                return ResponseEntity.badRequest().body("This mailbox is already in use");
-            }
-        }
+//        try {
+//            if(!(updateUser.getEmail().equals(""))) {
+//                if(!(userService.existsByEmail(updateUser.getEmail()))){
+//                    logger.info("okok");
+//                    user.setEmail(updateUser.getEmail());
+//                } else {
+//                    logger.info("This mailbox is already in use");
+//                    throw new InvalidEmailException();
+//                }
+//            }
+//        } catch (InvalidEmailException e) {
+//            return ResponseEntity.status(500).body(new ErrorMessageManager("This mailbox is already in use",e.toString()));
+//        }
 
         try {
             if(!(updateUser.getPassword().equals(""))){
@@ -101,27 +105,12 @@ public class ProfileController {
                 }else{
                     logger.info("wrong password");
                     throw new InvalidPasswordErrorMessage();
-                    //throw  new IOException("Event does not exist");
                 }
             }
         }catch (InvalidPasswordErrorMessage error){
-                return ResponseEntity.status(500).body(new ErrorMessageManager("Current password is wrong!", error.toString()));
+                return ResponseEntity.status(403).body(new ErrorMessageManager("Current password is wrong!", error.toString()));
 
         }
-
-//        if(!(updateUser.getPassword().equals(""))){
-//            if(BCrypt.checkpw(updateUser.getPassword(),user.getPassword())){    //check current pass
-//                logger.info("current password correct");
-//                if(passwordValidator.validatePassword(updateUser.getNewPassword())){
-//                    //if valide, set new pass
-//                    user.setPassword(BCrypt.hashpw(updateUser.getNewPassword(), BCrypt.gensalt()));
-//                    logger.info("password changed, new password:  " + updateUser.getNewPassword());
-//                }
-//            } else{
-//                return ResponseEntity.badRequest().body("Current password is wrong!");        //wrong password
-//
-//            }
-//        }
 
         modelMapper.map(updateUser, user);
         userService.updateUser(user);
@@ -130,7 +119,6 @@ public class ProfileController {
         responseHeaders.setBearerAuth(newToken);
         responseHeaders.set("token", newToken);
 
-        //return ResponseEntity.ok().headers(responseHeaders).body("Data was changed");
         return ResponseEntity.ok().headers(responseHeaders).body(user);
     }
 

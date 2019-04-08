@@ -21,3 +21,27 @@
     flex-direction: row;
     flex-flow: row wrap;
 }
+.errProfile{
+    margin: 15px;
+    border-radius: 10px;
+    display: inline-block;
+}
+.Sidebar__avatar {
+    width: 100%;
+    height: 250px;
+    display: flex;
+    justify-content: left;
+    & img {
+        width: 250px !important;
+        height: 250px !important;
+        border-radius: 50%;
+        align-content: center;
+      }
+      & .change_avatar_btn{
+        margin-top: 1.2em;
+        display: flex;
+      }
+    
+}
+
+

@@ -35,11 +35,8 @@ export const changeUserData = async (data: any): Promise<any> => {
       }
     )
     .then((res) => {
+      console.debug(res)
       setCookie(res);
-      return { ...res };
-
-    })
-    .catch((err) => {
-      return { ...err.response.data };
+      return res;
     });
 };

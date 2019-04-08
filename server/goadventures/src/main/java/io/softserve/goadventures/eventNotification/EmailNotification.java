@@ -37,7 +37,7 @@ public class EmailNotification{
     //@Scheduled(cron = "0 0 9 ? * * ") // every day at 9 am
 
     @Async
-    @Scheduled(cron = "0 0 9 ? * * ") // every day at 9 am
+    @Scheduled(cron = "0 25 21 ? * * ") // every day at 9 am
     public void emailNotification() throws ParseException, MessagingException {
         EmailSenderService emailSenderService = new EmailSenderService(mailContentBuilder);
         List<Event> events = eventService.findAllEvents();
@@ -61,8 +61,8 @@ public class EmailNotification{
             int dayNow = cal.get(Calendar.DAY_OF_YEAR);
 
             if((dayNow+1) == dayOfStartEvent){
-                 emailSenderService.eventEmailNotidication(event.getOwner().getEmail(),event.getOwner().getFullname(), event.getTopic());
-                 logger.info("Email sent successfully");
+                 emailSenderService.eventEmailNotidication(event.getOwner().getEmail(),event.getOwner().getFullname(),event.getTopic());
+                 logger.info("Email sent successfully to "+ event.getOwner().getEmail());
 
             }
 

@@ -46,9 +46,7 @@
   width: 100%;
   border-right: 0ch;
   border-left: 0ch;
-}
-.chAvt{
-  margin-right: 5px;
+  text-align: left
 }
 #sdb111{
   padding: 0.1rem;
@@ -56,13 +54,15 @@
 #sidebarTitle{
   text-align: center;
 }
-.errAvt777{
+.errAvatarMessage{
   
   margin: 15px;
-  border-radius: 10px;
-  
+  border-radius: 10px; 
 }
-.avt444{
+.changeAvatarBtn{
+  margin-right: 5px;
+}
+.avtErrorsWraper{
   display: flex;
   justify-content: center;
 }

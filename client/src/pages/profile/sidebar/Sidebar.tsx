@@ -6,7 +6,6 @@ import { ProfileContext } from '../../../context/profile.context';
 import { UserDto } from '../../../interfaces/User.dto';
 import avatar from '../images/Person.png';
 import './Sidebar.scss';
-import { ErrorMessage } from 'formik';
 import { getUserData } from '../../../api/user.service';
 
 interface SidebarState {
@@ -89,9 +88,6 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
       this.setState({ errorMesage: { ...err.response.data } });
     });
   }
-  // public clearErrorMessage() {
-  //   this.setState({ errorMesage: '' });
-  // }
 
   public render() {
     return (
@@ -115,7 +111,7 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
                     ref={(fileInput) => this.fileInput = fileInput}
                   />
                   <button
-                    className="btn btn-success chAvt"
+                    className="btn btn-success changeAvatarBtn"
                     onClick={() => this.fileInput.click()} > Change avatar
                   </button>
                   <button
@@ -124,11 +120,11 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
                     onClick={this.uploadHandler}
                   >Upload</button>
                 </div>
-                <div className="Errors-messages avt444">
+                <div className="Errors-messages avtErrorsWraper">
                   {
 
                     this.state.errorMesage.publicError !== ''
-                      ? <div className="alert alert-warning alert-dismissible fade show  errAvt777"
+                      ? <div className="alert alert-warning alert-dismissible fade show  errAvatarMessage"
                         role="alert">
                         <strong>{this.state.errorMesage.publicError}</strong>
                         <button type="button" className="close" data-dismiss="alert" aria-label="Close">
