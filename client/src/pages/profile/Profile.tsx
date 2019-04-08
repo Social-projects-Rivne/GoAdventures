@@ -127,7 +127,7 @@ export class Profile extends Component<UserDto, ProfileState> {
 
         console.log(this.state.choose)
       },
-      // toogleSetProfileState: () => {         // set avatarUrl from sidebar
+      // toogleSetProfileState: () => {         
       //   this.setState(state => ({
       //     userProfile : {
       //         avatarUrl: value
@@ -138,28 +138,16 @@ export class Profile extends Component<UserDto, ProfileState> {
       // },
 
     };
-    console.debug(this.state.userProfile)
   }
 
   public handleSubmit(data: UserDto): Promise<any> {
     return changeUserData({ ...data })
-      .then((response) =>
-        this.setState(
-          {
-            userProfile: {
-              ...this.state.userProfile,
-              ...response
-            }
-          }
-        )
-      )
       .catch((err) => {
         this.setState({ errorMesage: { ...err.response.data } });
-        alert('dasdsada!s')
+        console.debug(this.state.errorMesage);
       });
 
   }
-
 
   public componentDidMount() {
     // сеттер на пропси зверху з api
@@ -171,10 +159,8 @@ export class Profile extends Component<UserDto, ProfileState> {
       );
   }
 
-
-
   public render() {
-    console.debug(this.state.userProfile)
+    console.debug(this.state.errorMesage)
     return (
       <ProfileContext.Provider value={this.state}>
         <div className='profile-page'>
@@ -210,7 +196,6 @@ export class Profile extends Component<UserDto, ProfileState> {
                             : null}
                       </div>
                     }
-
                   />
 
                   : (this.state.choose === 'account-overview'

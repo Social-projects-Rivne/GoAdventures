@@ -37,7 +37,7 @@ public class MailContentBuilder {
     public String eventEmailNotification(String fullname, String eventTopic){
         Context context = new Context();
         context.setVariable("fullname", fullname);
-        context.setVariable("eventName", eventTopic);
+        context.setVariable("eventTopic", eventTopic);
 
         return templateEngine.process("eventEmailNotification",context);
     }
