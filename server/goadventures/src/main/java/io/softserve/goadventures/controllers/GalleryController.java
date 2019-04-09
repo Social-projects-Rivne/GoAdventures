@@ -49,6 +49,13 @@ public class GalleryController {
         this.fileStorageService = fileStorageService;
         this.modelMapper = modelMapper;
         this.galleryCRUDService = galleryCRUDService;
+        // Create mapping for Event -> Gallery
+//        PropertyMap<Event, EventDTO> galleryMap = new PropertyMap<>() {
+//            protected void configure() {
+//                map().setGallery(source.getGallery().getId());
+//            }
+//        };
+//        modelMapper.addMappings(galleryMap);
     }
 
     /**
@@ -130,6 +137,23 @@ public class GalleryController {
     }
 
 
+    @GetMapping("get/{galleryId}")
+    public  ResponseEntity<?> getGallery(@PathVariable(value = "galleryId") int galleryId) {
+        try {
+            Gallery gallery = galleryRepository.findById(galleryId);
+            if(gallery != null) {
+                return ResponseEntity.ok().body(modelMapper.map(gallery, GalleryDto.class));
+            } else  {
+                throw new IOException("Gallery not founded");
+            }
+        } catch (IOException err) {
+            logger.info(err.getMessage());
+            return ResponseEntity.status(404).body(new ErrorMessageManager(
+                    "Gallery doesn't exist", err.getMessage()));
+        }
+    }
+
+
     @PutMapping("/deattach/{eventId}")
     public ResponseEntity<?> deactivateGallery(@PathVariable(value = "eventId") int eventId) {
         try {
@@ -151,12 +175,16 @@ public class GalleryController {
 
     @PutMapping("/remove/{galleryId}")
     public  ResponseEntity<?> removeOneImage(
-            @PathVariable(value = "galleryId") long galleryId,
+            @PathVariable(value = "galleryId") int galleryId,
             @RequestBody GalleryDto mutatedGallery) {
         try {
+
             Gallery gallery = galleryRepository.findById(galleryId);
+
             if (gallery != null) {
                modelMapper.map(mutatedGallery, gallery);
+               logger.info("Gallery dto" + mutatedGallery.getEventId());
+               logger.info("Gallery event id" + gallery.getEventId());
                 return ResponseEntity.ok().body(modelMapper.map(
                         galleryCRUDService.updateGallery( gallery ), GalleryDto.class));
             } else {

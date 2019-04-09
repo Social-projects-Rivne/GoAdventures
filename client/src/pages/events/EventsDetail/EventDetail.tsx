@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import React, { Component, SyntheticEvent } from 'react';
+import React, { Component } from 'react';
 import { Field, FieldProps, Form, Formik, FormikProps } from 'formik';
 import { TileLayer, Map, Marker, Popup } from 'react-leaflet';
 import { MdDone } from 'react-icons/md';

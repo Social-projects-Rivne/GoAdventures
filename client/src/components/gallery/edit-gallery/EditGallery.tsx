@@ -1,31 +1,50 @@
 import React, { useState, useEffect } from 'react';
 import { GalleryDto } from '../../../interfaces/Gallery.dto';
 import './EditGallery.scss';
-import { alterGallery } from '../../../api/gallery.service';
+import { alterGallery, getGallery } from '../../../api/gallery.service';
 
-function EditGallery(props: GalleryDto) {
-  console.debug(props);
-  const [urls, setUrls] = useState([...props.imageUrls]);
+interface EditGalleryPorps {
+  setDialog: any;
+}
+
+function EditGallery(props: GalleryDto & EditGalleryPorps) {
+  const [gallery, setGallery] = useState({} as GalleryDto);
+  const [urls, setUrls] = useState([] as string[]);
   const uniKeyPrefix = 'uniID_gall_';
 
+  /*  Set initial state */
   useEffect(() => {
-    async function req(): Promise<void> {
-      const res = await alterGallery(props.id, {
-        ...props,
-        imageUrls: [...urls]
-      });
-      setUrls([...res]);
+    async function fetchGallery(): Promise<void> {
+      setGallery({ ...(await getGallery(props.id)) });
+    }
+    setUrls([...props.imageUrls]);
+    return () => {
+      fetchGallery();
+    };
+  }, [props]);
+
+  useEffect(() => {
+    async function req(condtion: boolean): Promise<void> {
+      let res: any;
+      condtion
+        ? ((res = await alterGallery(props.id, {
+            ...gallery,
+            imageUrls: [...urls]
+          })),
+          props.setDialog({ ...res }),
+          setUrls([...res.imageUrls]))
+        : (res = {});
+      console.debug('Server response', res);
     }
     return () => {
-      req();
-      console.debug('clear subs');
+      req(urls.length > 0);
     };
   }, [urls]);
 
   function handleDelete(index: number) {
-    const tempArr = [...urls];
-    tempArr.splice(index, 1);
-    setUrls(tempArr);
+    const mutatedUrls = [...urls];
+    mutatedUrls.splice(index, 1);
+    setUrls([...mutatedUrls]);
   }
   return (
     <div className='EditGallery jumbotron'>

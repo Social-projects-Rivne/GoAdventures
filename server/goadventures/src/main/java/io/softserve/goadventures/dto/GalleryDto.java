@@ -12,6 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GalleryDto {
+    private int id;
     private int eventId;
     private Set<String> imageUrls;
     private Boolean isDeleted;

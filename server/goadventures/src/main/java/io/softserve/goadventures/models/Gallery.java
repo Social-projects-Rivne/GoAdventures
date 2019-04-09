@@ -19,7 +19,7 @@ public class Gallery {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private int id;
 
     @JsonBackReference
     @OneToOne(fetch = FetchType.LAZY)

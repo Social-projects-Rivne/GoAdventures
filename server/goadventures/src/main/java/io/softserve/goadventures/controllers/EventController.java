@@ -1,16 +1,17 @@
 package io.softserve.goadventures.controllers;
 
 import io.softserve.goadventures.dto.EventDTO;
-import io.softserve.goadventures.services.EventDtoBuilder;
 import io.softserve.goadventures.enums.EventStatus;
 import io.softserve.goadventures.errors.ErrorMessageManager;
 import io.softserve.goadventures.errors.UserNotFoundException;
 import io.softserve.goadventures.models.Category;
 import io.softserve.goadventures.models.Event;
+import io.softserve.goadventures.models.Gallery;
 import io.softserve.goadventures.models.User;
 import io.softserve.goadventures.repositories.CategoryRepository;
 import io.softserve.goadventures.repositories.EventRepository;
 import io.softserve.goadventures.repositories.GalleryRepository;
+import io.softserve.goadventures.services.EventDtoBuilder;
 import io.softserve.goadventures.services.EventService;
 import io.softserve.goadventures.services.JWTService;
 import io.softserve.goadventures.services.UserService;
@@ -30,6 +31,7 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.util.HashSet;
 
 @CrossOrigin
 @RestController
@@ -65,6 +67,10 @@ public class EventController {
         Category category = categoryRepository.findByCategoryName(categoryId);
         event.setCategory(category);
         event.setStatusId(EventStatus.CREATED.getEventStatus());
+        if (event.getGallery() == null){
+            Gallery gallery = new Gallery(0, event, new HashSet<>(), false);
+            event.setGallery(gallery);
+        }
         eventService.addEvent(event);
         try {
             LoggerFactory.getLogger("Create Event Controller: ")
@@ -75,14 +81,6 @@ public class EventController {
         }
         eventService.addEvent(event);
         HttpHeaders httpHeaders = new HttpHeaders();
-        return ResponseEntity.ok().headers(httpHeaders).body("Event created");
-    }
-
-    @PostMapping("/create/")
-    public ResponseEntity<String> createEvent(@RequestBody Event event) {
-        eventService.addEvent(event);
-        HttpHeaders httpHeaders = new HttpHeaders();
-
         return ResponseEntity.ok().headers(httpHeaders).body("Event created");
     }
 

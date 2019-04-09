@@ -12,5 +12,5 @@ export interface EventDto {
   endDate: string | undefined;
   category: string | undefined;
   participants: UserDto[] | undefined;
-  gallery: GalleryDto | undefined;
+  gallery: GalleryDto;
 }

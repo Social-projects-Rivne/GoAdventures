@@ -18,6 +18,7 @@ public class WebAppConfig {
   @Bean
   public ModelMapper modelMapper() {
     Condition notEmpty = ctx -> ctx.getSource() != "";
+//    Condition notZero = ctx -> ctx.getSource() != 0;
     ModelMapper mapper = new ModelMapper();
     mapper.getConfiguration()
             .setMatchingStrategy(MatchingStrategies.STANDARD)

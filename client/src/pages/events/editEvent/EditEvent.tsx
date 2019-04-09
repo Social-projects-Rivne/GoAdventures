@@ -37,10 +37,11 @@ interface EditEvent {
 interface EditEventInputState {
   topic: string;
   location: string;
-  gallery: GalleryDto | undefined;
+  gallery: GalleryDto;
 }
 
 export const EditEvent = (props: EditEvent) => {
+  console.debug('EditEvent', props.event.gallery!.eventId);
   const zoom = 13;
   const geocoder = LCG.L.Control.Geocoder.nominatim();
   let submitNested: () => any;
@@ -62,7 +63,6 @@ export const EditEvent = (props: EditEvent) => {
       return false;
     }
   };
-  /* TODO: Refactor */
 
   const [errors, setErrors] = useState({} as ErrorMessage);
   const [datepick, setDate] = useState({
@@ -181,7 +181,12 @@ export const EditEvent = (props: EditEvent) => {
                               {input.type === 'file' &&
                               !!eventDialog.gallery ? (
                                 <div>
-                                  <EditGallery {...eventDialog.gallery} />
+                                  <EditGallery
+                                    {...{
+                                      ...eventDialog.gallery,
+                                      setDialog: setEventDialog
+                                    }}
+                                  />
                                 </div>
                               ) : null}
                               {form.touched[input.field_name] &&
@@ -346,8 +351,6 @@ export const EditEvent = (props: EditEvent) => {
             if (formCurrent) {
               await submitNested();
               await formCurrent.submitForm();
-              /* TODO: Validate object before sending && refactor */
-              /* Pass validation status to fetch, ya no */
               setFetch(true);
             }
           }}
