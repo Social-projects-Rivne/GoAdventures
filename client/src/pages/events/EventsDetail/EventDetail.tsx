@@ -110,12 +110,12 @@ export class EventDetail extends Component<any, any> {
                 }}
               </SettingsPanel>
               <hr className='my-4' />
-              <span className='lead'>
-                {this.state.eventProps.event.description}
+              <span>
+                <p>{this.state.eventProps.event.description}</p>
               </span>
               <hr className='my-4' />
               <div className='map'>
-                <h2>Location and Destination points</h2>
+                <h3>Location and Destination points</h3>
                 <div className='rounded'>
                   <Map
                     attributionControl={true}
@@ -170,12 +170,12 @@ export class EventDetail extends Component<any, any> {
                   </button>
                 </div>
               ) : (
-                <div />
-              )}
+                  <div />
+                )}
 
               <hr className='my-4' />
               <div>
-                <h2>Comments</h2>
+                <h3>Comments</h3>
                 <div>
                   <Formik
                     validationSchema={commentsSchema}
@@ -183,7 +183,7 @@ export class EventDetail extends Component<any, any> {
                     enableReinitialize={true}
                     validateOnBlur={true}
                     validateOnChange={true}
-                    onSubmit={() => {}}
+                    onSubmit={() => { }}
                     render={(props: FormikProps<FormValue>) => (
                       <Form>
                         <Field
@@ -199,16 +199,16 @@ export class EventDetail extends Component<any, any> {
                                   name='comment'
                                 />
                                 {form.touched.comment &&
-                                form.errors.comment &&
-                                form.errors.comment ? (
-                                  <div className='invalid-feedback'>
-                                    {form.errors.comment}
+                                  form.errors.comment &&
+                                  form.errors.comment ? (
+                                    <div className='invalid-feedback'>
+                                      {form.errors.comment}
+                                    </div>
+                                  ) : (
+                                    <div className='valid-feedback'>
+                                      <MdDone /> Press enter to add comment
                                   </div>
-                                ) : (
-                                  <div className='valid-feedback'>
-                                    <MdDone /> Press enter to add comment
-                                  </div>
-                                )}
+                                  )}
                               </div>
                             );
                           }}
