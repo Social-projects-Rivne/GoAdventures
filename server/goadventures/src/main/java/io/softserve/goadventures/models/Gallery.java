@@ -32,6 +32,4 @@ public class Gallery {
 
     @Column(name = "is_deleted")
     private Boolean isDeleted;
-
-
 }

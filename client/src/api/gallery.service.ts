@@ -38,6 +38,7 @@ export const getGallery = async (galleryId: number) => {
     })
     .then((res: AxiosResponse<any>) => {
       if (statusCheck(res)) {
+        console.debug('Get gallery', res.data);
         return res.data;
       } else {
         throw new Error(res.data);

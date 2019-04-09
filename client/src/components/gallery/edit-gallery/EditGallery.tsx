@@ -4,37 +4,34 @@ import './EditGallery.scss';
 import { alterGallery, getGallery } from '../../../api/gallery.service';
 
 interface EditGalleryPorps {
+  editGallery: GalleryDto;
   setDialog: any;
 }
 
-function EditGallery(props: GalleryDto & EditGalleryPorps) {
+function EditGallery(props: EditGalleryPorps) {
   const [gallery, setGallery] = useState({} as GalleryDto);
   const [urls, setUrls] = useState([] as string[]);
   const uniKeyPrefix = 'uniID_gall_';
 
   /*  Set initial state */
   useEffect(() => {
-    async function fetchGallery(): Promise<void> {
-      setGallery({ ...(await getGallery(props.id)) });
-    }
-    setUrls([...props.imageUrls]);
-    return () => {
-      fetchGallery();
-    };
-  }, [props]);
+    setUrls([...props.editGallery.imageUrls]);
+    setGallery({ ...props.editGallery });
+    console.debug('initial effect', gallery);
+    return () => {};
+  }, [props.editGallery]);
 
   useEffect(() => {
-    async function req(condtion: boolean): Promise<void> {
+    async function req(urlsHasElements: boolean): Promise<void> {
       let res: any;
-      condtion
-        ? ((res = await alterGallery(props.id, {
-            ...gallery,
+      urlsHasElements
+        ? ((res = await alterGallery(props.editGallery.id, {
+            ...props.editGallery,
             imageUrls: [...urls]
-          })),
-          props.setDialog({ ...res }),
+          })) /*  Cause error
+          props.setDialog({ gallery: { ...res } }), */,
           setUrls([...res.imageUrls]))
-        : (res = {});
-      console.debug('Server response', res);
+        : (res = { ...props.editGallery });
     }
     return () => {
       req(urls.length > 0);

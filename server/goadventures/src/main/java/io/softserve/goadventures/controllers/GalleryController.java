@@ -10,6 +10,7 @@ import io.softserve.goadventures.services.EventService;
 import io.softserve.goadventures.services.FileStorageService;
 import io.softserve.goadventures.services.GalleryCRUDService;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,15 +50,15 @@ public class GalleryController {
         this.fileStorageService = fileStorageService;
         this.modelMapper = modelMapper;
         this.galleryCRUDService = galleryCRUDService;
-        // Create mapping for Event -> Gallery
-//        PropertyMap<Event, EventDTO> galleryMap = new PropertyMap<>() {
-//            protected void configure() {
-//                map().setGallery(source.getGallery().getId());
-//            }
-//        };
-//        modelMapper.addMappings(galleryMap);
-    }
 
+        PropertyMap<GalleryDto, Gallery> personMap = new PropertyMap<>() {
+            protected void configure() {
+                skip().setEventId(null);
+                skip().setIsDeleted(null);
+            }
+        };
+        modelMapper.addMappings(personMap);
+    }
     /**
      * This method are for develop purpose only
      *
@@ -73,12 +74,6 @@ public class GalleryController {
             @PathVariable("eventId") int eventId, @RequestParam("images") MultipartFile[] images) {
         try {
             Event event = eventService.getEventById(eventId);
-            // Remove old gallery if such exist
-            Gallery galleryStatus = event.getGallery();
-                    if(galleryStatus != null) {
-                        galleryStatus.setIsDeleted(true);
-                        galleryStatus.setEventId(null);
-                    }
             if (event != null) {
                 Set<String> imageUrls = new HashSet<>();
                 String newFileName;
@@ -91,8 +86,15 @@ public class GalleryController {
                             .toUriString();
                     imageUrls.add(fileUrl);
                 }
-                logger.info(imageUrls.toString());
-                Gallery gallery = new Gallery(0, event, imageUrls, false);
+                Gallery gallery;
+                // Update old gallery if such exist
+                Gallery galleryStatus = event.getGallery();
+                if(galleryStatus != null) {
+                    galleryStatus.setImageUrls(imageUrls);
+                    gallery = galleryStatus;
+                } else {
+                    gallery = new Gallery(0, event, imageUrls, false);
+                }
                 gallery = galleryRepository.save(gallery);
                 if (gallery != null) {
                     event.setGallery(gallery);
@@ -111,7 +113,6 @@ public class GalleryController {
         }
     }
 
-
     @GetMapping("/galleries/{fileName:.+}")
     public ResponseEntity<?> getImages(@PathVariable String fileName, HttpServletRequest request) {
         // Load file as Resource
@@ -124,24 +125,22 @@ public class GalleryController {
             return ResponseEntity.status(404).body(new ErrorMessageManager
                     ("File's content type is unknown", ex.getMessage()));
         }
-
         // Fallback to the default content type if type could not be determined
         if(contentType == null) {
             contentType = "application/octet-stream";
         }
-
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
     }
 
-
     @GetMapping("get/{galleryId}")
     public  ResponseEntity<?> getGallery(@PathVariable(value = "galleryId") int galleryId) {
         try {
             Gallery gallery = galleryRepository.findById(galleryId);
             if(gallery != null) {
+                logger.info("YOYO " + gallery.toString());
                 return ResponseEntity.ok().body(modelMapper.map(gallery, GalleryDto.class));
             } else  {
                 throw new IOException("Gallery not founded");
@@ -178,10 +177,9 @@ public class GalleryController {
             @PathVariable(value = "galleryId") int galleryId,
             @RequestBody GalleryDto mutatedGallery) {
         try {
-
             Gallery gallery = galleryRepository.findById(galleryId);
-
             if (gallery != null) {
+
                modelMapper.map(mutatedGallery, gallery);
                logger.info("Gallery dto" + mutatedGallery.getEventId());
                logger.info("Gallery event id" + gallery.getEventId());
@@ -195,5 +193,4 @@ public class GalleryController {
             return ResponseEntity.status(500).body(new ErrorMessageManager(ServerErrorMsg, error.toString()));
         }
     }
-
 }

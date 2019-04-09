@@ -37,7 +37,6 @@ interface EditEvent {
 interface EditEventInputState {
   topic: string;
   location: string;
-  gallery: GalleryDto;
 }
 
 export const EditEvent = (props: EditEvent) => {
@@ -71,9 +70,9 @@ export const EditEvent = (props: EditEvent) => {
   });
   const [category, setCategory] = useState(props.event.category);
   const [eventDialog, setEventDialog] = useState({
-    gallery: props.event.gallery,
     topic: props.event.topic
   } as EditEventInputState);
+  const [gallery, setGallery] = useState(props.event.gallery as GalleryDto);
   const [description, setDescription] = useState(props.event.description);
   const [location, setLocation] = useState(props.event.location);
   const [mapCoordiantes, setMapCoordinates] = useState([
@@ -87,13 +86,14 @@ export const EditEvent = (props: EditEvent) => {
       const update = async () => {
         props.setIsLoading(true);
         const response = await updateEvent({
+          category,
+          description,
+          latitude: mapCoordiantes[0],
           ...props.event,
           ...eventDialog,
           ...datepick,
-          category,
-          description,
+          gallery,
           location,
-          latitude: mapCoordiantes[0],
           longitude: mapCoordiantes[1]
         });
         props.setEvent({ ...response });
@@ -113,8 +113,9 @@ export const EditEvent = (props: EditEvent) => {
   const formRef = createRef<Formik>();
   return (
     <div className='row justify-content-center'>
-      <h2>Edit Event</h2>
+      <h2>Edit event info</h2>
       <div className='col-12'>
+        <h2>Change event description</h2>
         <div className='row form-group'>
           {errors.errorMessage ? <ErrorMessageComponent {...errors} /> : null}
           <Formik
@@ -131,37 +132,6 @@ export const EditEvent = (props: EditEvent) => {
             render={(formikProps: FormikProps<FormikValues>) => (
               <Form className='d-flex flex-column w-100'>
                 {editEventFormInputSettings.map((input, index) => {
-                  let customProps: {} | null;
-                  if (input.type === 'file') {
-                    customProps = {
-                      onChange: async (
-                        e: ChangeEvent<HTMLInputElement>
-                      ): Promise<void> => {
-                        const fileList = e.target.files;
-                        if (fileList) {
-                          const formData = new FormData();
-                          for (
-                            let i = 0;
-                            i < fileList.length && validateFile(fileList);
-                            i++
-                          ) {
-                            formData.append('images', fileList[i]);
-                          }
-                          const response = await uploadGallery(
-                            formData,
-                            props.event.id
-                          );
-                          setEventDialog({
-                            ...eventDialog,
-                            gallery: { ...response }
-                          });
-                        }
-                      },
-                      style: { color: 'transparent' }
-                    };
-                  } else {
-                    customProps = null;
-                  }
                   return (
                     <label key={index}>
                       {input.label_value}
@@ -176,19 +146,7 @@ export const EditEvent = (props: EditEvent) => {
                                 className='form-control rounded'
                                 placeholder='firstName'
                                 {...field}
-                                {...customProps}
                               />
-                              {input.type === 'file' &&
-                              !!eventDialog.gallery ? (
-                                <div>
-                                  <EditGallery
-                                    {...{
-                                      ...eventDialog.gallery,
-                                      setDialog: setEventDialog
-                                    }}
-                                  />
-                                </div>
-                              ) : null}
                               {form.touched[input.field_name] &&
                               form.errors[input.field_name] &&
                               form.errors[input.field_name] ? (
@@ -279,7 +237,61 @@ export const EditEvent = (props: EditEvent) => {
         </div>
       </div>
       <div className='col-12'>
-        <label>{location}</label>
+        <h3>Update your event gallery</h3>
+        <div>
+          <div className='input-group mb-3 rounded'>
+            <div className='input-group-prepend'>
+              <span className='input-group-text rounded' id='inputFileUpload'>
+                Upload
+              </span>
+            </div>
+            <div className='custom-file'>
+              <input
+                onChange={async (
+                  e: ChangeEvent<HTMLInputElement>
+                ): Promise<void> => {
+                  const fileList = e.target.files;
+                  if (fileList) {
+                    const formData = new FormData();
+                    for (
+                      let i = 0;
+                      i < fileList.length && validateFile(fileList);
+                      i++
+                    ) {
+                      formData.append('images', fileList[i]);
+                    }
+                    const response = await uploadGallery(
+                      formData,
+                      props.event.id
+                    );
+                    setGallery({ ...response });
+                  }
+                }}
+                type='file'
+                multiple
+                className='custom-file-input rounded'
+                id='inputFileUpload'
+                aria-describedby='fileUpload'
+              />
+              <label
+                className='custom-file-label rounded'
+                htmlFor='inputFileUpload'
+              >
+                Choose file
+              </label>
+            </div>
+          </div>
+          <EditGallery
+            {...{
+              editGallery: { ...gallery },
+              setDialog: setEventDialog
+            }}
+          />
+        </div>
+      </div>
+      <div className='col-12'>
+        <h3>Update event location</h3>
+        <h5>Event location: {location}</h5>
         <div>
           <Map
             attributionControl={true}
