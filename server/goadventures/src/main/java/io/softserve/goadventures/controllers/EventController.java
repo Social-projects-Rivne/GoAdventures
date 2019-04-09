@@ -102,7 +102,6 @@ public class EventController {
                                                    @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
         Event event = eventService.getEventById(eventId);
         User user = userService.getUserByEmail(jwtService.parseToken(token));
-
         eventParticipantsService.addParicipant(user, event);
 
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -117,11 +116,6 @@ public class EventController {
 
         HttpHeaders httpHeaders = new HttpHeaders();
         return ResponseEntity.ok().headers(httpHeaders).body("Deleted Subscriber");
-    }
-
-    @GetMapping("/allSubscribers")
-    public Iterable<EventParticipants> getAllSubcribers() {
-        return eventParticipantsRepository.findAll();
     }
 
     @PostMapping("/category")
@@ -165,6 +159,12 @@ public class EventController {
             return ResponseEntity.badRequest().body("End of pages");
         }
     }
+
+    @GetMapping("/allSubscribers")
+    public Iterable<EventParticipants> getAllSubcribers() {
+        return eventParticipantsRepository.findAll();
+    }
+
 
     @PutMapping("update/{eventId}")
     public ResponseEntity<?> updateEvent(@PathVariable("eventId") int eventId, @RequestBody EventDTO updatedEvent) {

@@ -4,30 +4,22 @@ import io.softserve.goadventures.models.Event;
 import io.softserve.goadventures.models.EventParticipants;
 import io.softserve.goadventures.models.User;
 import io.softserve.goadventures.repositories.EventParticipantsRepository;
-import io.softserve.goadventures.repositories.EventRepository;
-import io.softserve.goadventures.repositories.GalleryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EventParticipantsService {
 
-    private final EventRepository eventRepository;
-    private final GalleryRepository galleryRepository;
     private  final EventParticipantsRepository eventParticipantsRepository;
 
-
     @Autowired
-    public EventParticipantsService(EventRepository eventRepository, GalleryRepository galleryRepository, EventParticipantsRepository eventParticipantsRepository) {
-        this.eventRepository = eventRepository;
-        this.galleryRepository = galleryRepository;
+    public EventParticipantsService(EventParticipantsRepository eventParticipantsRepository) {
         this.eventParticipantsRepository = eventParticipantsRepository;
     }
 
     public EventParticipants getById(int id) {
         return eventParticipantsRepository.findById(id);
     }
-
 
     public EventParticipants addParicipant(User user, Event event) {
 
