@@ -161,6 +161,12 @@ public class EventController {
         return categoryRepository.findAll();
     }
 
+    @GetMapping("/categ/{categoryId}")
+    public String getAllCategory(@PathVariable(value = "categoryId") int categoryId) {
+        Category category = categoryRepository.findByEventsId(categoryId);
+        return category.getCategoryName();
+    }
+
     @GetMapping("/category/{categoryId}")
     public Page<Event> getAllEventsByCategoryId(@PathVariable(value = "categoryId") int eventId, Pageable pageable) {
         return eventRepository.findByCategoryId(eventId, pageable);
