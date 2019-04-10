@@ -34,7 +34,7 @@ public class EventEmailNotification {
     //@Scheduled(cron = "0 0 9 ? * * ") // every day at 9 am
 
     @Async
-    @Scheduled(cron = "0 0 9 ? * * ") // every day at 9 am
+    @Scheduled(cron = "0 10 12 ? * * ") // every day at 9 am
     public void emailNotification() throws ParseException, MessagingException {
         EmailSenderService emailSenderService = new EmailSenderService(mailContentBuilder);
         List<Event> events = eventService.findAllEvents();

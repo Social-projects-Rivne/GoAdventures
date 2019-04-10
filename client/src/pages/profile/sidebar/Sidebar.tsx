@@ -83,9 +83,10 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
           avatarUrl: response.data,
         }
       });
+
     }
     ).catch((err) => {
-      this.setState({ errorMesage: { ...err.response.data } });
+      this.setState({ errorMesage: { ...err.response.data } })
     });
   }
 
@@ -93,7 +94,7 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
     return (
       <ProfileContext.Consumer>
         {
-          ({ togleMyEvents, togleEditProfile, toogleAccountOverView }) => (
+          ({ togleMyEvents, togleEditProfile, toogleAccountOverView, context }) => (
             <div className='Sidebar__card card text-white bg-dark'>
               <div className='card-header'>
                 <h2 id="sidebarTitle" className='title sidebarTitle'>{this.state.userProfile.fullname}</h2>
@@ -117,7 +118,16 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
                   <button
                     style={this.state.avatar == '' ? { display: 'none' } : { display: 'flex' }}
                     className="btn btn-warning"
-                    onClick={this.uploadHandler}
+                    //onClick={this.uploadHandler}
+                    onClick={() => {
+
+                      this.uploadHandler();
+                      // context = {
+                      //   avatarUrl: this.state.userProfile.avatarUrl
+                      // }
+                    }
+
+                    }
                   >Upload</button>
                 </div>
                 <div className="Errors-messages avtErrorsWraper">

@@ -2,7 +2,7 @@ import { Cookies, withCookies } from 'react-cookie';
 import React, { Component, CSSProperties, ChangeEvent } from 'react';
 
 import { changeUserData, getUserData } from '../../api/user.service';
-import { Dialog } from '../../components';
+import { Dialog, Content } from '../../components';
 import { InputSettings } from '../../components/dialog-window/interfaces/input.interface';
 import { ProfileContext } from '../../context/profile.context';
 import { UserDto } from '../../interfaces/User.dto';
@@ -16,7 +16,6 @@ import axios, { AxiosResponse } from 'axios';
 import { serverUrl } from '../../api/url.config';
 
 
-
 interface ProfileState {
   userProfile: UserDto;
   userEventList: any;
@@ -26,12 +25,13 @@ interface ProfileState {
     publicError: string;
 
   };
+  context: {
+    avatarUrl: string;
+  },
   choose: 'edit-profile' | 'events' | 'default' | 'account-overview';
   togleEditProfile: () => void;
   togleMyEvents: () => void;
   toogleAccountOverView: () => void;
-  // toogleSetProfileState: () => void;
-
 
 }
 
@@ -111,6 +111,9 @@ export class Profile extends Component<UserDto, ProfileState> {
         startDate: '',
         topic: ''
       },
+      context: {
+        avatarUrl: ''
+      },
       choose: 'account-overview',
       togleEditProfile: () => {
         this.setState(state => ({
@@ -131,15 +134,7 @@ export class Profile extends Component<UserDto, ProfileState> {
 
         console.log(this.state.choose)
       },
-      // toogleSetProfileState: () => {         
-      //   this.setState(state => ({
-      //     userProfile : {
-      //         avatarUrl: value
 
-      //     } 
-      //   }));
-
-      // },
 
     };
 
@@ -221,51 +216,20 @@ export class Profile extends Component<UserDto, ProfileState> {
                 : (this.state.choose === 'edit-profile'
                   ? <Dialog
                     childComponents={
-                      <div>
-                        <div className='Sidebar__avatar'>
+                      <div className="Errors-messages">
+                        {
+                          this.state.errorMesage.publicError !== ''
+                            ? <div className="alert alert-warning alert-dismissible fade show errProfile"
+                              role="alert">
+                              <strong>{this.state.errorMesage.publicError}</strong>
+                              <button type="button" className="close" data-dismiss="alert" aria-label="Close">
 
-                          <img
-                            src={(this.state.userProfile.avatarUrl != undefined && this.state.userProfile.avatarUrl != '') ? this.state.userProfile.avatarUrl : avatar}
-                            alt='user_avatar' />
-
-                          <div className="change_avatar_btn">
-                            <input
-                              style={{ display: 'none' }}
-                              type='file'
-                              onChange={this.fileSelectHandler}
-                              ref={(fileInput) => this.fileInput = fileInput}
-                            />
-                            <div>
-                              <button
-                                className="btn btn-success changeAvatarBtn"
-                                onClick={() => this.fileInput.click()} > Change avatar
-                          </button>
+                                <span aria-hidden="true">&times;</span>
+                              </button>
                             </div>
-                            <div>
-                              <button
-                                style={this.state.avatar == '' ? { display: 'none' } : { display: 'flex' }}
-                                className="btn btn-warning"
-                                onClick={this.uploadHandler}
-                              >Upload</button>
-                            </div>
-
-                          </div>
-                        </div>
-
-                        <div className="Errors-messages">
-                          {
-                            this.state.errorMesage.publicError !== ''
-                              ? <div className="alert alert-warning alert-dismissible fade show errProfile"
-                                role="alert">
-                                <strong>{this.state.errorMesage.publicError}</strong>
-                                <button type="button" className="close" data-dismiss="alert" aria-label="Close">
-
-                                  <span aria-hidden="true">&times;</span>
-                                </button>
-                              </div>
-                              : null}
-                        </div>
+                            : null}
                       </div>
+
                     }
                     validationSchema={editProfileSchema}
                     handleSubmit={this.handleSubmit}
