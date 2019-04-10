@@ -7,6 +7,9 @@ import io.softserve.goadventures.repositories.EventParticipantsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class EventParticipantsService {
 
@@ -47,6 +50,18 @@ public class EventParticipantsService {
         else {
             return false;
         }
+    }
+
+    public List<EventParticipants> getAllSubscribersForOneEvent(Integer id) {
+
+        List<EventParticipants> list = new ArrayList<>();
+
+        for (EventParticipants e : eventParticipantsRepository.findAll()) {
+            if (id.equals(e.getEvent().getId())) {
+                list.add(e);
+            }
+        }
+        return list;
     }
 
 }

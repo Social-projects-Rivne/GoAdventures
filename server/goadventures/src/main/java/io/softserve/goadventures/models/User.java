@@ -45,7 +45,7 @@ public class User {
     @Column(name = "status_id")
     private int statusId;
 
-
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     Set<EventParticipants> participants = new HashSet<>();
 

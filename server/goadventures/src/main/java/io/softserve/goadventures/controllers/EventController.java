@@ -165,6 +165,12 @@ public class EventController {
         return eventParticipantsRepository.findAll();
     }
 
+    @GetMapping("/allSubscribersForEvent")
+    public Iterable<EventParticipants> getAllForEvent(@RequestHeader(value = "eventId") int eventId) {
+
+        return eventParticipantsService.getAllSubscribersForOneEvent(eventId);
+    }
+
 
     @PutMapping("update/{eventId}")
     public ResponseEntity<?> updateEvent(@PathVariable("eventId") int eventId, @RequestBody EventDTO updatedEvent) {

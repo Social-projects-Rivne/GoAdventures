@@ -58,9 +58,9 @@ public class Event {
     @JoinColumn(name = "category_id")
     private Category category;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "event")
     Set<EventParticipants> participants = new HashSet<>();
-
 
     @JsonIgnore
     @ManyToOne(cascade = CascadeType.PERSIST)
