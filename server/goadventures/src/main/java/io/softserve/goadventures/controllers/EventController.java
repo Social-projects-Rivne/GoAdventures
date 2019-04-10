@@ -130,6 +130,8 @@ public class EventController {
         }
     }
 
+
+
     @PutMapping("update/{eventId}")
     public ResponseEntity<?> updateEvent(@PathVariable("eventId") int eventId, @RequestBody EventDTO updatedEvent) {
         try {
