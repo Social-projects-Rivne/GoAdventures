@@ -39,6 +39,7 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
 
     };
 
+    this.clearErrorMessage = this.clearErrorMessage.bind(this);
     this.uploadHandler = this.uploadHandler.bind(this);
     this.fileSelectHandler = this.fileSelectHandler.bind(this);
   }
@@ -54,7 +55,12 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
   //   }
   // }
 
-
+  public clearErrorMessage() {
+    this.setState({
+      errorMesage: { publicError: '' }
+    }
+    );
+  }
   public fileSelectHandler(event: ChangeEvent<HTMLInputElement>): void {
     console.debug(event.target.files);
     !!event.target.files ?
@@ -118,26 +124,30 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
                   <button
                     style={this.state.avatar == '' ? { display: 'none' } : { display: 'flex' }}
                     className="btn btn-warning"
-                    //onClick={this.uploadHandler}
-                    onClick={() => {
+                    onClick={this.uploadHandler}
+                  // onClick={() => {
 
-                      this.uploadHandler();
-                      // context = {
-                      //   avatarUrl: this.state.userProfile.avatarUrl
-                      // }
-                    }
+                  //   this.uploadHandler();
+                  //   context = {
+                  //     avatarUrl: this.state.userProfile.avatarUrl
+                  //   }
+                  // }
 
-                    }
+                  // }
                   >Upload</button>
                 </div>
                 <div className="Errors-messages avtErrorsWraper">
                   {
 
                     this.state.errorMesage.publicError !== ''
-                      ? <div className="alert alert-warning alert-dismissible fade show  errAvatarMessage"
+                      ? <div className="alert alert-danger alert-dismissible fade show  errAvatarMessage"
                         role="alert">
                         <strong>{this.state.errorMesage.publicError}</strong>
-                        <button type="button" className="close" data-dismiss="alert" aria-label="Close">
+                        <button type="button"
+                          onClick={this.clearErrorMessage}
+                          className="close"
+                          data-dismiss="alert"
+                          aria-label="Close">
 
                           <span aria-hidden="true">&times;</span>
                         </button>

@@ -16,11 +16,12 @@ import axios, { AxiosResponse } from 'axios';
 import { serverUrl } from '../../api/url.config';
 
 
+
 interface ProfileState {
   userProfile: UserDto;
   userEventList: any;
   avatar: string | Blob;
-  showEditForm: boolean;
+  //showSucessMessage: boolean;
   errorMesage: {
     publicError: string;
 
@@ -65,7 +66,7 @@ export class Profile extends Component<UserDto, ProfileState> {
     },
     {
       field_name: 'password',
-      label_value: 'Old password',
+      label_value: 'Current password',
       placeholder: '********',
       type: 'password'
     },
@@ -77,7 +78,7 @@ export class Profile extends Component<UserDto, ProfileState> {
     },
     {
       field_name: 'confirmPassword',
-      label_value: 'Confirm your password',
+      label_value: 'Repeat new password',
       placeholder: '********',
       type: 'password'
     }
@@ -92,7 +93,7 @@ export class Profile extends Component<UserDto, ProfileState> {
     super(props);
 
     this.state = {
-      showEditForm: true,
+      //showSucessMessage: false,
       avatar: '',
       errorMesage: {
         publicError: '',
@@ -119,63 +120,37 @@ export class Profile extends Component<UserDto, ProfileState> {
         this.setState(state => ({
           choose: 'edit-profile'
         }));
-        console.log(this.state.choose)
+        console.debug(this.state.choose)
       },
       togleMyEvents: () => {
         this.setState(state => ({
           choose: 'events'
         }));
-        console.log(this.state.choose)
+        console.debug(this.state.choose)
       },
       toogleAccountOverView: () => {
         this.setState(state => ({
           choose: 'account-overview'
         }));
 
-        console.log(this.state.choose)
+        console.debug(this.state.choose)
       },
 
 
     };
-
+    this.clearErrorMessage = this.clearErrorMessage.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.uploadHandler = this.uploadHandler.bind(this);
     this.fileSelectHandler = this.fileSelectHandler.bind(this);
 
   }
-  public uploadHandler() {  //uploadAvatar
-    const formdata: FormData = new FormData();
-    formdata.set('file', this.state.avatar);
-    const config = {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        'Authorization': `Bearer ${cookies.get('tk879n')}`
-      }
-    };
-    axios.post(
-      `${serverUrl}/uploadAvatar`,
-      formdata,
-      config
-    ).then(response => {
-      this.setState({
-        userProfile: {
-          ...this.state.userProfile,
-          avatarUrl: response.data,
-        }
-      });
-    }
-    ).catch((err) => {
-      this.setState({ errorMesage: { ...err.response.data } });
-    });
-  }
-
   public handleSubmit(data: UserDto): Promise<any> {   //change user data
     return changeUserData({ ...data }).then((res) => {
       console.debug(res)
       this.setState({
         userProfile: {
           ...res.data
-        }
+        },
+        errorMesage: { publicError: 'saved successfully' }
       });
     })
       .catch((err) => {
@@ -191,7 +166,6 @@ export class Profile extends Component<UserDto, ProfileState> {
       }) : null;
   }
   public componentDidMount() {
-    // сеттер на пропси зверху з api
     getUserData()
       .then((response: AxiosResponse<UserDto>) =>
         this.setState({
@@ -199,7 +173,12 @@ export class Profile extends Component<UserDto, ProfileState> {
         })
       );
   }
-
+  public clearErrorMessage() {
+    this.setState({
+      errorMesage: { publicError: '' }
+    }
+    );
+  }
   public render() {
     console.debug(this.state.userProfile)
     return (
@@ -215,15 +194,26 @@ export class Profile extends Component<UserDto, ProfileState> {
                 ? <ShowEvents {...this.state.userEventList} />
                 : (this.state.choose === 'edit-profile'
                   ? <Dialog
+                    validationSchema={editProfileSchema}
+                    handleSubmit={this.handleSubmit}
+                    inputs={this.editFormInputSettings}
+                    button_text='Update'
+                    header='Edit your profile'
+                    inline_styles={this.editFormDialogStyles}
                     childComponents={
                       <div className="Errors-messages">
                         {
                           this.state.errorMesage.publicError !== ''
                             ? <div className="alert alert-warning alert-dismissible fade show errProfile"
-                              role="alert">
+                              data-auto-dismiss role="alert"
+                              auto-close="3000">
                               <strong>{this.state.errorMesage.publicError}</strong>
-                              <button type="button" className="close" data-dismiss="alert" aria-label="Close">
-
+                              <button
+                                onClick={this.clearErrorMessage}
+                                type="button"
+                                className="close"
+                                data-dismiss="alert"
+                                aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                               </button>
                             </div>
@@ -231,12 +221,6 @@ export class Profile extends Component<UserDto, ProfileState> {
                       </div>
 
                     }
-                    validationSchema={editProfileSchema}
-                    handleSubmit={this.handleSubmit}
-                    inputs={this.editFormInputSettings}
-                    button_text='Update'
-                    header='Edit your profile'
-                    inline_styles={this.editFormDialogStyles}
                   />
                   : (this.state.choose === 'account-overview'
                     ? <AccountOverwiew {...this.state.userProfile} />
