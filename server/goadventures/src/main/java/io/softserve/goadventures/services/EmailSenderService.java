@@ -47,7 +47,7 @@ public class EmailSenderService {
         closeTransport();
     }
 
-    void sendNewPassword(String email, String password) throws MessagingException {
+    public void sendNewPassword(String email, String password) throws MessagingException {
         InternetAddress toAddress = new InternetAddress(email);
         msg.setRecipient(Message.RecipientType.TO, toAddress);
         msg.setSubject("New password for GoAdventure");

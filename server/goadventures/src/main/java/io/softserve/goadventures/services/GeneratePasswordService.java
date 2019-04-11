@@ -10,17 +10,7 @@ public class GeneratePasswordService {
     public GeneratePasswordService() {
     }
 
-    public String generatePassword(String email, MailContentBuilder mailContentBuilder) {
-        String newPassword = RandomStringUtils.random(10, true, true);
-
-        LoggerFactory.getLogger(GeneratePasswordService.class).info("\n\n\tNew generate password: " + newPassword + "\n");
-
-        try {
-            EmailSenderService senderService = new EmailSenderService(mailContentBuilder);
-            senderService.sendNewPassword(email, newPassword);
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-        return newPassword;
+    public String generatePassword() {
+        return RandomStringUtils.random(10, true, true);
     }
 }

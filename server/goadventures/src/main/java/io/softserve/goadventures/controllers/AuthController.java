@@ -96,6 +96,7 @@ public class AuthController extends HttpServlet {
     @GetMapping("/recovery")
     public ResponseEntity<User> recoveryPassword(@RequestParam("setnewpassword") String token) {
         String email = jwtService.parseRefreshToken(token);
+        String newPassword = passwordService.generatePassword();
 
         if (userService.checkingEmail(email)) {
             return ResponseEntity.badRequest().body(null);
@@ -103,11 +104,15 @@ public class AuthController extends HttpServlet {
             try {
                 User user = userService.getUserByEmail(email);
                 user.setPassword(BCrypt.hashpw(
-                        passwordService.generatePassword(email, mailContentBuilder),
+                        newPassword,
                         BCrypt.gensalt()));
                 userService.updateUser(user);
+
+                EmailSenderService senderService = new EmailSenderService(mailContentBuilder);
+                senderService.sendNewPassword(email, newPassword);
+
                 return ResponseEntity.ok().body(user);
-            } catch (UserNotFoundException e) {
+            } catch (UserNotFoundException | MessagingException  e) {
                 e.printStackTrace();
                 return ResponseEntity.badRequest().body(null);
             }

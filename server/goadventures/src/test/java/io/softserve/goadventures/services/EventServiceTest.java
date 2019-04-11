@@ -38,8 +38,8 @@ class EventServiceTest {
         when(eventRepository.findById(ID)).thenReturn((mockEvent));
 
         assertEquals(mockEvent, eventService.getEventById(ID));
-//        eventService.getEventById(ID);
-//        verify(eventRepository).findById(ID);
+        eventService.getEventById(ID);
+        verify(eventRepository).findById(ID);
     }
 
     @Test
