@@ -59,14 +59,23 @@ public class FileStorageService {
         }
     }
 
-    public String checkFileType(MultipartFile file){    //check file type
+    public boolean checkFileType(MultipartFile file){    //check file type
         String contentType = file.getContentType();
         if(!(contentType.startsWith("image/"))){
-            throw new WrongImageTypeException("Could not be uploaded, it is not an image!");
+            //throw new WrongImageTypeException("Could not be uploaded, it is not an image!");
+            return false;
         }
-        return null;
+        return true;
     }
+    public boolean checkFileSize(MultipartFile file){
+     long fileSize= file.getSize();
+     logger.info("file size"+ fileSize);
+     if(fileSize > 5242880){
+         return false;
+     }
+     return true;
 
+    }
     public Resource loadFileAsResource(String fileName) {
         try {
             Path filePath = this.fileStorageLocation.resolve(fileName).normalize();

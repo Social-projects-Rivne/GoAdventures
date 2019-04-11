@@ -62,6 +62,13 @@ public class EmailSenderService {
         msg.setContent(contentBuilder.recoveryMail(email, token), "text/html");
         closeTransport();
     }
+    public void eventEmailNotidication(String email,String fullname, String eventTopic) throws MessagingException {
+        InternetAddress toAddress = new InternetAddress(email);
+        msg.setRecipient(Message.RecipientType.TO,toAddress);
+        msg.setSubject("Event starts soon");
+        msg.setContent(contentBuilder.eventEmailNotification(fullname,eventTopic),"text/html");
+        closeTransport();
+    }
 
     private void closeTransport() throws MessagingException {
         String password = "Adventures12_";
