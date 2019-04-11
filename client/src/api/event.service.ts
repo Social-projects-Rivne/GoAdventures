@@ -72,7 +72,7 @@ export const deleteEvent = async (data: number): Promise<any> =>
     }
   });
 
-export const updateEvent = async (data: EventDto): Promise<EventDto | object> =>
+export const updateEvent = async (data: EventDto): Promise<any> =>
   await axios
     .put(
       `${serverUrl}/event/update/${data.id}`,

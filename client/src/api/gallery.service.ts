@@ -2,29 +2,30 @@ import axios, { AxiosResponse } from 'axios';
 import { serverUrl } from './url.config';
 import { cookies } from './cookies.service';
 import { GalleryDto } from '../interfaces/Gallery.dto';
-import statusCheck from './statusCheck.service';
+import errorHandle from './error.service';
 
 export const uploadGallery = async (
   data: any,
-  eventId: number
+  eventId?: number
 ): Promise<any> => {
+  console.warn('Ce syka',eventId);
   return await axios
-    .post(`${serverUrl}/event/gallery/add-new/${eventId}`, data, {
-      headers: {
-        'Authorization': `Bearer ${cookies.get('tk879n')}`,
-        'Content-Type': 'application/json'
+    .post(
+      `${serverUrl}/event/gallery/add-new/${eventId ? eventId : ''}`,
+      data,
+      {
+        headers: {
+          'Authorization': `Bearer ${cookies.get('tk879n')}`,
+          'Content-Type': 'application/json'
+        }
       }
-    })
+    )
     .then((res) => {
-      if (statusCheck(res)) {
-        return res.data;
-      } else {
-        throw Error(res.data);
-      }
+      return res.data;
     })
-    .catch((error) => {
-      console.debug(...error);
-      return error;
+    .catch((err) => {
+      console.debug(err);
+      return errorHandle(err);
     });
 };
 
@@ -37,32 +38,30 @@ export const getGallery = async (galleryId: number) => {
       }
     })
     .then((res: AxiosResponse<any>) => {
-      if (statusCheck(res)) {
-        console.debug('Get gallery', res.data);
-        return res.data;
-      } else {
-        throw new Error(res.data);
-      }
+      return res.data;
     })
     .catch((err) => {
       console.debug(err);
-      return err;
+      return errorHandle(err);
     });
 };
 
-export const alterGallery = async (
+export const deleteGallery = async (
   galleryId: number,
   mutatedGallery: GalleryDto
 ): Promise<any> => {
-  console.debug('request', mutatedGallery);
-  return await axios.put(
-    `${serverUrl}/event/gallery/remove/${galleryId}`,
-    mutatedGallery,
-    {
+  return await axios
+    .put(`${serverUrl}/event/gallery/deatach/${galleryId}`, mutatedGallery, {
       headers: {
         'Authorization': `Bearer ${cookies.get('tk879n')}`,
         'Content-Type': 'application/json'
       }
-    }
-  );
+    })
+    .then((res: AxiosResponse<any>) => {
+      return res.data;
+    })
+    .catch((err) => {
+      console.debug(err);
+      return errorHandle(err);
+    });
 };

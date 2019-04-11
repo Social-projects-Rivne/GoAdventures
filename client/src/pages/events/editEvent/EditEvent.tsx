@@ -6,7 +6,8 @@ import { TileLayer, Popup, Marker, Map } from 'react-leaflet';
 import {
   ValidatedTextarea,
   DropDown,
-  ErrorMessageComponent
+  ErrorMessageComponent,
+  UploadInput
 } from '../../../components';
 import { eventSchema } from '../../../validationSchemas/eventValidation';
 import { editEventFormInputSettings } from './inputSettings';
@@ -22,8 +23,6 @@ import {
 import { MdDone } from 'react-icons/md';
 import moment from 'moment';
 import { updateEvent } from '../../../api/event.service';
-import EditGallery from '../../../components/gallery/edit-gallery/EditGallery';
-import { uploadGallery } from '../../../api/gallery.service';
 import './EditEvent.scss';
 import { ErrorMessage } from '../../../interfaces/ErrorMessage';
 
@@ -40,29 +39,12 @@ interface EditEventInputState {
 }
 
 export const EditEvent = (props: EditEvent) => {
-  console.debug('EditEvent', props.event.gallery!.eventId);
   const zoom = 13;
   const geocoder = LCG.L.Control.Geocoder.nominatim();
   let submitNested: () => any;
   const bindSubmit = (formikSubmit: any) => {
     submitNested = formikSubmit;
   };
-  const validateFile = (fileList: FileList): boolean => {
-    let file;
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < fileList.length; i++) {
-      file = fileList[i].type.match(/^.*\b(png|jpg|gif)\b.*$/);
-    }
-    if (file) {
-      return true;
-    } else {
-      setErrors({
-        errorMessage: 'You try to upload file with unsoported extension'
-      });
-      return false;
-    }
-  };
-
   const [errors, setErrors] = useState({} as ErrorMessage);
   const [datepick, setDate] = useState({
     startDate: props.event.startDate,
@@ -114,10 +96,10 @@ export const EditEvent = (props: EditEvent) => {
   return (
     <div className='row justify-content-center'>
       <h2>Edit event info</h2>
+      {errors.errorMessage ? <ErrorMessageComponent {...errors} /> : null}
       <div className='col-12'>
         <h2>Change event description</h2>
         <div className='row form-group'>
-          {errors.errorMessage ? <ErrorMessageComponent {...errors} /> : null}
           <Formik
             ref={formRef}
             validationSchema={eventSchema}
@@ -238,56 +220,14 @@ export const EditEvent = (props: EditEvent) => {
       </div>
       <div className='col-12'>
         <h3>Update your event gallery</h3>
-        <div>
-          <div className='input-group mb-3 rounded'>
-            <div className='input-group-prepend'>
-              <span className='input-group-text rounded' id='inputFileUpload'>
-                Upload
-              </span>
-            </div>
-            <div className='custom-file'>
-              <input
-                onChange={async (
-                  e: ChangeEvent<HTMLInputElement>
-                ): Promise<void> => {
-                  const fileList = e.target.files;
-                  if (fileList) {
-                    const formData = new FormData();
-                    for (
-                      let i = 0;
-                      i < fileList.length && validateFile(fileList);
-                      i++
-                    ) {
-                      formData.append('images', fileList[i]);
-                    }
-                    const response = await uploadGallery(
-                      formData,
-                      props.event.id
-                    );
-                    setGallery({ ...response });
-                  }
-                }}
-                type='file'
-                multiple
-                className='custom-file-input rounded'
-                id='inputFileUpload'
-                aria-describedby='fileUpload'
-              />
-              <label
-                className='custom-file-label rounded'
-                htmlFor='inputFileUpload'
-              >
-                Choose file
-              </label>
-            </div>
-          </div>
-          <EditGallery
-            {...{
-              editGallery: { ...gallery },
-              setDialog: setEventDialog
-            }}
-          />
-        </div>
+        <UploadInput
+          {...{
+            gallery,
+            setErrors,
+            setGallery,
+            eventId: props.event.id
+          }}
+        />
       </div>
       <div className='col-12'>
         <h3>Update event location</h3>

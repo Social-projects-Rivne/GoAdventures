@@ -1,10 +1,7 @@
 import React from 'react';
 import { GalleryDto } from '../../interfaces/Gallery.dto';
 
-// WILL CHANGE!
-
 export const Gallery = (props?: GalleryDto): JSX.Element => {
-  console.debug(props);
   return (
     <div
       id='carouselExampleControls'

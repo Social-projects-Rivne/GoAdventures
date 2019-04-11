@@ -1,48 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { GalleryDto } from '../../../interfaces/Gallery.dto';
 import './EditGallery.scss';
-import { alterGallery, getGallery } from '../../../api/gallery.service';
 
 interface EditGalleryPorps {
   editGallery: GalleryDto;
-  setDialog: any;
+  setGallery: any;
+  setErrors: any;
 }
 
 function EditGallery(props: EditGalleryPorps) {
-  const [gallery, setGallery] = useState({} as GalleryDto);
   const [urls, setUrls] = useState([] as string[]);
   const uniKeyPrefix = 'uniID_gall_';
-
   /*  Set initial state */
   useEffect(() => {
-    setUrls([...props.editGallery.imageUrls]);
-    setGallery({ ...props.editGallery });
-    console.debug('initial effect', gallery);
+    if (
+      Object.entries(props.editGallery).length > 0 &&
+      !Object.is(props.editGallery.imageUrls, urls)
+    ) {
+      setUrls([...props.editGallery.imageUrls]);
+    }
     return () => {};
-  }, [props.editGallery]);
+  }, [props.editGallery.imageUrls]);
 
   useEffect(() => {
-    async function req(urlsHasElements: boolean): Promise<void> {
-      let res: any;
-      urlsHasElements
-        ? ((res = await alterGallery(props.editGallery.id, {
-            ...props.editGallery,
-            imageUrls: [...urls]
-          })) /*  Cause error
-          props.setDialog({ gallery: { ...res } }), */,
-          setUrls([...res.imageUrls]))
-        : (res = { ...props.editGallery });
+    if (Object.entries(props.editGallery).length > 0 && urls.length > 0) {
+      props.setGallery({ ...props.editGallery, imageUrls: urls });
     }
-    return () => {
-      req(urls.length > 0);
-    };
+    return () => {};
   }, [urls]);
 
-  function handleDelete(index: number) {
+  async function handleDelete(index: number): Promise<void> {
     const mutatedUrls = [...urls];
-    mutatedUrls.splice(index, 1);
-    setUrls([...mutatedUrls]);
+    await mutatedUrls.splice(index, 1);
+    setUrls(mutatedUrls);
   }
+
   return (
     <div className='EditGallery jumbotron'>
       <div className='d-flex flex-row flex-grow-1 flex-shrink-1 flex-wrap justify-content-center'>

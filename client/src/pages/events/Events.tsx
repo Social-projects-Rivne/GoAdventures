@@ -31,7 +31,6 @@ export class Events extends Component<EventDto, EventState> {
   }
 
   public async fetchEvents(): Promise<void> {
-    console.debug(this.state);
     const response = await getEventList(this.state.pageSettings.nextPage);
     this.setState({
       events: [...this.state.events, ...response.content],

@@ -142,9 +142,7 @@ export class EventDetail extends Component<any, any> {
                         this.state.eventProps.event.longitude
                       ]}
                     >
-                      <Popup>
-                        A pretty CSS3 popup. <br /> Easily customizable.
-                      </Popup>
+                      <Popup>{this.state.eventProps.event.location}</Popup>
                     </Marker>
                   </Map>
                 </div>
@@ -170,8 +168,8 @@ export class EventDetail extends Component<any, any> {
                   </button>
                 </div>
               ) : (
-                  <div />
-                )}
+                <div />
+              )}
 
               <hr className='my-4' />
               <div>
@@ -183,7 +181,7 @@ export class EventDetail extends Component<any, any> {
                     enableReinitialize={true}
                     validateOnBlur={true}
                     validateOnChange={true}
-                    onSubmit={() => { }}
+                    onSubmit={() => {}}
                     render={(props: FormikProps<FormValue>) => (
                       <Form>
                         <Field
@@ -199,16 +197,16 @@ export class EventDetail extends Component<any, any> {
                                   name='comment'
                                 />
                                 {form.touched.comment &&
-                                  form.errors.comment &&
-                                  form.errors.comment ? (
-                                    <div className='invalid-feedback'>
-                                      {form.errors.comment}
-                                    </div>
-                                  ) : (
-                                    <div className='valid-feedback'>
-                                      <MdDone /> Press enter to add comment
+                                form.errors.comment &&
+                                form.errors.comment ? (
+                                  <div className='invalid-feedback'>
+                                    {form.errors.comment}
                                   </div>
-                                  )}
+                                ) : (
+                                  <div className='valid-feedback'>
+                                    <MdDone /> Press enter to add comment
+                                  </div>
+                                )}
                               </div>
                             );
                           }}

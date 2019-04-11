@@ -69,42 +69,47 @@ public class GalleryController {
         return galleryRepository.findAll();
     }
 
-    @PostMapping("/add-new/{eventId}")
+    @PostMapping({"/add-new/{eventId}", "/add-new/"})
     public ResponseEntity<?> addNewGallery(
-            @PathVariable("eventId") int eventId, @RequestParam("images") MultipartFile[] images) {
+            @PathVariable(value = "eventId", required = false) Integer eventId, @RequestParam("images") MultipartFile[] images) {
         try {
-            Event event = eventService.getEventById(eventId);
-            if (event != null) {
-                Set<String> imageUrls = new HashSet<>();
-                String newFileName;
-                String fileUrl;
-                for (MultipartFile uploadedImage : images) {
-                    newFileName = fileStorageService.storeFile(uploadedImage);
-                    fileUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
-                            .path("event/gallery/galleries/")
-                            .path(newFileName)
-                            .toUriString();
-                    imageUrls.add(fileUrl);
-                }
-                Gallery gallery;
-                // Update old gallery if such exist
-                Gallery galleryStatus = event.getGallery();
-                if(galleryStatus != null) {
-                    galleryStatus.setImageUrls(imageUrls);
-                    gallery = galleryStatus;
+            Set<String> imageUrls = new HashSet<>();
+            String newFileName;
+            String fileUrl;
+            for (MultipartFile uploadedImage : images) {
+                newFileName = fileStorageService.storeFile(uploadedImage);
+                fileUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+                        .path("event/gallery/galleries/")
+                        .path(newFileName)
+                        .toUriString();
+                imageUrls.add(fileUrl);
+            }
+            if (eventId != null) {
+                Event event = eventService.getEventById(eventId);
+                if (event != null) {
+                    Gallery gallery;
+                    // Update previous gallery if such exist
+                    Gallery galleryStatus = event.getGallery();
+                    if(galleryStatus != null) {
+                        galleryStatus.setImageUrls(imageUrls);
+                        gallery = galleryRepository.save(galleryStatus);
+                    } else {
+                        gallery = galleryRepository.save(new Gallery(0, event, imageUrls, false));
+                    }
+                    if (gallery != null) {
+                        event.setGallery(gallery);
+                        eventService.updateEvent(event);
+                        return ResponseEntity.ok().body(modelMapper.map(gallery, GalleryDto.class));
+                    } else {
+                        throw new IOException("Gallery malformed");
+                    }
                 } else {
-                    gallery = new Gallery(0, event, imageUrls, false);
+                    throw new IOException("Event doesn't founded or doesn't exist");
                 }
-                gallery = galleryRepository.save(gallery);
-                if (gallery != null) {
-                    event.setGallery(gallery);
-                    eventService.updateEvent(event);
-                    return ResponseEntity.ok().body(modelMapper.map(gallery, GalleryDto.class));
-                } else {
-                    throw new IOException("Gallery malformed");
-                }
-            } else {
-                throw new IOException("Event doesn't founded or doesn't exist");
+            } else  {
+                Gallery newGallery = new Gallery(0, null, imageUrls, false);
+                newGallery = galleryRepository.save(newGallery);
+                return ResponseEntity.ok().body(modelMapper.map(newGallery, GalleryDto.class));
             }
         } catch (IOException error) {
             logger.debug(error.toString());
@@ -140,7 +145,7 @@ public class GalleryController {
         try {
             Gallery gallery = galleryRepository.findById(galleryId);
             if(gallery != null) {
-                logger.info("YOYO " + gallery.toString());
+                logger.info(gallery.toString());
                 return ResponseEntity.ok().body(modelMapper.map(gallery, GalleryDto.class));
             } else  {
                 throw new IOException("Gallery not founded");
@@ -169,28 +174,6 @@ public class GalleryController {
             logger.error(error.getMessage());
             return ResponseEntity.status(500).body(
                     new ErrorMessageManager(ServerErrorMsg, error.getMessage()));
-        }
-    }
-
-    @PutMapping("/remove/{galleryId}")
-    public  ResponseEntity<?> removeOneImage(
-            @PathVariable(value = "galleryId") int galleryId,
-            @RequestBody GalleryDto mutatedGallery) {
-        try {
-            Gallery gallery = galleryRepository.findById(galleryId);
-            if (gallery != null) {
-
-               modelMapper.map(mutatedGallery, gallery);
-               logger.info("Gallery dto" + mutatedGallery.getEventId());
-               logger.info("Gallery event id" + gallery.getEventId());
-                return ResponseEntity.ok().body(modelMapper.map(
-                        galleryCRUDService.updateGallery( gallery ), GalleryDto.class));
-            } else {
-                throw new IOException(String.format("Gallery with id %s does not exist", galleryId));
-            }
-        } catch (IOException error) {
-            logger.error(error.getMessage());
-            return ResponseEntity.status(500).body(new ErrorMessageManager(ServerErrorMsg, error.toString()));
         }
     }
 }
