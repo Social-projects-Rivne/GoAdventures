@@ -51,13 +51,13 @@ public class GalleryController {
         this.modelMapper = modelMapper;
         this.galleryCRUDService = galleryCRUDService;
 
-        PropertyMap<GalleryDto, Gallery> personMap = new PropertyMap<>() {
+        PropertyMap<GalleryDto, Gallery> galleryMap = new PropertyMap<>() {
             protected void configure() {
                 skip().setEventId(null);
                 skip().setIsDeleted(null);
             }
         };
-        modelMapper.addMappings(personMap);
+        modelMapper.addMappings(galleryMap);
     }
     /**
      * This method are for develop purpose only

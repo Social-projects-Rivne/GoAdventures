@@ -5,7 +5,7 @@ export default function(error: AxiosError) {
   if (error.response) {
     if (error.response.status === 500) {
       return {
-        errorMessage: 'Oops, something went wrong, try again later'
+        errorMessage: ['Oops, something went wrong, try again later']
       } as ErrorMessage;
     } else {
       return error.response.data;

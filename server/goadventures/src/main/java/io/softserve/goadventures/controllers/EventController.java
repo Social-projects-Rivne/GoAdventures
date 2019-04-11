@@ -37,157 +37,161 @@ import java.util.HashSet;
 @RestController
 @RequestMapping("event")
 public class EventController {
-    private Logger logger = LoggerFactory.getLogger(EventController.class);
-    private final EventService eventService;
-    private final EventRepository eventRepository;
-    private final CategoryRepository categoryRepository;
-    private final EventDtoBuilder eventDtoBuilder;
-    private final JWTService jwtService;
-    private final UserService userService;
-    private final ModelMapper modelMapper;
+  private Logger logger = LoggerFactory.getLogger(EventController.class);
+  private final EventService eventService;
+  private final EventRepository eventRepository;
+  private final CategoryRepository categoryRepository;
+  private final EventDtoBuilder eventDtoBuilder;
+  private final JWTService jwtService;
+  private final UserService userService;
+  private final ModelMapper modelMapper;
 
-    @Autowired
-    public EventController(EventService eventService, EventRepository eventRepository,
-            CategoryRepository categoryRepository, GalleryRepository galleryRepository, EventDtoBuilder eventDtoBuilder,
-            UserService userService, JWTService jwtService, ModelMapper modelMapper) {
-        this.eventService = eventService;
-        this.eventRepository = eventRepository;
-        this.categoryRepository = categoryRepository;
-        this.eventDtoBuilder = eventDtoBuilder;
-        this.jwtService = jwtService;
-        this.userService = userService;
-        this.modelMapper = modelMapper;
+  @Autowired
+  public EventController(EventService eventService, EventRepository eventRepository,
+                         CategoryRepository categoryRepository, GalleryRepository galleryRepository, EventDtoBuilder eventDtoBuilder,
+                         UserService userService, JWTService jwtService, ModelMapper modelMapper) {
+    this.eventService = eventService;
+    this.eventRepository = eventRepository;
+    this.categoryRepository = categoryRepository;
+    this.eventDtoBuilder = eventDtoBuilder;
+    this.jwtService = jwtService;
+    this.userService = userService;
+    this.modelMapper = modelMapper;
+
+  }
+
+  //    @PostMapping("/create/{categoryId}")
+  @PostMapping("/create")
+//    public ResponseEntity<String> createEvent(@PathVariable(value = "categoryId") String categoryId,
+  public ResponseEntity<String> createEvent(@RequestHeader(value = "Authorization") String token,
+                                            @RequestBody EventDTO event) {
+    Event mappedEvent = modelMapper.map(event, Event.class);
+    Category category = categoryRepository.findByCategoryName(event.getCategory());
+    mappedEvent.setCategory(category);
+    mappedEvent.setStatusId(EventStatus.OPENED.getEventStatus());
+    if (mappedEvent.getGallery() == null) {
+      Gallery gallery = new Gallery(0, mappedEvent, new HashSet<>(), false);
+      mappedEvent.setGallery(gallery);
     }
-
-    @PostMapping("/create/{categoryId}")
-    public ResponseEntity<String> createEvent(@PathVariable(value = "categoryId") String categoryId,
-            @RequestHeader(value = "Authorization") String token, @RequestBody Event event) {
-        Category category = categoryRepository.findByCategoryName(categoryId);
-        event.setCategory(category);
-        event.setStatusId(EventStatus.CREATED.getEventStatus());
-        if (event.getGallery() == null) {
-            Gallery gallery = new Gallery(0, event, new HashSet<>(), false);
-            event.setGallery(gallery);
-        }
-        eventService.addEvent(event);
-        try {
-            LoggerFactory.getLogger("Create Event Controller: ")
-                    .info(userService.getUserByEmail(jwtService.parseToken(token)).toString());
-            eventService.addEvent(eventDTO, token);
-        } catch (UserNotFoundException e) {
-            e.printStackTrace();
-        }
-        return ResponseEntity.ok("Event created");
+    try {
+      eventService.addEvent(mappedEvent, token);
+      LoggerFactory.getLogger("Create Event Controller: ")
+              .info(userService.getUserByEmail(jwtService.parseToken(token)).toString());
+      eventService.addEvent(mappedEvent, token);
+    } catch (UserNotFoundException e) {
+      e.printStackTrace();
     }
+    return ResponseEntity.ok("Event created");
+  }
 
-    @PostMapping("/close")
-    public ResponseEntity<String> closeEvent(@RequestHeader(value = "Authorization") String token,
-            @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
-        Event event = eventService.getEventById(eventId);
-        User user = userService.getUserByEmail(jwtService.parseToken(token));
-        if (eventService.closeEvent(user, event)) {
-            return ResponseEntity.ok("Event closed");
-        } else {
-            return ResponseEntity.badRequest().body("Close doesn't work");
-        }
+  @PostMapping("/close")
+  public ResponseEntity<String> closeEvent(@RequestHeader(value = "Authorization") String token,
+                                           @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
+    Event event = eventService.getEventById(eventId);
+    User user = userService.getUserByEmail(jwtService.parseToken(token));
+    if (eventService.closeEvent(user, event)) {
+      return ResponseEntity.ok("Event closed");
+    } else {
+      return ResponseEntity.badRequest().body("Close doesn't work");
     }
+  }
 
-    @PostMapping("/open")
-    public ResponseEntity<String> openEvent(@RequestHeader(value = "Authorization") String token,
-            @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
-        Event event = eventService.getEventById(eventId);
-        User user = userService.getUserByEmail(jwtService.parseToken(token));
-        if (eventService.openEvent(user, event)) {
-            return ResponseEntity.ok("Event opened");
-        } else {
-            return ResponseEntity.badRequest().body("Open doesn't work");
-        }
+  @PostMapping("/open")
+  public ResponseEntity<String> openEvent(@RequestHeader(value = "Authorization") String token,
+                                          @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
+    Event event = eventService.getEventById(eventId);
+    User user = userService.getUserByEmail(jwtService.parseToken(token));
+    if (eventService.openEvent(user, event)) {
+      return ResponseEntity.ok("Event opened");
+    } else {
+      return ResponseEntity.badRequest().body("Open doesn't work");
     }
+  }
 
-    @PostMapping("/category")
-    public ResponseEntity<String> createCategory(@RequestBody Category category) {
-        category.setEvents(null);
-        categoryRepository.save(category);
+  @PostMapping("/category")
+  public ResponseEntity<String> createCategory(@RequestBody Category category) {
+    category.setEvents(null);
+    categoryRepository.save(category);
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        return ResponseEntity.ok().headers(httpHeaders).body("Category created");
+    HttpHeaders httpHeaders = new HttpHeaders();
+    return ResponseEntity.ok().headers(httpHeaders).body("Category created");
+  }
+
+  @GetMapping("/all")
+  public ResponseEntity<?> getAllEvents(@RequestParam(value = "search", required = false) String search,
+                                        @PageableDefault(size = 15, sort = "id") Pageable eventPageable) {
+
+    Page<Event> eventsPage = (search == null) ? eventService.getAllEvents(eventPageable)
+            : eventService.getAllEventBySearch(eventPageable, search);
+
+    if (eventsPage != null) {
+      int nextPageNum = eventsPage.getNumber() + 1;
+      UriComponents uriComponentsBuilder = UriComponentsBuilder.newInstance().path("/event/all")
+              .query("page={keyword}").buildAndExpand(nextPageNum);
+      HttpHeaders httpHeaders = new HttpHeaders();
+      httpHeaders.set("nextpage", uriComponentsBuilder.toString());
+      Slice<EventDTO> eventDTOSlice = eventDtoBuilder.convertToDto(eventsPage);
+      logger.info("Event converted to dto", eventDTOSlice.getContent());
+      return new ResponseEntity<Slice<EventDTO>>(eventDTOSlice, httpHeaders, HttpStatus.OK);
+    } else {
+      return ResponseEntity.badRequest()
+              .body(new ErrorMessageManager("Server error, try again later", "Pageable error"));
     }
+  }
 
-    @GetMapping("/all")
-    public ResponseEntity<?> getAllEvents(@RequestParam(value = "search", required = false) String search,
-            @PageableDefault(size = 15, sort = "id") Pageable eventPageable) {
-
-        Page<Event> eventsPage = (search == null) ? eventService.getAllEvents(eventPageable)
-                : eventService.getAllEventBySearch(eventPageable, search);
-
-        if (eventsPage != null) {
-            int nextPageNum = eventsPage.getNumber() + 1;
-            UriComponents uriComponentsBuilder = UriComponentsBuilder.newInstance().path("/event/all")
-                    .query("page={keyword}").buildAndExpand(nextPageNum);
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.set("nextpage", uriComponentsBuilder.toString());
-            Slice<EventDTO> eventDTOSlice = eventDtoBuilder.convertToDto(eventsPage);
-            logger.info("Event converted to dto", eventDTOSlice.getContent());
-            return new ResponseEntity<Slice<EventDTO>>(eventDTOSlice, httpHeaders, HttpStatus.OK);
-        } else {
-            return ResponseEntity.badRequest()
-                    .body(new ErrorMessageManager("Server error, try again later", "Pageable error"));
-        }
+  @PutMapping("update/{eventId}")
+  public ResponseEntity<?> updateEvent(@PathVariable("eventId") int eventId, @RequestBody EventDTO updatedEvent) {
+    try {
+      Event event = eventService.getEventById(eventId);
+      if (event != null) {
+        modelMapper.map(updatedEvent, event);
+        return ResponseEntity.ok().body(modelMapper.map(eventService.updateEvent(event), EventDTO.class));
+      } else {
+        throw new IOException("Event does not exist");
+      }
+    } catch (IOException error) {
+      logger.debug(error.toString());
+      return ResponseEntity.status(500)
+              .body(new ErrorMessageManager("Server error, try again later", error.toString()));
     }
+  }
 
-    @PutMapping("update/{eventId}")
-    public ResponseEntity<?> updateEvent(@PathVariable("eventId") int eventId, @RequestBody EventDTO updatedEvent) {
-        try {
-            Event event = eventService.getEventById(eventId);
-            if (event != null) {
-                modelMapper.map(updatedEvent, event);
-                return ResponseEntity.ok().body(modelMapper.map(eventService.updateEvent(event), EventDTO.class));
-            } else {
-                throw new IOException("Event does not exist");
-            }
-        } catch (IOException error) {
-            logger.debug(error.toString());
-            return ResponseEntity.status(500)
-                    .body(new ErrorMessageManager("Server error, try again later", error.toString()));
-        }
+  @GetMapping("/allCategory")
+  public Iterable<Category> getAllCategory() {
+    return categoryRepository.findAll();
+  }
+
+  @GetMapping("/category/{categoryId}")
+  public Page<Event> getAllEventsByCategoryId(@PathVariable(value = "categoryId") int eventId, Pageable pageable) {
+    return eventRepository.findByCategoryId(eventId, pageable);
+  }
+
+  @GetMapping("/{eventId}")
+  public Event getEvent(@PathVariable(value = "eventId") int eventId) {
+    return eventService.getEventById(eventId);
+  }
+
+  @DeleteMapping("delete")
+  public ResponseEntity<?> deleteEventOwner(@RequestHeader(value = "Authorization") String token,
+                                            @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
+    Event event = eventService.getEventById(eventId);
+    User user = userService.getUserByEmail(jwtService.parseToken(token));
+    if (eventService.delete(user, event)) {
+      return ResponseEntity.ok("Event deleted");
+    } else {
+      return ResponseEntity.badRequest().body("Delete doesn't work");
     }
+  }
 
-    @GetMapping("/allCategory")
-    public Iterable<Category> getAllCategory() {
-        return categoryRepository.findAll();
-    }
+  @PostMapping("isOwner")
+  public ResponseEntity<?> isOwner(@RequestHeader(value = "Authorization") String token,
+                                   @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
+    LoggerFactory.getLogger("IS OWNER EVENT").info("Event ID is : " + eventId + " , OwnerId is : "
+            + userService.getUserByEmail(jwtService.parseToken(token)).getId());
+    Event event = eventService.getEventById(eventId);
+    User user = userService.getUserByEmail(jwtService.parseToken(token));
 
-    @GetMapping("/category/{categoryId}")
-    public Page<Event> getAllEventsByCategoryId(@PathVariable(value = "categoryId") int eventId, Pageable pageable) {
-        return eventRepository.findByCategoryId(eventId, pageable);
-    }
-
-    @GetMapping("/{eventId}")
-    public Event getEvent(@PathVariable(value = "eventId") int eventId) {
-        return eventService.getEventById(eventId);
-    }
-
-    @DeleteMapping("delete")
-    public ResponseEntity<?> deleteEventOwner(@RequestHeader(value = "Authorization") String token,
-            @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
-        Event event = eventService.getEventById(eventId);
-        User user = userService.getUserByEmail(jwtService.parseToken(token));
-        if (eventService.delete(user, event)) {
-            return ResponseEntity.ok("Event deleted");
-        } else {
-            return ResponseEntity.badRequest().body("Delete doesn't work");
-        }
-    }
-
-    @PostMapping("isOwner")
-    public ResponseEntity<?> isOwner(@RequestHeader(value = "Authorization") String token,
-            @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
-        LoggerFactory.getLogger("IS OWNER EVENT").info("Event ID is : " + eventId + " , OwnerId is : "
-                + userService.getUserByEmail(jwtService.parseToken(token)).getId());
-        Event event = eventService.getEventById(eventId);
-        User user = userService.getUserByEmail(jwtService.parseToken(token));
-
-        return user.getId() == event.getOwner().getId() ? ResponseEntity.ok().body("IS OWNER")
-                : ResponseEntity.badRequest().body("IS NOT OWNER");
-    }
+    return user.getId() == event.getOwner().getId() ? ResponseEntity.ok().body("IS OWNER")
+            : ResponseEntity.badRequest().body("IS NOT OWNER");
+  }
 }

@@ -1,4 +1,4 @@
 export interface ErrorMessage {
-  errorMessage: string;
+  errorMessage: string[];
   actions?: () => any;
 }

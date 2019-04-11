@@ -10,6 +10,7 @@ import { Redirect } from 'react-router';
 import { GalleryDto } from '../../interfaces/Gallery.dto';
 import { UploadInput } from '../../components/upload-input/UploadInput';
 import { ErrorMessage } from '../../interfaces/ErrorMessage';
+import { ErrorMessageComponent } from '../../components/errorMessage/ErrorMessageComponent';
 
 interface ExtendetRef extends RefObject<LeafletMap> {
   leafletElement: any;
@@ -36,7 +37,9 @@ export class CreateEvent extends Component<any, any> {
       redirect: false,
       currentPos: null,
       showEndDate: false,
-      errorMessages: {} as ErrorMessage
+      errorMessages: {
+        errorMessage: [],
+      } as ErrorMessage
     };
 
     this.handleErrors = this.handleErrors.bind(this);
@@ -49,6 +52,7 @@ export class CreateEvent extends Component<any, any> {
     this.handleEndDate = this.handleEndDate.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleCoord = this.handleCoord.bind(this);
+    this.showEndDate = this.showEndDate.bind(this);
   }
 
   public handleErrors(value: ErrorMessage) {
@@ -131,25 +135,25 @@ export class CreateEvent extends Component<any, any> {
   }
 
   public handleSubmit(event: any) {
-    if (this.state.endDate === 0) {
+    if (this.state.newEvent.endDate === 0) {
       createEvent({ ...this.state.newEvent });
       console.debug(this.state);
       this.setState({ redirect: true });
-    } else if (this.state.startDate < this.state.endDate) {
+    } else if (this.state.newEvent.startDate < this.state.newEvent.endDate) {
       createEvent({ ...this.state.newEvent });
       console.debug(this.state);
       this.setState({ redirect: true });
     } else {
       console.log('startDate > endDate ');
-      alert('End date must be greater than the start date!');
+      this.setState({errorMessages: {errorMessage: ['End date must be greater than the start date!']}});
     }
   }
 
   public showEndDate() {
     if (this.state.showEndDate === false) {
-      this.setState({ showEndDate: true });
+      this.setState({ ...this.state, showEndDate: true });
     } else {
-      this.setState({ showEndDate: false });
+      this.setState({ ...this.state, showEndDate: false });
       this.setState({ endDate: 0 });
     }
   }
@@ -171,6 +175,8 @@ export class CreateEvent extends Component<any, any> {
 
     return (
       <div className='container'>
+      {this.state.errorMessages.errorMessage.length > 0 ?
+      (<ErrorMessageComponent {...this.state.errorMessages} />) : null}
         <h1 className='text-center'>New Event</h1>
         <div className='form-group row'>
           <label className='col-sm-4 col-form-label text-right' htmlFor='Topic'>
@@ -263,7 +269,7 @@ export class CreateEvent extends Component<any, any> {
             htmlFor='EndDate'
           >
             <button
-              className='btn btn-link'
+              className='btn btn-info'
               id='EndDate'
               onClick={this.showEndDate}
             >

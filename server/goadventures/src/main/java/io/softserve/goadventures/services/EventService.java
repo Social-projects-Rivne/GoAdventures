@@ -1,30 +1,21 @@
 package io.softserve.goadventures.services;
 
 import io.softserve.goadventures.controllers.EventController;
-import io.softserve.goadventures.dto.EventDTO;
-import io.softserve.goadventures.dto.EventDtoBuilder;
 import io.softserve.goadventures.enums.EventStatus;
 import io.softserve.goadventures.errors.UserNotFoundException;
-import io.softserve.goadventures.dto.EventDTO;
-import io.softserve.goadventures.enums.EventStatus;
 import io.softserve.goadventures.models.Category;
 import io.softserve.goadventures.models.Event;
+import io.softserve.goadventures.models.User;
 import io.softserve.goadventures.repositories.CategoryRepository;
 import io.softserve.goadventures.repositories.EventRepository;
-import io.softserve.goadventures.repositories.CategoryRepository;
-import io.softserve.goadventures.repositories.GalleryRepository;
-import io.softserve.goadventures.models.User;
-import io.softserve.goadventures.services.UserService;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,10 +23,20 @@ import java.util.List;
 public class EventService {
     private Logger logger = LoggerFactory.getLogger(EventController.class);
     private final EventRepository eventRepository;
+    private  final CategoryRepository categoryRepository;
+    private final UserService userService;
+    private  final JWTService jwtService;
 
     @Autowired
-    public EventService(EventRepository eventRepository) {
+    public EventService(
+            EventRepository eventRepository,
+            CategoryRepository categoryRepository,
+            UserService userService,
+            JWTService jwtService) {
+        this.categoryRepository = categoryRepository;
         this.eventRepository = eventRepository;
+        this.userService = userService;
+        this.jwtService = jwtService;
     }
 
     public Event getEventById(int id) {
@@ -50,13 +51,7 @@ public class EventService {
         return eventRepository.findAllByTopic(eventPageable, topic);
     }
 
-    public void addEvent(EventDTO eventDTO, String token) throws UserNotFoundException {
-        Category category = categoryRepository.findByCategoryName(eventDTO.getCategory());
-
-        Event event = new Event(eventDTO.getTopic(), eventDTO.getStartDate(), eventDTO.getEndDate(),
-                eventDTO.getLocation(), eventDTO.getLatitude(), eventDTO.getLongitude(), eventDTO.getDescription(),
-                category);
-        event.setStatusId(EventStatus.OPENED.getEventStatus());
+    public void addEvent(Event event, String token) throws UserNotFoundException {
         event.setOwner(userService.getUserByEmail(jwtService.parseToken(token)));
         eventRepository.save(event);
     }
@@ -66,8 +61,8 @@ public class EventService {
     }
 
     public Page<Event> getAllEvents(Pageable eventPageable) {
-        Page<Event> eventPage = eventRepository.findAll(eventPageable);
-        return eventPage;
+        return  eventRepository.findAll(eventPageable);
+
     }
 
     public Page<Event> getAllEventsByOwner(Pageable pageable, Integer id) {
