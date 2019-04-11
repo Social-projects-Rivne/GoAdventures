@@ -5,8 +5,11 @@
     margin-right: 10%;
     text-align: center;
 }
+@media screen and (max-width: 600px) {
 .card-columns { 
-      column-count: 5 !important;
+
+        column-count: 2 !important;
+      
       transition: background-color 1s ease-out 0.5s;
            
       :hover{
@@ -14,3 +17,18 @@
           border-color: #593196 ;
       }
   }
+}
+
+@media screen and (min-width: 650px) {
+    .card-columns { 
+    
+            column-count: 5 !important;
+          
+          transition: background-color 1s ease-out 0.5s;
+               
+          :hover{
+              background-color: gainsboro;
+              border-color: #593196 ;
+          }
+      }
+    }

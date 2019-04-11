@@ -10,7 +10,9 @@ body {
 html {
   height: 100%;
 }
-
+.select{
+  border-radius: 5px;
+}
 .page-container{
   margin-top:2rem;
     margin-bottom: 2rem;

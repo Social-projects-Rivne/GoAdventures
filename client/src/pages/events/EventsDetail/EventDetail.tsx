@@ -120,23 +120,24 @@ export class EventDetail extends Component<any, any> {
                   </p>
                   <p>
                     Ends:
-                        {this.state.eventProps.event.endDate === '0' ? 'Push edit if you want to change end date' : (
+                        {this.state.eventProps.event.endDate === '0' ? '' : (
                       this.convertTime(
                         this.state.eventProps.event.endDate.toString()
                       )
                     )}
                   </p>
                 </div>
-
                 <div className='content-column d-flex flex-column h-100'>
-                  <button
-                    type='button'
-                    className='btn btn-outline-info btn-sm'
-                    style={style}
-                  >
-                    Subscribe
-                    </button>
+                  {!this.state.isOwner ? (
 
+                    <button
+                      type='button'
+                      className='btn btn-outline-info btn-sm'
+                      style={style}
+                    >
+                      Subscribe
+                    </button>
+                  ) : (<div></div>)}
                   {this.state.isOwner ? (
                     <div>
                       <button
@@ -159,8 +160,8 @@ export class EventDetail extends Component<any, any> {
                         <button
                           onClick={this.handleOpen}
                           type='button'
-                          className='btn btn-lg btn-outline-warning'
-                          
+                          className='btn btn-lg btn-outline-success'
+
                         >
                           <MdLockOpen></MdLockOpen>
                         </button>
@@ -170,10 +171,10 @@ export class EventDetail extends Component<any, any> {
                             onClick={this.handleClose}
                             type='button'
                             className='btn btn-lg btn-outline-warning'
-                            
+
                           >
                             <MdLock></MdLock>
-                      </button>
+                          </button>
                         )}
                     </div>
                   ) : (
