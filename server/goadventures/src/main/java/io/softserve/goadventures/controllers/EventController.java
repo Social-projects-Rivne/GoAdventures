@@ -48,9 +48,8 @@ public class EventController {
 
     @Autowired
     public EventController(EventService eventService, EventRepository eventRepository,
-                           CategoryRepository categoryRepository, GalleryRepository galleryRepository,
-                           EventDtoBuilder eventDtoBuilder, UserService userService,
-                           JWTService jwtService, ModelMapper modelMapper) {
+            CategoryRepository categoryRepository, GalleryRepository galleryRepository, EventDtoBuilder eventDtoBuilder,
+            UserService userService, JWTService jwtService, ModelMapper modelMapper) {
         this.eventService = eventService;
         this.eventRepository = eventRepository;
         this.categoryRepository = categoryRepository;
@@ -62,12 +61,11 @@ public class EventController {
 
     @PostMapping("/create/{categoryId}")
     public ResponseEntity<String> createEvent(@PathVariable(value = "categoryId") String categoryId,
-                                              @RequestHeader(value = "Authorization") String token,
-                                              @RequestBody Event event) {
+            @RequestHeader(value = "Authorization") String token, @RequestBody Event event) {
         Category category = categoryRepository.findByCategoryName(categoryId);
         event.setCategory(category);
         event.setStatusId(EventStatus.CREATED.getEventStatus());
-        if (event.getGallery() == null){
+        if (event.getGallery() == null) {
             Gallery gallery = new Gallery(0, event, new HashSet<>(), false);
             event.setGallery(gallery);
         }
@@ -75,13 +73,35 @@ public class EventController {
         try {
             LoggerFactory.getLogger("Create Event Controller: ")
                     .info(userService.getUserByEmail(jwtService.parseToken(token)).toString());
-            event.setOwner(userService.getUserByEmail(jwtService.parseToken(token)));
+            eventService.addEvent(eventDTO, token);
         } catch (UserNotFoundException e) {
             e.printStackTrace();
         }
-        eventService.addEvent(event);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        return ResponseEntity.ok().headers(httpHeaders).body("Event created");
+        return ResponseEntity.ok("Event created");
+    }
+
+    @PostMapping("/close")
+    public ResponseEntity<String> closeEvent(@RequestHeader(value = "Authorization") String token,
+            @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
+        Event event = eventService.getEventById(eventId);
+        User user = userService.getUserByEmail(jwtService.parseToken(token));
+        if (eventService.closeEvent(user, event)) {
+            return ResponseEntity.ok("Event closed");
+        } else {
+            return ResponseEntity.badRequest().body("Close doesn't work");
+        }
+    }
+
+    @PostMapping("/open")
+    public ResponseEntity<String> openEvent(@RequestHeader(value = "Authorization") String token,
+            @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
+        Event event = eventService.getEventById(eventId);
+        User user = userService.getUserByEmail(jwtService.parseToken(token));
+        if (eventService.openEvent(user, event)) {
+            return ResponseEntity.ok("Event opened");
+        } else {
+            return ResponseEntity.badRequest().body("Open doesn't work");
+        }
     }
 
     @PostMapping("/category")
@@ -93,25 +113,25 @@ public class EventController {
         return ResponseEntity.ok().headers(httpHeaders).body("Category created");
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllEvents(@RequestParam(value = "search", required = false) String search,
+            @PageableDefault(size = 15, sort = "id") Pageable eventPageable) {
 
-    @GetMapping({"/all/{search}", "/all"})
-    public ResponseEntity<?> getAllEvents(@PathVariable(value = "search", required = false) String search,
-                                          @PageableDefault(size = 15, sort = "id") Pageable eventPageable) {
+        Page<Event> eventsPage = (search == null) ? eventService.getAllEvents(eventPageable)
+                : eventService.getAllEventBySearch(eventPageable, search);
 
-        Page<Event> eventsPage = search == null ? eventService.getAllEvents(eventPageable)
-                : eventService.getAllEventsByTopic(eventPageable, search);
         if (eventsPage != null) {
             int nextPageNum = eventsPage.getNumber() + 1;
-            UriComponents uriComponentsBuilder = UriComponentsBuilder.newInstance().path("/event/all").query("page={keyword}")
-                    .buildAndExpand(nextPageNum);
+            UriComponents uriComponentsBuilder = UriComponentsBuilder.newInstance().path("/event/all")
+                    .query("page={keyword}").buildAndExpand(nextPageNum);
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.set("nextpage", uriComponentsBuilder.toString());
             Slice<EventDTO> eventDTOSlice = eventDtoBuilder.convertToDto(eventsPage);
             logger.info("Event converted to dto", eventDTOSlice.getContent());
             return new ResponseEntity<Slice<EventDTO>>(eventDTOSlice, httpHeaders, HttpStatus.OK);
         } else {
-            return ResponseEntity.badRequest().body(new ErrorMessageManager(
-                    "Server error, try again later", "Pageable error"));
+            return ResponseEntity.badRequest()
+                    .body(new ErrorMessageManager("Server error, try again later", "Pageable error"));
         }
     }
 
@@ -142,7 +162,6 @@ public class EventController {
         return eventRepository.findByCategoryId(eventId, pageable);
     }
 
-
     @GetMapping("/{eventId}")
     public Event getEvent(@PathVariable(value = "eventId") int eventId) {
         return eventService.getEventById(eventId);
@@ -150,7 +169,7 @@ public class EventController {
 
     @DeleteMapping("delete")
     public ResponseEntity<?> deleteEventOwner(@RequestHeader(value = "Authorization") String token,
-                                              @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
+            @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
         Event event = eventService.getEventById(eventId);
         User user = userService.getUserByEmail(jwtService.parseToken(token));
         if (eventService.delete(user, event)) {
@@ -162,7 +181,7 @@ public class EventController {
 
     @PostMapping("isOwner")
     public ResponseEntity<?> isOwner(@RequestHeader(value = "Authorization") String token,
-                                     @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
+            @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
         LoggerFactory.getLogger("IS OWNER EVENT").info("Event ID is : " + eventId + " , OwnerId is : "
                 + userService.getUserByEmail(jwtService.parseToken(token)).getId());
         Event event = eventService.getEventById(eventId);

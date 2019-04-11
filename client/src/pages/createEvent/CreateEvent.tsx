@@ -1,5 +1,5 @@
 import React, { Component, createRef, RefObject } from 'react';
-import { createEventReq } from '../../api/requestCreateEvent';
+import { createEvent } from '../../api/event.service';
 import './CreateEvent.scss';
 import './Leaflet.scss';
 import { Map as LeafletMap, TileLayer, Marker, Popup } from 'react-leaflet';
@@ -15,7 +15,6 @@ interface ExtendetRef extends RefObject<LeafletMap> {
   leafletElement: any;
 }
 
-let category = 'Skateboarding';
 let leafletMap = createRef<LeafletMap>() as ExtendetRef;
 const Rows = 3;
 
@@ -36,6 +35,7 @@ export class CreateEvent extends Component<any, any> {
       },
       redirect: false,
       currentPos: null,
+      showEndDate: false,
       errorMessages: {} as ErrorMessage
     };
 
@@ -57,30 +57,40 @@ export class CreateEvent extends Component<any, any> {
   }
 
   public handleAddGallery(value: GalleryDto) {
-    this.setState({ gallery: { ...value } });
+    this.setState({
+      newEvent: { ...this.state.newEvent, gallery: { ...value } }
+    });
     console.debug(this.state);
   }
 
   public handleTopicChange(event: any) {
-    this.setState({ topic: event.target.value });
+    this.setState({
+      newEvent: { ...this.state.newEvent, topic: event.target.value }
+    });
   }
 
   public handleDescriptionChange(event: any) {
-    this.setState({ description: event.target.value });
+    this.setState({
+      newEvent: { ...this.state.newEvent, description: event.target.value }
+    });
   }
 
   public handleLocationChange(event: any) {
-    this.setState({ location: event.target.value });
+    this.setState({
+      newEvent: { ...this.state.newEvent, location: event.target.value }
+    });
   }
 
   public handleCategory(Category: any) {
     console.log('Category ' + Category);
-    category = Category;
+    this.setState({ newEvent: { ...this.state.newEvent, category: Category } });
   }
 
   public handleStartDate(StartDate: any) {
     console.log('DIALOG ' + StartDate);
-    this.setState({ startDate: StartDate });
+    this.setState({
+      newEvent: { ...this.state.newEvent, startDate: StartDate }
+    });
     console.log('startDate ', this.state.newEvent.startDate);
     console.log(
       'startDateToLocaleString ',
@@ -90,7 +100,7 @@ export class CreateEvent extends Component<any, any> {
 
   public handleEndDate(EndDate: any) {
     console.log('DIALOG ' + EndDate);
-    this.setState({ endDate: EndDate });
+    this.setState({ newEvent: { ...this.state.newEvent, endDate: EndDate } });
   }
 
   public handleCoord(e: any) {
@@ -105,9 +115,12 @@ export class CreateEvent extends Component<any, any> {
           if (r) {
             console.log('r ', r);
             this.setState({
-              location: r.name,
-              latitude: r.center.lat,
-              longitude: r.center.lng
+              newEvent: {
+                ...this.state.newEvent,
+                location: r.name,
+                latitude: r.center.lat,
+                longitude: r.center.lng
+              }
             });
             console.log('location: ', this.state.newEvent.location);
           }
@@ -118,13 +131,26 @@ export class CreateEvent extends Component<any, any> {
   }
 
   public handleSubmit(event: any) {
-    if (this.state.newEvent.startDate < this.state.newEvent.endDate) {
-      createEventReq({ ...this.state.newEvent }, category);
-      console.debug(this.state.newEvent);
+    if (this.state.endDate === 0) {
+      createEvent({ ...this.state.newEvent });
+      console.debug(this.state);
+      this.setState({ redirect: true });
+    } else if (this.state.startDate < this.state.endDate) {
+      createEvent({ ...this.state.newEvent });
+      console.debug(this.state);
       this.setState({ redirect: true });
     } else {
       console.log('startDate > endDate ');
       alert('End date must be greater than the start date!');
+    }
+  }
+
+  public showEndDate() {
+    if (this.state.showEndDate === false) {
+      this.setState({ showEndDate: true });
+    } else {
+      this.setState({ showEndDate: false });
+      this.setState({ endDate: 0 });
     }
   }
 
@@ -141,10 +167,7 @@ export class CreateEvent extends Component<any, any> {
       this.state.newEvent.topic.length > 0 &&
       this.state.newEvent.description.length > 0;
     console.log('Isdisabled ', isDisabled);
-    let inputClass = 'invalid';
-    if (!isDisabled) {
-      inputClass = 'valid';
-    }
+    const style = !this.state.showEndDate ? { display: 'none' } : {};
 
     return (
       <div className='container'>
@@ -158,7 +181,7 @@ export class CreateEvent extends Component<any, any> {
               type='text'
               className='form-control'
               id='Topic'
-              placeholder='Enter event name'
+              placeholder='enter name of event'
               onChange={this.handleTopicChange}
               value={this.state.newEvent.topic}
             />
@@ -235,14 +258,19 @@ export class CreateEvent extends Component<any, any> {
               dateFormat='MMMM d, yyyy h:mm aa'
             />
           </div>
-
           <label
             className='col-sm-2 col-form-label text-right'
             htmlFor='EndDate'
           >
-            End date
+            <button
+              className='btn btn-link'
+              id='EndDate'
+              onClick={this.showEndDate}
+            >
+              End date
+            </button>
           </label>
-          <div className='col-sm-3'>
+          <div className='col-sm-3' style={style}>
             <DatePicker
               id='EndDate'
               selected={this.state.newEvent.endDate}
@@ -256,9 +284,38 @@ export class CreateEvent extends Component<any, any> {
             />
           </div>
         </div>
+
+        <div className='row'>
+          <div className='col' id='map'>
+            <LeafletMap
+              center={[50.37, 26.13]}
+              zoom={6}
+              attributionControl={true}
+              zoomControl={true}
+              doubleClickZoom={true}
+              scrollWheelZoom={true}
+              dragging={true}
+              animate={true}
+              easeLinearity={0.35}
+              onClick={this.handleCoord}
+              ref={(el: any) => (leafletMap = el)}
+            >
+              <TileLayer url='https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png' />
+              {this.state.currentPos && (
+                <Marker position={this.state.currentPos} draggable={true}>
+                  <Popup position={this.state.currentPos}>
+                    Current location:{' '}
+                    <pre>{JSON.stringify(this.state.currentPos, null, 2)}</pre>
+                  </Popup>
+                </Marker>
+              )}
+            </LeafletMap>
+          </div>
+        </div>
+
         <div className='row'>
           <div className='col'>
-            <label htmlFor=''>Upload images for your event</label>
+            <label>Upload images for your event</label>
             <UploadInput
               {...{
                 setErrors: this.handleErrors,
@@ -268,38 +325,6 @@ export class CreateEvent extends Component<any, any> {
           </div>
         </div>
 
-        <div className='row'>
-          <div className='col' id='map'>
-            <LeafletMap
-              center={[50.37, 26.13]}
-              zoom={6}
-              attributionControl={true}
-              zoomControl={false}
-              doubleClickZoom={true}
-              scrollWheelZoom={true}
-              dragging={true}
-              animate={true}
-              easeLinearity={0.35}
-              onClick={this.handleCoord}
-              ref={(el: any) => (leafletMap = el)}
-            >
-              <TileLayer
-                attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-              />
-              {this.state.currentPos && (
-                <Marker position={this.state.currentPos} draggable={true}>
-                  <Popup position={this.state.currentPos}>
-                    Current location:{' '}
-                    <pre>
-                      {JSON.stringify(this.state.newEvent.currentPos, null, 2)}
-                    </pre>
-                  </Popup>
-                </Marker>
-              )}
-            </LeafletMap>
-          </div>
-        </div>
         <div className='row justify-content-center btns-content'>
           <button
             type='button'
@@ -316,7 +341,7 @@ export class CreateEvent extends Component<any, any> {
               to={{
                 pathname: `/profile`,
                 state: {
-                  ...this.state.newEvent
+                  ...this.state
                 }
               }}
             />

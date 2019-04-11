@@ -1,0 +1,53 @@
+# Java Maven && React CircleCI 2.0 configuratioavmn file
+version: 2
+jobs:
+  server_test:
+    docker:
+      - image: circleci/openjdk:11-jdk
+    working_directory: ~/repo/server/goadventures
+    steps:
+      - checkout:
+          path: ~/repo
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }} 
+            - v1-dependencies-
+      - run: mvn dependency:go-offline
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "pom.xml" }}
+      - run: mvn test
+
+  client_test:
+    docker:
+      - image: circleci/node:8.10.0
+    working_directory: ~/repo/client
+    steps:
+      - checkout:
+          path: ~/repo
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: install-npm
+          command: npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: npm run build
+          command: npm run build
+
+workflows:
+  version: 2
+  server_and_client_test:
+    jobs:
+      - server_test:
+          filters:
+            branches: 
+              only: develop
+      - client_test:
+          filters:
+            branches: 
+              only: develop

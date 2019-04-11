@@ -4,7 +4,12 @@ import { Field, FieldProps, Form, Formik, FormikProps } from 'formik';
 import { TileLayer, Map, Marker, Popup } from 'react-leaflet';
 import { MdDone } from 'react-icons/md';
 import moment from 'moment';
-import { deleteEvent, isOwner } from '../../../api/event.service';
+import {
+  deleteEvent,
+  isOwner,
+  closeEvent,
+  openEvent
+} from '../../../api/event.service';
 import { Comments, Gallery, SettingsPanel } from '../../../components';
 import { commentsSchema } from '../../../validationSchemas/commentValidation';
 import './EventDetail.scss';
@@ -28,6 +33,8 @@ export class EventDetail extends Component<any, any> {
       isOwner: false
     };
     this.handleDelete = this.handleDelete.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.handleOpen = this.handleOpen.bind(this);
   }
 
   public convertTime(date: string) {
@@ -65,7 +72,33 @@ export class EventDetail extends Component<any, any> {
     );
   }
 
+  public handleClose() {
+    console.log('status ', this.state.eventProps.event.statusId);
+    closeEvent(this.state.eventProps.event.id).then(
+      (res: AxiosResponse): any => {
+        if (res.status >= 200 && res.status <= 300) {
+          this.props.routerProps.history.push('/profile');
+        } else {
+        }
+      }
+    );
+  }
+
+  public handleOpen() {
+    openEvent(this.state.eventProps.event.id).then(
+      (res: AxiosResponse): any => {
+        if (res.status >= 200 && res.status <= 300) {
+          this.props.routerProps.history.push('/profile');
+        } else {
+        }
+      }
+    );
+  }
+
   public render() {
+    const style =
+      this.state.eventProps.event.statusId === 2 ? { display: 'none' } : {};
+
     return (
       <div className='container EventDetail'>
         <div className='row'>
@@ -93,9 +126,11 @@ export class EventDetail extends Component<any, any> {
                       </p>
                       <p>
                         Ends:
-                        {this.convertTime(
-                          this.state.eventProps.event.endDate.toString()
-                        )}
+                        {this.state.eventProps.event.endDate === '0'
+                          ? 'Push edit if you want to change end date'
+                          : this.convertTime(
+                              this.state.eventProps.event.endDate.toString()
+                            )}
                       </p>
                     </div>
                   ),
@@ -103,6 +138,7 @@ export class EventDetail extends Component<any, any> {
                     <button
                       type='button'
                       className='btn btn-outline-info btn-sm'
+                      style={style}
                     >
                       Subscribe
                     </button>
@@ -166,11 +202,30 @@ export class EventDetail extends Component<any, any> {
                   >
                     Edit
                   </button>
+                  {this.state.eventProps.event.statusId === 2 ? (
+                    <button
+                      onClick={this.handleOpen}
+                      type='button'
+                      className='btn btn-warning'
+                    >
+                      Open
+                    </button>
+                  ) : (
+                    <button
+                      onClick={this.handleClose}
+                      type='button'
+                      className='btn btn-warning'
+                    >
+                      Close
+                    </button>
+                  )}
                 </div>
               ) : (
                 <div />
               )}
-
+              {this.state.eventProps.event.statusId === 2 ? (
+                <p style={{ color: 'red' }}>CLOSED</p>
+              ) : null}
               <hr className='my-4' />
               <div>
                 <h3>Comments</h3>

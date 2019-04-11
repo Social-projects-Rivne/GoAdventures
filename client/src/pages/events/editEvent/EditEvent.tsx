@@ -201,6 +201,23 @@ export const EditEvent = (props: EditEvent) => {
           >
             End date
           </label>
+          {props.event.endDate === '0' && datepick.endDate != undefined ? (
+            <div className='col-sm-3'>
+            <DatePicker
+              id='EndDate'
+              selected={datepick.endDate != '0' ? moment(datepick.endDate).toDate() : moment().toDate()}
+              onChange={(e: Date): void => {
+                setDate({ ...datepick, endDate: moment(e).toISOString() });
+              }}
+              showTimeSelect
+              timeFormat='HH:mm'
+              timeIntervals={15}
+              timeCaption='time'
+              withPortal
+              dateFormat='MMMM d, yyyy h:mm aa'
+            />
+          </div>
+          ) : (
           <div className='col-sm-3'>
             <DatePicker
               id='EndDate'
@@ -216,6 +233,7 @@ export const EditEvent = (props: EditEvent) => {
               dateFormat='MMMM d, yyyy h:mm aa'
             />
           </div>
+          )}
         </div>
       </div>
       <div className='col-12'>

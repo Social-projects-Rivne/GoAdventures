@@ -11,6 +11,7 @@ export interface EventDto {
   startDate: string | undefined;
   endDate: string | undefined;
   category: string | undefined;
+  statusId: number;
   participants: UserDto[] | undefined;
   gallery: GalleryDto;
 }

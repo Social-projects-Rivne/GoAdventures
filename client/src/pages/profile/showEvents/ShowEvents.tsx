@@ -28,6 +28,7 @@ export class ShowEvents extends Component<EventDto, EventState> {
           startDate: '',
           topic: '',
           participants: [],
+          statusId: 0,
           gallery: {
             eventId: 0,
             id: 0,

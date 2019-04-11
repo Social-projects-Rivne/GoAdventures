@@ -19,13 +19,16 @@ public class WebAppConfig {
   public ModelMapper modelMapper() {
     Condition notEmpty = ctx -> ctx.getSource() != "";
     ModelMapper mapper = new ModelMapper();
+
     mapper.getConfiguration()
             .setMatchingStrategy(MatchingStrategies.STANDARD)
             .setPropertyCondition(notEmpty)
             .setFieldMatchingEnabled(true)
             .setFieldAccessLevel(AccessLevel.PRIVATE)
             .setSkipNullEnabled(true);
+
     return mapper;
+
   }
 
   @Bean(name = "commonsMultipartResolver")

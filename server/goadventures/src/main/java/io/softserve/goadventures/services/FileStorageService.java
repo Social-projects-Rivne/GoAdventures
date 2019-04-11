@@ -29,15 +29,16 @@ public class FileStorageService {
 
     @Autowired
     public FileStorageService(FileStorageProperties fileStorageProperties) {
-        this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
-                .toAbsolutePath().normalize();
+        this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir()).toAbsolutePath().normalize();
 
         try {
             Files.createDirectories(this.fileStorageLocation);
         } catch (Exception ex) {
-            throw new FileStorageException("Could not create the directory where the uploaded files will be stored.", ex);
+            throw new FileStorageException("Could not create the directory where the uploaded files will be stored.",
+                    ex);
         }
     }
+
     // Create unique file name, check invalid characters and copy file to directory
     public String storeFile(MultipartFile file) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
@@ -60,12 +61,24 @@ public class FileStorageService {
         }
     }
 
-    public String checkFileType(MultipartFile file) {    //check file type
+    public boolean checkFileType(MultipartFile file) { // check file type
         String contentType = file.getContentType();
         if (!(contentType.startsWith("image/"))) {
-            throw new WrongImageTypeException("Could not be uploaded, it is not an image!");
+            // throw new WrongImageTypeException("Could not be uploaded, it is not an
+            // image!");
+            return false;
         }
-        return null;
+        return true;
+    }
+
+    public boolean checkFileSize(MultipartFile file) {
+        long fileSize = file.getSize();
+        logger.info("file size" + fileSize);
+        if (fileSize > 5242880) {
+            return false;
+        }
+        return true;
+
     }
 
     public Resource loadFileAsResource(String fileName) {
