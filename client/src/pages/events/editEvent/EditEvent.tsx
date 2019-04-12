@@ -94,7 +94,7 @@ export const EditEvent = (props: EditEvent) => {
   const mapRef = createRef<Map>();
   const formRef = createRef<Formik>();
   return (
-    <div className='row justify-content-center'>
+    <div className='page-container row justify-content-center'>
       <h2>Edit event info</h2>
       {errors.errorMessage ? <ErrorMessageComponent {...errors} /> : null}
       <div className='col-12'>
@@ -182,6 +182,7 @@ export const EditEvent = (props: EditEvent) => {
           <div className='col-sm-3'>
             <DatePicker
               id='StartDate'
+              className='input-group-text'
               selected={moment(datepick.startDate).toDate()}
               onChange={(e: Date): void => {
                 setDate({ ...datepick, startDate: moment(e).toISOString() });
@@ -203,36 +204,42 @@ export const EditEvent = (props: EditEvent) => {
           </label>
           {props.event.endDate === '0' && datepick.endDate != undefined ? (
             <div className='col-sm-3'>
-            <DatePicker
-              id='EndDate'
-              selected={datepick.endDate != '0' ? moment(datepick.endDate).toDate() : moment().toDate()}
-              onChange={(e: Date): void => {
-                setDate({ ...datepick, endDate: moment(e).toISOString() });
-              }}
-              showTimeSelect
-              timeFormat='HH:mm'
-              timeIntervals={15}
-              timeCaption='time'
-              withPortal
-              dateFormat='MMMM d, yyyy h:mm aa'
-            />
-          </div>
+              <DatePicker
+                id='EndDate'
+                className='input-group-text'
+                selected={
+                  datepick.endDate != '0'
+                    ? moment(datepick.endDate).toDate()
+                    : moment().toDate()
+                }
+                onChange={(e: Date): void => {
+                  setDate({ ...datepick, endDate: moment(e).toISOString() });
+                }}
+                showTimeSelect
+                timeFormat='HH:mm'
+                timeIntervals={15}
+                timeCaption='time'
+                withPortal
+                dateFormat='MMMM d, yyyy h:mm aa'
+              />
+            </div>
           ) : (
-          <div className='col-sm-3'>
-            <DatePicker
-              id='EndDate'
-              selected={moment(datepick.endDate).toDate()}
-              onChange={(e: Date): void => {
-                setDate({ ...datepick, endDate: moment(e).toISOString() });
-              }}
-              showTimeSelect
-              timeFormat='HH:mm'
-              timeIntervals={15}
-              timeCaption='time'
-              withPortal
-              dateFormat='MMMM d, yyyy h:mm aa'
-            />
-          </div>
+            <div className='col-sm-3'>
+              <DatePicker
+                id='EndDate'
+                className='input-group-text'
+                selected={moment(datepick.endDate).toDate()}
+                onChange={(e: Date): void => {
+                  setDate({ ...datepick, endDate: moment(e).toISOString() });
+                }}
+                showTimeSelect
+                timeFormat='HH:mm'
+                timeIntervals={15}
+                timeCaption='time'
+                withPortal
+                dateFormat='MMMM d, yyyy h:mm aa'
+              />
+            </div>
           )}
         </div>
       </div>
@@ -301,11 +308,11 @@ export const EditEvent = (props: EditEvent) => {
           </Map>
         </div>
       </div>
-      <div className='d-flex flex-row justify-content-around align-center w-100 mt-3 mb-3'>
+      <div className='row justify-content-center btns-content'>
         <button
           type='button'
           name='cancel'
-          className='btn btn-danger'
+          className='btn btn-danger m-1'
           onClick={() => {
             props.setEdit(false);
           }}
@@ -315,7 +322,7 @@ export const EditEvent = (props: EditEvent) => {
         <button
           type='button'
           name='update'
-          className='btn btn-success'
+          className='btn btn-primary m-1'
           onClick={async () => {
             const formCurrent = formRef.current;
             if (formCurrent) {

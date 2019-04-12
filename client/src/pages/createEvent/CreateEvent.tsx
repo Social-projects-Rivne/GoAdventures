@@ -32,13 +32,13 @@ export class CreateEvent extends Component<any, any> {
         latitude: 0,
         longitude: 0,
         description: '',
-        gallery: null as GalleryDto | null,
+        gallery: null as GalleryDto | null
       },
       redirect: false,
       currentPos: null,
       showEndDate: false,
       errorMessages: {
-        errorMessage: [],
+        errorMessage: []
       } as ErrorMessage
     };
 
@@ -145,7 +145,11 @@ export class CreateEvent extends Component<any, any> {
       this.setState({ redirect: true });
     } else {
       console.log('startDate > endDate ');
-      this.setState({errorMessages: {errorMessage: ['End date must be greater than the start date!']}});
+      this.setState({
+        errorMessages: {
+          errorMessage: ['End date must be greater than the start date!']
+        }
+      });
     }
   }
 
@@ -174,9 +178,10 @@ export class CreateEvent extends Component<any, any> {
     const style = !this.state.showEndDate ? { display: 'none' } : {};
 
     return (
-      <div className='container'>
-      {this.state.errorMessages.errorMessage.length > 0 ?
-      (<ErrorMessageComponent {...this.state.errorMessages} />) : null}
+      <div className='container page-container'>
+        {this.state.errorMessages.errorMessage.length > 0 ? (
+          <ErrorMessageComponent {...this.state.errorMessages} />
+        ) : null}
         <h1 className='text-center'>New Event</h1>
         <div className='form-group row'>
           <label className='col-sm-4 col-form-label text-right' htmlFor='Topic'>
