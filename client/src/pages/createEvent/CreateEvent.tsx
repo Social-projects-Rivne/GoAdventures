@@ -27,12 +27,12 @@ export class CreateEvent extends Component<any, any> {
       newEvent: {
         topic: '',
         startDate: new Date(),
-        endDate: new Date(),
+        endDate: 0,
         location: '',
         latitude: 0,
         longitude: 0,
         description: '',
-        gallery: {} as GalleryDto
+        gallery: null as GalleryDto | null,
       },
       redirect: false,
       currentPos: null,

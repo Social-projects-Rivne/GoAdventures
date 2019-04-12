@@ -15,30 +15,26 @@ import avatar from './images/Person.png';
 import axios, { AxiosResponse } from 'axios';
 import { serverUrl } from '../../api/url.config';
 
-
-
 interface ProfileState {
   userProfile: UserDto;
   userEventList: any;
   avatar: string | Blob;
-  //showSucessMessage: boolean;
+  // showSucessMessage: boolean;
   errorMesage: {
-    publicError: string;
-
+    publicError: string
   };
   context: {
-    avatarUrl: string;
-  },
+    avatarUrl: string
+  };
   choose: 'edit-profile' | 'events' | 'default' | 'account-overview';
   togleEditProfile: () => void;
   togleMyEvents: () => void;
   toogleAccountOverView: () => void;
-
 }
 
 const cookies: Cookies = new Cookies();
 export class Profile extends Component<UserDto, ProfileState> {
-  fileInput: any;
+  public fileInput: any;
   private editFormInputSettings: InputSettings[] = [
     {
       field_name: 'fullname',
@@ -87,16 +83,15 @@ export class Profile extends Component<UserDto, ProfileState> {
   private editFormDialogStyles: CSSProperties = {
     opacity: 0.9,
     width: '100%'
-
   };
   constructor(props: any) {
     super(props);
 
     this.state = {
-      //showSucessMessage: false,
+      // showSucessMessage: false,
       avatar: '',
       errorMesage: {
-        publicError: '',
+        publicError: ''
       },
       userProfile: {
         fullname: '',
@@ -117,70 +112,67 @@ export class Profile extends Component<UserDto, ProfileState> {
       },
       choose: 'account-overview',
       togleEditProfile: () => {
-        this.setState(state => ({
+        this.setState((state) => ({
           choose: 'edit-profile'
         }));
-        console.debug(this.state.choose)
+        console.debug(this.state.choose);
       },
       togleMyEvents: () => {
-        this.setState(state => ({
+        this.setState((state) => ({
           choose: 'events'
         }));
-        console.debug(this.state.choose)
+        console.debug(this.state.choose);
       },
       toogleAccountOverView: () => {
-        this.setState(state => ({
+        this.setState((state) => ({
           choose: 'account-overview'
         }));
 
-        console.debug(this.state.choose)
-      },
-
-
+        console.debug(this.state.choose);
+      }
     };
     this.clearErrorMessage = this.clearErrorMessage.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.fileSelectHandler = this.fileSelectHandler.bind(this);
-
   }
-  public handleSubmit(data: UserDto): Promise<any> {   //change user data
-    return changeUserData({ ...data }).then((res) => {
-      console.debug(res)
-      this.setState({
-        userProfile: {
-          ...res.data
-        },
-        errorMesage: { publicError: 'saved successfully' }
-      });
-    })
+  public handleSubmit(data: UserDto): Promise<any> {
+    // change user data
+    return changeUserData({ ...data })
+      .then((res) => {
+        console.debug(res);
+        this.setState({
+          userProfile: {
+            ...res.data
+          },
+          errorMesage: { publicError: 'saved successfully' }
+        });
+      })
       .catch((err) => {
         this.setState({ errorMesage: { ...err.response.data } });
       });
-
   }
   public fileSelectHandler(event: ChangeEvent<HTMLInputElement>): void {
     console.debug(event.target.files);
-    !!event.target.files ?
-      this.setState({
-        avatar: event.target.files[0]
-      }) : null;
+    !!event.target.files
+      ? this.setState({
+          avatar: event.target.files[0]
+        })
+      : null;
   }
   public componentDidMount() {
-    getUserData()
-      .then((response: AxiosResponse<UserDto>) =>
-        this.setState({
-          userProfile: { ...response.data }
-        })
-      );
+    getUserData().then((response: AxiosResponse<UserDto>) =>
+      this.setState({
+        userProfile: { ...response.data }
+      })
+    );
   }
   public clearErrorMessage() {
     this.setState({
       errorMesage: { publicError: '' }
-    }
-    );
+    });
   }
   public render() {
-    console.debug(this.state.userProfile)
+    console.debug(this.state.userProfile);
     return (
       <ProfileContext.Provider value={this.state}>
         <div className='profile-page'>
@@ -188,51 +180,46 @@ export class Profile extends Component<UserDto, ProfileState> {
             <Sidebar {...this.state.userProfile} />
           </div>
           <div className='Profile__content'>
-            {
-
-              this.state.choose === 'events'
-                ? <ShowEvents {...this.state.userEventList} />
-                : (this.state.choose === 'edit-profile'
-                  ? <Dialog
-                    validationSchema={editProfileSchema}
-                    handleSubmit={this.handleSubmit}
-                    inputs={this.editFormInputSettings}
-                    button_text='Update'
-                    header='Edit your profile'
-                    inline_styles={this.editFormDialogStyles}
-                    childComponents={
-                      <div className="Errors-messages">
-                        {
-                          this.state.errorMesage.publicError !== ''
-                            ? <div className="alert alert-warning alert-dismissible fade show errProfile"
-                              data-auto-dismiss role="alert"
-                              auto-close="3000">
-                              <strong>{this.state.errorMesage.publicError}</strong>
-                              <button
-                                onClick={this.clearErrorMessage}
-                                type="button"
-                                className="close"
-                                data-dismiss="alert"
-                                aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                              </button>
-                            </div>
-                            : null}
+            {this.state.choose === 'events' ? (
+              <ShowEvents {...this.state.userEventList} />
+            ) : this.state.choose === 'edit-profile' ? (
+              <Dialog
+                validationSchema={editProfileSchema}
+                handleSubmit={this.handleSubmit}
+                inputs={this.editFormInputSettings}
+                button_text='Update'
+                header='Edit your profile'
+                inline_styles={this.editFormDialogStyles}
+                childComponents={
+                  <div className='Errors-messages'>
+                    {this.state.errorMesage.publicError !== '' ? (
+                      <div
+                        className='alert alert-warning alert-dismissible fade show errProfile'
+                        data-auto-dismiss
+                        role='alert'
+                        auto-close='3000'
+                      >
+                        <strong>{this.state.errorMesage.publicError}</strong>
+                        <button
+                          onClick={this.clearErrorMessage}
+                          type='button'
+                          className='close'
+                          data-dismiss='alert'
+                          aria-label='Close'
+                        >
+                          <span aria-hidden='true'>&times;</span>
+                        </button>
                       </div>
-
-                    }
-                  />
-                  : (this.state.choose === 'account-overview'
-                    ? <AccountOverwiew {...this.state.userProfile} />
-                    : null
-
-                  )
-                )
-            }
+                    ) : null}
+                  </div>
+                }
+              />
+            ) : this.state.choose === 'account-overview' ? (
+              <AccountOverwiew {...this.state.userProfile} />
+            ) : null}
           </div>
         </div>
       </ProfileContext.Provider>
-
     );
   }
 }

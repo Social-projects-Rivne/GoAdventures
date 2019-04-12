@@ -31,7 +31,6 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.util.HashSet;
 
 @CrossOrigin
 @RestController
@@ -58,19 +57,20 @@ public class EventController {
     this.userService = userService;
     this.modelMapper = modelMapper;
 
+
   }
 
-  //    @PostMapping("/create/{categoryId}")
   @PostMapping("/create")
-//    public ResponseEntity<String> createEvent(@PathVariable(value = "categoryId") String categoryId,
   public ResponseEntity<String> createEvent(@RequestHeader(value = "Authorization") String token,
                                             @RequestBody EventDTO event) {
     Event mappedEvent = modelMapper.map(event, Event.class);
     Category category = categoryRepository.findByCategoryName(event.getCategory());
     mappedEvent.setCategory(category);
     mappedEvent.setStatusId(EventStatus.OPENED.getEventStatus());
-    if (mappedEvent.getGallery() == null) {
-      Gallery gallery = new Gallery(0, mappedEvent, new HashSet<>(), false);
+    Gallery gallery;
+    if (event.getGallery() != null) {
+      gallery = modelMapper.map(event.getGallery(), Gallery.class);
+      gallery.setEventId(mappedEvent);
       mappedEvent.setGallery(gallery);
     }
     try {

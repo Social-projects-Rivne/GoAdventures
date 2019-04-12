@@ -166,7 +166,7 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
                   className='btn btn-secondary'
                   id='sidebarBtn'
                   onClick={togleEditProfile}
-                />
+                >Edit profile</button>
                 <button
                   className='btn btn-secondary'
                   id='sidebarBtn'

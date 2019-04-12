@@ -6,8 +6,8 @@ import io.softserve.goadventures.errors.UserNotFoundException;
 import io.softserve.goadventures.models.Category;
 import io.softserve.goadventures.models.Event;
 import io.softserve.goadventures.models.User;
-import io.softserve.goadventures.repositories.CategoryRepository;
 import io.softserve.goadventures.repositories.EventRepository;
+import io.softserve.goadventures.repositories.GalleryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,17 +23,17 @@ import java.util.List;
 public class EventService {
     private Logger logger = LoggerFactory.getLogger(EventController.class);
     private final EventRepository eventRepository;
-    private  final CategoryRepository categoryRepository;
+    private final GalleryRepository galleryRepository;
     private final UserService userService;
     private  final JWTService jwtService;
 
     @Autowired
     public EventService(
             EventRepository eventRepository,
-            CategoryRepository categoryRepository,
+            GalleryRepository galleryRepository,
             UserService userService,
             JWTService jwtService) {
-        this.categoryRepository = categoryRepository;
+        this.galleryRepository = galleryRepository;
         this.eventRepository = eventRepository;
         this.userService = userService;
         this.jwtService = jwtService;
