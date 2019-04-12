@@ -172,6 +172,7 @@ export const EditEvent = (props: EditEvent) => {
           <div className='col-sm-3'>
             <DatePicker
               id='StartDate'
+              className="input-group-text"
               selected={moment(datepick.startDate).toDate()}
               onChange={(e: Date): void => {
                 setDate({ ...datepick, startDate: moment(e).toISOString() });
@@ -195,6 +196,7 @@ export const EditEvent = (props: EditEvent) => {
             <div className='col-sm-3'>
               <DatePicker
                 id='EndDate'
+                className="input-group-text"
                 selected={datepick.endDate != '0' ? moment(datepick.endDate).toDate() : moment().toDate()}
                 onChange={(e: Date): void => {
                   setDate({ ...datepick, endDate: moment(e).toISOString() });
@@ -211,6 +213,7 @@ export const EditEvent = (props: EditEvent) => {
               <div className='col-sm-3'>
                 <DatePicker
                   id='EndDate'
+                  className="input-group-text"
                   selected={moment(datepick.endDate).toDate()}
                   onChange={(e: Date): void => {
                     setDate({ ...datepick, endDate: moment(e).toISOString() });
@@ -270,11 +273,11 @@ export const EditEvent = (props: EditEvent) => {
           </Map>
         </div>
       </div>
-      <div className='d-flex flex-row justify-content-around align-center w-100 mt-3 mb-3'>
+      <div className='row justify-content-center btns-content'>
         <button
           type='button'
           name='cancel'
-          className='btn btn-danger'
+          className='btn btn-danger m-1'
           onClick={() => {
             props.setEdit(false);
           }}
@@ -284,7 +287,7 @@ export const EditEvent = (props: EditEvent) => {
         <button
           type='button'
           name='update'
-          className='btn btn-success'
+          className='btn btn-primary m-1'
           onClick={async () => {
             const formCurrent = formRef.current;
             if (formCurrent) {

@@ -102,14 +102,74 @@ export class EventDetail extends Component<any, any> {
           </div>
           <div className='col-12 col-sm-12 col-md-6 col-lg-5 col-xl-5'>
             <div className='jumboton jumbotron-fluid'>
-              <div className='d-flex flex-row align-content-center mt-3'>
-                <img
-                  className='rounded-avatar-sm'
-                  src='https://www.kidzone.ws/animal-facts/whales/images/beluga-whale-3.jpg'
-                />
-                <h2>{this.state.eventProps.event.topic}</h2>
+              
+              <div className="row mt-2 mb-2">
+              <div className='col-6 '>
+                
+                <div className="row"><h3 className="header">{this.state.eventProps.event.topic} </h3>{this.state.eventProps.event.statusId === 2 ? (
+                    <p style={{ color: 'red' }}>CLOSED</p>
+                  ) : null}</div>
               </div>
-              <div className="SettingsPanel">
+              <div className='col-6'>
+              <div className='d-flex  justify-content-end'>
+                  {!this.state.isOwner ? (
+
+                    <button
+                      type='button'
+                      className='btn btn-outline-info btn-sm'
+                      style={style}
+                    >
+                      Subscribe
+                    </button>
+                  ) : (
+                    <div>
+                      <button
+                        onClick={this.handleDelete}
+                        type='button'
+                        className='btn btn-lg btn-outline-danger ml-1'
+                      >
+                        <MdDelete></MdDelete>
+                      </button>
+                      <button
+                        onClick={() => {
+                          this.state.eventProps.setEdit(true);
+                        }}
+                        type='button'
+                        className='btn btn-lg btn-outline-success ml-1'
+                      >
+                        <MdEdit></MdEdit>
+                      </button>
+                      {this.state.eventProps.event.statusId === 2 ? (
+                        <button
+                          onClick={this.handleOpen}
+                          type='button'
+                          className='btn btn-lg btn-outline-success ml-1'
+
+                        >
+                          <MdLockOpen></MdLockOpen>
+                        </button>
+                      )
+                        : (
+                          <button
+                            onClick={this.handleClose}
+                            type='button'
+                            className='btn btn-lg btn-outline-warning ml-1'
+
+                          >
+                            <MdLock></MdLock>
+                          </button>
+                        )}
+                    </div>
+                  ) }
+                  
+
+                
+              </div>
+              
+</div>              
+</div>              
+              
+             
                 <div className='content-column d-flex flex-column h-100'>
 
                   <p>
@@ -126,71 +186,13 @@ export class EventDetail extends Component<any, any> {
                       )
                     )}
                   </p>
-                </div>
-                <div className='content-column d-flex flex-column h-100'>
-                  {!this.state.isOwner ? (
-
-                    <button
-                      type='button'
-                      className='btn btn-outline-info btn-sm'
-                      style={style}
-                    >
-                      Subscribe
-                    </button>
-                  ) : (<div></div>)}
-                  {this.state.isOwner ? (
-                    <div>
-                      <button
-                        onClick={this.handleDelete}
-                        type='button'
-                        className='btn btn-lg btn-outline-danger'
-                      >
-                        <MdDelete></MdDelete>
-                      </button>
-                      <button
-                        onClick={() => {
-                          this.state.eventProps.setEdit(true);
-                        }}
-                        type='button'
-                        className='btn btn-lg btn-outline-success'
-                      >
-                        <MdEdit></MdEdit>
-                      </button>
-                      {this.state.eventProps.event.statusId === 2 ? (
-                        <button
-                          onClick={this.handleOpen}
-                          type='button'
-                          className='btn btn-lg btn-outline-success'
-
-                        >
-                          <MdLockOpen></MdLockOpen>
-                        </button>
-                      )
-                        : (
-                          <button
-                            onClick={this.handleClose}
-                            type='button'
-                            className='btn btn-lg btn-outline-warning'
-
-                          >
-                            <MdLock></MdLock>
-                          </button>
-                        )}
-                    </div>
-                  ) : (
-                      <div />
-                    )}
-                  {this.state.eventProps.event.statusId === 2 ? (
-                    <p style={{ color: 'red' }}>CLOSED</p>
-                  ) : null}
-
-                </div>
-              </div>
-              <hr className='my-4' />
+                </div> 
+               
+              <hr className='my-3' />
               <span className='lead'>
                 {this.state.eventProps.event.description}
               </span>
-              <hr className='my-4' />
+              <hr className='my-3' />
               <div className='map'>
                 <h3>Location and Destination points</h3>
                 <div className='rounded'>
