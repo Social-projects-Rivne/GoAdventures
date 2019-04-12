@@ -140,9 +140,9 @@ export class CreateEvent extends Component<any, any> {
         const style = !this.state.showEndDate ? { display: 'none' } : {};
 
         return (
-            <div className='container'>
+            <div className='container page-container'>
 
-                <h1 className='text-center'>New Event</h1>
+                <h2 className='text-center'>New Event</h2>
                 <div className='form-group row'>
                     <label className='col-sm-4 col-form-label text-right' htmlFor='Topic'>Name of event(required)</label>
                     <div className='col-sm-8'>
@@ -156,29 +156,15 @@ export class CreateEvent extends Component<any, any> {
                 <div className='form-group row'>
                     <label className='col-sm-4 col-form-label text-right' htmlFor='Description'>Description(required)</label>
                     <div className='col-sm-8'>
-                        <textarea className='form-control' id='Description' placeholder='Enter description' rows={Rows} onChange={this.handleDescriptionChange}></textarea>
+                        <textarea className='form-control select' id='Description' placeholder='Enter description' rows={Rows} onChange={this.handleDescriptionChange}></textarea>
                     </div>
                 </div>
 
-                <div className='form-group row'>
-                    <label className='col-sm-4 col-form-label text-right' htmlFor='Location'>Location</label>
-                    <div className='col-sm-8'>
-                        <input type='text' className='form-control' id='Location'
-                            aria-describedby='LocationHelp' placeholder='Choose location on map'
-                            onChange={this.handleLocationChange} value={this.state.location} readOnly />
-                    </div>
-                </div>
-
-                <div className='form-group row'>
-                    <label className='col-sm-4 col-form-label text-right' htmlFor='Category'>Choose category for the event</label>
-                    <div className='col-sm-8'>
-                        <DropDown id='Category' onCategoryChange={this.handleCategory} />
-                    </div>
-                </div>
                 <div className='form-group row'>
                     <label className='col-sm-4 col-form-label text-right' htmlFor='StartDate'>Start date</label>
-                    <div className='col-sm-3'>
+                    <div className='col-sm-3 '>
                         <DatePicker
+                            className="input-group-text"
                             id='StartDate'
                             selected={this.state.startDate}
                             onChange={this.handleStartDate}
@@ -192,13 +178,15 @@ export class CreateEvent extends Component<any, any> {
                     </div>
 
 
-                    <label className='col-sm-2 col-form-label text-right' htmlFor='EndDate'>
-                        <button className='btn btn-link' id='EndDate' onClick={this.showEndDate}>
+                    
+                        <button className='col-sm-2 text-right btn btn-link' id='EndDate' onClick={this.showEndDate}>
                             End date
                         </button>
-                    </label>
-                    <div className='col-sm-3' style={style}>
+                    
+                    <div className='col-sm-3 ' style={style}>
                         <DatePicker
+                            className="input-group-text"
+
                             id='EndDate'
                             selected={this.state.endDate}
                             onChange={this.handleEndDate}
@@ -212,6 +200,23 @@ export class CreateEvent extends Component<any, any> {
                     </div>
 
                 </div>
+                <div className='form-group row'>
+                    <label className='col-sm-4 col-form-label text-right' htmlFor='Category'>Choose category for the event</label>
+                    <div className='col-sm-8'>
+                        <DropDown id='Category' onCategoryChange={this.handleCategory} />
+                    </div>
+                </div>
+                <div className='form-group row'>
+                    <label className='col-sm-4 col-form-label text-right' htmlFor='Location'>Location</label>
+                    <div className='col-sm-8'>
+                        <input type='text' className='form-control' id='Location'
+                            aria-describedby='LocationHelp' placeholder='Choose location on map'
+                            onChange={this.handleLocationChange} value={this.state.location} readOnly />
+                    </div>
+                </div>
+
+                
+                
 
                 <div className='row' >
                     <div className='col' id='map' >
@@ -224,6 +229,7 @@ export class CreateEvent extends Component<any, any> {
                             scrollWheelZoom={true}
                             dragging={true}
                             animate={true}
+                            className="select"
                             easeLinearity={0.35}
                             onClick={this.handleCoord}
                             ref={(el: any) => leafletMap = el}
