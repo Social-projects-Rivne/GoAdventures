@@ -125,7 +125,7 @@ export class EventDetail extends Component<any, any> {
                     ]}
                     zoom={13}
                   >
-                    <TileLayer url='https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png' />
+                    <TileLayer url='https://tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png' />
                     <Marker
                       position={[
                         this.state.eventProps.event.latitude,

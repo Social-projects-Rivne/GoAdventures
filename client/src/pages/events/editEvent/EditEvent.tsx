@@ -229,7 +229,7 @@ export const EditEvent = (props: EditEvent) => {
             zoom={zoom}
             className='rounded'
           >
-            <TileLayer url='https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png' />
+            <TileLayer url='https://tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png' />
             <Marker
               draggable={true}
               ondrag={() => {

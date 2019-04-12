@@ -211,7 +211,7 @@ componentDidMount() {
                             ref={(el: any) => leafletMap = el}
                         >
                             <TileLayer
-                                url='https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png'
+                                url='https://tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png'
                             />
                             {this.state.currentPos && <Marker position={this.state.currentPos} draggable={true}>
                                 <Popup position={this.state.currentPos}>
