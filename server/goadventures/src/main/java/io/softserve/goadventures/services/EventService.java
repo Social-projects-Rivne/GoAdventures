@@ -137,4 +137,7 @@ public class EventService {
 
         return new PageImpl<>(list);
     }
+    public List<Event> findAllEvents(){
+        return eventRepository.findAll();
+    }
 }

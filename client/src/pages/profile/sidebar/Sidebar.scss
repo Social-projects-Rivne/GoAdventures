@@ -3,9 +3,11 @@
   display: flex;
   flex-direction: column;
   flex: 1 3;
+ 
 
   & .Sidebar__card {
     flex: 1 1 auto;
+    
   }
   
   & .Sidebar__avatar {
@@ -13,6 +15,12 @@
     height: 250px;
     display: flex;
     justify-content: center;  
+    
+  }
+  & .change_avatar_btn{
+    margin-top: 1.2em;
+    display: flex;
+    justify-content: center;
   }
 
     & img {
@@ -33,10 +41,28 @@
 
 #sidebarBtn{
   background-color: transparent;
-  color: mediumslateblue;
+  color: whitesmoke;
   font-size: large;
   width: 100%;
   border-right: 0ch;
   border-left: 0ch;
+  text-align: left
 }
-
+#sdb111{
+  padding: 0.1rem;
+}
+#sidebarTitle{
+  text-align: center;
+}
+.errAvatarMessage{
+  
+  margin: 15px;
+  border-radius: 10px; 
+}
+.changeAvatarBtn{
+  margin-right: 5px;
+}
+.avtErrorsWraper{
+  display: flex;
+  justify-content: center;
+}

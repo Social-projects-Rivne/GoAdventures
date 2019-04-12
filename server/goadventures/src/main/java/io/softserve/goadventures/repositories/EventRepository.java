@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
+import java.util.List;
 
 @Repository
 public interface EventRepository extends PagingAndSortingRepository<Event, Integer> {
@@ -19,5 +20,12 @@ public interface EventRepository extends PagingAndSortingRepository<Event, Integ
 
     Page<Event> findAllByTopic(Pageable pageable, String topic);
 
+    List<Event> findAll();
+
     Page<Event> findAllByCategory(Pageable pageable, Category category);
+
 }
+
+
+
+

@@ -84,15 +84,15 @@ export class Dialog extends Component<DialogSettings, any> {
                           onChange={handleChange}
                         />
                         {errors[`${input.field_name}`] &&
-                        touched[input.field_name] ? (
-                          <div className='invalid-feedback'>
-                            {errors[input.field_name]}
-                          </div>
-                        ) : (
-                          <div className='valid-feedback'>
-                            <MdDone />
-                          </div>
-                        )}
+                          touched[input.field_name] ? (
+                            <div className='invalid-feedback'>
+                              {errors[input.field_name]}
+                            </div>
+                          ) : (
+                            <div className='valid-feedback'>
+                              <MdDone />
+                            </div>
+                          )}
                       </label>
                     );
                   })}

@@ -2,7 +2,7 @@ export interface UserDto {
   fullname: string;
   username: string;
   email: string;
-  avatarUrl: string;
+  avatarUrl?: string;
   password?: string;
   location?: string;
   newPassword?: string;
@@ -10,9 +10,9 @@ export interface UserDto {
 
   phone?: string;
   role?: string;
-  statusId?: string;
-  id?: string;
+  //statusId?: string;
+  //id?: string;
 
-  show?: boolean;
-  errorMesage?: boolean;
+  //show?: boolean;
+  //errorMesage?: boolean;
 }
