@@ -8,12 +8,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RestController;
 import javax.mail.MessagingException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.*;
 
 @RestController
 public class EventEmailNotification {
@@ -23,22 +21,20 @@ public class EventEmailNotification {
     @Autowired
     private MailContentBuilder mailContentBuilder;
     private EventService eventService;
-
-
+    //private IsCyrylic isCyrylic;
     public EventEmailNotification(MailContentBuilder mailContentBuilder, EventService eventService) {
         this.mailContentBuilder = mailContentBuilder;
         this.eventService = eventService;
 
     }
 
-    //@Scheduled(cron = "0 0 9 ? * * ") // every day at 9 am
-
     @Async
-    @Scheduled(cron = "0 10 12 ? * * ") // every day at 9 am
+    @Scheduled(cron = "0 58 01 ? * * ") //(cron = "0 0 9 ? * * ") // every day at 9 am
     public void emailNotification() throws ParseException, MessagingException {
         EmailSenderService emailSenderService = new EmailSenderService(mailContentBuilder);
         List<Event> events = eventService.findAllEvents();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        DateFormat dateFormat = new SimpleDateFormat("dd MMMM HH:mm", Locale.ENGLISH);
         sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
         for (Event event: events) {
             Date nowUtc = new Date();
@@ -46,22 +42,35 @@ public class EventEmailNotification {
 
             Calendar nowDate = Calendar.getInstance(timeZone);
             nowDate.setTime(nowUtc);
-            Date dateNowNormal = nowDate.getTime();
+            Date dateNowNormal = nowDate.getTime();  //date now
 
             String date = event.getStartDate();
-            Date dateOfStartEvent = sdf.parse(date);
+            Date dateOfStartEvent = sdf.parse(date); //date of start event
 
             Calendar cal = Calendar.getInstance();
             cal.setTime(dateOfStartEvent);
             int dayOfStartEvent = cal.get(Calendar.DAY_OF_YEAR);
+            int yearStartEvent = cal.get(Calendar.YEAR);
             cal.setTime(dateNowNormal);
             int dayNow = cal.get(Calendar.DAY_OF_YEAR);
+            int yearNow = cal.get(Calendar.YEAR);
 
-            if((dayNow+1) == dayOfStartEvent){
-                 emailSenderService.eventEmailNotidication(event.getOwner().getEmail(),event.getOwner().getFullname(),event.getTopic());
-                 logger.info("Email sent successfully to "+ event.getOwner().getEmail());
+            logger.info("Year now: " +yearNow + " yeat start event + " +yearStartEvent);
+
+            String startDateToUser = dateFormat.format(dateOfStartEvent);
+            String eventLocation = "";
+            if(((yearNow == yearStartEvent) && (dayNow +1 == dayOfStartEvent)) || ((yearNow+1 == yearStartEvent) && ((dayNow == 365 || dayOfStartEvent == 366) && dayOfStartEvent==1))){
+                logger.info(" " + event.getDescription() + " " + event.getLocation());
+                if (IsCyrylic.isCyrillic(event.getLocation())) {
+                    eventLocation = IsCyrylic.toTranslit(event.getLocation());
+                }
+                logger.info(" " + event.getDescription() + " " + eventLocation);
+                emailSenderService.eventEmailNotidication(event.getOwner().getEmail(), event.getOwner().getFullname(), event.getTopic(), startDateToUser, eventLocation, event.getDescription()); //send email owner event
+                logger.info("Email sent successfully to " + event.getOwner().getEmail());
 
             }
+
+
 
         }
 

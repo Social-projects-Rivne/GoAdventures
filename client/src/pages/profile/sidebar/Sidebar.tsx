@@ -90,10 +90,14 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
         }
       });
 
-    }
-    ).catch((err) => {
-      this.setState({ errorMesage: { ...err.response.data } })
-    });
+    })
+      .catch((err) => {
+        this.setState({ errorMesage: { ...err.response.data } }, () => {
+          window.setTimeout(() => {
+            this.setState({ errorMesage: { publicError: '' } })
+          }, 3500)
+        });
+      });
   }
 
   public render() {
@@ -125,7 +129,7 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
                     style={this.state.avatar == '' ? { display: 'none' } : { display: 'flex' }}
                     className="btn btn-warning"
                     onClick={this.uploadHandler}
-                  // onClick={() => {
+                  // onClick={() => {                   //доробити контекст
 
                   //   this.uploadHandler();
                   //   context = {

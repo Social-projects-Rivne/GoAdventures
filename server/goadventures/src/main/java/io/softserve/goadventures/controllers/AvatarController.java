@@ -1,13 +1,11 @@
 package io.softserve.goadventures.controllers;
 
-import io.softserve.goadventures.errors.ErrorMessageManager;
-import io.softserve.goadventures.errors.FileSizeException;
-import io.softserve.goadventures.errors.WrongImageTypeException;
+import io.softserve.goadventures.configurations.FileStorageProperties;
+import io.softserve.goadventures.errors.*;
 import io.softserve.goadventures.services.UserService;
 import io.softserve.goadventures.services.FileStorageService;
 import io.softserve.goadventures.services.JWTService;
 import io.softserve.goadventures.models.User;
-import io.softserve.goadventures.errors.UserNotFoundException;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -19,20 +17,24 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.slf4j.Logger;
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @RestController
 public class AvatarController {
 
     private final Logger logger = LoggerFactory.getLogger(AvatarController.class);
-
-
-    @Autowired
     private FileStorageService fileStorageService;
+    private final Path fileStorageLocation;
     private final UserService userService;
     private final JWTService jwtService;
 
-    public AvatarController(UserService userService, JWTService jwtService) {
+    @Autowired
+    public AvatarController(FileStorageService fileStorageService, FileStorageProperties fileStorageProperties, UserService userService, JWTService jwtService) {
+        this.fileStorageService = fileStorageService;
+        this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir()).toAbsolutePath().normalize();
         this.userService = userService;
         this.jwtService = jwtService;
     }
@@ -41,14 +43,6 @@ public class AvatarController {
     public ResponseEntity<?> uploadAvatar(@RequestHeader(value = "Authorization") String authorizationHeader,
                                           @RequestParam("file") MultipartFile file) throws UserNotFoundException {
 
-        try {
-            if(!(fileStorageService.checkFileType(file))){
-                throw new WrongImageTypeException();
-
-            }
-        }catch (WrongImageTypeException error){
-            return ResponseEntity.status(403).body(new ErrorMessageManager("Could not be uploaded, it is not an image!",error.toString()));
-        }
         try {
             if (!fileStorageService.checkFileSize(file)) {
                 throw new FileSizeException();
@@ -59,16 +53,28 @@ public class AvatarController {
 
         }
         User user = userService.getUserByEmail(jwtService.parseToken(authorizationHeader));
-
-        if(user.getAvatarUrl()!=null){                                              //delete current avatar image
-            fileStorageService.deleteFile(user.getAvatarUrl());
-        }
         String fileName = fileStorageService.storeFile(file);
+
+        try {
+            String fileType = fileStorageService.probeContentType(Paths.get(fileStorageLocation + File.separator + fileName));
+            if(!(fileStorageService.checkFileType(fileType))){
+                throw new WrongImageTypeException();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (WrongImageTypeException e){
+            fileStorageService.deleteFileByFileName(fileName);  //delete file if failed check type
+            return ResponseEntity.status(403).body(new ErrorMessageManager("Could not be uploaded, it is not an image!",e.toString()));
+        }
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/downloadAvatar/")
                 .path(fileName)
                 .toUriString();
+        if(user.getAvatarUrl()!=null){                                              //delete current avatar image
+            fileStorageService.deleteFileByUri(user.getAvatarUrl());
+        }
+
         user.setAvatarUrl(fileDownloadUri);
         userService.updateUser(user);
 

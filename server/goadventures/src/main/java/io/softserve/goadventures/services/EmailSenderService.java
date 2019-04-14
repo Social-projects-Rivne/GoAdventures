@@ -15,7 +15,6 @@ public class EmailSenderService {
     private Properties props;
     private Transport transport;
     private Message msg;
-
     private MailContentBuilder contentBuilder;
 
     @Autowired
@@ -62,11 +61,11 @@ public class EmailSenderService {
         msg.setContent(contentBuilder.recoveryMail(email, token), "text/html");
         closeTransport();
     }
-    public void eventEmailNotidication(String email,String fullname, String eventTopic) throws MessagingException {
+    public void eventEmailNotidication(String email,String fullname, String eventTopic, String startDate, String location, String eventDescription) throws MessagingException {
         InternetAddress toAddress = new InternetAddress(email);
         msg.setRecipient(Message.RecipientType.TO,toAddress);
         msg.setSubject("Event starts soon");
-        msg.setContent(contentBuilder.eventEmailNotification(fullname,eventTopic),"text/html");
+        msg.setContent(contentBuilder.eventEmailNotification(fullname,eventTopic,startDate, location, eventDescription),"text/html");
         closeTransport();
     }
 

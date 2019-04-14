@@ -1,19 +1,65 @@
-<!Doctype html>
+<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title> </title>>
+    <title></title>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-</head>>
+    <style type="text/css">
+        .red{
+        color:#FF0000;
+        }
+        .pink{
+        color:#8B008B;
+        }
+        .button {
+        display: inline-block;
+        padding: 15px 25px;
+        font-size: 24px;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        outline: none;
+        color: #fff;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 9px #999;
+        }
+        .button:hover {
+        background-color: #3e8e41
+        }
+        .button:active {
+        background-color: #3e8e41;
+        box-shadow: 0 5px #666;
+        transform: translateY(4px);
+        }
+    </style>
+</head>
+<body>
 
-    <body>
-    <h3 class=pink align="center">Hi <span th:text="${fullname}"></span>,</h3>
-    <h3 class=pink align="center">Event which you subscribed starting tomorrow!</h3>
-    <p align="center">
-        <a th:href="'http://localhost:3001/events/detail/'+${eventTopic}">
-            <button class=button>Event page</button>
-        </a>
-    </p>
+<h3 class=pink align="center">Hi <span th:text="${fullname}"></span></h3>
+<h3 class=pink align="center">Event which you subscribed starting tomorrow!</h3>
+<hr align="center" width="90%" size="1"/>
 
-    </body>
-</html>>
+<h3 class=pink align="center"><span th:text="${description}"></span></h3>
+<h3 class=pink align="center"><span th:text="${location}"></span></h3>
+<h3 class=pink align="center"><span th:text="${startDate}"></span></h3>
+
+
+
+<p align="center">
+    <a th:href="'http://localhost:3001/events'">
+        <button class=button>Event page</button>
+    </a>
+</p>
+
+<h3 class=pink align="center">See you at <span th:text="${eventTopic}"></span>tomorrow!</h3>
+
+
+
+<br><br>
+<hr align="center" width="90%" size="1"/>
+<h4 class=pink align = "center">All Rights Reserved</h4>
+
+</body>
+</html>

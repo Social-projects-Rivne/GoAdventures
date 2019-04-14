@@ -5,6 +5,7 @@ import { AddEventBtn } from '../../components/addEventBtn/AddEventBtn';
 import { EventsListBuild } from '../../components/eventsListBuild/EventsListBuild';
 import { EventDto } from '../../interfaces/Event.dto';
 import './Events.scss';
+import { MdSearch } from 'react-icons/md';
 
 interface EventState {
   events: EventDto[];
@@ -80,16 +81,7 @@ export class Events extends Component<EventDto, EventState> {
   public render() {
     return (
       <div className='container-fluid'>
-        <div className='container'>
-          <form onSubmit={(e: any) => {
-            e.preventDefault();
-            this.fetchSearchEvent();
-          }}>
-            <input className=" col-4 search-comp" placeholder="search" type='' onChange={(e: any) => {
-              this.handleChange(e.target.value);
-            }} />
-          </form>
-        </div>
+
         <AddEventBtn />
         <div className='row'>
           <div className='col'>
@@ -105,7 +97,24 @@ export class Events extends Component<EventDto, EventState> {
                 </p>
               }
             >
-              <div className='container'>
+              <div className='container page-container'>
+
+                <form onSubmit={(e: any) => {
+                  e.preventDefault();
+                  this.fetchSearchEvent();
+                }}>
+                  <div className="input-group input-group-lg mb-3">
+                   
+                    <input type="text" className="form-control search-comp"  placeholder="search" aria-describedby="basic-addon1" onChange={(e: any) => {
+                      this.handleChange(e.target.value);
+                    }} />
+                     
+                  </div>
+                </form>
+
+
+
+
                 <div className='card-columns'>
                   {this.state.events.map((event, index) => {
                     if (event) {

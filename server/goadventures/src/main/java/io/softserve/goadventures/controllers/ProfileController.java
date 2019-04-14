@@ -78,19 +78,6 @@ public class ProfileController {
         String newToken;
         User user = userService.getUserByEmail(jwtService.parseToken(authorizationHeader));   //user with old data
 
-//        try {
-//            if(!(updateUser.getEmail().equals(""))) {
-//                if(!(userService.existsByEmail(updateUser.getEmail()))){
-//                    logger.info("okok");
-//                    user.setEmail(updateUser.getEmail());
-//                } else {
-//                    logger.info("This mailbox is already in use");
-//                    throw new InvalidEmailException();
-//                }
-//            }
-//        } catch (InvalidEmailException e) {
-//            return ResponseEntity.status(500).body(new ErrorMessageManager("This mailbox is already in use",e.toString()));
-//        }
         try {
             if(!(updateUser.getPassword().equals(""))){
                 if(BCrypt.checkpw(updateUser.getPassword(),user.getPassword())){    //check current pass

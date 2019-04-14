@@ -15,13 +15,10 @@ import avatar from './images/Person.png';
 import axios, { AxiosResponse } from 'axios';
 import { serverUrl } from '../../api/url.config';
 
-
-
 interface ProfileState {
   userProfile: UserDto;
   userEventList: any;
   avatar: string | Blob;
-  //showSucessMessage: boolean;
   errorMesage: {
     publicError: string;
 
@@ -93,7 +90,6 @@ export class Profile extends Component<UserDto, ProfileState> {
     super(props);
 
     this.state = {
-      //showSucessMessage: false,
       avatar: '',
       errorMesage: {
         publicError: '',
@@ -144,19 +140,23 @@ export class Profile extends Component<UserDto, ProfileState> {
 
   }
   public handleSubmit(data: UserDto): Promise<any> {   //change user data
-    return changeUserData({ ...data }).then((res) => {
-      console.debug(res)
-      this.setState({
-        userProfile: {
-          ...res.data
-        },
-        errorMesage: { publicError: 'saved successfully' }
-      });
-    })
+    return changeUserData({ ...data })
+      .then((res) => {
+        console.debug(res)
+        this.setState({
+          userProfile: {
+            ...res.data
+          },
+          errorMesage: { publicError: 'saved successfully' }
+        });
+      })
       .catch((err) => {
-        this.setState({ errorMesage: { ...err.response.data } });
+        this.setState({ errorMesage: { ...err.response.data } }, () => {
+          window.setTimeout(() => {
+            this.setState({ errorMesage: { publicError: '' } })
+          }, 3500)
+        });
       });
-
   }
   public fileSelectHandler(event: ChangeEvent<HTMLInputElement>): void {
     console.debug(event.target.files);
@@ -180,7 +180,6 @@ export class Profile extends Component<UserDto, ProfileState> {
     );
   }
   public render() {
-    console.debug(this.state.userProfile)
     return (
       <ProfileContext.Provider value={this.state}>
         <div className='profile-page'>
@@ -205,8 +204,7 @@ export class Profile extends Component<UserDto, ProfileState> {
                         {
                           this.state.errorMesage.publicError !== ''
                             ? <div className="alert alert-warning alert-dismissible fade show errProfile"
-                              data-auto-dismiss role="alert"
-                              auto-close="3000">
+                              data-auto-dismiss role="alert">
                               <strong>{this.state.errorMesage.publicError}</strong>
                               <button
                                 onClick={this.clearErrorMessage}

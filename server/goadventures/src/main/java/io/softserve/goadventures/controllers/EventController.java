@@ -200,4 +200,11 @@ public class EventController {
         return user.getId() == event.getOwner().getId() ? ResponseEntity.ok().body("IS OWNER")
                 : ResponseEntity.badRequest().body("IS NOT OWNER");
     }
+
+    @GetMapping("/event-detail/{eventName}")
+    public ResponseEntity<?> eventDetail(@PathVariable("eventName") String eventName){
+        Event event = eventService.findEventByTopic(eventName);
+        EventDTO findedEvent = modelMapper.map(event, EventDTO.class);
+        return ResponseEntity.ok().body(findedEvent);
+    }
 }
