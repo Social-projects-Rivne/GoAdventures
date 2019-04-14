@@ -53,6 +53,7 @@ public class FeedbackService {
 
   public Set<FeedbackDTO> getAllEventFeedback(int eventId) {
     Set<Feedback> feedback = feedbackRepository.findByEventId(eventId);
+    logger.info("Se pizdec " + feedback);
     return convertToDto(feedback);
   }
 
