@@ -23,6 +23,8 @@ public class UserService {
         return userRepository.findUserById(id);
     }
 
+    public User getUserByName(String username) { return userRepository.findByUsername(username); }
+
     public User getUserByEmail(String email) throws UserNotFoundException {
         if(userRepository.existsByEmail(email)){
             return userRepository.findByEmail(email);

@@ -1,8 +1,10 @@
 package io.softserve.goadventures.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
@@ -44,6 +46,11 @@ public class User {
 
     @Column(name = "status_id")
     private int statusId;
+    
+    @JsonManagedReference
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
+    private Set<Feedback> user_feedback = new HashSet<>();
+
 
     @ManyToMany(mappedBy = "participants")
     private Set<Event> participantsEvent = new HashSet<>();

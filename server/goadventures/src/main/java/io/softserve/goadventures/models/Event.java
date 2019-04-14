@@ -47,7 +47,7 @@ public class Event {
     @Column(name = "status_id")
     private int statusId;
 
-    @JsonManagedReference
+    @JsonManagedReference()
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, mappedBy = "eventId")
     @JoinColumn(name = "gallery", referencedColumnName = "id")
     private Gallery gallery;

@@ -10,7 +10,7 @@ import {
   closeEvent,
   openEvent
 } from '../../../api/event.service';
-import { Comments, Gallery, SettingsPanel } from '../../../components';
+import { Comments, Gallery } from '../../../components';
 import { commentsSchema } from '../../../validationSchemas/commentValidation';
 import './EventDetail.scss';
 
