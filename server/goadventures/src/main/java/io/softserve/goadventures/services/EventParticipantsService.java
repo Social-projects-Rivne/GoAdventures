@@ -64,4 +64,17 @@ public class EventParticipantsService {
         return list;
     }
 
+    public boolean isParticipant(User user, Event event){
+
+        for (EventParticipants e : eventParticipantsRepository.findAll()) {
+            if ((event.getId()) == (e.getEvent().getId()) && (user.getId()) == (e.getUser().getId())) {
+                return  true;
+            }
+
+        }
+
+        return false;
+
+    }
+
 }

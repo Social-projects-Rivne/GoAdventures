@@ -233,4 +233,17 @@ public class EventController {
         return user.getId() == event.getOwner().getId() ? ResponseEntity.ok().body("IS OWNER")
                 : ResponseEntity.badRequest().body("IS NOT OWNER");
     }
+
+    @PostMapping("isSubscriber")
+    public ResponseEntity<?> isSubscriber(@RequestHeader(value = "Authorization") String token,
+                                          @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
+
+        LoggerFactory.getLogger("CHECK SUBSCRIBE").info("Event ID : " + eventId + " , User ID : "
+                + userService.getUserByEmail(jwtService.parseToken(token)).getId());
+        Event event = eventService.getEventById(eventId);
+        User user = userService.getUserByEmail(jwtService.parseToken(token));
+
+        return eventParticipantsService.isParticipant(user,event) ? ResponseEntity.ok().body("IS SUBSCRIBER")
+                : ResponseEntity.badRequest().body("IS NOT SUBSCRIBER");
+    }
 }
