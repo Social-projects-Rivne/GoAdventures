@@ -5,17 +5,20 @@
         justify-content: space-between;
         align-items: center;
         width: 100%;
-        .btn{
-        margin:2px;
+
+        .btn {
+            margin: 2px;
         }
     }
-    .gallery{
+
+    .gallery {
         height: 500px;
     }
-    .map-layer{
-        height:250px;
+
+    .map-layer {
+        height: 250px;
     }
-    
+
 
     & h2 {
         font-size: 2vw;

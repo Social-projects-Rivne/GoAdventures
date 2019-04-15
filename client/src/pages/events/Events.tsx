@@ -29,10 +29,9 @@ export class Events extends Component<EventDto, EventState> {
     };
     this.fetchEvents = this.fetchEvents.bind(this);
   }
-  handleChange(value: string) {
-    if (window.location.pathname != '/events') {
+  public handleChange(value: string) {
+    if (window.location.pathname !== '/events') {
       // <Link ></Link>
-
     }
     this.setState({ search: value });
   }
@@ -63,8 +62,6 @@ export class Events extends Component<EventDto, EventState> {
   }
 
   public async fetchEvents(): Promise<void> {
-
-
     const response = await getEventList(this.state.pageSettings.nextPage);
 
     this.setState({
@@ -75,18 +72,16 @@ export class Events extends Component<EventDto, EventState> {
           ? sessionStorage.getItem('nextpage')
           : '/event/all'
       }
-    }); console.log(this.state);
+    });
   }
 
   public render() {
     return (
       <div className='container-fluid'>
-
         <AddEventBtn />
         <div className='row'>
           <div className='col'>
             <InfiniteScroll
-
               dataLength={this.state.events ? this.state.events.length : 0}
               next={this.fetchEvents}
               hasMore={!this.state.pageSettings.isLast}
@@ -98,22 +93,24 @@ export class Events extends Component<EventDto, EventState> {
               }
             >
               <div className='container page-container'>
-
-                <form onSubmit={(e: any) => {
-                  e.preventDefault();
-                  this.fetchSearchEvent();
-                }}>
-                  <div className="input-group input-group-lg mb-3">
-                   
-                    <input type="text" className="form-control search-comp"  placeholder="search" aria-describedby="basic-addon1" onChange={(e: any) => {
-                      this.handleChange(e.target.value);
-                    }} />
-                     
+                <form
+                  onSubmit={(e: any) => {
+                    e.preventDefault();
+                    this.fetchSearchEvent();
+                  }}
+                >
+                  <div className='input-group input-group-lg mb-3'>
+                    <input
+                      type='text'
+                      className='form-control search-comp'
+                      placeholder='search'
+                      aria-describedby='basic-addon1'
+                      onChange={(e: any) => {
+                        this.handleChange(e.target.value);
+                      }}
+                    />
                   </div>
                 </form>
-
-
-
 
                 <div className='card-columns'>
                   {this.state.events.map((event, index) => {
@@ -126,7 +123,6 @@ export class Events extends Component<EventDto, EventState> {
                 </div>
               </div>
             </InfiniteScroll>
-
           </div>
         </div>
       </div>

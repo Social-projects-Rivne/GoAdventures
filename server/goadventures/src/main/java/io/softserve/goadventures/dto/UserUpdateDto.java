@@ -9,7 +9,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserUpdateDto extends UserDto {
+public class UserUpdateDto {
+    private String fullname;
+    private String username;
+    private String location;
+    private String avatarUrl;
+    private int phone;
     private String password;
     private String newPassword;
 }

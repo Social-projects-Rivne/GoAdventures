@@ -48,7 +48,7 @@ public class Event {
     private int statusId;
 
     @JsonManagedReference //TODO it is better to use dto models for json. You need to separate jpa logic from serialization logic.
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "eventId")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, mappedBy = "eventId")
     @JoinColumn(name = "gallery", referencedColumnName = "id")
     private Gallery gallery;
 
