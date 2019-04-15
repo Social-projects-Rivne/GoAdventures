@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service //TODO it is not really a DTO object if it is marked as a service. Should be moved..
 public class EventDtoBuilder {
     @Autowired
     private ModelMapper modelMapper;

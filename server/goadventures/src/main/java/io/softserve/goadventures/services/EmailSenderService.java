@@ -62,6 +62,8 @@ public class EmailSenderService {
         msg.setContent(contentBuilder.recoveryMail(email, token), "text/html");
         closeTransport();
     }
+
+    //TODO fix typo!
     public void eventEmailNotidication(String email,String fullname, String eventTopic) throws MessagingException {
         InternetAddress toAddress = new InternetAddress(email);
         msg.setRecipient(Message.RecipientType.TO,toAddress);

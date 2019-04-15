@@ -33,6 +33,8 @@ public class User {
     @Column(name = "email")
     private String email;
 
+    // TODO it is a bad idea to use int as phone number, because int max is 2,147,483,647 and it is less then 380977777777
+    // It would be better to use string with a regex validation
     @Column(name = "phone")
     private int phone;
 
@@ -48,7 +50,7 @@ public class User {
     @ManyToMany(mappedBy = "participants")
     private Set<Event> participantsEvent = new HashSet<>();
 
-    @JsonIgnore
+    @JsonIgnore //TODO it is better to use dto models for json. You need to separate jpa logic from serialization logic.
     @OneToMany(mappedBy = "owner")
     private Set<Event> selfEvents = new HashSet<>();
 
@@ -74,7 +76,8 @@ public class User {
                 ", \n\tparticipantsEvent=" + participantsEvent + '\'' +
                 "\n}";
     }
-
+//TODO to perform the best quality of hashCode and equals methods for objects using the fields that could be changed is prohibited.
+// I believe that password could be changed. Also the name could be changed (not sure if you have such a functionality).
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

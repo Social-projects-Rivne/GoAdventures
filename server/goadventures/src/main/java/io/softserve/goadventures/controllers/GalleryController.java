@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
 import java.util.Set;
-
+//TODO add logging to the all controllers, both to the valid case and to the invalid/exception case
 @CrossOrigin
 @RestController
 @RequestMapping("gallery")

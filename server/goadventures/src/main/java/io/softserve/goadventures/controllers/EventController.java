@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
-
+//TODO add logging to the all controllers, both to the valid case and to the invalid/exception case
 @CrossOrigin
 @RestController
 @RequestMapping("event")

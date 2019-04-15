@@ -20,7 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.slf4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-
+//TODO add logging to the all controllers, both to the valid case and to the invalid/exception case
 @RestController
 public class AvatarController {
 

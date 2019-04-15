@@ -1,5 +1,5 @@
 package io.softserve.goadventures;
-
+// TODO remove unused imports
 import io.softserve.goadventures.controllers.EventController;
 import io.softserve.goadventures.dto.UserAuthDto;
 import io.softserve.goadventures.enums.EventStatus;

@@ -28,7 +28,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
-
+//TODO add logging to the all controllers, both to the valid case and to the invalid/exception case
 @CrossOrigin
 @RestController
 @RequestMapping("profile")
@@ -77,7 +77,7 @@ public class ProfileController {
                                              @RequestBody UserUpdateDto updateUser) throws UserNotFoundException{
         String newToken;
         User user = userService.getUserByEmail(jwtService.parseToken(authorizationHeader));   //user with old data
-
+//TODO remove unused code
 //        try {
 //            if(!(updateUser.getEmail().equals(""))) {
 //                if(!(userService.existsByEmail(updateUser.getEmail()))){
