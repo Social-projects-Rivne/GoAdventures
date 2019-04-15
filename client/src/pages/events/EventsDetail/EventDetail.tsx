@@ -73,7 +73,7 @@ export class EventDetail extends Component<any, any> {
   }
 
   public handleClose() {
-    console.log('status ', this.state.eventProps.event.statusId);
+    // console.log('status ', this.state.eventProps.event.statusId);
     closeEvent(this.state.eventProps.event.id).then(
       (res: AxiosResponse): any => {
         if (res.status >= 200 && res.status <= 300) {

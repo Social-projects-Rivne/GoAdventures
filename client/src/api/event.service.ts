@@ -139,8 +139,9 @@ export const openEvent = async (data: number): Promise<any> =>
     }
   );
 
-export const updateEvent = async (data: EventDto): Promise<any> =>
-  await axios
+export const updateEvent = async (data: EventDto): Promise<any> => {
+  console.debug('request data', data);
+  return await axios
     .put(
       `${serverUrl}/event/update/${data.id}`,
       { ...data },
@@ -162,6 +163,7 @@ export const updateEvent = async (data: EventDto): Promise<any> =>
       console.error(err);
       return { responseStatus: err };
     });
+};
 
 export const isOwner = async (data: number): Promise<any> =>
   await axios.post(`${serverUrl}/event/isOwner`, null, {

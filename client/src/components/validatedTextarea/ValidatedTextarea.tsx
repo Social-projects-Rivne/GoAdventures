@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { Formik, Form, Field, FieldProps, FormikValues } from 'formik';
 import { textAreaSchema } from '../../validationSchemas/textareaValidation';
 import { MdDone } from 'react-icons/md';
@@ -24,6 +24,7 @@ export function ValidatedTextarea(props: ValidatedTextareaProps) {
         validateOnBlur={true}
         validateOnChange={true}
         onSubmit={(value: any, actions) => {
+          console.debug('Formic on submit ', value);
           props.handleSubmit(value.textarea);
           actions.setSubmitting(false);
         }}
@@ -43,9 +44,7 @@ export function ValidatedTextarea(props: ValidatedTextareaProps) {
                         aria-label='textarea'
                         {...field}
                       />
-                      {form.touched.textarea &&
-                      form.errors.textarea &&
-                      form.errors.textarea ? (
+                      {form.touched.textarea && form.errors.textarea ? (
                         <div className='invalid-feedback'>
                           {form.errors.textarea}
                         </div>

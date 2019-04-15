@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
@@ -48,7 +49,10 @@ public class Event {
     private int statusId;
 
     @JsonManagedReference()
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, mappedBy = "eventId")
+    @OneToOne(fetch = FetchType.LAZY, cascade = {
+            CascadeType.MERGE,
+            CascadeType.REFRESH
+    }, mappedBy = "eventId", orphanRemoval = true)
     @JoinColumn(name = "gallery", referencedColumnName = "id")
     private Gallery gallery;
 
