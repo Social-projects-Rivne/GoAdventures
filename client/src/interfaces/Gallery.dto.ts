@@ -1,5 +1,6 @@
 export interface GalleryDto {
-  id: number | undefined;
+  eventId: number;
+  id: number;
   imageUrls: string[];
-  isDeleted: false | true | undefined;
+  isDeleted: false | true;
 }

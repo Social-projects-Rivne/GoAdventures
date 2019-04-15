@@ -9,6 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
+import org.modelmapper.config.Configuration.*;
 
 @Configuration
 @ComponentScan
@@ -23,6 +24,7 @@ public class WebAppConfig {
             .setMatchingStrategy(MatchingStrategies.STANDARD)
             .setPropertyCondition(notEmpty)
             .setFieldMatchingEnabled(true)
+            .setFieldAccessLevel(AccessLevel.PRIVATE)
             .setSkipNullEnabled(true);
 
     return mapper;

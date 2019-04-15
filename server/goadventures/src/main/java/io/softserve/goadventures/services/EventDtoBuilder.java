@@ -1,4 +1,4 @@
-package io.softserve.goadventures.dto;
+package io.softserve.goadventures.services;
 
 import io.softserve.goadventures.dto.EventDTO;
 import io.softserve.goadventures.models.Event;

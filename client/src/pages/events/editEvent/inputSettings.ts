@@ -6,11 +6,5 @@ export const editEventFormInputSettings: InputSettings[] = [
     label_value: 'New event name',
     placeholder: 'Vasyl',
     type: 'text'
-  },
-  {
-    field_name: 'gallery',
-    label_value: 'Gallery',
-    placeholder: 'Upload new images',
-    type: 'file'
   }
 ];

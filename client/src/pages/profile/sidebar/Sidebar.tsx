@@ -12,31 +12,26 @@ interface SidebarState {
   userProfile: UserDto;
   avatar: string | Blob;
   errorMesage: {
-    publicError: string;
-
+    publicError: string
   };
-
 }
 const cookies: Cookies = new Cookies();
 class Sidebar extends React.Component<UserDto, SidebarState> {
-
-  fileInput: any;
+  public fileInput: any;
 
   constructor(props: any) {
     super(props);
     this.state = {
       avatar: '',
       errorMesage: {
-        publicError: '',
+        publicError: ''
       },
       userProfile: {
         fullname: '',
         username: '',
         email: '',
         avatarUrl: ''
-      },
-
-
+      }
     };
 
     this.clearErrorMessage = this.clearErrorMessage.bind(this);
@@ -46,7 +41,7 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
   public componentDidMount() {
     getUserData().then((response: AxiosResponse<UserDto>) =>
       this.setState({ userProfile: { ...response.data } })
-    )
+    );
   }
   // public componentDidUpdate(prevProps: any) {
   //   if (Object.is(prevProps, this.props) === false) {
@@ -58,15 +53,15 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
   public clearErrorMessage() {
     this.setState({
       errorMesage: { publicError: '' }
-    }
-    );
+    });
   }
   public fileSelectHandler(event: ChangeEvent<HTMLInputElement>): void {
     console.debug(event.target.files);
-    !!event.target.files ?
-      this.setState({
-        avatar: event.target.files[0]
-      }) : null;
+    !!event.target.files
+      ? this.setState({
+          avatar: event.target.files[0]
+        })
+      : null;
   }
 
   public uploadHandler() {
@@ -78,110 +73,119 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
         'Authorization': `Bearer ${cookies.get('tk879n')}`
       }
     };
-    axios.post(
-      `${serverUrl}/uploadAvatar`,
-      formdata,
-      config
-    ).then(response => {
-      this.setState({
-        userProfile: {
-          ...this.state.userProfile,
-          avatarUrl: response.data,
-        }
+    axios
+      .post(`${serverUrl}/uploadAvatar`, formdata, config)
+      .then((response) => {
+        this.setState({
+          userProfile: {
+            ...this.state.userProfile,
+            avatarUrl: response.data
+          }
+        });
+      })
+      .catch((err) => {
+        this.setState({ errorMesage: { ...err.response.data } });
       });
-
-    }
-    ).catch((err) => {
-      this.setState({ errorMesage: { ...err.response.data } })
-    });
   }
 
   public render() {
     return (
       <ProfileContext.Consumer>
-        {
-          ({ togleMyEvents, togleEditProfile, toogleAccountOverView, context }) => (
-            <div className='Sidebar__card card text-white bg-dark'>
-              <div className='card-header'>
-                <h2 id="sidebarTitle" className='title sidebarTitle'>{this.state.userProfile.fullname}</h2>
-                <div className='Sidebar__avatar'>
-
-                  <img
-                    src={(this.state.userProfile.avatarUrl != undefined && this.state.userProfile.avatarUrl != '') ? this.state.userProfile.avatarUrl : avatar}
-                    alt='user_avatar' />
-                </div>
-                <div className="change_avatar_btn">
-                  <input
-                    style={{ display: 'none' }}
-                    type='file'
-                    onChange={this.fileSelectHandler}
-                    ref={(fileInput) => this.fileInput = fileInput}
-                  />
-                  <button
-                    className="btn btn-success changeAvatarBtn"
-                    onClick={() => this.fileInput.click()} > Change avatar
-                  </button>
-                  <button
-                    style={this.state.avatar == '' ? { display: 'none' } : { display: 'flex' }}
-                    className="btn btn-warning"
-                    onClick={this.uploadHandler}
-                  // onClick={() => {
-
-                  //   this.uploadHandler();
-                  //   context = {
-                  //     avatarUrl: this.state.userProfile.avatarUrl
-                  //   }
-                  // }
-
-                  // }
-                  >Upload</button>
-                </div>
-                <div className="Errors-messages avtErrorsWraper">
-                  {
-
-                    this.state.errorMesage.publicError !== ''
-                      ? <div className="alert alert-danger alert-dismissible fade show  errAvatarMessage"
-                        role="alert">
-                        <strong>{this.state.errorMesage.publicError}</strong>
-                        <button type="button"
-                          onClick={this.clearErrorMessage}
-                          className="close"
-                          data-dismiss="alert"
-                          aria-label="Close">
-
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                      : null}
-                </div>
+        {({
+          togleMyEvents,
+          togleEditProfile,
+          toogleAccountOverView,
+          context
+        }) => (
+          <div className='Sidebar__card card text-white bg-dark'>
+            <div className='card-header'>
+              <h2 id='sidebarTitle' className='title sidebarTitle'>
+                {this.state.userProfile.fullname}
+              </h2>
+              <div className='Sidebar__avatar'>
+                <img
+                  src={
+                    this.state.userProfile.avatarUrl != undefined &&
+                    this.state.userProfile.avatarUrl != ''
+                      ? this.state.userProfile.avatarUrl
+                      : avatar
+                  }
+                  alt='user_avatar'
+                />
               </div>
-
-              <div className='card-body' id="sdb111">
-
-                <div className='btn-choice'>
-                  <button className='btn btn-secondary'
-                    id='sidebarBtn'
-                    onClick={togleEditProfile}>
-                    Edit profile
+              <div className='change_avatar_btn'>
+                <input
+                  style={{ display: 'none' }}
+                  type='file'
+                  onChange={this.fileSelectHandler}
+                  ref={(fileInput) => (this.fileInput = fileInput)}
+                />
+                <button
+                  className='btn btn-success changeAvatarBtn'
+                  onClick={() => this.fileInput.click()}
+                >
+                  {' '}
+                  Change avatar
                 </button>
-                  <button className='btn btn-secondary'
-                    id='sidebarBtn'
-                    onClick={togleMyEvents}>
-                    My events
+                <button
+                  style={
+                    this.state.avatar == ''
+                      ? { display: 'none' }
+                      : { display: 'flex' }
+                  }
+                  className='btn btn-warning'
+                  onClick={this.uploadHandler}
+                >
+                  Upload
                 </button>
-                  <button className='btn btn-secondary'
-                    id='sidebarBtn'
-                    onClick={toogleAccountOverView}>
-                    Account OverView
-                 </button>
-                </div>
               </div>
-            </div >
+              <div className='Errors-messages avtErrorsWraper'>
+                {this.state.errorMesage.publicError !== '' ? (
+                  <div
+                    className='alert alert-danger alert-dismissible fade show  errAvatarMessage'
+                    role='alert'
+                  >
+                    <strong>{this.state.errorMesage.publicError}</strong>
+                    <button
+                      type='button'
+                      onClick={this.clearErrorMessage}
+                      className='close'
+                      data-dismiss='alert'
+                      aria-label='Close'
+                    >
+                      <span aria-hidden='true'>&times;</span>
+                    </button>
+                  </div>
+                ) : null}
+              </div>
+            </div>
 
-
-          )
-        }
-      </ProfileContext.Consumer >
+            <div className='card-body' id='sdb111'>
+              <div className='btn-choice'>
+                <button
+                  className='btn btn-secondary'
+                  id='sidebarBtn'
+                  onClick={togleEditProfile}
+                >Edit profile</button>
+                <button
+                  className='btn btn-secondary'
+                  id='sidebarBtn'
+                  onClick={togleMyEvents}
+                >
+                  My events
+                </button>
+                <button
+                  className='btn btn-secondary'
+                  id='sidebarBtn'
+                  onClick={toogleAccountOverView}
+                >
+                  Account OverView
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </ProfileContext.Consumer>
     );
   }
 }

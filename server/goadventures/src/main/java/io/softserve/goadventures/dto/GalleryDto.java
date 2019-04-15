@@ -1,9 +1,19 @@
 package io.softserve.goadventures.dto;
-import io.softserve.goadventures.models.Event;
-import java.util.List;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.Set;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class GalleryDto {
-    private Event eventId;
-    private List<String> imageUrls;
+    private int id;
+    private int eventId;
+    private Set<String> imageUrls;
     private Boolean isDeleted;
 }
