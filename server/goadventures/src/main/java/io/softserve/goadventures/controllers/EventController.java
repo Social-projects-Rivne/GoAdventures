@@ -65,6 +65,7 @@ public class EventController {
                                             @RequestBody EventDTO event) {
     Event mappedEvent = modelMapper.map(event, Event.class);
     Category category = categoryRepository.findByCategoryName(event.getCategory());
+    System.out.println(mappedEvent.getTopic());
     mappedEvent.setCategory(category);
     mappedEvent.setStatusId(EventStatus.OPENED.getEventStatus());
     Gallery gallery;
@@ -161,8 +162,15 @@ public class EventController {
     return categoryRepository.findAll();
   }
 
+  @GetMapping("/categ/{categoryId}")
+  public String getAllCategory(@PathVariable(value = "categoryId") int categoryId) {
+        Category category = categoryRepository.findByEventsId(categoryId);
+        return category.getCategoryName();
+    }
+
   @GetMapping("/category/{categoryId}")
-  public Page<Event> getAllEventsByCategoryId(@PathVariable(value = "categoryId") int eventId, Pageable pageable) {
+  public Page<Event> getAllEventsByCategoryId(@PathVariable(value = "categoryId") int eventId,
+                                              @PageableDefault(size = 15, sort = "id")Pageable pageable) {
     return eventRepository.findByCategoryId(eventId, pageable);
   }
 
