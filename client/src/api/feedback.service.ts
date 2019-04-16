@@ -5,9 +5,9 @@ import errorHandle from './error.service';
 import { AxiosResponse, AxiosError } from 'axios';
 import { FeedbackDTO } from '../interfaces/Feedback.dto';
 
-export const getFeedback = async (eventId: number): Promise<any> => {
+export const getFeedbackRequest = async (eventId: number): Promise<any> => {
   return await axios
-    .get(`${serverUrl}/get-feedback/${eventId}`, {
+    .get(`${serverUrl}/feedback/get-feedback/${eventId}`, {
       headers: {
         Authorization: `Bearer ${cookies.get('tk879n')}`
       }
@@ -21,13 +21,17 @@ export const getFeedback = async (eventId: number): Promise<any> => {
     });
 };
 
-export const addFeedback = async (
+export const addFeedbackRequest = async (
   eventId: number,
   feedback: FeedbackDTO
 ): Promise<any> => {
-  return await axios.post(`${serverUrl}/add-feedback/${eventId}`, feedback, {
-    headers: {
-      Authorization: `Bearer ${cookies.get('tk879n')}`
+  return await axios.post(
+    `${serverUrl}/feedback/add-feedback/${eventId}`,
+    feedback,
+    {
+      headers: {
+        Authorization: `Bearer ${cookies.get('tk879n')}`
+      }
     }
-  });
+  );
 };

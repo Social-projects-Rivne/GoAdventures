@@ -10,9 +10,22 @@ import {
   closeEvent,
   openEvent
 } from '../../../api/event.service';
-import { Comments, Gallery } from '../../../components';
+import { Feedback, Gallery } from '../../../components';
 import { commentsSchema } from '../../../validationSchemas/commentValidation';
 import './EventDetail.scss';
+import { EventDto } from '../../../interfaces/Event.dto';
+import { withRouter } from 'react-router-dom';
+import { RouterProps, RouteComponentProps } from 'react-router';
+
+interface EventDetailState {
+  routerProps: RouterProps;
+  isOwner: boolean;
+  eventProps: {
+    event: EventDto
+    setEdit: any
+    setIsLoading: any
+  };
+}
 
 interface FormValue {
   comment: string;
@@ -73,7 +86,6 @@ export class EventDetail extends Component<any, any> {
   }
 
   public handleClose() {
-    // console.log('status ', this.state.eventProps.event.statusId);
     closeEvent(this.state.eventProps.event.id).then(
       (res: AxiosResponse): any => {
         if (res.status >= 200 && res.status <= 300) {
@@ -271,15 +283,7 @@ export class EventDetail extends Component<any, any> {
                 </div>
                 <hr className='my-4' />
                 <div>
-                  <Comments
-                    {...{
-                      avatar:
-                        'https://www.kidzone.ws/animal-facts/whales/images/beluga-whale-3.jpg',
-                      participant: 'Jeremy Mafioznik',
-                      text: 'Dolore ipsum',
-                      hashtags: ['pussy', 'money', 'weed']
-                    }}
-                  />
+                  <Feedback {...{ eventId: this.state.eventProps.event.id }} />
                 </div>
               </div>
             </div>
@@ -289,3 +293,5 @@ export class EventDetail extends Component<any, any> {
     );
   }
 }
+
+withRouter(EventDetail);

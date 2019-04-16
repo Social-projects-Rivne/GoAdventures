@@ -1,36 +1,67 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './Coments.scss';
+import { getFeedbackRequest } from '../../api/feedback.service';
+import { ErrorMessage } from '../../interfaces/ErrorMessage';
 
-interface Comment {
-  avatar: string;
-  participant: string;
-  text: string;
-  hashtags: string[];
+interface FeedbackProps {
+  eventId: number;
 }
 
-export const Comments = (props: Comment): JSX.Element => (
-  <div className='Comment'>
-    <div className='row'>
-      <div className=''>
-        <img className='rounded-avatar-sm' src={props.avatar} />
-      </div>
-      <div className='col-10'>
-        <div className='Comment__wrapper'>
-          <div className='toast-header'>
-            <strong>{props.participant}</strong>
-          </div>
-          <div className='toast-body'>
-            {props.text}
-            <div className='Comment__hashtags'>
-              {props.hashtags.map((hastag, index) => (
-                <span key={index}>
-                  <a href='#'>#{hastag} </a>
-                </span>
-              ))}
+interface Feedback {
+  userId: {
+    avatarUrl: string
+    username: string
+  };
+  comment: string;
+}
+
+export const Feedback = (props: FeedbackProps): JSX.Element => {
+  const [isLoading, setIsLoading] = useState();
+  const [feedbackData, setFeedbackData] = useState([
+    {
+      userId: {
+        avatarUrl: '',
+        username: ''
+      },
+      comment: ''
+    }
+  ] as Feedback[]);
+  const [error, setError] = useState();
+
+  useEffect(() => {
+    console.debug(props);
+    setIsLoading(true);
+    async function getFeedback(): Promise<void> {
+      const response = await getFeedbackRequest(props.eventId);
+      if (response.hasOwnProperty('errorMessage')) {
+        setError({ ...response } as ErrorMessage);
+      } else {
+        setFeedbackData({ ...response } as Feedback[]);
+      }
+    }
+    getFeedback();
+    setIsLoading(false);
+    return () => {};
+  }, []);
+
+  return (
+    <div className='Comment'>
+      <div className='row'>
+        <div className=''>
+          <img
+            className='rounded-avatar-sm'
+            src={feedbackData[0].userId.avatarUrl}
+          />
+        </div>
+        <div className='col-10'>
+          <div className='Comment__wrapper'>
+            <div className='toast-header'>
+              <strong>{feedbackData[0].userId.username}</strong>
             </div>
+            <div className='toast-body'>{feedbackData[0].comment}</div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
