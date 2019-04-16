@@ -61,6 +61,7 @@ public class EmailSenderService {
         msg.setContent(contentBuilder.recoveryMail(email, token), "text/html");
         closeTransport();
     }
+
     public void eventEmailNotification(String email,String fullname, String eventTopic, String startDate, String location, String eventDescription) throws MessagingException {
         InternetAddress toAddress = new InternetAddress(email);
         msg.setRecipient(Message.RecipientType.TO,toAddress);

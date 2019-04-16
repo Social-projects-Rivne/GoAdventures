@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+//TODO add logging to the all controllers, both to the valid case and to the invalid/exception case
 @RestController
 public class AvatarController {
 
@@ -40,7 +41,7 @@ public class AvatarController {
     }
 
     @PostMapping(path = "/uploadAvatar", consumes = {"multipart/form-data"})
-    public ResponseEntity<?> uploadAvatar(@RequestHeader(value = "Authorization") String authorizationHeader,
+    public ResponseEntity<?> uploadAvatar(@RequestHeader(value = "Authorization") String token,
                                           @RequestParam("file") MultipartFile file) throws UserNotFoundException {
 
         try {
@@ -52,7 +53,7 @@ public class AvatarController {
             return ResponseEntity.status(403).body(new ErrorMessageManager("Maximum file size is 5mb!",err.toString()));
 
         }
-        User user = userService.getUserByEmail(jwtService.parseToken(authorizationHeader));
+        User user = userService.getUserByEmail(jwtService.parseToken(token));
         String fileName = fileStorageService.storeFile(file);
 
         try {
@@ -81,6 +82,19 @@ public class AvatarController {
         return ResponseEntity.ok(fileDownloadUri);
     }
 
+    @GetMapping("/deleteAvatar")
+    public ResponseEntity<?> deleteUserAvatar(@RequestHeader(value = "Authorization") String token ) throws UserNotFoundException {
+
+        User user = userService.getUserByEmail(jwtService.parseToken(token));
+        if(user.getAvatarUrl() == null){
+            return ResponseEntity.badRequest().body("Delete fail");
+        }
+        fileStorageService.deleteFileByUri(user.getAvatarUrl());
+        user.setAvatarUrl(null);
+        userService.updateUser(user);
+        return ResponseEntity.ok("Delete_Success");
+
+    }
 
     @GetMapping("/downloadAvatar/{fileName:.+}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {

@@ -13,7 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServlet;
-
+//TODO add logging to the all controllers, both to the valid case and to the invalid/exception case
 @CrossOrigin
 @RestController
 @RequestMapping("auth")
@@ -34,6 +34,7 @@ public class AuthController extends HttpServlet {
         this.mailContentBuilder = mailContentBuilder;
     }
 
+    //TODO Remove or fix this javadoc
     /**
      * @param confirmationToken
      * @return ResponseEntity<User>  authToken *
@@ -62,6 +63,7 @@ public class AuthController extends HttpServlet {
         return ResponseEntity.ok().headers(httpHeaders).body(user);
     }
 
+    //TODO Remove or fix this javadoc
     /**
      * @param userAuthDto
      * @return
@@ -70,7 +72,7 @@ public class AuthController extends HttpServlet {
     public ResponseEntity<String> signIn(@RequestBody UserAuthDto userAuthDto) {
         String status = userService.singIn(userAuthDto.getEmail(), userAuthDto.getPassword());
 
-        if (status.equals("User log in")) {
+        if (status.equals("User log in")) { //TODO it is a very bad idea to use such strings as a status! 1: Use enum; 2: I am not sure that you rally need them. Return null if there is no User
             String authToken = jwtService.createToken(userAuthDto.getEmail());
 
             HttpHeaders headers = new HttpHeaders();

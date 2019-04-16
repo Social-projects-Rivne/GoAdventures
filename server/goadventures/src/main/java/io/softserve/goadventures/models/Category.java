@@ -23,7 +23,7 @@ public class Category{
     @Column(name = "category_name")
     private String categoryName;
 
-    @JsonManagedReference
+    @JsonManagedReference //TODO it is better to use dto models for json. You need to separate jpa logic from serialization logic.
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private Set<Event> events;
 

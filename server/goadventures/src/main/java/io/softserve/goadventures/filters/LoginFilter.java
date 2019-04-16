@@ -1,5 +1,5 @@
 package io.softserve.goadventures.filters;
-
+//TODO unused import!!
 import io.softserve.goadventures.errors.UserNotFoundException;
 import io.softserve.goadventures.models.User;
 import io.softserve.goadventures.services.JWTService;

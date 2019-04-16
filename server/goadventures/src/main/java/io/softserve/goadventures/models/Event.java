@@ -47,8 +47,8 @@ public class Event {
     @Column(name = "status_id")
     private int statusId;
 
-    @JsonManagedReference
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "eventId")
+    @JsonManagedReference //TODO it is better to use dto models for json. You need to separate jpa logic from serialization logic.
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, mappedBy = "eventId")
     @JoinColumn(name = "gallery", referencedColumnName = "id")
     private Gallery gallery;
 
@@ -95,7 +95,7 @@ public class Event {
                 ", \n\tparticipants=" + participants +
                 "\n}";
     }
-
+//TODO see the comment for User model
     @Override
     public boolean equals(Object o) {
         if (this == o)

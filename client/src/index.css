@@ -30,6 +30,7 @@ img.rounded-avatar-sm {
 
 .btn {
   border-radius: 0.25rem;
+  margin: 0 5px 0 5px;
 }
 
 input {

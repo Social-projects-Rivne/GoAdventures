@@ -15,5 +15,5 @@ public class UserDto {
     private String email;
     private String location;
     private String avatarUrl;
-    private int phone;
+    private int phone; //TODO int -> String, see User comment
 }

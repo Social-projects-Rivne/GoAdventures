@@ -2,7 +2,7 @@ import { GalleryDto } from './Gallery.dto';
 import { UserDto } from './User.dto';
 
 export interface EventDto {
-  id: number | undefined;
+  id: number;
   topic: string | undefined;
   location: string | undefined;
   latitude: number;
@@ -13,5 +13,5 @@ export interface EventDto {
   category: string | undefined;
   statusId: number;
   participants: UserDto[] | undefined;
-  gallery: GalleryDto | undefined;
+  gallery: GalleryDto;
 }

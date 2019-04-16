@@ -13,7 +13,6 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -73,15 +72,15 @@ public class FileStorageService extends FileTypeDetector {
         return true;
     }
     public boolean checkFileSize(MultipartFile file){
-     long fileSize= file.getSize();
-     logger.info("file size "+ fileSize);
-     if(file.isEmpty()){
+        long fileSize= file.getSize();
+        logger.info("file size "+ fileSize);
+        if(file.isEmpty()){
             return false;
         }
-     if(fileSize > 5242880){
-         return false;
-     }
-     return true;
+        if(fileSize > 5242880){
+            return false;
+        }
+        return true;
 
     }
     public Resource loadFileAsResource(String fileName) {
@@ -110,7 +109,7 @@ public class FileStorageService extends FileTypeDetector {
         }
     }
     public void deleteFileByFileName(String fileName){
-       String filePath = fileStorageLocation + File.separator + fileName;
+        String filePath = fileStorageLocation + File.separator + fileName;
         logger.info("file path  " + filePath );
         try {
             Files.delete(Paths.get(filePath));

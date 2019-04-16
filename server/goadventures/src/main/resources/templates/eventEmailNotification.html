@@ -4,6 +4,7 @@
     <title></title>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<<<<<<< HEAD
     <style type="text/css">
         .red{
         color:#FF0000;
@@ -63,3 +64,19 @@
 
 </body>
 </html>
+=======
+</head>>
+
+    <body>
+    <h3 class=pink align="center">Hi <span th:text="${fullname}"></span>,</h3>
+    <h3 class=pink align="center">Event which you subscribed starting tomorrow!</h3>
+    <p align="center">
+        <!--//TODO remove hardcoded URL-->
+        <a th:href="'http://localhost:3001/events/detail/'+${eventTopic}">
+            <button class=button>Event page</button>
+        </a>
+    </p>
+
+    </body>
+</html>>
+>>>>>>> develop

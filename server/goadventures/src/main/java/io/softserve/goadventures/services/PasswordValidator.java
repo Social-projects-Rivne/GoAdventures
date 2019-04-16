@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+//TODO this is not really a service. This logic can be moved to some util class
 @Service
 public class PasswordValidator{
     private Pattern pattern;

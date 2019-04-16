@@ -14,7 +14,7 @@ public interface EventRepository extends PagingAndSortingRepository<Event, Integ
 
     Event findById(int id);
 
-    Long countByTopic(String topic);
+    Long countByTopic(String topic); // TODO this method is never used
 
     Page<Event> findByCategoryId(int eventId, Pageable pageable);
 

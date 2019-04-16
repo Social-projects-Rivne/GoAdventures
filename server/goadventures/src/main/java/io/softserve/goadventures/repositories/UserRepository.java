@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends CrudRepository<User, Integer> {
     User findByEmail(String email);
     User findByUsername(String userName);
-    boolean existsByEmail(String email);
+    boolean existsByEmail(String email); //TODO I believe that you do not need this method
     Long countByFullname(String name);
     User findUserById(Integer id);
 }

@@ -10,7 +10,7 @@ public class Profile {
     private String userName;
     private String email;
     private String location;
-    private int phone;
+    private int phone; //TODO int -> String. see comment to User model
     private String avatarUrl;
 
     public Profile(String fullName, String userName, String email,String avatarUrl) {

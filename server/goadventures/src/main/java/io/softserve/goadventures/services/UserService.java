@@ -19,6 +19,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    //TODO this method is never used and should be removed. In a case if you need it you can autowire the necessary repository class in a service class.
     public User getUserById(int id){
         return userRepository.findUserById(id);
     }
@@ -27,7 +28,7 @@ public class UserService {
         if(userRepository.existsByEmail(email)){
             return userRepository.findByEmail(email);
         } else {
-            throw new UserNotFoundException("User not found");
+            throw new UserNotFoundException("User not found"); //TODO there is no need in this exception. You can simply return null
         }
     }
 
@@ -60,7 +61,7 @@ public class UserService {
 
             if (BCrypt.checkpw(password, user.getPassword())) {
                 if (user.getStatusId() == UserStatus.PENDING.getUserStatus()) {
-                    return "User is not confirm auth!";
+                    return "User is not confirm auth!"; //TODO bad idea with such statuses! enums!
                 }
                 if (user.getStatusId() == UserStatus.BANNED.getUserStatus()) {
                     return "User is banned";

@@ -5,7 +5,7 @@ import io.softserve.goadventures.errors.InvalidPasswordErrorMessage;
 import io.softserve.goadventures.services.JWTService;
 import io.softserve.goadventures.dto.EventDTO;
 import io.softserve.goadventures.models.Event;
-import io.softserve.goadventures.dto.EventDtoBuilder;
+import io.softserve.goadventures.services.EventDtoBuilder;
 import io.softserve.goadventures.services.EventService;
 import io.softserve.goadventures.dto.UserDto;
 import io.softserve.goadventures.dto.UserUpdateDto;
@@ -28,7 +28,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
-
+//TODO add logging to the all controllers, both to the valid case and to the invalid/exception case
 @CrossOrigin
 @RestController
 @RequestMapping("profile")
