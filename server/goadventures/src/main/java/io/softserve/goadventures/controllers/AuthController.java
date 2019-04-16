@@ -34,10 +34,6 @@ public class AuthController extends HttpServlet {
         this.mailContentBuilder = mailContentBuilder;
     }
 
-    /**
-     * @param confirmationToken
-     * @return ResponseEntity<User>  authToken *
-     */
     @GetMapping("/confirm-account")
     public ResponseEntity<User> confirmUserAccount(@RequestParam("token") String confirmationToken) {
         User user = userService.confirmUser(jwtService.parseToken(confirmationToken));
@@ -62,10 +58,6 @@ public class AuthController extends HttpServlet {
         return ResponseEntity.ok().headers(httpHeaders).body(user);
     }
 
-    /**
-     * @param userAuthDto
-     * @return
-     */
     @PostMapping("/sign-in")
     public ResponseEntity<String> signIn(@RequestBody UserAuthDto userAuthDto) {
         String status = userService.singIn(userAuthDto.getEmail(), userAuthDto.getPassword());
@@ -83,10 +75,6 @@ public class AuthController extends HttpServlet {
         }
     }
 
-    /**
-     * @param authToken
-     * @return ResponseEntity<String>
-     */
     @PutMapping("/sign-out")
     public ResponseEntity<String> signOut(@RequestHeader("Authorization") String authToken) {
         userService.singOut(jwtService.parseToken(authToken));
