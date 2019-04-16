@@ -1,6 +1,5 @@
 package io.softserve.goadventures.errors;
 
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor

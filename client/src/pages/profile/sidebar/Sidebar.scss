@@ -66,3 +66,30 @@
   display: flex;
   justify-content: center;
 }
+.show{
+  animation: scale-up-center 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+  
+}
+@keyframes scale-up-center {
+  0% {
+    transform: scale(0.5);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+// .fade {
+//   animation: scale-out-center 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) 3500ms both;
+//   }
+//   @keyframes scale-out-center {
+//     0% {
+//       transform: scale(1);
+//       opacity: 1;
+//     }
+//     100% {
+//       transform: scale(0);
+//       opacity: 1;
+//     }
+//   }
+  

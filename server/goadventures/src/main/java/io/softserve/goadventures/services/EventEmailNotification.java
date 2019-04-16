@@ -1,6 +1,8 @@
 package io.softserve.goadventures.services;
 
 import io.softserve.goadventures.models.Event;
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,6 @@ public class EventEmailNotification {
     @Autowired
     private MailContentBuilder mailContentBuilder;
     private EventService eventService;
-    //private IsCyrylic isCyrylic;
     public EventEmailNotification(MailContentBuilder mailContentBuilder, EventService eventService) {
         this.mailContentBuilder = mailContentBuilder;
         this.eventService = eventService;
@@ -29,43 +30,39 @@ public class EventEmailNotification {
     }
 
     @Async
-    @Scheduled(cron = "0 58 01 ? * * ") //(cron = "0 0 9 ? * * ") // every day at 9 am
+    @Scheduled(cron = "0 44 17 ? * * ") //(cron = "0 0 9 ? * * ") // every day at 9 am
     public void emailNotification() throws ParseException, MessagingException {
         EmailSenderService emailSenderService = new EmailSenderService(mailContentBuilder);
         List<Event> events = eventService.findAllEvents();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        DateFormat dateFormat = new SimpleDateFormat("dd MMMM HH:mm", Locale.ENGLISH);
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+        SimpleDateFormat formatDateFormDb = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        DateFormat dateFormatToUser = new SimpleDateFormat("dd MMMM HH:mm", Locale.ENGLISH);
+        formatDateFormDb.setTimeZone(TimeZone.getTimeZone("GMT"));
         for (Event event: events) {
-            Date nowUtc = new Date();
+            Date dateNow = new Date();
             TimeZone timeZone = TimeZone.getTimeZone("GMT");
-
             Calendar nowDate = Calendar.getInstance(timeZone);
-            nowDate.setTime(nowUtc);
-            Date dateNowNormal = nowDate.getTime();  //date now
+            nowDate.setTime(dateNow);
+            Date dateNowParsed = nowDate.getTime();  //date now
 
             String date = event.getStartDate();
-            Date dateOfStartEvent = sdf.parse(date); //date of start event
+            Date dateOfStartEvent = formatDateFormDb.parse(date); //date of start event
 
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(dateOfStartEvent);
-            int dayOfStartEvent = cal.get(Calendar.DAY_OF_YEAR);
-            int yearStartEvent = cal.get(Calendar.YEAR);
-            cal.setTime(dateNowNormal);
-            int dayNow = cal.get(Calendar.DAY_OF_YEAR);
-            int yearNow = cal.get(Calendar.YEAR);
+            int daysBetween = Days.daysBetween(new LocalDate(dateNowParsed),new LocalDate(dateOfStartEvent)).getDays();
 
-            logger.info("Year now: " +yearNow + " yeat start event + " +yearStartEvent);
-
-            String startDateToUser = dateFormat.format(dateOfStartEvent);
+            String startDateToUser = dateFormatToUser.format(dateOfStartEvent);
             String eventLocation = "";
-            if(((yearNow == yearStartEvent) && (dayNow +1 == dayOfStartEvent)) || ((yearNow+1 == yearStartEvent) && ((dayNow == 365 || dayOfStartEvent == 366) && dayOfStartEvent==1))){
+            String eventDescription = "";
+            if(daysBetween == 1){
                 logger.info(" " + event.getDescription() + " " + event.getLocation());
                 if (IsCyrylic.isCyrillic(event.getLocation())) {
                     eventLocation = IsCyrylic.toTranslit(event.getLocation());
                 }
+                if(IsCyrylic.isCyrillic(event.getDescription())){
+                    eventDescription = IsCyrylic.toTranslit(event.getDescription());
+                }
                 logger.info(" " + event.getDescription() + " " + eventLocation);
-                emailSenderService.eventEmailNotidication(event.getOwner().getEmail(), event.getOwner().getFullname(), event.getTopic(), startDateToUser, eventLocation, event.getDescription()); //send email owner event
+                emailSenderService.eventEmailNotification(event.getOwner().getEmail(), event.getOwner().getFullname(), event.getTopic(), startDateToUser, eventLocation, eventDescription); //send email to owner event
+                //send email to subscribes
                 logger.info("Email sent successfully to " + event.getOwner().getEmail());
 
             }
