@@ -4,7 +4,7 @@ import { Field, FieldProps, Form, Formik, FormikProps } from 'formik';
 import { TileLayer, Map, Marker, Popup } from 'react-leaflet';
 import { MdDone } from 'react-icons/md';
 import moment from 'moment';
-import { deleteEvent, isOwner } from '../../../api/event.service';
+import { deleteEvent, isOwner, isSubscribe } from '../../../api/event.service';
 import { Comments, Gallery, SettingsPanel } from '../../../components';
 import { commentsSchema } from '../../../validationSchemas/commentValidation';
 import './EventDetail.scss';
@@ -25,9 +25,11 @@ export class EventDetail extends Component<any, any> {
     super(props);
     this.state = {
       eventProps: { ...this.props },
-      isOwner: false
+      isOwner: false,
+      isSubs: true
     };
     this.handleDelete = this.handleDelete.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
 
   public convertTime(date: string) {
@@ -39,6 +41,23 @@ export class EventDetail extends Component<any, any> {
   }
 
   public componentDidMount() {
+ 
+    isSubscribe(this.state.eventProps.event.id).then(
+      (res: AxiosResponse): any => {
+        console.warn(res.status);
+          this.setState({
+            isSubs: true
+          });
+        
+      } 
+    ).catch( (error) =>{
+      console.log("orest ska"+error);
+      this.setState({
+        isSubs: false
+      })
+    }
+    )
+    
     isOwner(this.state.eventProps.event.id).then(
       (res: AxiosResponse): any => {
         if (res.status >= 200 && res.status <= 300) {
@@ -63,6 +82,25 @@ export class EventDetail extends Component<any, any> {
         }
       }
     );
+  }
+  public handleClick() {
+    if(this.state.isSubs)
+      {this.setState(
+        {
+          isSubs: false
+        }
+      )
+      }
+      
+      else
+      {this.setState(
+        {
+          isSubs: true
+          
+        }
+      )}
+
+      console.log(this.state.isSubs);
   }
 
   public render() {
@@ -98,17 +136,34 @@ export class EventDetail extends Component<any, any> {
                         )}
                       </p>
                     </div>
-                  ),
-                  right: (
-                    <button
-                      type='button'
-                      className='btn btn-outline-info btn-sm'
-                    >
-                      Subscribe
-                    </button>
-                  )
+
+                  ), right: (<div>
+                    {this.state.isSubs ? (
+                      <button
+                      
+                        type='button'
+                        className='btn btn-outline-danger btn-sm'
+                        onClick={this.handleClick}
+                        
+                      >Subscribed
+        
+                </button>
+                    ) : (
+                        <button
+                          type='button'
+                          className='btn btn-info btn-sm'
+                          onClick={this.handleClick}
+                         
+                        >Subscribe
+          
+                </button>)
+
+
+                    }
+                  </div>)
                 }}
               </SettingsPanel>
+
               <hr className='my-4' />
               <span className='lead'>
                 {this.state.eventProps.event.description}
@@ -142,6 +197,7 @@ export class EventDetail extends Component<any, any> {
               </div>
               {this.state.isOwner ? (
                 <div>
+
                   <button
                     onClick={this.handleDelete}
                     type='button'
@@ -160,8 +216,8 @@ export class EventDetail extends Component<any, any> {
                   </button>
                 </div>
               ) : (
-                <div />
-              )}
+                  <div />
+                )}
 
               <hr className='my-4' />
               <div>
@@ -173,7 +229,7 @@ export class EventDetail extends Component<any, any> {
                     enableReinitialize={true}
                     validateOnBlur={true}
                     validateOnChange={true}
-                    onSubmit={() => {}}
+                    onSubmit={() => { }}
                     render={(props: FormikProps<FormValue>) => (
                       <Form>
                         <Field
@@ -189,16 +245,16 @@ export class EventDetail extends Component<any, any> {
                                   name='comment'
                                 />
                                 {form.touched.comment &&
-                                form.errors.comment &&
-                                form.errors.comment ? (
-                                  <div className='invalid-feedback'>
-                                    {form.errors.comment}
+                                  form.errors.comment &&
+                                  form.errors.comment ? (
+                                    <div className='invalid-feedback'>
+                                      {form.errors.comment}
+                                    </div>
+                                  ) : (
+                                    <div className='valid-feedback'>
+                                      <MdDone /> Press enter to add comment
                                   </div>
-                                ) : (
-                                  <div className='valid-feedback'>
-                                    <MdDone /> Press enter to add comment
-                                  </div>
-                                )}
+                                  )}
                               </div>
                             );
                           }}

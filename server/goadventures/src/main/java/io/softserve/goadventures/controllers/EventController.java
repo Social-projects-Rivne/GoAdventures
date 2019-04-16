@@ -101,7 +101,10 @@ public class EventController {
     public ResponseEntity<String> addNewSubscriber(@RequestHeader(value = "Authorization") String token,
                                                    @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
         Event event = eventService.getEventById(eventId);
+        logger.info(event.getTopic());
         User user = userService.getUserByEmail(jwtService.parseToken(token));
+        logger.info(user.getEmail());
+
         eventParticipantsService.addParicipant(user, event);
 
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -234,7 +237,7 @@ public class EventController {
                 : ResponseEntity.badRequest().body("IS NOT OWNER");
     }
 
-    @PostMapping("isSubscriber")
+    @GetMapping("is-subscriber")
     public ResponseEntity<?> isSubscriber(@RequestHeader(value = "Authorization") String token,
                                           @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
 

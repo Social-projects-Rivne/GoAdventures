@@ -109,6 +109,7 @@ export const deleteEvent = async (data: number): Promise<any> =>
     }
   });
 
+
 export const updateEvent = async (data: EventDto): Promise<EventDto | object> =>
   await axios
     .put(
@@ -135,6 +136,35 @@ export const updateEvent = async (data: EventDto): Promise<EventDto | object> =>
 
 export const isOwner = async (data: number): Promise<any> =>
   await axios.post(`${serverUrl}/event/isOwner`, null, {
+    headers: {
+      'EventId': data,
+      'Authorization': `Bearer ${cookies.get('tk879n')}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
+
+export const isSubscribe = async (data: number): Promise<any> =>
+  await axios.get(`${serverUrl}/event/is-subscriber`, {
+    headers: {
+      'EventId': data,
+      'Authorization': `Bearer ${cookies.get('tk879n')}`,
+      'Content-Type': 'application/json'
+    }
+  })
+
+
+export const Subscribe = async (data: number): Promise<any> =>
+  await axios.post(`${serverUrl}/event/subscribe`, null, {
+    headers: {
+      'EventId': data,
+      'Authorization': `Bearer ${cookies.get('tk879n')}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
+export const UnSubscribe = async (data: number): Promise<any> =>
+  await axios.post(`${serverUrl}/event/unsubscribe`, null, {
     headers: {
       'EventId': data,
       'Authorization': `Bearer ${cookies.get('tk879n')}`,
