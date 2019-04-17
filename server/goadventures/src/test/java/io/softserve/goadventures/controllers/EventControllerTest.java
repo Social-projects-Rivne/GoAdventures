@@ -105,7 +105,7 @@ public class EventControllerTest {
     }
 
     @Test
-    public void create_ShouldAddEventAndReturnResponseEntity() throws Exception{
+    public void create_ShouldAddEventAndReturnResponseEntity_Test() throws Exception{
         Category category = new Category( "first");
         Event first = new Event("topic1", "", "", "location", 25.33, 24.33, "description", category);
         first.setId(1);
