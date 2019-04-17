@@ -287,29 +287,6 @@ export class EventDetail extends Component<any, any> {
                 {this.state.eventProps.event.location}
               </div>
 
-              {this.state.isOwner ? (
-                <div>
-                  <button
-                    onClick={this.handleDelete}
-                    type="button"
-                    className="btn btn-danger"
-                  >
-                    Delete
-                  </button>
-                  <button
-                    onClick={() => {
-                      this.state.eventProps.setEdit(true);
-                    }}
-                    type="button"
-                    className="btn btn-success"
-                  >
-                    Edit
-                  </button>
-                </div>
-              ) : (
-                <div />
-              )}
-
               <hr className="my-4" />
 
               <div>
