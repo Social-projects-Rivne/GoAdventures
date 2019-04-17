@@ -154,7 +154,7 @@ export const isSubscribe = async (data: number): Promise<any> =>
   })
 
 
-export const Subscribe = async (data: number): Promise<any> =>
+export const subscribe = async (data: number): Promise<any> =>
   await axios.post(`${serverUrl}/event/subscribe`, null, {
     headers: {
       'EventId': data,
@@ -163,7 +163,7 @@ export const Subscribe = async (data: number): Promise<any> =>
     }
   });
 
-export const UnSubscribe = async (data: number): Promise<any> =>
+export const unSubscribe = async (data: number): Promise<any> =>
   await axios.post(`${serverUrl}/event/unsubscribe`, null, {
     headers: {
       'EventId': data,

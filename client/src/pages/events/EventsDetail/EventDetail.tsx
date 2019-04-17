@@ -1,13 +1,19 @@
-import { AxiosResponse } from 'axios';
-import React, { Component, SyntheticEvent } from 'react';
-import { Field, FieldProps, Form, Formik, FormikProps } from 'formik';
-import { TileLayer, Map, Marker, Popup } from 'react-leaflet';
-import { MdDone } from 'react-icons/md';
-import moment from 'moment';
-import { deleteEvent, isOwner, isSubscribe } from '../../../api/event.service';
-import { Comments, Gallery, SettingsPanel } from '../../../components';
-import { commentsSchema } from '../../../validationSchemas/commentValidation';
-import './EventDetail.scss';
+import { AxiosResponse } from "axios";
+import React, { Component, SyntheticEvent } from "react";
+import { Field, FieldProps, Form, Formik, FormikProps } from "formik";
+import { TileLayer, Map, Marker, Popup } from "react-leaflet";
+import { MdDone } from "react-icons/md";
+import moment from "moment";
+import {
+  deleteEvent,
+  isOwner,
+  isSubscribe,
+  subscribe,
+  unSubscribe
+} from "../../../api/event.service";
+import { Comments, Gallery, SettingsPanel } from "../../../components";
+import { commentsSchema } from "../../../validationSchemas/commentValidation";
+import "./EventDetail.scss";
 
 interface FormValue {
   comment: string;
@@ -33,7 +39,7 @@ export class EventDetail extends Component<any, any> {
   }
 
   public convertTime(date: string) {
-    const dateFormat = 'dddd, DD MMMM YYYY';
+    const dateFormat = "dddd, DD MMMM YYYY";
     return moment(date)
       .local()
       .format(dateFormat)
@@ -41,23 +47,22 @@ export class EventDetail extends Component<any, any> {
   }
 
   public componentDidMount() {
- 
-    isSubscribe(this.state.eventProps.event.id).then(
-      (res: AxiosResponse): any => {
-        console.warn(res.status);
+    isSubscribe(this.state.eventProps.event.id)
+      .then(
+        (res: AxiosResponse): any => {
+          console.warn(res.status);
           this.setState({
             isSubs: true
           });
-        
-      } 
-    ).catch( (error) =>{
-      console.log("orest ska"+error);
-      this.setState({
-        isSubs: false
-      })
-    }
-    )
-    
+        }
+      )
+      .catch(error => {
+        console.log("orest ska" + error);
+        this.setState({
+          isSubs: false
+        });
+      });
+
     isOwner(this.state.eventProps.event.id).then(
       (res: AxiosResponse): any => {
         if (res.status >= 200 && res.status <= 300) {
@@ -77,49 +82,55 @@ export class EventDetail extends Component<any, any> {
     deleteEvent(this.state.eventProps.event.id).then(
       (res: AxiosResponse): any => {
         if (res.status >= 200 && res.status <= 300) {
-          this.props.routerProps.history.push('/profile');
+          this.props.routerProps.history.push("/profile");
         } else {
         }
       }
     );
   }
   public handleClick() {
-    if(this.state.isSubs)
-      {this.setState(
-        {
-          isSubs: false
+    if (this.state.isSubs) {
+      unSubscribe(this.state.eventProps.event.id).then(
+        (res: AxiosResponse): any => {
+          if (res.status >= 200 && res.status <= 300) {
+            this.setState({
+              isSubs: false
+            });
+          }
         }
-      )
-      }
-      
-      else
-      {this.setState(
-        {
-          isSubs: true
-          
+      );
+    } else {
+      subscribe(this.state.eventProps.event.id).then(
+        (res: AxiosResponse): any => {
+          if (res.status >= 200 && res.status <= 300) {
+            this.setState({
+              isSubs: true
+            });
+          }
         }
-      )}
+      );
+    }
 
-      console.log(this.state.isSubs);
+    console.log(this.state.isSubs);
   }
 
   public render() {
     return (
-      <div className='container EventDetail'>
-        <div className='row'>
-          <div className='col-12 col-sm-12 col-md-6 col-lg-7 col-xl-7'>
+      <div className="container EventDetail">
+        <div className="row">
+          <div className="col-12 col-sm-12 col-md-6 col-lg-7 col-xl-7">
             <Gallery {...this.state.eventProps.event.gallery} />
           </div>
-          <div className='col-12 col-sm-12 col-md-6 col-lg-5 col-xl-5'>
-            <div className='jumboton jumbotron-fluid'>
+          <div className="col-12 col-sm-12 col-md-6 col-lg-5 col-xl-5">
+            <div className="jumboton jumbotron-fluid">
               <SettingsPanel>
                 {{
                   left: (
                     <div>
-                      <div className='d-flex flex-row align-content-center mt-3'>
+                      <div className="d-flex flex-row align-content-center mt-3">
                         <img
-                          className='rounded-avatar-sm'
-                          src='https://www.kidzone.ws/animal-facts/whales/images/beluga-whale-3.jpg'
+                          className="rounded-avatar-sm"
+                          src="https://www.kidzone.ws/animal-facts/whales/images/beluga-whale-3.jpg"
                         />
                         <h2>{this.state.eventProps.event.topic}</h2>
                       </div>
@@ -136,51 +147,48 @@ export class EventDetail extends Component<any, any> {
                         )}
                       </p>
                     </div>
-
-                  ), right: (<div>
-                    {this.state.isSubs ? (
-                      <button
-                      
-                        type='button'
-                        className='btn btn-outline-danger btn-sm'
-                        onClick={this.handleClick}
-                        
-                      >Subscribed
-        
-                </button>
-                    ) : (
+                  ),
+                  right: (
+                    <div>
+                      {this.state.isSubs ? (
                         <button
-                          type='button'
-                          className='btn btn-info btn-sm'
+                          type="button"
+                          className="btn btn-outline-danger btn-sm"
                           onClick={this.handleClick}
-                         
-                        >Subscribe
-          
-                </button>)
-
-
-                    }
-                  </div>)
+                        >
+                          Subscribed
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          className="btn btn-info btn-sm"
+                          onClick={this.handleClick}
+                        >
+                          Subscribe
+                        </button>
+                      )}
+                    </div>
+                  )
                 }}
               </SettingsPanel>
 
-              <hr className='my-4' />
-              <span className='lead'>
+              <hr className="my-4" />
+              <span className="lead">
                 {this.state.eventProps.event.description}
               </span>
-              <hr className='my-4' />
-              <div className='map'>
+              <hr className="my-4" />
+              <div className="map">
                 <h2>Location and Destination points</h2>
-                <div className='rounded'>
+                <div className="rounded">
                   <Map
-                    className='rounded'
+                    className="rounded"
                     center={[
                       this.state.eventProps.event.latitude,
                       this.state.eventProps.event.longitude
                     ]}
                     zoom={13}
                   >
-                    <TileLayer url='https://tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png' />
+                    <TileLayer url="https://tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png" />
                     <Marker
                       position={[
                         this.state.eventProps.event.latitude,
@@ -197,11 +205,10 @@ export class EventDetail extends Component<any, any> {
               </div>
               {this.state.isOwner ? (
                 <div>
-
                   <button
                     onClick={this.handleDelete}
-                    type='button'
-                    className='btn btn-danger'
+                    type="button"
+                    className="btn btn-danger"
                   >
                     Delete
                   </button>
@@ -209,52 +216,52 @@ export class EventDetail extends Component<any, any> {
                     onClick={() => {
                       this.state.eventProps.setEdit(true);
                     }}
-                    type='button'
-                    className='btn btn-success'
+                    type="button"
+                    className="btn btn-success"
                   >
                     Edit
                   </button>
                 </div>
               ) : (
-                  <div />
-                )}
+                <div />
+              )}
 
-              <hr className='my-4' />
+              <hr className="my-4" />
               <div>
                 <h2>Comments</h2>
                 <div>
                   <Formik
                     validationSchema={commentsSchema}
-                    initialValues={{ comment: '' }}
+                    initialValues={{ comment: "" }}
                     enableReinitialize={true}
                     validateOnBlur={true}
                     validateOnChange={true}
-                    onSubmit={() => { }}
+                    onSubmit={() => {}}
                     render={(props: FormikProps<FormValue>) => (
                       <Form>
                         <Field
-                          name='comment'
+                          name="comment"
                           render={({ field, form }: FieldProps<FormValue>) => {
                             return (
                               <div>
                                 <input
-                                  className='form-control'
-                                  type='text'
+                                  className="form-control"
+                                  type="text"
                                   {...field}
-                                  placeholder='Comment...'
-                                  name='comment'
+                                  placeholder="Comment..."
+                                  name="comment"
                                 />
                                 {form.touched.comment &&
-                                  form.errors.comment &&
-                                  form.errors.comment ? (
-                                    <div className='invalid-feedback'>
-                                      {form.errors.comment}
-                                    </div>
-                                  ) : (
-                                    <div className='valid-feedback'>
-                                      <MdDone /> Press enter to add comment
+                                form.errors.comment &&
+                                form.errors.comment ? (
+                                  <div className="invalid-feedback">
+                                    {form.errors.comment}
                                   </div>
-                                  )}
+                                ) : (
+                                  <div className="valid-feedback">
+                                    <MdDone /> Press enter to add comment
+                                  </div>
+                                )}
                               </div>
                             );
                           }}
@@ -263,15 +270,15 @@ export class EventDetail extends Component<any, any> {
                     )}
                   />
                 </div>
-                <hr className='my-4' />
+                <hr className="my-4" />
                 <div>
                   <Comments
                     {...{
                       avatar:
-                        'https://www.kidzone.ws/animal-facts/whales/images/beluga-whale-3.jpg',
-                      participant: 'Jeremy Mafioznik',
-                      text: 'Dolore ipsum',
-                      hashtags: ['pussy', 'money', 'weed']
+                        "https://www.kidzone.ws/animal-facts/whales/images/beluga-whale-3.jpg",
+                      participant: "Jeremy Mafioznik",
+                      text: "Dolore ipsum",
+                      hashtags: ["pussy", "money", "weed"]
                     }}
                   />
                 </div>
