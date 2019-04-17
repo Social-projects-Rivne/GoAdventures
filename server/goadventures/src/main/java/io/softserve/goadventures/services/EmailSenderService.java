@@ -62,11 +62,11 @@ public class EmailSenderService {
         closeTransport();
     }
 
-    public void eventEmailNotification(String email,String fullname, String eventTopic, String startDate, String location, String eventDescription) throws MessagingException {
+    public void eventEmailNotification(String email,String fullName, String eventTopic, String startDate, String location, String eventDescription) throws MessagingException {
         InternetAddress toAddress = new InternetAddress(email);
         msg.setRecipient(Message.RecipientType.TO,toAddress);
         msg.setSubject("Event starts soon");
-        msg.setContent(contentBuilder.eventEmailNotification(fullname,eventTopic,startDate, location, eventDescription),"text/html");
+        msg.setContent(contentBuilder.eventEmailNotification(fullName,eventTopic,startDate, location, eventDescription),"text/html");
         closeTransport();
     }
 

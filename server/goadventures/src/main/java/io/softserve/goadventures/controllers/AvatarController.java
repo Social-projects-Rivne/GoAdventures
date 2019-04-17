@@ -17,10 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.slf4j.Logger;
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 //TODO add logging to the all controllers, both to the valid case and to the invalid/exception case
 @RestController
@@ -28,14 +25,12 @@ public class AvatarController {
 
     private final Logger logger = LoggerFactory.getLogger(AvatarController.class);
     private FileStorageService fileStorageService;
-    private final Path fileStorageLocation;
     private final UserService userService;
     private final JWTService jwtService;
 
     @Autowired
-    public AvatarController(FileStorageService fileStorageService, FileStorageProperties fileStorageProperties, UserService userService, JWTService jwtService) {
+    public AvatarController(FileStorageService fileStorageService, UserService userService, JWTService jwtService) {
         this.fileStorageService = fileStorageService;
-        this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir()).toAbsolutePath().normalize();
         this.userService = userService;
         this.jwtService = jwtService;
     }
@@ -51,21 +46,22 @@ public class AvatarController {
             }
         }catch (FileSizeException err){
             return ResponseEntity.status(403).body(new ErrorMessageManager("Maximum file size is 5mb!",err.toString()));
-
         }
         User user = userService.getUserByEmail(jwtService.parseToken(token));
-        String fileName = fileStorageService.storeFile(file);
+        String fileName = null;
+        try {
+            fileName = fileStorageService.storeFile(file);
+        } catch (FileStorageException e) {
+            return ResponseEntity.status(403).body(new ErrorMessageManager("Something went wrong!",e.toString()));
+        }
 
         try {
-            String fileType = fileStorageService.probeContentType(Paths.get(fileStorageLocation + File.separator + fileName));
-            if(!(fileStorageService.checkFileType(fileType))){
+            if(!(fileStorageService.checkFileType(fileName))){
                 throw new WrongImageTypeException();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (WrongImageTypeException e){
-            fileStorageService.deleteFileByFileName(fileName);  //delete file if failed check type
-            return ResponseEntity.status(403).body(new ErrorMessageManager("Could not be uploaded, it is not an image!",e.toString()));
+        } catch (WrongImageTypeException e) {
+           fileStorageService.deleteFileByFileName(fileName);
+           return ResponseEntity.status(403).body(new ErrorMessageManager("Could not be uploaded, it is not an image!",e.toString()));
         }
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()

@@ -30,7 +30,7 @@ public class EventEmailNotification {
     }
 
     @Async
-    @Scheduled(cron = "0 44 17 ? * * ") //(cron = "0 0 9 ? * * ") // every day at 9 am
+    @Scheduled(cron = "0 01 13 ? * * ") //(cron = "0 0 9 ? * * ") // every day at 9 am
     public void emailNotification() throws ParseException, MessagingException {
         EmailSenderService emailSenderService = new EmailSenderService(mailContentBuilder);
         List<Event> events = eventService.findAllEvents();
@@ -52,6 +52,7 @@ public class EventEmailNotification {
             String startDateToUser = dateFormatToUser.format(dateOfStartEvent);
             String eventLocation = "";
             String eventDescription = "";
+            String topic = "";
             if(daysBetween == 1){
                 logger.info(" " + event.getDescription() + " " + event.getLocation());
                 if (IsCyrylic.isCyrillic(event.getLocation())) {
@@ -60,8 +61,11 @@ public class EventEmailNotification {
                 if(IsCyrylic.isCyrillic(event.getDescription())){
                     eventDescription = IsCyrylic.toTranslit(event.getDescription());
                 }
+                if(IsCyrylic.isCyrillic(event.getTopic())){
+                    topic = IsCyrylic.toTranslit(event.getTopic());
+                }
                 logger.info(" " + event.getDescription() + " " + eventLocation);
-                emailSenderService.eventEmailNotification(event.getOwner().getEmail(), event.getOwner().getFullname(), event.getTopic(), startDateToUser, eventLocation, eventDescription); //send email to owner event
+                emailSenderService.eventEmailNotification(event.getOwner().getEmail(), event.getOwner().getFullname(), topic, startDateToUser, eventLocation, eventDescription); //send email to owner event
                 //send email to subscribes
                 logger.info("Email sent successfully to " + event.getOwner().getEmail());
 

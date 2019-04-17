@@ -129,6 +129,7 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
                     style={this.state.avatar == '' ? { display: 'none' } : { display: 'flex' }}
                     className="btn btn-warning"
                     onClick={this.uploadHandler}
+                    
                   // onClick={() => {                   //доробити контекст
 
                   //   this.uploadHandler();

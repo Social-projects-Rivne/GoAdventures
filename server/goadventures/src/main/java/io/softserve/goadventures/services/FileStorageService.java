@@ -20,11 +20,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.nio.file.spi.FileTypeDetector;
 import java.util.UUID;
 
 @Service
-public class FileStorageService extends FileTypeDetector {
+public class FileStorageService {
     private final Path fileStorageLocation;
     private final Tika tika = new Tika();
     private final Logger logger = LoggerFactory.getLogger(FileStorageService.class);
@@ -37,21 +36,24 @@ public class FileStorageService extends FileTypeDetector {
         try {
             Files.createDirectories(this.fileStorageLocation);
         } catch (Exception ex) {
+            logger.info("Could not create the directory where the uploaded files will be stored.");
             throw new FileStorageException("Could not create the directory where the uploaded files will be stored.", ex);
         }
     }
-    public String probeContentType(Path path) throws IOException {
-        return tika.detect(path.toFile());
-    }
 
-    public String storeFile(MultipartFile file) {       // Create unique file name, check invalid characters and copy file to directory
+    public String storeFile(MultipartFile file) {       // Create unique file name, check invalid characters, check if file is empty and copy file to directory
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         String uuidFile = UUID.randomUUID().toString();
         String finalFileName = uuidFile + "." + fileName;
 
         try {
             // Check if the file's name contains invalid characters
+            if(file.isEmpty()){
+                logger.info("File is empty");
+                throw new FileStorageException("Empty file" + finalFileName);
+            }
             if(finalFileName.contains("..")) {
+                logger.info("Sorry! Filename contains invalid path sequence");
                 throw new FileStorageException("Sorry! Filename contains invalid path sequence " + finalFileName);
             }
 
@@ -62,21 +64,28 @@ public class FileStorageService extends FileTypeDetector {
 
             return finalFileName;
         } catch (IOException ex) {
+            logger.info("Could not store file " + finalFileName + ". Please try again!", ex);
             throw new FileStorageException("Could not store file " + finalFileName + ". Please try again!", ex);
         }
     }
-    public boolean checkFileType(String fileType){    //check file type
+    public boolean checkFileType(String fileName){
+        String fileType = "";
+        Path path = Paths.get(fileStorageLocation + File.separator + fileName);
+        try {
+            fileType = tika.detect(path.toFile());
+            logger.info("filetype: " + fileType);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         if(!(fileType.startsWith("image/"))){
             return false;
         }
         return true;
     }
+
     public boolean checkFileSize(MultipartFile file){
         long fileSize= file.getSize();
         logger.info("file size "+ fileSize);
-        if(file.isEmpty()){
-            return false;
-        }
         if(fileSize > 5242880){
             return false;
         }
@@ -90,9 +99,11 @@ public class FileStorageService extends FileTypeDetector {
             if(resource.exists()) {
                 return resource;
             } else {
+                logger.info("File not found " + fileName);
                 throw new MyFileNotFoundException("File not found " + fileName);
             }
         } catch (MalformedURLException ex) {
+            logger.info("File not found " + fileName);
             throw new MyFileNotFoundException("File not found " + fileName, ex);
         }
     }
@@ -109,11 +120,10 @@ public class FileStorageService extends FileTypeDetector {
         }
     }
     public void deleteFileByFileName(String fileName){
-        String filePath = fileStorageLocation + File.separator + fileName;
-        logger.info("file path  " + filePath );
+        Path path = Paths.get(fileStorageLocation + File.separator + fileName);
         try {
-            Files.delete(Paths.get(filePath));
-            logger.info("deletes successfully  " + filePath );
+            Files.delete(path);
+            logger.info("deletes successfully  " + path );
         } catch (IOException e) {
             e.printStackTrace();
         }
