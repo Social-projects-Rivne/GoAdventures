@@ -63,24 +63,25 @@ export const EditEvent = (props: EditEvent) => {
   ]);
   const [fetch, setFetch] = useState(false);
 
+  const update = async () => {
+    console.debug(description);
+    props.setIsLoading(true);
+    const response = await updateEvent({
+      ...props.event,
+      category,
+      description,
+      latitude: mapCoordiantes[0],
+      ...eventDialog,
+      ...datepick,
+      gallery,
+      location,
+      longitude: mapCoordiantes[1]
+    } as EventDto);
+    props.setEvent({ ...response });
+  };
+
   useEffect(() => {
     if (fetch) {
-      const update = async () => {
-        console.debug(description);
-        props.setIsLoading(true);
-        const response = await updateEvent({
-          ...props.event,
-          category,
-          description,
-          latitude: mapCoordiantes[0],
-          ...eventDialog,
-          ...datepick,
-          gallery,
-          location,
-          longitude: mapCoordiantes[1]
-        } as EventDto);
-        props.setEvent({ ...response });
-      };
       setFetch(false);
       update();
       props.setEdit(false);
