@@ -2,7 +2,6 @@ package io.softserve.goadventures.services;
 
 import io.softserve.goadventures.dto.UserAuthDto;
 import io.softserve.goadventures.enums.UserStatus;
-import io.softserve.goadventures.errors.UserNotFoundException;
 import io.softserve.goadventures.models.User;
 import io.softserve.goadventures.repositories.UserRepository;
 import org.springframework.beans.BeanUtils;
@@ -25,12 +24,8 @@ public class UserService {
 
     public User getUserByName(String username) { return userRepository.findByUsername(username); }
 
-    public User getUserByEmail(String email) throws UserNotFoundException {
-        if(userRepository.existsByEmail(email)){
-            return userRepository.findByEmail(email);
-        } else {
-            throw new UserNotFoundException("User not found");
-        }
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     public User confirmUser(String email) {

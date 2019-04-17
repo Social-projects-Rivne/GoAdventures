@@ -16,6 +16,7 @@ import './EventDetail.scss';
 import { EventDto } from '../../../interfaces/Event.dto';
 import { withRouter } from 'react-router-dom';
 import { RouterProps, RouteComponentProps } from 'react-router';
+import { addFeedbackRequest } from '../../../api/feedback.service';
 
 interface EventDetailState {
   routerProps: RouterProps;
@@ -247,7 +248,14 @@ export class EventDetail extends Component<any, any> {
                     enableReinitialize={true}
                     validateOnBlur={true}
                     validateOnChange={true}
-                    onSubmit={() => {}}
+                    onSubmit={(values, actions) => {
+                      addFeedbackRequest({
+                        eventId: this.state.eventProps.event.id,
+                        comment: values.comment
+                      });
+                      actions.setSubmitting(false);
+                      actions.resetForm();
+                    }}
                     render={(props: FormikProps<FormValue>) => (
                       <Form>
                         <Field

@@ -22,16 +22,11 @@ export const getFeedbackRequest = async (eventId: number): Promise<any> => {
 };
 
 export const addFeedbackRequest = async (
-  eventId: number,
   feedback: FeedbackDTO
 ): Promise<any> => {
-  return await axios.post(
-    `${serverUrl}/feedback/add-feedback/${eventId}`,
-    feedback,
-    {
-      headers: {
-        Authorization: `Bearer ${cookies.get('tk879n')}`
-      }
+  return await axios.post(`${serverUrl}/feedback/add-feedback/`, feedback, {
+    headers: {
+      Authorization: `Bearer ${cookies.get('tk879n')}`
     }
-  );
+  });
 };

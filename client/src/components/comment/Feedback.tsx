@@ -33,7 +33,6 @@ export const Feedback = (props: FeedbackProps): JSX.Element => {
   useEffect(() => {
     setIsLoading(true);
     getFeedback();
-    console.debug('effect call', feedbackData);
     setIsLoading(false);
     return () => {};
   }, []);
@@ -52,15 +51,15 @@ export const Feedback = (props: FeedbackProps): JSX.Element => {
         {feedbackData.map((feedback: any, index: number) => {
           console.debug(feedback);
           return (
-            <div className='d-flex flex-row align-items-baseline justify-content-left'>
+            <div
+              key={componentUniKey + index}
+              className='d-flex flex-row align-items-baseline justify-content-left'
+            >
               <img
                 className='rounded-avatar-sm'
                 src={feedback.userId.avatarUrl}
               />
-              <div
-                className='toast show rounded w-100'
-                key={componentUniKey + index}
-              >
+              <div className='toast show rounded w-100'>
                 <div className='toast-header'>
                   <strong>{feedback.userId.username}</strong>
                 </div>

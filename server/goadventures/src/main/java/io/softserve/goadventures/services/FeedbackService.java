@@ -2,7 +2,6 @@ package io.softserve.goadventures.services;
 
 import io.softserve.goadventures.dto.FeedbackCreateDTO;
 import io.softserve.goadventures.dto.FeedbackDTO;
-import io.softserve.goadventures.errors.UserNotFoundException;
 import io.softserve.goadventures.models.Feedback;
 import io.softserve.goadventures.models.User;
 import io.softserve.goadventures.repositories.FeedbackRepository;
@@ -53,20 +52,17 @@ public class FeedbackService {
 
   public Set<FeedbackDTO> getAllEventFeedback(int eventId) {
     Set<Feedback> feedback = feedbackRepository.findByEventId(eventId);
-    logger.info("Se pizdec " + feedback);
     return convertToDto(feedback);
   }
 
-  public FeedbackDTO addFeedbackToEvent(String token, FeedbackCreateDTO feedbackCreateDTO)
-          throws UserNotFoundException {
-    try{
+  public FeedbackDTO addFeedbackToEvent(String token, FeedbackCreateDTO feedbackCreateDTO) {
       User user = userService.getUserByEmail(jwtService.parseToken(token));
-      Feedback feedback = modelMapper.map(feedbackCreateDTO, Feedback.class);
-      feedback.setUserId(user);
-      return modelMapper.map(feedbackRepository.save(feedback), FeedbackDTO.class);
-    } catch (UserNotFoundException error) {
-      throw new UserNotFoundException(error.getMessage());
-    }
+      if (user != null) {
+        Feedback feedback = modelMapper.map(feedbackCreateDTO, Feedback.class);
+        feedback.setUserId(user);
+        return modelMapper.map(feedbackRepository.save(feedback), FeedbackDTO.class);
+      }
+    return null;
   }
 
 }

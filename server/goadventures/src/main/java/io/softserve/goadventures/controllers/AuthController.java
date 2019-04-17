@@ -1,7 +1,6 @@
 package io.softserve.goadventures.controllers;
 
 import io.softserve.goadventures.dto.UserAuthDto;
-import io.softserve.goadventures.errors.UserNotFoundException;
 import io.softserve.goadventures.models.User;
 import io.softserve.goadventures.services.*;
 import org.slf4j.Logger;
@@ -11,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
+
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServlet;
 
@@ -100,17 +100,12 @@ public class AuthController extends HttpServlet {
         if (userService.checkingEmail(email)) {
             return ResponseEntity.badRequest().body(null);
         } else {
-            try {
-                User user = userService.getUserByEmail(email);
-                user.setPassword(BCrypt.hashpw(
-                        passwordService.generatePassword(email, mailContentBuilder),
-                        BCrypt.gensalt()));
-                userService.updateUser(user);
-                return ResponseEntity.ok().body(user);
-            } catch (UserNotFoundException e) {
-                e.printStackTrace();
-                return ResponseEntity.badRequest().body(null);
-            }
+            User user = userService.getUserByEmail(email);
+            user.setPassword(BCrypt.hashpw(
+                    passwordService.generatePassword(email, mailContentBuilder),
+                    BCrypt.gensalt()));
+            userService.updateUser(user);
+            return ResponseEntity.ok().body(user);
         }
     }
 
