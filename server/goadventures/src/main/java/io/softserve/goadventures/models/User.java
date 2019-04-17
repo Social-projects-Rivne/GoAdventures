@@ -45,8 +45,9 @@ public class User {
     @Column(name = "status_id")
     private int statusId;
 
-    @ManyToMany(mappedBy = "participants")
-    private Set<Event> participantsEvent = new HashSet<>();
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    Set<EventParticipants> participants = new HashSet<>();
 
     @JsonIgnore //TODO it is better to use dto models for json. You need to separate jpa logic from serialization logic.
     @OneToMany(mappedBy = "owner")
@@ -60,19 +61,19 @@ public class User {
 
     @Override
     public String toString() {
-        return "\nUser{" +
-                "\n\tid=" + id +
-                ", \n\tfullname='" + fullname + '\'' +
-                ", \n\tusername='" + username + '\'' +
-                ", \n\tpassword='" + password + '\'' +
-                ", \n\tlocation='" + location + '\'' +
-                ", \n\temail='" + email + '\'' +
-                ", \n\tphone=" + phone +
-                ", \n\trole='" + role + '\'' +
-                ", \n\tavatar='" + avatarUrl + '\'' +
-                ", \n\tstatusId=" + statusId + '\'' +
-                ", \n\tparticipantsEvent=" + participantsEvent + '\'' +
-                "\n}";
+        return "User{" +
+                "id=" + id +
+                ", fullname='" + fullname + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", location='" + location + '\'' +
+                ", email='" + email + '\'' +
+                ", phone=" + phone +
+                ", role='" + role + '\'' +
+                ", avatar='" + avatarUrl + '\'' +
+                ", statusId='" + statusId + '\'' +
+                ", participantsEvent='" + participants + '\'' +
+                '}';
     }
 
     @Override

@@ -4,13 +4,12 @@ import io.softserve.goadventures.dto.EventDTO;
 import io.softserve.goadventures.enums.EventStatus;
 import io.softserve.goadventures.errors.ErrorMessageManager;
 import io.softserve.goadventures.errors.UserNotFoundException;
-import io.softserve.goadventures.models.Category;
-import io.softserve.goadventures.models.Event;
-import io.softserve.goadventures.models.Gallery;
-import io.softserve.goadventures.models.User;
+import io.softserve.goadventures.models.*;
 import io.softserve.goadventures.repositories.CategoryRepository;
+import io.softserve.goadventures.repositories.EventParticipantsRepository;
 import io.softserve.goadventures.repositories.EventRepository;
 import io.softserve.goadventures.repositories.GalleryRepository;
+import io.softserve.goadventures.services.EventParticipantsService;
 import io.softserve.goadventures.services.EventService;
 import io.softserve.goadventures.services.JWTService;
 import io.softserve.goadventures.services.UserService;
@@ -36,7 +35,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping("event")
 public class EventController {
-    private Logger logger = LoggerFactory.getLogger(EventController.class);
+    private final Logger logger = LoggerFactory.getLogger(EventController.class);
     private final EventService eventService;
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
@@ -44,11 +43,15 @@ public class EventController {
     private final JWTService jwtService;
     private final UserService userService;
     private final ModelMapper modelMapper;
+    private final EventParticipantsService eventParticipantsService;
+    private final EventParticipantsRepository eventParticipantsRepository;
 
     @Autowired
-    public EventController(EventService eventService, EventRepository eventRepository,
-                           CategoryRepository categoryRepository, GalleryRepository galleryRepository, EventDtoBuilder eventDtoBuilder,
-                           UserService userService, JWTService jwtService, ModelMapper modelMapper) {
+    public EventController(EventParticipantsService eventParticipantsService, EventParticipantsRepository eventParticipantsRepository,
+                           EventService eventService, EventRepository eventRepository,
+                           CategoryRepository categoryRepository, GalleryRepository galleryRepository,
+                           EventDtoBuilder eventDtoBuilder, UserService userService,
+                           JWTService jwtService, ModelMapper modelMapper) {
         this.eventService = eventService;
         this.eventRepository = eventRepository;
         this.categoryRepository = categoryRepository;
@@ -56,8 +59,8 @@ public class EventController {
         this.jwtService = jwtService;
         this.userService = userService;
         this.modelMapper = modelMapper;
-
-
+        this.eventParticipantsService = eventParticipantsService;
+        this.eventParticipantsRepository = eventParticipantsRepository;
     }
 
     @PostMapping("/create")
@@ -79,7 +82,7 @@ public class EventController {
         try {
             eventService.addEvent(mappedEvent, token);
             LoggerFactory.getLogger("Create Event Controller: ")
-                    .info(userService.getUserByEmail(jwtService.parseToken(token)).toString());
+            .info(userService.getUserByEmail(jwtService.parseToken(token)).toString());
             eventService.addEvent(mappedEvent, token);
         } catch (UserNotFoundException e) {
             logger.error(e.toString());
@@ -113,6 +116,49 @@ public class EventController {
         }
     }
 
+    @PostMapping("/subscribe")
+    public ResponseEntity<String> addNewSubscriber(@RequestHeader(value = "Authorization") String token,
+                                                   @RequestHeader(value = "EventId") int eventId) {
+        logger.info("[SUBSCRIBE] - eventId: " + eventId);
+
+        Event event = eventService.getEventById(eventId);
+        logger.info("Topic of Event: " + event.getTopic());
+        User user = userService.getUserByEmail(jwtService.parseToken(token));
+        logger.info("Email of User: " + user.getEmail());
+
+        eventParticipantsService.addParicipant(user, event);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        return ResponseEntity.ok().headers(httpHeaders).body("Added new Subscriber");
+    }
+
+    @PostMapping("/unsubscribe")
+    public ResponseEntity<String> deleteSubscriber(@RequestHeader(value = "Authorization") String token,
+                                                   @RequestHeader(value = "EventId") int eventId) {
+        logger.info("[UNSUBSCRIBE] - eventId: " + eventId);
+
+        Event event = eventService.getEventById(eventId);
+        logger.info("Topic of Event: " + event.getTopic());
+        User user = userService.getUserByEmail(jwtService.parseToken(token));
+        logger.info("Email of User: " + user.getEmail());
+
+        eventParticipantsService.deleteParticipant(user, event);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        return ResponseEntity.ok().headers(httpHeaders).body("Deleted Subscriber");
+    }
+
+    @GetMapping("/allSubscribers")
+    public Iterable<EventParticipants> getAllSubcribers() {
+       return eventParticipantsRepository.findAll();
+    }
+
+    @GetMapping("/allSubscribersForEvent")
+    public Iterable<EventParticipants> getAllForEvent(@RequestHeader(value = "eventId") int eventId) {
+        logger.info("Get all subscribers for event by Id: " + eventId);
+        return eventParticipantsService.getAllSubscribersForOneEvent(eventId);
+    }
+
     @PostMapping("/category")
     public ResponseEntity<String> createCategory(@RequestBody Category category) {
         logger.info("[CREATE-CATEGORY] - category: " + category);
@@ -135,7 +181,7 @@ public class EventController {
         if (eventsPage != null) {
             int nextPageNum = eventsPage.getNumber() + 1;
             UriComponents uriComponentsBuilder = UriComponentsBuilder.newInstance().path("/event/all")
-                    .query("page={keyword}").buildAndExpand(nextPageNum);
+            .query("page={keyword}").buildAndExpand(nextPageNum);
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.set("nextpage", uriComponentsBuilder.toString());
             Slice<EventDTO> eventDTOSlice = eventDtoBuilder.convertToDto(eventsPage);
@@ -214,5 +260,17 @@ public class EventController {
 
         return user.getId() == event.getOwner().getId() ? ResponseEntity.ok().body("IS OWNER")
                 : ResponseEntity.badRequest().body("IS NOT OWNER");
+    }
+
+    @GetMapping("is-subscriber")
+    public ResponseEntity<?> isSubscriber(@RequestHeader(value = "Authorization") String token,
+                                          @RequestHeader(value = "EventId") int eventId) {
+        logger.info("[IS-SUBSCRIBER] - eventId: " + eventId + "; userId: "
+                + userService.getUserByEmail(jwtService.parseToken(token)).getId());
+        Event event = eventService.getEventById(eventId);
+        User user = userService.getUserByEmail(jwtService.parseToken(token));
+
+        return eventParticipantsService.isParticipant(user,event) ? ResponseEntity.ok().body("IS SUBSCRIBER")
+                : ResponseEntity.badRequest().body("IS NOT SUBSCRIBER");
     }
 }

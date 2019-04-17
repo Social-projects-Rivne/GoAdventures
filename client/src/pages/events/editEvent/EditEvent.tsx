@@ -282,10 +282,12 @@ export const EditEvent = (props: EditEvent) => {
             zoom={zoom}
             className='rounded'
           >
+
             <TileLayer
               attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
               url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
             />
+
             <Marker
               draggable={true}
               ondrag={() => {

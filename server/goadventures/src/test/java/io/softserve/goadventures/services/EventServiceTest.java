@@ -1,5 +1,6 @@
 package io.softserve.goadventures.services;
 
+
 import io.softserve.goadventures.models.Category;
 import io.softserve.goadventures.models.Event;
 import io.softserve.goadventures.models.User;
@@ -111,3 +112,4 @@ class EventServiceTest {
         verify(eventRepository).save(event);
     }*/
 }
+
