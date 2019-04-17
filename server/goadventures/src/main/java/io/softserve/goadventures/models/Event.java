@@ -95,20 +95,18 @@ public class Event {
                 ", \n\tparticipants=" + participants +
                 "\n}";
     }
-//TODO see the comment for User model
+
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Event event = (Event) o;
-        return id == event.id && topic.equals(event.topic) && startDate.equals(event.startDate)
-                && endDate.equals(event.endDate) && location.equals(event.location) && category.equals(event.category);
+        return id == event.id &&
+                owner.equals(event.owner);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, topic, startDate, endDate, location, latitude, longitude, category);
+        return Objects.hash(id, owner);
     }
 }

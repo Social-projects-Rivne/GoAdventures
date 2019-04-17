@@ -3,11 +3,11 @@ package io.softserve.goadventures.controllers;
 import io.softserve.goadventures.errors.ErrorMessageManager;
 import io.softserve.goadventures.errors.FileSizeException;
 import io.softserve.goadventures.errors.WrongImageTypeException;
-import io.softserve.goadventures.services.UserService;
+import io.softserve.goadventures.models.User;
 import io.softserve.goadventures.services.FileStorageService;
 import io.softserve.goadventures.services.JWTService;
-import io.softserve.goadventures.models.User;
-import io.softserve.goadventures.errors.UserNotFoundException;
+import io.softserve.goadventures.services.UserService;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -17,15 +17,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.slf4j.Logger;
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-//TODO add logging to the all controllers, both to the valid case and to the invalid/exception case
+
 @RestController
 public class AvatarController {
-
     private final Logger logger = LoggerFactory.getLogger(AvatarController.class);
-
 
     @Autowired
     private FileStorageService fileStorageService;
@@ -39,28 +37,29 @@ public class AvatarController {
 
     @PostMapping(path = "/uploadAvatar", consumes = {"multipart/form-data"})
     public ResponseEntity<?> uploadAvatar(@RequestHeader(value = "Authorization") String authorizationHeader,
-                                          @RequestParam("file") MultipartFile file) throws UserNotFoundException {
-
+                                          @RequestParam("file") MultipartFile file) {
+        logger.info("[UPLOAD-AVATAR]");
         try {
-            if(!(fileStorageService.checkFileType(file))){
+            if(!(fileStorageService.checkFileType(file))) {
                 throw new WrongImageTypeException();
-
             }
-        }catch (WrongImageTypeException error){
-            return ResponseEntity.status(403).body(new ErrorMessageManager("Could not be uploaded, it is not an image!",error.toString()));
+        }catch (WrongImageTypeException error) {
+            return ResponseEntity.status(403).body(
+                    new ErrorMessageManager("Could not be uploaded, it is not an image!",error.toString())
+            );
         }
         try {
             if (!fileStorageService.checkFileSize(file)) {
                 throw new FileSizeException();
-
             }
-        }catch (FileSizeException err){
-            return ResponseEntity.status(403).body(new ErrorMessageManager("Maximum file size is 5mb!",err.toString()));
-
+        }catch (FileSizeException err) {
+            return ResponseEntity.status(403).body(
+                    new ErrorMessageManager("Maximum file size is 5mb!",err.toString())
+            );
         }
         User user = userService.getUserByEmail(jwtService.parseToken(authorizationHeader));
 
-        if(user.getAvatarUrl()!=null){                                              //delete current avatar image
+        if(user.getAvatarUrl()!=null) {                                              //delete current avatar image
             fileStorageService.deleteFile(user.getAvatarUrl());
         }
         String fileName = fileStorageService.storeFile(file);
@@ -75,9 +74,9 @@ public class AvatarController {
         return ResponseEntity.ok(fileDownloadUri);
     }
 
-
     @GetMapping("/downloadAvatar/{fileName:.+}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
+        logger.info("[DOWNLOAD-FILE");
         // Load file as Resource
         Resource resource = fileStorageService.loadFileAsResource(fileName); //find img in storage
 
@@ -86,7 +85,7 @@ public class AvatarController {
         try {
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
         } catch (IOException ex) {
-            logger.info("Could not determine file type.");
+            logger.error("Could not determine file type: " + ex.toString());
         }
 
         // Fallback to the default content type if type could not be determined
@@ -99,6 +98,4 @@ public class AvatarController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
     }
-
-
 }

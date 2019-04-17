@@ -1,14 +1,10 @@
 package io.softserve.goadventures;
-// TODO remove unused imports
+
 import io.softserve.goadventures.controllers.EventController;
 import io.softserve.goadventures.dto.UserAuthDto;
-import io.softserve.goadventures.enums.EventStatus;
-import io.softserve.goadventures.errors.UserNotFoundException;
 import io.softserve.goadventures.models.Category;
-import io.softserve.goadventures.models.Event;
 import io.softserve.goadventures.repositories.CategoryRepository;
 import io.softserve.goadventures.services.UserService;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;

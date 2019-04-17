@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface GalleryRepository extends CrudRepository<Gallery, Integer> {
-    Gallery findById(int id); // TODO this method is never used
+    Gallery findById(int id);
     Gallery findByEventId(int eventId);
 }

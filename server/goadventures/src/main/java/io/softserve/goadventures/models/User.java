@@ -33,10 +33,8 @@ public class User {
     @Column(name = "email")
     private String email;
 
-    // TODO it is a bad idea to use int as phone number, because int max is 2,147,483,647 and it is less then 380977777777
-    // It would be better to use string with a regex validation
     @Column(name = "phone")
-    private int phone;
+    private String phone;
 
     @Column(name = "role")
     private String role;
@@ -76,22 +74,18 @@ public class User {
                 ", \n\tparticipantsEvent=" + participantsEvent + '\'' +
                 "\n}";
     }
-//TODO to perform the best quality of hashCode and equals methods for objects using the fields that could be changed is prohibited.
-// I believe that password could be changed. Also the name could be changed (not sure if you have such a functionality).
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
         return id == user.id &&
-                phone == user.phone &&
-                username.equals(user.username) &&
-                password.equals(user.password) &&
                 email.equals(user.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, email, phone);
+        return Objects.hash(id, email);
     }
 }

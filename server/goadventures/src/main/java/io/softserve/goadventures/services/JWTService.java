@@ -1,11 +1,10 @@
 package io.softserve.goadventures.services;
 
 import com.auth0.jwt.JWT;
-import io.softserve.goadventures.models.User;
 import org.springframework.stereotype.Service;
 import java.util.Date;
 import static com.auth0.jwt.algorithms.Algorithm.HMAC256;
-import static io.softserve.goadventures.models.SecurityConstants.*;
+import static io.softserve.goadventures.utils.SecurityConstants.*;
 
 @Service("jwtService")
 public class JWTService {

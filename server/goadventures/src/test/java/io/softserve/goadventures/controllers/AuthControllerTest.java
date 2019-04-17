@@ -76,10 +76,10 @@ public class AuthControllerTest {
 
     @Test
     public void signIn() {
-        when(userService.singIn(anyString(), anyString())).thenReturn("User log in");
+        when(userService.singIn(anyString(), anyString())).thenReturn(UserStatus.LOGGING);
 
         ResponseEntity<String> signInResponse = authController.signIn(authDto);
 
-        assertEquals("User log in", signInResponse.getBody());
+        assertEquals("LOGGING", signInResponse.getBody());
     }
 }

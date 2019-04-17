@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-//TODO add logging to the all controllers, both to the valid case and to the invalid/exception case
+
 @CrossOrigin
 @RestController
 @RequestMapping("event/gallery")
@@ -59,19 +59,17 @@ public class GalleryController {
         };
         modelMapper.addMappings(galleryMap);
     }
-    /**
-     * This method are for develop purpose only
-     *
-     * @return Iterable<Gallery>
-     */
+
     @GetMapping("/all")
     public Iterable<Gallery> getAllGalleries() {
+        logger.info("[GET-ALL-GALLERIES]");
         return galleryRepository.findAll();
     }
 
     @PostMapping({"/add-new/{eventId}", "/add-new/"})
-    public ResponseEntity<?> addNewGallery(
-            @PathVariable(value = "eventId", required = false) Integer eventId, @RequestParam("images") MultipartFile[] images) {
+    public ResponseEntity<?> addNewGallery(@PathVariable(value = "eventId", required = false) Integer eventId,
+                                           @RequestParam("images") MultipartFile[] images) {
+        logger.info("[ADD-NEW-GALLERY] - eventId: " + eventId);
         try {
             Set<String> imageUrls = new HashSet<>();
             String newFileName;
@@ -112,7 +110,7 @@ public class GalleryController {
                 return ResponseEntity.ok().body(modelMapper.map(newGallery, GalleryDto.class));
             }
         } catch (IOException error) {
-            logger.debug(error.toString());
+            logger.error(error.toString());
             return ResponseEntity.status(500).body(new ErrorMessageManager(
                     "Something went wrong while uploading your files", error.toString()));
         }
@@ -120,6 +118,7 @@ public class GalleryController {
 
     @GetMapping("/galleries/{fileName:.+}")
     public ResponseEntity<?> getImages(@PathVariable String fileName, HttpServletRequest request) {
+        logger.info("[GET-IMAGES]");
         // Load file as Resource
         Resource resource = fileStorageService.loadFileAsResource(fileName); //find img in storage
         // Try to determine file's content type
@@ -127,6 +126,7 @@ public class GalleryController {
         try {
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
         } catch (IOException ex) {
+            logger.error(ex.toString());
             return ResponseEntity.status(404).body(new ErrorMessageManager
                     ("File's content type is unknown", ex.getMessage()));
         }
@@ -142,6 +142,7 @@ public class GalleryController {
 
     @GetMapping("get/{galleryId}")
     public  ResponseEntity<?> getGallery(@PathVariable(value = "galleryId") int galleryId) {
+        logger.info("[GET-GALLERY] - galleryId: " + galleryId);
         try {
             Gallery gallery = galleryRepository.findById(galleryId);
             if(gallery != null) {
@@ -151,7 +152,7 @@ public class GalleryController {
                 throw new IOException("Gallery not founded");
             }
         } catch (IOException err) {
-            logger.info(err.getMessage());
+            logger.error(err.getMessage());
             return ResponseEntity.status(404).body(new ErrorMessageManager(
                     "Gallery doesn't exist", err.getMessage()));
         }
@@ -160,6 +161,7 @@ public class GalleryController {
 
     @PutMapping("/deattach/{eventId}")
     public ResponseEntity<?> deactivateGallery(@PathVariable(value = "eventId") int eventId) {
+        logger.info("[DEACTIVATE-GALLERY] - eventId: " + eventId);
         try {
             Event event = eventService.getEventById(eventId);
             if (event != null)
@@ -171,7 +173,7 @@ public class GalleryController {
                 throw new IOException(String.format("Event with %s id does not exist", eventId));
             }
         } catch (IOException error) {
-            logger.error(error.getMessage());
+            logger.error(error.toString());
             return ResponseEntity.status(500).body(
                     new ErrorMessageManager(ServerErrorMsg, error.getMessage()));
         }

@@ -58,7 +58,7 @@ public class EventEmailNotification {
             int dayNow = cal.get(Calendar.DAY_OF_YEAR);
 
             if((dayNow+1) == dayOfStartEvent){
-                 emailSenderService.eventEmailNotidication(event.getOwner().getEmail(),event.getOwner().getFullname(),event.getTopic());
+                 emailSenderService.eventEmailNotification(event.getOwner().getEmail(),event.getOwner().getFullname(),event.getTopic());
                  logger.info("Email sent successfully to "+ event.getOwner().getEmail());
 
             }

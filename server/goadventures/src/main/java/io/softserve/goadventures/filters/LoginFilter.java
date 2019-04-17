@@ -1,21 +1,13 @@
 package io.softserve.goadventures.filters;
-//TODO unused import!!
-import io.softserve.goadventures.errors.UserNotFoundException;
-import io.softserve.goadventures.models.User;
+
 import io.softserve.goadventures.services.JWTService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import io.softserve.goadventures.services.UserService;
 
 @Component
 public class LoginFilter implements Filter {

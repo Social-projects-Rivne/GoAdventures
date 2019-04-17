@@ -63,8 +63,7 @@ public class EmailSenderService {
         closeTransport();
     }
 
-    //TODO fix typo!
-    public void eventEmailNotidication(String email,String fullname, String eventTopic) throws MessagingException {
+    public void eventEmailNotification(String email, String fullname, String eventTopic) throws MessagingException {
         InternetAddress toAddress = new InternetAddress(email);
         msg.setRecipient(Message.RecipientType.TO,toAddress);
         msg.setSubject("Event starts soon");
