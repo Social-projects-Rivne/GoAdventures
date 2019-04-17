@@ -36,8 +36,9 @@ export class DropDown extends Component<any, DropDownSettings> {
       return <div />;
     } else {
       return (
-        <div>
-          <select onChange={this.handleChange}>
+
+        <div className="input-group">
+          <select className="custom-select select" onChange={this.handleChange}>
             {this.state.categories.map((option, index) => (
               <option key={index} value={option.categoryName}>
                 {option.categoryName}

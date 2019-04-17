@@ -1,9 +1,11 @@
 package io.softserve.goadventures.controllers;
 
+import io.softserve.goadventures.errors.ErrorMessageManager;
+import io.softserve.goadventures.errors.InvalidPasswordErrorMessage;
 import io.softserve.goadventures.services.JWTService;
 import io.softserve.goadventures.dto.EventDTO;
 import io.softserve.goadventures.models.Event;
-import io.softserve.goadventures.dto.EventDtoBuilder;
+import io.softserve.goadventures.services.EventDtoBuilder;
 import io.softserve.goadventures.services.EventService;
 import io.softserve.goadventures.dto.UserDto;
 import io.softserve.goadventures.dto.UserUpdateDto;
@@ -13,6 +15,7 @@ import io.softserve.goadventures.services.PasswordValidator;
 import io.softserve.goadventures.errors.UserNotFoundException;
 import io.softserve.goadventures.services.UserService;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,16 +45,26 @@ public class ProfileController {
     @Autowired
     public ProfileController(JWTService jwtService, UserService userService,
                              EmailValidator emailValidator, PasswordValidator passwordValidator,
-                             ModelMapper modelMapper, EventService eventService,
+                             ModelMapper modelMapper,
+                             EventService eventService,
                              EventDtoBuilder eventDtoBuilder) {
+
         this.jwtService = jwtService;
         this.userService = userService;
         this.emailValidator = emailValidator;
         this.passwordValidator = passwordValidator;
-        this.modelMapper = modelMapper;
         this.eventDtoBuilder = eventDtoBuilder;
         this.eventService = eventService;
+        this.modelMapper = modelMapper;
+        this.modelMapper.addMappings(skipModifiedFieldsMap);
     }
+    PropertyMap<UserUpdateDto, User> skipModifiedFieldsMap = new PropertyMap<UserUpdateDto, User>() {
+        protected void configure() {
+            skip().setPassword(null);
+            skip().setEmail(null);
+
+        }
+    };
 
     @GetMapping("/page")
     public UserDto getProfileUser(@RequestHeader("Authorization") String token) throws UserNotFoundException {
@@ -60,23 +73,42 @@ public class ProfileController {
     }
 
     @PutMapping(path = "/edit-profile", produces = {MediaType.APPLICATION_JSON_VALUE} )
-    public ResponseEntity<String> EditProfileData(@RequestHeader(value="Authorization") String authorizationHeader,
-                                                  @RequestBody UserUpdateDto updateUser) throws UserNotFoundException{
+    public ResponseEntity<?> EditProfileData(@RequestHeader(value="Authorization") String authorizationHeader,
+                                             @RequestBody UserUpdateDto updateUser) throws UserNotFoundException{
         String newToken;
         User user = userService.getUserByEmail(jwtService.parseToken(authorizationHeader));   //user with old data
 
-        if(!(updateUser.getPassword().equals(""))) {
-            if(BCrypt.checkpw(updateUser.getPassword(),user.getPassword())) {    //check current pass
-                logger.info("current password correct");
-                if(passwordValidator.validatePassword(updateUser.getNewPassword())) {
-                    updateUser.setPassword(updateUser.getNewPassword());          //if valide, set new pass
-                    logger.info("password changed, new password:  " + updateUser.getPassword());
+//        try {
+//            if(!(updateUser.getEmail().equals(""))) {
+//                if(!(userService.existsByEmail(updateUser.getEmail()))){
+//                    logger.info("okok");
+//                    user.setEmail(updateUser.getEmail());
+//                } else {
+//                    logger.info("This mailbox is already in use");
+//                    throw new InvalidEmailException();
+//                }
+//            }
+//        } catch (InvalidEmailException e) {
+//            return ResponseEntity.status(500).body(new ErrorMessageManager("This mailbox is already in use",e.toString()));
+//        }
+        try {
+            if(!(updateUser.getPassword().equals(""))){
+                if(BCrypt.checkpw(updateUser.getPassword(),user.getPassword())){    //check current pass
+                    logger.info("current password correct");
+                    if(passwordValidator.validatePassword(updateUser.getNewPassword())){
+                        //if valide, set new pass
+                        user.setPassword(BCrypt.hashpw(updateUser.getNewPassword(), BCrypt.gensalt()));
+                        logger.info("password changed, new password:  " + updateUser.getNewPassword());
+                    }
+                }else{
+                    logger.info("wrong password");
+                    throw new InvalidPasswordErrorMessage();
                 }
-            } else {
-                return ResponseEntity.badRequest().body("Current password is wrong!");        //wrong password
             }
-        }
+        }catch (InvalidPasswordErrorMessage error){
+            return ResponseEntity.status(403).body(new ErrorMessageManager("Current password is wrong!", error.toString()));
 
+        }
         modelMapper.map(updateUser, user);
         userService.updateUser(user);
         newToken = jwtService.createToken(user.getEmail());
@@ -84,7 +116,7 @@ public class ProfileController {
         responseHeaders.setBearerAuth(newToken);
         responseHeaders.set("token", newToken);
 
-        return ResponseEntity.ok().headers(responseHeaders).body("Data was changed");
+        return ResponseEntity.ok().headers(responseHeaders).body(user);
     }
 
     @GetMapping("/all-events")

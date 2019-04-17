@@ -29,5 +29,5 @@ public class EventDTO {
 
     private String category;
 
-    private int gallery;
+    private GalleryDto gallery;
 }

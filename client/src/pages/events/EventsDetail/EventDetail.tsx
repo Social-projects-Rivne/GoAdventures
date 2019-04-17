@@ -1,12 +1,14 @@
 import { AxiosResponse } from "axios";
-import React, { Component, SyntheticEvent } from "react";
+import React, { Component } from "react";
 import { Field, FieldProps, Form, Formik, FormikProps } from "formik";
 import { TileLayer, Map, Marker, Popup } from "react-leaflet";
-import { MdDone } from "react-icons/md";
+import { MdDone, MdLockOpen, MdEdit, MdDelete, MdLock } from "react-icons/md";
 import moment from "moment";
 import {
   deleteEvent,
   isOwner,
+  closeEvent,
+  openEvent,
   isSubscribe,
   subscribe,
   unSubscribe
@@ -35,7 +37,11 @@ export class EventDetail extends Component<any, any> {
       isSubs: true
     };
     this.handleDelete = this.handleDelete.bind(this);
+
     this.handleClick = this.handleClick.bind(this);
+
+    this.handleClose = this.handleClose.bind(this);
+    this.handleOpen = this.handleOpen.bind(this);
   }
 
   public convertTime(date: string) {
@@ -114,95 +120,173 @@ export class EventDetail extends Component<any, any> {
     console.log(this.state.isSubs);
   }
 
+  public handleClose() {
+    console.log("status ", this.state.eventProps.event.statusId);
+    closeEvent(this.state.eventProps.event.id).then(
+      (res: AxiosResponse): any => {
+        if (res.status >= 200 && res.status <= 300) {
+          this.props.routerProps.history.push("/profile");
+        } else {
+        }
+      }
+    );
+  }
+
+  public handleOpen() {
+    openEvent(this.state.eventProps.event.id).then(
+      (res: AxiosResponse): any => {
+        if (res.status >= 200 && res.status <= 300) {
+          this.props.routerProps.history.push("/profile");
+        } else {
+        }
+      }
+    );
+  }
+
   public render() {
+    const style =
+      this.state.eventProps.event.statusId === 2 ? { display: "none" } : {};
+
     return (
-      <div className="container EventDetail">
+      <div className="container page-container EventDetail">
         <div className="row">
           <div className="col-12 col-sm-12 col-md-6 col-lg-7 col-xl-7">
-            <Gallery {...this.state.eventProps.event.gallery} />
+            <Gallery class="gallery" {...this.state.eventProps.event.gallery} />
           </div>
           <div className="col-12 col-sm-12 col-md-6 col-lg-5 col-xl-5">
             <div className="jumboton jumbotron-fluid">
-              <SettingsPanel>
-                {{
-                  left: (
-                    <div>
-                      <div className="d-flex flex-row align-content-center mt-3">
-                        <img
-                          className="rounded-avatar-sm"
-                          src="https://www.kidzone.ws/animal-facts/whales/images/beluga-whale-3.jpg"
-                        />
-                        <h2>{this.state.eventProps.event.topic}</h2>
+              <div className="row mt-2 mb-2">
+                <div className="col-6 ">
+                  <div className="row">
+                    <h3 className="header">
+                      {this.state.eventProps.event.topic}{" "}
+                    </h3>
+                    {this.state.eventProps.event.statusId === 2 ? (
+                      <p style={{ color: "red" }}>CLOSED</p>
+                    ) : null}
+                  </div>
+                </div>
+                <div className="col-6">
+                  <div className="d-flex  justify-content-end">
+                    {!this.state.isOwner ? (
+                      <div>
+                        {this.state.isSubs ? (
+                          <button
+                            type="button"
+                            className="btn btn-outline-danger btn-sm"
+                            onClick={this.handleClick}
+                          >
+                            Subscribed
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            className="btn btn-info btn-sm"
+                            onClick={this.handleClick}
+                          >
+                            Subscribe
+                          </button>
+                        )}
                       </div>
-                      <p>
-                        Start:
-                        {this.convertTime(
-                          this.state.eventProps.event.startDate.toString()
-                        )}
-                      </p>
-                      <p>
-                        Ends:
-                        {this.convertTime(
-                          this.state.eventProps.event.endDate.toString()
-                        )}
-                      </p>
-                    </div>
-                  ),
-                  right: (
-                    <div>
-                      {this.state.isSubs ? (
+                    ) : (
+                      <div>
                         <button
+                          onClick={this.handleDelete}
                           type="button"
-                          className="btn btn-outline-danger btn-sm"
-                          onClick={this.handleClick}
+                          className="btn btn-lg btn-outline-danger ml-1"
                         >
-                          Subscribed
+                          <MdDelete />
                         </button>
-                      ) : (
                         <button
+                          onClick={() => {
+                            this.state.eventProps.setEdit(true);
+                          }}
                           type="button"
-                          className="btn btn-info btn-sm"
-                          onClick={this.handleClick}
+                          className="btn btn-lg btn-outline-success ml-1"
                         >
-                          Subscribe
+                          <MdEdit />
                         </button>
-                      )}
-                    </div>
-                  )
-                }}
-              </SettingsPanel>
+                        {this.state.eventProps.event.statusId === 2 ? (
+                          <button
+                            onClick={this.handleOpen}
+                            type="button"
+                            className="btn btn-lg btn-outline-success ml-1"
+                          >
+                            <MdLockOpen />
+                          </button>
+                        ) : (
+                          <button
+                            onClick={this.handleClose}
+                            type="button"
+                            className="btn btn-lg btn-outline-warning ml-1"
+                          >
+                            <MdLock />
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
 
-              <hr className="my-4" />
+              <div className="content-column d-flex flex-column h-100">
+                <p>
+                  Start:
+                  {this.convertTime(
+                    this.state.eventProps.event.startDate.toString()
+                  )}
+                </p>
+                <p>
+                  Ends:
+                  {this.state.eventProps.event.endDate === "0"
+                    ? ""
+                    : this.convertTime(
+                        this.state.eventProps.event.endDate.toString()
+                      )}
+                </p>
+              </div>
+
+              <hr className="my-3" />
               <span className="lead">
                 {this.state.eventProps.event.description}
               </span>
-              <hr className="my-4" />
+              <hr className="my-3" />
               <div className="map">
-                <h2>Location and Destination points</h2>
+                <h3>Location and Destination points</h3>
                 <div className="rounded">
                   <Map
-                    className="rounded"
+                    attributionControl={true}
+                    zoomControl={false}
+                    doubleClickZoom={true}
+                    scrollWheelZoom={true}
+                    dragging={true}
+                    animate={true}
+                    easeLinearity={0.35}
+                    className="rounded map-layer"
                     center={[
                       this.state.eventProps.event.latitude,
                       this.state.eventProps.event.longitude
                     ]}
                     zoom={13}
                   >
-                    <TileLayer url="https://tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png" />
+                    <TileLayer
+                      attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                      url="https://tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png"
+                    />
+
                     <Marker
                       position={[
                         this.state.eventProps.event.latitude,
                         this.state.eventProps.event.longitude
                       ]}
                     >
-                      <Popup>
-                        A pretty CSS3 popup. <br /> Easily customizable.
-                      </Popup>
+                      <Popup>{this.state.eventProps.event.location}</Popup>
                     </Marker>
                   </Map>
                 </div>
                 {this.state.eventProps.event.location}
               </div>
+
               {this.state.isOwner ? (
                 <div>
                   <button
@@ -227,8 +311,9 @@ export class EventDetail extends Component<any, any> {
               )}
 
               <hr className="my-4" />
+
               <div>
-                <h2>Comments</h2>
+                <h3>Comments</h3>
                 <div>
                   <Formik
                     validationSchema={commentsSchema}

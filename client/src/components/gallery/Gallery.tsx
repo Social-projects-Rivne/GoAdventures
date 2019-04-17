@@ -1,10 +1,7 @@
 import React from 'react';
 import { GalleryDto } from '../../interfaces/Gallery.dto';
 
-// WILL CHANGE!
-
 export const Gallery = (props?: GalleryDto): JSX.Element => {
-  console.debug(props);
   return (
     <div
       id='carouselExampleControls'
@@ -22,7 +19,7 @@ export const Gallery = (props?: GalleryDto): JSX.Element => {
                 style={{ height: '500px' }}
                 src={imageUrl}
                 className='d-block w-100 h-'
-                alt='...'
+                alt='gallery-image'
               />
             </div>
           ))
@@ -31,7 +28,7 @@ export const Gallery = (props?: GalleryDto): JSX.Element => {
             <img
               src='https://via.placeholder.com/500'
               className='d-block w-100'
-              alt='...'
+              alt='gallery-image'
             />
           </div>
         )}

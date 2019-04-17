@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class ErrorMessageManager {
     private String publicError;
     private  String innerError;

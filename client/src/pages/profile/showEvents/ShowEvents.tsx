@@ -28,10 +28,12 @@ export class ShowEvents extends Component<EventDto, EventState> {
           startDate: '',
           topic: '',
           participants: [],
+          statusId: 0,
           gallery: {
-            id: undefined,
+            eventId: 0,
+            id: 0,
             imageUrls: ['https://via.placeholder.com/250'],
-            isDeleted: undefined
+            isDeleted: true
           }
         }
       ],

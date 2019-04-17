@@ -1,9 +1,14 @@
-import React, { createRef, useState, useEffect, SyntheticEvent } from 'react';
+import React, { createRef, useState, useEffect, ChangeEvent } from 'react';
 import { EventDto } from '../../../interfaces/Event.dto';
 import DatePicker from 'react-datepicker';
 import LCG from 'leaflet-control-geocoder';
 import { TileLayer, Popup, Marker, Map } from 'react-leaflet';
-import { ValidatedTextarea, DropDown } from '../../../components';
+import {
+  ValidatedTextarea,
+  DropDown,
+  ErrorMessageComponent,
+  UploadInput
+} from '../../../components';
 import { eventSchema } from '../../../validationSchemas/eventValidation';
 import { editEventFormInputSettings } from './inputSettings';
 import { GalleryDto } from '../../../interfaces/Gallery.dto';
@@ -18,6 +23,8 @@ import {
 import { MdDone } from 'react-icons/md';
 import moment from 'moment';
 import { updateEvent } from '../../../api/event.service';
+import './EditEvent.scss';
+import { ErrorMessage } from '../../../interfaces/ErrorMessage';
 
 interface EditEvent {
   event: EventDto;
@@ -29,26 +36,25 @@ interface EditEvent {
 interface EditEventInputState {
   topic: string;
   location: string;
-  gallery: GalleryDto | undefined;
 }
 
 export const EditEvent = (props: EditEvent) => {
-  let submitNested: () => any;
   const zoom = 13;
   const geocoder = LCG.L.Control.Geocoder.nominatim();
+  let submitNested: () => any;
   const bindSubmit = (formikSubmit: any) => {
     submitNested = formikSubmit;
   };
-  /* TODO: Refactor */
+  const [errors, setErrors] = useState({} as ErrorMessage);
   const [datepick, setDate] = useState({
     startDate: props.event.startDate,
     endDate: props.event.endDate
   });
   const [category, setCategory] = useState(props.event.category);
   const [eventDialog, setEventDialog] = useState({
-    gallery: undefined,
     topic: props.event.topic
   } as EditEventInputState);
+  const [gallery, setGallery] = useState(props.event.gallery as GalleryDto);
   const [description, setDescription] = useState(props.event.description);
   const [location, setLocation] = useState(props.event.location);
   const [mapCoordiantes, setMapCoordinates] = useState([
@@ -62,13 +68,14 @@ export const EditEvent = (props: EditEvent) => {
       const update = async () => {
         props.setIsLoading(true);
         const response = await updateEvent({
+          category,
+          description,
+          latitude: mapCoordiantes[0],
           ...props.event,
           ...eventDialog,
           ...datepick,
-          category,
-          description,
+          gallery,
           location,
-          latitude: mapCoordiantes[0],
           longitude: mapCoordiantes[1]
         });
         props.setEvent({ ...response });
@@ -77,8 +84,9 @@ export const EditEvent = (props: EditEvent) => {
       update();
       props.setEdit(false);
       props.setIsLoading(false);
+      return () => {};
     } else {
-      return;
+      return () => {};
     }
   }, [fetch]);
 
@@ -86,15 +94,16 @@ export const EditEvent = (props: EditEvent) => {
   const mapRef = createRef<Map>();
   const formRef = createRef<Formik>();
   return (
-    <div className='row justify-content-center'>
-      <h2>Edit Event</h2>
-      {/* <strong>Adding gallery WIP!</strong> */}
+    <div className='page-container row justify-content-center'>
+      <h2>Edit event info</h2>
+      {errors.errorMessage ? <ErrorMessageComponent {...errors} /> : null}
       <div className='col-12'>
+        <h2>Change event description</h2>
         <div className='row form-group'>
           <Formik
             ref={formRef}
             validationSchema={eventSchema}
-            initialValues={{ ...eventDialog }}
+            initialValues={{ topic: eventDialog.topic, gallery: '' }}
             enableReinitialize={true}
             validateOnBlur={true}
             validateOnChange={true}
@@ -103,7 +112,7 @@ export const EditEvent = (props: EditEvent) => {
               actions.setSubmitting(false);
             }}
             render={(formikProps: FormikProps<FormikValues>) => (
-              <Form className='d-flex flex-column'>
+              <Form className='d-flex flex-column w-100'>
                 {editEventFormInputSettings.map((input, index) => {
                   return (
                     <label key={index}>
@@ -115,6 +124,7 @@ export const EditEvent = (props: EditEvent) => {
                             <div className='mb-3'>
                               <input
                                 type={input.type}
+                                multiple
                                 className='form-control rounded'
                                 placeholder='firstName'
                                 {...field}
@@ -172,6 +182,7 @@ export const EditEvent = (props: EditEvent) => {
           <div className='col-sm-3'>
             <DatePicker
               id='StartDate'
+              className='input-group-text'
               selected={moment(datepick.startDate).toDate()}
               onChange={(e: Date): void => {
                 setDate({ ...datepick, startDate: moment(e).toISOString() });
@@ -191,30 +202,72 @@ export const EditEvent = (props: EditEvent) => {
           >
             End date
           </label>
-          <div className='col-sm-3'>
-            <DatePicker
-              id='EndDate'
-              selected={moment(datepick.endDate).toDate()}
-              onChange={(e: Date): void => {
-                setDate({ ...datepick, endDate: moment(e).toISOString() });
-              }}
-              showTimeSelect
-              timeFormat='HH:mm'
-              timeIntervals={15}
-              timeCaption='time'
-              withPortal
-              dateFormat='MMMM d, yyyy h:mm aa'
-            />
-          </div>
+          {props.event.endDate === '0' && datepick.endDate != undefined ? (
+            <div className='col-sm-3'>
+              <DatePicker
+                id='EndDate'
+                className='input-group-text'
+                selected={
+                  datepick.endDate != '0'
+                    ? moment(datepick.endDate).toDate()
+                    : moment().toDate()
+                }
+                onChange={(e: Date): void => {
+                  setDate({ ...datepick, endDate: moment(e).toISOString() });
+                }}
+                showTimeSelect
+                timeFormat='HH:mm'
+                timeIntervals={15}
+                timeCaption='time'
+                withPortal
+                dateFormat='MMMM d, yyyy h:mm aa'
+              />
+            </div>
+          ) : (
+            <div className='col-sm-3'>
+              <DatePicker
+                id='EndDate'
+                className='input-group-text'
+                selected={moment(datepick.endDate).toDate()}
+                onChange={(e: Date): void => {
+                  setDate({ ...datepick, endDate: moment(e).toISOString() });
+                }}
+                showTimeSelect
+                timeFormat='HH:mm'
+                timeIntervals={15}
+                timeCaption='time'
+                withPortal
+                dateFormat='MMMM d, yyyy h:mm aa'
+              />
+            </div>
+          )}
         </div>
       </div>
       <div className='col-12'>
-        <label>{location}</label>
+        <h3>Update your event gallery</h3>
+        <UploadInput
+          {...{
+            gallery,
+            setErrors,
+            setGallery,
+            eventId: props.event.id
+          }}
+        />
+      </div>
+      <div className='col-12'>
+        <h3>Update event location</h3>
+        <h5>Event location: {location}</h5>
         <div>
           <Map
+            attributionControl={true}
+            zoomControl={false}
+            doubleClickZoom={true}
+            scrollWheelZoom={true}
+            dragging={true}
+            animate={true}
+            easeLinearity={0.35}
             ref={mapRef}
             onclick={(e) => {
-              // const mapCurrent = mapRef.current;
               const currentMarker = markerRef.current;
               if (!!currentMarker) {
                 const latLng = currentMarker.leafletElement.getLatLng();
@@ -229,7 +282,12 @@ export const EditEvent = (props: EditEvent) => {
             zoom={zoom}
             className='rounded'
           >
-            <TileLayer url='https://tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png' />
+
+            <TileLayer
+              attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+              url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+            />
+
             <Marker
               draggable={true}
               ondrag={() => {
@@ -252,11 +310,11 @@ export const EditEvent = (props: EditEvent) => {
           </Map>
         </div>
       </div>
-      <div className='d-flex flex-row justify-content-around align-center w-100 mt-3 mb-3'>
+      <div className='row justify-content-center btns-content'>
         <button
           type='button'
           name='cancel'
-          className='btn btn-danger'
+          className='btn btn-danger m-1'
           onClick={() => {
             props.setEdit(false);
           }}
@@ -266,14 +324,12 @@ export const EditEvent = (props: EditEvent) => {
         <button
           type='button'
           name='update'
-          className='btn btn-success'
+          className='btn btn-primary m-1'
           onClick={async () => {
             const formCurrent = formRef.current;
             if (formCurrent) {
               await submitNested();
               await formCurrent.submitForm();
-              /* TODO: Validate object before sending && refactor */
-              /* Pass validation status to fetch, ya no */
               setFetch(true);
             }
           }}

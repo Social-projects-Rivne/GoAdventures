@@ -1,7 +1,8 @@
-import { AxiosResponse } from 'axios';
-import React, { Component, CSSProperties } from 'react';
+import { Cookies, withCookies } from 'react-cookie';
+import React, { Component, CSSProperties, ChangeEvent } from 'react';
+
 import { changeUserData, getUserData } from '../../api/user.service';
-import { Dialog } from '../../components';
+import { Dialog, Content } from '../../components';
 import { InputSettings } from '../../components/dialog-window/interfaces/input.interface';
 import { ProfileContext } from '../../context/profile.context';
 import { UserDto } from '../../interfaces/User.dto';
@@ -10,19 +11,30 @@ import AccountOverwiew from './accountOverview/AccountOverview';
 import './Profile.scss';
 import ShowEvents from './showEvents/ShowEvents';
 import Sidebar from './sidebar/Sidebar';
+import avatar from './images/Person.png';
+import axios, { AxiosResponse } from 'axios';
+import { serverUrl } from '../../api/url.config';
 
 interface ProfileState {
   userProfile: UserDto;
   userEventList: any;
-  showEditForm: boolean;
-
+  avatar: string | Blob;
+  // showSucessMessage: boolean;
+  errorMesage: {
+    publicError: string
+  };
+  context: {
+    avatarUrl: string
+  };
   choose: 'edit-profile' | 'events' | 'default' | 'account-overview';
   togleEditProfile: () => void;
   togleMyEvents: () => void;
   toogleAccountOverView: () => void;
 }
 
+const cookies: Cookies = new Cookies();
 export class Profile extends Component<UserDto, ProfileState> {
+  public fileInput: any;
   private editFormInputSettings: InputSettings[] = [
     {
       field_name: 'fullname',
@@ -35,12 +47,6 @@ export class Profile extends Component<UserDto, ProfileState> {
       label_value: 'New username',
       placeholder: 'B4gr0vy',
       type: 'text'
-    },
-    {
-      field_name: 'email',
-      label_value: 'New email',
-      placeholder: 'example@example.com',
-      type: 'email'
     },
     {
       field_name: 'phone',
@@ -56,7 +62,7 @@ export class Profile extends Component<UserDto, ProfileState> {
     },
     {
       field_name: 'password',
-      label_value: 'Old password',
+      label_value: 'Current password',
       placeholder: '********',
       type: 'password'
     },
@@ -68,7 +74,7 @@ export class Profile extends Component<UserDto, ProfileState> {
     },
     {
       field_name: 'confirmPassword',
-      label_value: 'Confirm your password',
+      label_value: 'Repeat new password',
       placeholder: '********',
       type: 'password'
     }
@@ -82,7 +88,11 @@ export class Profile extends Component<UserDto, ProfileState> {
     super(props);
 
     this.state = {
-      showEditForm: true,
+      // showSucessMessage: false,
+      avatar: '',
+      errorMesage: {
+        publicError: ''
+      },
       userProfile: {
         fullname: '',
         username: '',
@@ -97,43 +107,72 @@ export class Profile extends Component<UserDto, ProfileState> {
         startDate: '',
         topic: ''
       },
+      context: {
+        avatarUrl: ''
+      },
       choose: 'account-overview',
       togleEditProfile: () => {
         this.setState((state) => ({
           choose: 'edit-profile'
         }));
-        console.log(this.state.choose);
+        console.debug(this.state.choose);
       },
       togleMyEvents: () => {
         this.setState((state) => ({
           choose: 'events'
         }));
-        console.log(this.state.choose);
+        console.debug(this.state.choose);
       },
       toogleAccountOverView: () => {
         this.setState((state) => ({
           choose: 'account-overview'
         }));
 
-        console.log(this.state.choose);
+        console.debug(this.state.choose);
       }
     };
+    this.clearErrorMessage = this.clearErrorMessage.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.fileSelectHandler = this.fileSelectHandler.bind(this);
   }
-
-  public handleSubmit(data: UserDto): Promise<string> {
-    return changeUserData({ ...data });
+  public handleSubmit(data: UserDto): Promise<any> {
+    // change user data
+    return changeUserData({ ...data })
+      .then((res) => {
+        console.debug(res);
+        this.setState({
+          userProfile: {
+            ...res.data
+          },
+          errorMesage: { publicError: 'saved successfully' }
+        });
+      })
+      .catch((err) => {
+        this.setState({ errorMesage: { ...err.response.data } });
+      });
   }
-
+  public fileSelectHandler(event: ChangeEvent<HTMLInputElement>): void {
+    console.debug(event.target.files);
+    !!event.target.files
+      ? this.setState({
+          avatar: event.target.files[0]
+        })
+      : null;
+  }
   public componentDidMount() {
-    // сеттер на пропси зверху з api
     getUserData().then((response: AxiosResponse<UserDto>) =>
       this.setState({
         userProfile: { ...response.data }
       })
     );
   }
-
+  public clearErrorMessage() {
+    this.setState({
+      errorMesage: { publicError: '' }
+    });
+  }
   public render() {
+    console.debug(this.state.userProfile);
     return (
       <ProfileContext.Provider value={this.state}>
         <div className='profile-page'>
@@ -151,6 +190,29 @@ export class Profile extends Component<UserDto, ProfileState> {
                 button_text='Update'
                 header='Edit your profile'
                 inline_styles={this.editFormDialogStyles}
+                childComponents={
+                  <div className='Errors-messages'>
+                    {this.state.errorMesage.publicError !== '' ? (
+                      <div
+                        className='alert alert-warning alert-dismissible fade show errProfile'
+                        data-auto-dismiss
+                        role='alert'
+                        auto-close='3000'
+                      >
+                        <strong>{this.state.errorMesage.publicError}</strong>
+                        <button
+                          onClick={this.clearErrorMessage}
+                          type='button'
+                          className='close'
+                          data-dismiss='alert'
+                          aria-label='Close'
+                        >
+                          <span aria-hidden='true'>&times;</span>
+                        </button>
+                      </div>
+                    ) : null}
+                  </div>
+                }
               />
             ) : this.state.choose === 'account-overview' ? (
               <AccountOverwiew {...this.state.userProfile} />
