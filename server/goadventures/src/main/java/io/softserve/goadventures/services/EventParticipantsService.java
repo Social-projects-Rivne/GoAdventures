@@ -41,15 +41,16 @@ public class EventParticipantsService {
 
     }
 
-    public boolean delete(EventParticipants eventParticipant){
+    public boolean deleteParticipant(User user, Event event){
 
-        if(eventParticipant.getIs_subscriber() == true){
-            eventParticipantsRepository.delete(eventParticipant);
-            return true;
+        for (EventParticipants e : eventParticipantsRepository.findAll()) {
+            if ((event.getId()) == (e.getEvent().getId()) && (user.getId()) == (e.getUser().getId())) {
+                eventParticipantsRepository.delete(e);
+                return true;
+            }
         }
-        else {
-            return false;
-        }
+
+        return false;
     }
 
     public List<EventParticipants> getAllSubscribersForOneEvent(Integer id) {
@@ -70,11 +71,9 @@ public class EventParticipantsService {
             if ((event.getId()) == (e.getEvent().getId()) && (user.getId()) == (e.getUser().getId())) {
                 return  true;
             }
-
         }
 
         return false;
-
     }
 
 }

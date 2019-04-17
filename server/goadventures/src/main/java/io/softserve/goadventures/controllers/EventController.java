@@ -101,9 +101,9 @@ public class EventController {
     public ResponseEntity<String> addNewSubscriber(@RequestHeader(value = "Authorization") String token,
                                                    @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
         Event event = eventService.getEventById(eventId);
-        logger.info(event.getTopic());
+        logger.info("Topic of Event: " + event.getTopic());
         User user = userService.getUserByEmail(jwtService.parseToken(token));
-        logger.info(user.getEmail());
+        logger.info("Email of User: " + user.getEmail());
 
         eventParticipantsService.addParicipant(user, event);
 
@@ -112,10 +112,15 @@ public class EventController {
     }
 
     @PostMapping("/unsubscribe")
-    public ResponseEntity<String> deleteSubscriber(@RequestHeader(value = "ParticipantId") int participantId) {
+    public ResponseEntity<String> deleteSubscriber(@RequestHeader(value = "Authorization") String token,
+                                                   @RequestHeader(value = "EventId") int eventId) throws UserNotFoundException {
 
-        EventParticipants eventParticipant = eventParticipantsService.getById(participantId);
-        eventParticipantsService.delete(eventParticipant);
+        Event event = eventService.getEventById(eventId);
+        logger.info("Topic of Event: " + event.getTopic());
+        User user = userService.getUserByEmail(jwtService.parseToken(token));
+        logger.info("Email of User: " + user.getEmail());
+
+        eventParticipantsService.deleteParticipant(user, event);
 
         HttpHeaders httpHeaders = new HttpHeaders();
         return ResponseEntity.ok().headers(httpHeaders).body("Deleted Subscriber");
@@ -171,6 +176,7 @@ public class EventController {
     @GetMapping("/allSubscribersForEvent")
     public Iterable<EventParticipants> getAllForEvent(@RequestHeader(value = "eventId") int eventId) {
 
+        logger.info("Get all subscribers for event by Id: " + eventId);
         return eventParticipantsService.getAllSubscribersForOneEvent(eventId);
     }
 
