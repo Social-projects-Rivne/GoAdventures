@@ -62,7 +62,6 @@ public class EventService {
 
     public Page<Event> getAllEvents(Pageable eventPageable) {
         return  eventRepository.findAll(eventPageable);
-
     }
 
     public Page<Event> getAllEventsByOwner(Pageable pageable, Integer id) {
@@ -109,15 +108,38 @@ public class EventService {
         return eventRepository.findAllByCategory(pageable, category);
     }
 
-    public Page<Event> getAllEventBySearch(Pageable pageable, String search) {
+    public Page<Event> getAllByCategoryOrSearch(Pageable pageable, Category category, String search) {
         Page<Event> events = eventRepository.findAll(pageable);
 
         List<Event> list = new ArrayList<>();
 
-        for (Event event : events) {
-            if (event.toString().contains(search)) {
-                list.add(event);
+        if (category != null) {
+            for (Event event : events) {
+                if (event.getCategory() == category) {
+                    list.add(event);
+                }
             }
+        }
+
+        if (search != null) {
+            for (Event event : events) {
+                if (event.toString().contains(search)) {
+                    list.add(event);
+                }
+            }
+        }
+
+        if (category != null & search != null) {
+            List<Event> newList = new ArrayList<>();
+
+            for (Event event : events) {
+                if (event.getCategory() == category
+                        & event.toString().contains(search)) {
+                    newList.add(event);
+                }
+            }
+
+            return new PageImpl<>(newList);
         }
 
         return new PageImpl<>(list);

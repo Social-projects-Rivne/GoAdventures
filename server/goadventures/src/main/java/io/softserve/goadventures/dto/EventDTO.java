@@ -1,6 +1,5 @@
 package io.softserve.goadventures.dto;
 
-import io.softserve.goadventures.models.Category;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

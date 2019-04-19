@@ -70,9 +70,9 @@ public class EventController {
 
         Event mappedEvent = modelMapper.map(event, Event.class);
         Category category = categoryRepository.findByCategoryName(event.getCategory());
-        System.out.println(mappedEvent.getTopic());
         mappedEvent.setCategory(category);
         mappedEvent.setStatusId(EventStatus.OPENED.getEventStatus());
+
         Gallery gallery;
         if (event.getGallery() != null) {
             gallery = modelMapper.map(event.getGallery(), Gallery.class);
@@ -172,11 +172,14 @@ public class EventController {
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllEvents(@RequestParam(value = "search", required = false) String search,
+                                          @RequestParam(value = "filter", required = false) String filter,
                                           @PageableDefault(size = 15, sort = "id") Pageable eventPageable) {
-        logger.info("[GET-ALL-EVENTS]");
+        logger.info("[GET-ALL-EVENTS] - search: " + search + "; filter: " + filter);
 
-        Page<Event> eventsPage = (search == null) ? eventService.getAllEvents(eventPageable)
-                : eventService.getAllEventBySearch(eventPageable, search);
+        Category category = categoryRepository.findByCategoryName(filter);
+
+        Page<Event> eventsPage = (search == null & filter == null) ? eventService.getAllEvents(eventPageable)
+                : eventService.getAllByCategoryOrSearch(eventPageable, category, search);
 
         if (eventsPage != null) {
             int nextPageNum = eventsPage.getNumber() + 1;
