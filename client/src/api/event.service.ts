@@ -171,6 +171,33 @@ export const isOwner = async (data: number): Promise<any> =>
     }
   });
 
+export const isSubscribe = async (data: number): Promise<any> =>
+  await axios.get(`${serverUrl}/event/is-subscriber`, {
+    headers: {
+      'EventId': data,
+      'Authorization': `Bearer ${cookies.get('tk879n')}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
+export const subscribe = async (data: number): Promise<any> =>
+  await axios.post(`${serverUrl}/event/subscribe`, null, {
+    headers: {
+      'EventId': data,
+      'Authorization': `Bearer ${cookies.get('tk879n')}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
+export const unSubscribe = async (data: number): Promise<any> =>
+  await axios.post(`${serverUrl}/event/unsubscribe`, null, {
+    headers: {
+      'EventId': data,
+      'Authorization': `Bearer ${cookies.get('tk879n')}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
 export const createEvent = async (data: any): Promise<string> => {
   return await axios
     .post(

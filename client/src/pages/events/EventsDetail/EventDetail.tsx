@@ -44,9 +44,13 @@ export class EventDetail extends Component<any, any> {
     super(props);
     this.state = {
       eventProps: { ...this.props },
-      isOwner: false
+      isOwner: false,
+      isSubs: true
     };
     this.handleDelete = this.handleDelete.bind(this);
+
+    this.handleClick = this.handleClick.bind(this);
+
     this.handleClose = this.handleClose.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
   }
@@ -60,6 +64,22 @@ export class EventDetail extends Component<any, any> {
   }
 
   public componentDidMount() {
+    isSubscribe(this.state.eventProps.event.id)
+      .then(
+        (res: AxiosResponse): any => {
+          console.warn(res.status);
+          this.setState({
+            isSubs: true
+          });
+        }
+      )
+      .catch((error: any) => {
+        console.log('orest ska' + error);
+        this.setState({
+          isSubs: false
+        });
+      });
+
     isOwner(this.state.eventProps.event.id).then(
       (res: AxiosResponse): any => {
         if (res.status >= 200 && res.status <= 300) {
@@ -84,6 +104,31 @@ export class EventDetail extends Component<any, any> {
         }
       }
     );
+  }
+  public handleClick() {
+    if (this.state.isSubs) {
+      unSubscribe(this.state.eventProps.event.id).then(
+        (res: AxiosResponse): any => {
+          if (res.status >= 200 && res.status <= 300) {
+            this.setState({
+              isSubs: false
+            });
+          }
+        }
+      );
+    } else {
+      subscribe(this.state.eventProps.event.id).then(
+        (res: AxiosResponse): any => {
+          if (res.status >= 200 && res.status <= 300) {
+            this.setState({
+              isSubs: true
+            });
+          }
+        }
+      );
+    }
+
+    console.log(this.state.isSubs);
   }
 
   public handleClose() {
@@ -134,13 +179,25 @@ export class EventDetail extends Component<any, any> {
                 <div className='col-6'>
                   <div className='d-flex  justify-content-end'>
                     {!this.state.isOwner ? (
-                      <button
-                        type='button'
-                        className='btn btn-outline-info btn-sm'
-                        style={style}
-                      >
-                        Subscribe
-                      </button>
+                      <div>
+                        {this.state.isSubs ? (
+                          <button
+                            type='button'
+                            className='btn btn-outline-danger btn-sm'
+                            onClick={this.handleClick}
+                          >
+                            Subscribed
+                          </button>
+                        ) : (
+                          <button
+                            type='button'
+                            className='btn btn-info btn-sm'
+                            onClick={this.handleClick}
+                          >
+                            Subscribe
+                          </button>
+                        )}
+                      </div>
                     ) : (
                       <div>
                         <button
@@ -224,8 +281,9 @@ export class EventDetail extends Component<any, any> {
                   >
                     <TileLayer
                       attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                      url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                      url='https://tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png'
                     />
+
                     <Marker
                       position={[
                         this.state.eventProps.event.latitude,
@@ -238,7 +296,9 @@ export class EventDetail extends Component<any, any> {
                 </div>
                 {this.state.eventProps.event.location}
               </div>
+
               <hr className='my-4' />
+
               <div>
                 <h3>Comments</h3>
                 <div>

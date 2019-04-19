@@ -10,7 +10,7 @@ public class Profile {
     private String userName;
     private String email;
     private String location;
-    private int phone;
+    private String phone;
     private String avatarUrl;
 
     public Profile(String fullName, String userName, String email,String avatarUrl) {

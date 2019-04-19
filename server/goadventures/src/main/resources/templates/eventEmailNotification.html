@@ -10,6 +10,7 @@
     <h3 class=pink align="center">Hi <span th:text="${fullname}"></span>,</h3>
     <h3 class=pink align="center">Event which you subscribed starting tomorrow!</h3>
     <p align="center">
+        <!--//TODO remove hardcoded URL-->
         <a th:href="'http://localhost:3001/events/detail/'+${eventTopic}">
             <button class=button>Event page</button>
         </a>

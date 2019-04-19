@@ -26,6 +26,7 @@ public class Gallery {
     @JoinColumn(name = "events_id", unique = true)
     private Event eventId;
 
+    //TODO Need to check. This field should have the name of the image. And the url should be built by the app
     @ElementCollection()
     @Column(name = "image_urls")
     private Set<String> imageUrls;

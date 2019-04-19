@@ -36,7 +36,7 @@ public class User {
     private String email;
 
     @Column(name = "phone")
-    private int phone;
+    private String phone;
 
     @Column(name = "role")
     private String role;
@@ -52,10 +52,11 @@ public class User {
     private Set<Feedback> user_feedback = new HashSet<>();
 
 
-    @ManyToMany(mappedBy = "participants")
-    private Set<Event> participantsEvent = new HashSet<>();
-
     @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    Set<EventParticipants> participants = new HashSet<>();
+
+    @JsonIgnore //TODO it is better to use dto models for json. You need to separate jpa logic from serialization logic.
     @OneToMany(mappedBy = "owner")
     private Set<Event> selfEvents = new HashSet<>();
 
@@ -67,19 +68,19 @@ public class User {
 
     @Override
     public String toString() {
-        return "\nUser{" +
-                "\n\tid=" + id +
-                ", \n\tfullname='" + fullname + '\'' +
-                ", \n\tusername='" + username + '\'' +
-                ", \n\tpassword='" + password + '\'' +
-                ", \n\tlocation='" + location + '\'' +
-                ", \n\temail='" + email + '\'' +
-                ", \n\tphone=" + phone +
-                ", \n\trole='" + role + '\'' +
-                ", \n\tavatar='" + avatarUrl + '\'' +
-                ", \n\tstatusId=" + statusId + '\'' +
-                ", \n\tparticipantsEvent=" + participantsEvent + '\'' +
-                "\n}";
+        return "User{" +
+                "id=" + id +
+                ", fullname='" + fullname + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", location='" + location + '\'' +
+                ", email='" + email + '\'' +
+                ", phone=" + phone +
+                ", role='" + role + '\'' +
+                ", avatar='" + avatarUrl + '\'' +
+                ", statusId='" + statusId + '\'' +
+                ", participantsEvent='" + participants + '\'' +
+                '}';
     }
 
     @Override
@@ -88,14 +89,11 @@ public class User {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
         return id == user.id &&
-                phone == user.phone &&
-                username.equals(user.username) &&
-                password.equals(user.password) &&
                 email.equals(user.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, email, phone);
+        return Objects.hash(id, email);
     }
 }

@@ -18,11 +18,9 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User getUserById(int id){
+    public User getUserById(int id) {
         return userRepository.findUserById(id);
     }
-
-    public User getUserByName(String username) { return userRepository.findByUsername(username); }
 
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email);
@@ -49,28 +47,29 @@ public class UserService {
         return user;
     }
 
-    public String singIn(String email, String password) {
+    public UserStatus singIn(String email, String password) {
+
         if (checkingEmail(email)) {
-            return "User not found";
+            return null;
         } else {
             User user = userRepository.findByEmail(email);
 
             if (BCrypt.checkpw(password, user.getPassword())) {
                 if (user.getStatusId() == UserStatus.PENDING.getUserStatus()) {
-                    return "User is not confirm auth!";
+                    return UserStatus.PENDING;
                 }
                 if (user.getStatusId() == UserStatus.BANNED.getUserStatus()) {
-                    return "User is banned";
+                    return UserStatus.BANNED;
                 }
                 if (user.getStatusId() == UserStatus.DELETED.getUserStatus()) {
-                    return "User is deleted";
+                    return UserStatus.DELETED;
                 }
                 user.setStatusId(UserStatus.ACTIVE.getUserStatus());
                 userRepository.save(user);
 
-                return "User log in";
+                return UserStatus.LOGGING;
             } else {
-                return "User password is wrong";
+                return UserStatus.WRONGPASSWORD;
             }
         }
     }
@@ -89,7 +88,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public boolean checkingEmail(String email){
+    public boolean checkingEmail(String email) {
         return userRepository.findByEmail(email) == null;
     }
 }

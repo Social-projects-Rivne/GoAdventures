@@ -1,4 +1,4 @@
-package io.softserve.goadventures.models;
+package io.softserve.goadventures.utils;
 
 public class SecurityConstants {
     public static final String SECRET = "SecretKey";

@@ -162,12 +162,14 @@ export class CreateEvent extends Component<any, any> {
     }
   }
 
+
   public componentDidMount() {
     setTimeout(() => {
       if (leafletMap) {
         leafletMap.leafletElement.invalidateSize();
       }
     }, 50);
+
   }
 
   public render() {
