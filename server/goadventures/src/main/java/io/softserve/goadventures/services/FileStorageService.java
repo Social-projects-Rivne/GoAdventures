@@ -49,11 +49,11 @@ public class FileStorageService {
         try {
             // Check if the file's name contains invalid characters
             if(file.isEmpty()){
-                logger.info("File is empty");
+                logger.error("File is empty");
                 throw new FileStorageException("Empty file" + finalFileName);
             }
             if(finalFileName.contains("..")) {
-                logger.info("Sorry! Filename contains invalid path sequence");
+                logger.error("Sorry! Filename contains invalid path sequence");
                 throw new FileStorageException("Sorry! Filename contains invalid path sequence " + finalFileName);
             }
 
@@ -64,7 +64,7 @@ public class FileStorageService {
 
             return finalFileName;
         } catch (IOException ex) {
-            logger.info("Could not store file " + finalFileName + ". Please try again!", ex);
+            logger.error("Could not store file " + finalFileName + ". Please try again!", ex);
             throw new FileStorageException("Could not store file " + finalFileName + ". Please try again!", ex);
         }
     }
@@ -75,7 +75,7 @@ public class FileStorageService {
             fileType = tika.detect(path.toFile());
             logger.info("filetype: " + fileType);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.toString());
         }
         if(!(fileType.startsWith("image/"))){
             return false;
@@ -99,11 +99,10 @@ public class FileStorageService {
             if(resource.exists()) {
                 return resource;
             } else {
-                logger.info("File not found " + fileName);
                 throw new MyFileNotFoundException("File not found " + fileName);
             }
         } catch (MalformedURLException ex) {
-            logger.info("File not found " + fileName);
+            logger.error("File not found " + fileName);
             throw new MyFileNotFoundException("File not found " + fileName, ex);
         }
     }
@@ -116,7 +115,7 @@ public class FileStorageService {
             Files.delete(Paths.get(filePath));
             logger.info("deletes successfully  " + filePath );
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.toString());
         }
     }
     public void deleteFileByFileName(String fileName){
@@ -125,7 +124,7 @@ public class FileStorageService {
             Files.delete(path);
             logger.info("deletes successfully  " + path );
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.toString());
         }
 
     }

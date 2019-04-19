@@ -4,28 +4,34 @@ import { EventDetail } from '../EventsDetail/EventDetail';
 import { EditEvent } from '../editEvent/EditEvent';
 import { EventDto } from '../../../interfaces/Event.dto';
 import { getEventDetail } from '../../../api/event.service';
-import { async } from 'rxjs/internal/scheduler/async';
+
 interface EventProps {
   routerProps: RouteComponentProps;
 }
 
 export const Event = (props: EventProps) => {
+   
   const currentUrl = document.location.href;
   const arrTopic: string[] = currentUrl.split(`detail/`);
-  const [g, setG] = useState();
-
+  
+  const [fetch, setFetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [event, setEvent] = useState(props.routerProps.location.state ? {
-    ...props.routerProps.location.state,
-  } as EventDto :
-    { ...getEventDetail(arrTopic[1]) } as EventDto | any
-  );
+  const [event, setEvent] = useState();
 
-  debugger
+  if(props.routerProps.location.state) {
+    setFetch(true)
+  } else {
+    setEvent({
+      ...props.routerProps.location.state,
+    } as EventDto)
+  }
+  
   useEffect(() => {
-    setG('Pzdc');
-  }, []);
+    setFetch(false);
+    setEvent({ ...getEventDetail(arrTopic[1]) } as EventDto | any)
+    return () => {}
+  }, [fetch]);
 
 
   return (

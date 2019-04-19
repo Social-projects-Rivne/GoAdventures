@@ -33,6 +33,9 @@
 
 .btn-choice {
   text-align: center;
+  -webkit-transition-duration: 0.4s;
+  transition-duration: 0.4s;
+  cursor: pointer;
   & button {
     width: 45%;
     font-size: 1.2em;
@@ -46,7 +49,21 @@
   width: 100%;
   border-right: 0ch;
   border-left: 0ch;
-  text-align: left
+  text-align: left;
+  padding:15px;
+  -webkit-transition-duration: 0.2s; /* Safari */
+  transition-duration: 0.2s;
+}
+// #sidebarBtn:hover{
+//   background-color: white; 
+//   color: black; 
+//   border: 2px solid blueviolet;
+// }
+#sidebarBtn:hover{ 
+  border-left: 10px solid blueviolet;
+}
+#sidebarBtn:focus{ 
+  border-left: 10px solid blueviolet;
 }
 #sdb111{
   padding: 0.1rem;

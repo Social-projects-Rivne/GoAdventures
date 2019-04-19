@@ -18,22 +18,19 @@ import { serverUrl } from '../../api/url.config';
 interface ProfileState {
   userProfile: UserDto;
   userEventList: any;
-  avatar: string | Blob;
   errorMesage: {
     publicError: string;
 
   };
-  context: {
-    avatarUrl: string;
-  },
   choose: 'edit-profile' | 'events' | 'default' | 'account-overview';
   togleEditProfile: () => void;
   togleMyEvents: () => void;
   toogleAccountOverView: () => void;
+  setAvatar:(url: string) => void;
 
 }
 
-const cookies: Cookies = new Cookies();
+//const cookies: Cookies = new Cookies();
 export class Profile extends Component<UserDto, ProfileState> {
   fileInput: any;
   private editFormInputSettings: InputSettings[] = [
@@ -90,7 +87,6 @@ export class Profile extends Component<UserDto, ProfileState> {
     super(props);
 
     this.state = {
-      avatar: '',
       errorMesage: {
         publicError: '',
       },
@@ -107,9 +103,6 @@ export class Profile extends Component<UserDto, ProfileState> {
         location: '',
         startDate: '',
         topic: ''
-      },
-      context: {
-        avatarUrl: ''
       },
       choose: 'account-overview',
       togleEditProfile: () => {
@@ -131,12 +124,19 @@ export class Profile extends Component<UserDto, ProfileState> {
 
         console.debug(this.state.choose)
       },
-
+      setAvatar:(avatar) => {
+        console.debug("avatar setAvatar",avatar)
+        this.setState({
+          userProfile:{ ...this.state.userProfile, avatarUrl:avatar}
+        })
+        console.debug("profile state", this.state.userProfile)
+      }
+      
 
     };
+    
     this.clearErrorMessage = this.clearErrorMessage.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.fileSelectHandler = this.fileSelectHandler.bind(this);
 
   }
   public handleSubmit(data: UserDto): Promise<any> {   //change user data
@@ -147,7 +147,10 @@ export class Profile extends Component<UserDto, ProfileState> {
           userProfile: {
             ...res.data
           },
-          errorMesage: { publicError: 'saved successfully' }
+          errorMesage: { publicError: 'saved successfully' } }, () => {
+            window.setTimeout(() => {
+              this.setState({ errorMesage: { publicError: '' } })
+            }, 3500)
         });
       })
       .catch((err) => {
@@ -158,13 +161,7 @@ export class Profile extends Component<UserDto, ProfileState> {
         });
       });
   }
-  public fileSelectHandler(event: ChangeEvent<HTMLInputElement>): void {
-    console.debug(event.target.files);
-    !!event.target.files ?
-      this.setState({
-        avatar: event.target.files[0]
-      }) : null;
-  }
+
   public componentDidMount() {
     getUserData()
       .then((response: AxiosResponse<UserDto>) =>
@@ -190,9 +187,12 @@ export class Profile extends Component<UserDto, ProfileState> {
             {
 
               this.state.choose === 'events'
-                ? <ShowEvents {...this.state.userEventList} />
+                ? <div className='container page-container'> 
+                  <ShowEvents {...this.state.userEventList} />
+                  </div>
                 : (this.state.choose === 'edit-profile'
-                  ? <Dialog
+                  ?  <div className='container page-container'>
+                     <Dialog
                     validationSchema={editProfileSchema}
                     handleSubmit={this.handleSubmit}
                     inputs={this.editFormInputSettings}
@@ -220,6 +220,7 @@ export class Profile extends Component<UserDto, ProfileState> {
 
                     }
                   />
+                  </div>
                   : (this.state.choose === 'account-overview'
                     ? <AccountOverwiew {...this.state.userProfile} />
                     : null

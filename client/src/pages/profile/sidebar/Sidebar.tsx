@@ -6,7 +6,7 @@ import { ProfileContext } from '../../../context/profile.context';
 import { UserDto } from '../../../interfaces/User.dto';
 import avatar from '../images/Person.png';
 import './Sidebar.scss';
-import { getUserData } from '../../../api/user.service';
+import { getUserData, uploadAvatar } from '../../../api/user.service';
 
 interface SidebarState {
   userProfile: UserDto;
@@ -21,7 +21,6 @@ const cookies: Cookies = new Cookies();
 class Sidebar extends React.Component<UserDto, SidebarState> {
 
   fileInput: any;
-
   constructor(props: any) {
     super(props);
     this.state = {
@@ -35,25 +34,22 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
         email: '',
         avatarUrl: ''
       },
-
-
     };
-
     this.clearErrorMessage = this.clearErrorMessage.bind(this);
     this.uploadHandler = this.uploadHandler.bind(this);
     this.fileSelectHandler = this.fileSelectHandler.bind(this);
   }
-  public componentDidMount() {
-    getUserData().then((response: AxiosResponse<UserDto>) =>
-      this.setState({ userProfile: { ...response.data } })
-    )
-  }
-  // public componentDidUpdate(prevProps: any) {
-  //   if (Object.is(prevProps, this.props) === false) {
-  //     console.debug("first");
-  //     this.setState({ userProfile: { ...this.props } });
-  //   }
+  // public componentDidMount() {
+  //   getUserData().then((response: AxiosResponse<UserDto>) =>
+  //     this.setState({ userProfile: { ...response.data } })
+  //   )
   // }
+  public componentDidUpdate(prevProps: any) {
+    if (Object.is(prevProps, this.props) === false) {
+      console.debug("did update",{...this.props});
+      this.setState({ userProfile: { ...this.props } });
+    }
+  }
 
   public clearErrorMessage() {
     this.setState({
@@ -72,24 +68,17 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
   public uploadHandler() {
     const formdata: FormData = new FormData();
     formdata.set('file', this.state.avatar);
-    const config = {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        'Authorization': `Bearer ${cookies.get('tk879n')}`
-      }
-    };
-    axios.post(
-      `${serverUrl}/uploadAvatar`,
-      formdata,
-      config
-    ).then(response => {
+     uploadAvatar(formdata)
+     .then(response => {
       this.setState({
         userProfile: {
           ...this.state.userProfile,
           avatarUrl: response.data,
+         
         }
       });
-
+      console.debug('avatar uploaded',this.state.userProfile.avatarUrl);
+    
     })
       .catch((err) => {
         this.setState({ errorMesage: { ...err.response.data } }, () => {
@@ -104,7 +93,7 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
     return (
       <ProfileContext.Consumer>
         {
-          ({ togleMyEvents, togleEditProfile, toogleAccountOverView, context }) => (
+          ({ togleMyEvents, togleEditProfile, toogleAccountOverView, setAvatar }) => (
             <div className='Sidebar__card card text-white bg-dark'>
               <div className='card-header'>
                 <h2 id="sidebarTitle" className='title sidebarTitle'>{this.state.userProfile.fullname}</h2>
@@ -128,17 +117,19 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
                   <button
                     style={this.state.avatar == '' ? { display: 'none' } : { display: 'flex' }}
                     className="btn btn-warning"
-                    onClick={this.uploadHandler}
+                    //onClick={this.uploadHandler}
                     
-                  // onClick={() => {                   //доробити контекст
+                  onClick={async () => {                   //доробити контекст
+                    
+                    await this.uploadHandler();
+                    if (this.state.userProfile.avatarUrl !== undefined) {
+                      setAvatar(this.state.userProfile.avatarUrl)
+                      
+                    }
+                    
+                  }
 
-                  //   this.uploadHandler();
-                  //   context = {
-                  //     avatarUrl: this.state.userProfile.avatarUrl
-                  //   }
-                  // }
-
-                  // }
+                  }
                   >Upload</button>
                 </div>
                 <div className="Errors-messages avtErrorsWraper">

@@ -4,6 +4,7 @@ import './AccountOverwiew.scss';
 
 const AccountOverwiew = (props: UserDto) => {
   return (
+    <div className='container page-container'>
     <div className='card border-primary mb-3 accOverCont'>
       <div className='card-header'>
         <h2 className='header'>Account overview</h2>
@@ -37,6 +38,7 @@ const AccountOverwiew = (props: UserDto) => {
             <p className='card-text info'>{props.phone}</p>
           </div>
         ) : null}
+      </div>
       </div>
       </div>
   );

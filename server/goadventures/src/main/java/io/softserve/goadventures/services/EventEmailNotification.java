@@ -20,9 +20,10 @@ public class EventEmailNotification {
 
     private final Logger logger = LoggerFactory.getLogger(EventEmailNotification.class);
 
-    @Autowired
+
     private MailContentBuilder mailContentBuilder;
     private EventService eventService;
+    @Autowired
     public EventEmailNotification(MailContentBuilder mailContentBuilder, EventService eventService) {
         this.mailContentBuilder = mailContentBuilder;
         this.eventService = eventService;
@@ -60,9 +61,6 @@ public class EventEmailNotification {
                 }
                 if(IsCyrylic.isCyrillic(event.getDescription())){
                     eventDescription = IsCyrylic.toTranslit(event.getDescription());
-                }
-                if(IsCyrylic.isCyrillic(event.getTopic())){
-                    topic = IsCyrylic.toTranslit(event.getTopic());
                 }
                 logger.info(" " + event.getDescription() + " " + eventLocation);
                 emailSenderService.eventEmailNotification(event.getOwner().getEmail(), event.getOwner().getFullname(), topic, startDateToUser, eventLocation, eventDescription); //send email to owner event

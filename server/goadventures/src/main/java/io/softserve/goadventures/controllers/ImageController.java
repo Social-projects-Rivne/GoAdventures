@@ -1,6 +1,5 @@
 package io.softserve.goadventures.controllers;
 
-import io.softserve.goadventures.configurations.FileStorageProperties;
 import io.softserve.goadventures.errors.*;
 import io.softserve.goadventures.services.UserService;
 import io.softserve.goadventures.services.FileStorageService;
@@ -21,15 +20,15 @@ import java.io.IOException;
 
 //TODO add logging to the all controllers, both to the valid case and to the invalid/exception case
 @RestController
-public class AvatarController {
+public class ImageController {
 
-    private final Logger logger = LoggerFactory.getLogger(AvatarController.class);
+    private final Logger logger = LoggerFactory.getLogger(ImageController.class);
     private FileStorageService fileStorageService;
     private final UserService userService;
     private final JWTService jwtService;
 
     @Autowired
-    public AvatarController(FileStorageService fileStorageService, UserService userService, JWTService jwtService) {
+    public ImageController(FileStorageService fileStorageService, UserService userService, JWTService jwtService) {
         this.fileStorageService = fileStorageService;
         this.userService = userService;
         this.jwtService = jwtService;
@@ -61,6 +60,7 @@ public class AvatarController {
             }
         } catch (WrongImageTypeException e) {
            fileStorageService.deleteFileByFileName(fileName);
+           logger.error("Could not be uploaded, it is not an image!");
            return ResponseEntity.status(403).body(new ErrorMessageManager("Could not be uploaded, it is not an image!",e.toString()));
         }
 
