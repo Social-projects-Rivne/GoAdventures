@@ -5,7 +5,10 @@ import { serverUrl } from './url.config';
 
 const cookies: Cookies = new Cookies();
 
-export const getEventList = async (nextPage?: string | null, search?: string | null): Promise<any> => {
+export const getEventList = async (
+  nextPage?: string | null,
+  search?: string | null
+): Promise<any> => {
   const defaultUrl = '/event/all?page=0';
   // const searchUrl = `${nextPage}&search=${search}`;
 
@@ -15,8 +18,6 @@ export const getEventList = async (nextPage?: string | null, search?: string | n
         'Authorization': `Bearer ${cookies.get('tk879n')}`,
         'Content-Type': 'application/json'
       }
-
-
     })
     .then(
       (res: AxiosResponse<EventDto[]>): any => {
@@ -34,19 +35,25 @@ export const getEventList = async (nextPage?: string | null, search?: string | n
     });
 };
 
-
-
-export const searchForEvents = async (nextPage?: string | null, search?: string | null): Promise<any> => {
+export const searchForEvents = async (
+  nextPage?: string | null,
+  search?: string | null
+): Promise<any> => {
   const defaultUrl = '/event/all?page=0';
   const searchUrl = `&search=${search}`;
-  console.debug(nextPage + "" + searchUrl);
+  console.debug(nextPage + '' + searchUrl);
   return await axios
-    .get(`${serverUrl}${!!nextPage ? nextPage + "" + searchUrl : defaultUrl + "" + searchUrl}`, {
-      headers: {
-        'Authorization': `Bearer ${cookies.get('tk879n')}`,
-        'Content-Type': 'application/json'
+    .get(
+      `${serverUrl}${
+        !!nextPage ? nextPage + '' + searchUrl : defaultUrl + '' + searchUrl
+      }`,
+      {
+        headers: {
+          'Authorization': `Bearer ${cookies.get('tk879n')}`,
+          'Content-Type': 'application/json'
+        }
       }
-    })
+    )
     .then(
       (res: AxiosResponse<EventDto[]>): any => {
         if (res.status >= 200 && res.status <= 300) {
@@ -63,7 +70,6 @@ export const searchForEvents = async (nextPage?: string | null, search?: string 
       return error;
     });
 };
-
 
 export const getOwnerEventList = async (
   nextPage?: string | null
@@ -92,14 +98,6 @@ export const getOwnerEventList = async (
     });
 };
 
-export const getEventData = async (): Promise<AxiosResponse> =>
-  await axios.get(`${serverUrl}/profile/getevent`, {
-    headers: {
-      'Authorization': `Bearer ${cookies.get('tk879n')}`,
-      'Content-Type': 'application/json'
-    }
-  });
-
 export const deleteEvent = async (data: number): Promise<any> =>
   await axios.delete(`${serverUrl}/event/delete`, {
     headers: {
@@ -110,22 +108,30 @@ export const deleteEvent = async (data: number): Promise<any> =>
   });
 
 export const closeEvent = async (data: number): Promise<any> =>
-  await axios.post(`${serverUrl}/event/close`, { data }, {
-    headers: {
-      'EventId': data,
-      'Authorization': `Bearer ${cookies.get('tk879n')}`,
-      'Content-Type': 'application/json'
+  await axios.post(
+    `${serverUrl}/event/close`,
+    { data },
+    {
+      headers: {
+        'EventId': data,
+        'Authorization': `Bearer ${cookies.get('tk879n')}`,
+        'Content-Type': 'application/json'
+      }
     }
-  });
+  );
 
 export const openEvent = async (data: number): Promise<any> =>
-  await axios.post(`${serverUrl}/event/open`, { data }, {
-    headers: {
-      'EventId': data,
-      'Authorization': `Bearer ${cookies.get('tk879n')}`,
-      'Content-Type': 'application/json'
+  await axios.post(
+    `${serverUrl}/event/open`,
+    { data },
+    {
+      headers: {
+        'EventId': data,
+        'Authorization': `Bearer ${cookies.get('tk879n')}`,
+        'Content-Type': 'application/json'
+      }
     }
-  });
+  );
 
 export const updateEvent = async (data: EventDto): Promise<EventDto | object> =>
   await axios
@@ -160,9 +166,7 @@ export const isOwner = async (data: number): Promise<any> =>
     }
   });
 
-export const createEvent = async (
-  data: any
-): Promise<string> => {
+export const createEvent = async (data: any): Promise<string> => {
   return await axios
     .post(
       `${serverUrl}/event/create`,
@@ -188,13 +192,13 @@ export const createEvent = async (
 };
 
 export const getEventDetail = async (topic: any): Promise<EventDto | any> => {
-  return await axios.get(
-    `${serverUrl}/event/event-detail/${topic}`,
-  ).then((res: AxiosResponse<EventDto>) => {
-    console.debug(res.data);
-    return res.data;
-
-  }).catch((error) => {
-    return error;
-  });
+  return await axios
+    .get(`${serverUrl}/event/event-detail/${topic}`)
+    .then((res: AxiosResponse<EventDto>) => {
+      console.debug(res.data);
+      return res.data;
+    })
+    .catch((error) => {
+      return error;
+    });
 };
