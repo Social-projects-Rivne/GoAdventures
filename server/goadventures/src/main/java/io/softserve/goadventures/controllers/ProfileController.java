@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -120,7 +121,8 @@ public class ProfileController {
     }
 
     @GetMapping("/all-events")
-    public ResponseEntity<?> getAllEvents(Pageable eventPageable, @RequestHeader("Authorization") String token) throws UserNotFoundException {
+    public ResponseEntity<?> getAllEvents(@PageableDefault(size = 15, sort = "id") Pageable eventPageable,
+                                          @RequestHeader("Authorization") String token) throws UserNotFoundException {
         User user = userService.getUserByEmail(jwtService.parseToken(token));
         Page<Event> eventsPage = eventService.getAllEventsByOwner(eventPageable, user.getId());
 

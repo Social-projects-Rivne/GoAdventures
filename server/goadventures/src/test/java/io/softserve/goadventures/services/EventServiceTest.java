@@ -39,7 +39,6 @@ class EventServiceTest {
     private static final String topic = "topic";
     private Event event;
     private User user;
-    private MockMvc mockMvc;
 
     @BeforeEach
     void setUp() {
