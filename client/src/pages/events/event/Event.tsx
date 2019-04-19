@@ -17,19 +17,26 @@ export const Event = (props: EventProps) => {
   const [fetch, setFetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [event, setEvent] = useState();
+  const [event, setEvent] = useState({} as EventDto);
 
-  if(props.routerProps.location.state) {
-    setFetch(true)
-  } else {
-    setEvent({
-      ...props.routerProps.location.state,
-    } as EventDto)
+  /* https://overreacted.io/a-complete-guide-to-useeffect/ */
+  console.debug(props.routerProps.location.state);
+
+  const fetchData = async (): Promise<void> => {
+    await setFetch(false);
+    setEvent({ ...await getEventDetail(arrTopic[1]) } as EventDto | any)
   }
   
   useEffect(() => {
-    setFetch(false);
-    setEvent({ ...getEventDetail(arrTopic[1]) } as EventDto | any)
+    if(!!props.routerProps.location.state) {
+      console.debug('yo da')
+      setEvent({
+        ...props.routerProps.location.state,
+      } as EventDto)
+    } else {
+      console.debug('yo ne')
+      fetchData()
+    }
     return () => {}
   }, [fetch]);
 
