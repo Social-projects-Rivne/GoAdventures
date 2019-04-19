@@ -96,14 +96,6 @@ export const getOwnerEventList = async (
     });
 };
 
-export const getEventData = async (): Promise<AxiosResponse> =>
-  await axios.get(`${serverUrl}/profile/getevent`, {
-    headers: {
-      'Authorization': `Bearer ${cookies.get('tk879n')}`,
-      'Content-Type': 'application/json'
-    }
-  });
-
 export const deleteEvent = async (data: number): Promise<any> =>
   await axios.delete(`${serverUrl}/event/delete`, {
     headers: {
@@ -198,13 +190,13 @@ export const createEvent = async (data: any): Promise<string> => {
 };
 
 export const getEventDetail = async (topic: any): Promise<EventDto | any> => {
-  return await axios.get(
-    `${serverUrl}/event/event-detail/${topic}`,
-  ).then((res: AxiosResponse<EventDto>) => {
-    console.debug(res.data);
-    return res.data;
-
-  }).catch((error) => {
-    return error;
-  });
+  return await axios
+    .get(`${serverUrl}/event/event-detail/${topic}`)
+    .then((res: AxiosResponse<EventDto>) => {
+      console.debug(res.data);
+      return res.data;
+    })
+    .catch((error) => {
+      return error;
+    });
 };
