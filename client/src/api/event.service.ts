@@ -2,6 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 import { cookies } from './cookies.service';
 import { EventDto } from '../interfaces/Event.dto';
 import { serverUrl } from './url.config';
+import errorHandle from './error.service';
 
 export const getEventList = async (
   nextPage?: string | null,
@@ -19,17 +20,13 @@ export const getEventList = async (
     })
     .then(
       (res: AxiosResponse<EventDto[]>): any => {
-        if (res.status >= 200 && res.status <= 300) {
-          sessionStorage.setItem('nextpage', res.headers.nextpage);
-          return res.data;
-        } else {
-          return { responseStatus: res.status.toString(10) };
-        }
+        sessionStorage.setItem('nextpage', res.headers.nextpage);
+        return res.data;
       }
     )
     .catch((error) => {
       console.debug(error);
-      return error;
+      return errorHandle(error);
     });
 };
 

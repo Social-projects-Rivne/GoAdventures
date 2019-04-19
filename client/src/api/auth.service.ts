@@ -3,6 +3,7 @@ import { AxiosResponse } from 'axios';
 import { cookies } from './cookies.service';
 import { UserDto } from '../interfaces/User.dto';
 import { serverUrl } from './url.config';
+import errorHandle from './error.service';
 
 const currentDate: Date = new Date();
 const expiresIn: Date = new Date(
@@ -75,22 +76,14 @@ export const confirmAccount = async (data: any): Promise<string> => {
     });
 };
 
-export const sentRecoveryEmail = async (data: any): Promise<boolean> => {
+export const sentRecoveryEmail = async (data: any): Promise<any> => {
   return await axios
     .get(`${serverUrl}/auth/recovery${data}`, {
       headers: { 'Content-Type': 'application/text' }
     })
-    .then((res) => {
-      if (res.status === 200) {
-        console.log('email recovery sent');
-        return true;
-      } else {
-        return false;
-      }
-    })
     .catch((error) => {
       console.debug(error);
-      return false;
+      return errorHandle(error);
     });
 };
 
