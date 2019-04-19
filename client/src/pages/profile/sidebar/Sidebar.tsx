@@ -6,7 +6,7 @@ import { ProfileContext } from '../../../context/profile.context';
 import { UserDto } from '../../../interfaces/User.dto';
 import avatar from '../images/Person.png';
 import './Sidebar.scss';
-import { getUserData, uploadAvatar } from '../../../api/user.service';
+import { uploadAvatar } from '../../../api/user.service';
 
 interface SidebarState {
   userProfile: UserDto;
@@ -17,7 +17,7 @@ interface SidebarState {
   };
 
 }
-const cookies: Cookies = new Cookies();
+
 class Sidebar extends React.Component<UserDto, SidebarState> {
 
   fileInput: any;
@@ -39,17 +39,11 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
     this.uploadHandler = this.uploadHandler.bind(this);
     this.fileSelectHandler = this.fileSelectHandler.bind(this);
   }
-  // public componentDidMount() {
-  //   getUserData().then((response: AxiosResponse<UserDto>) =>
-  //     this.setState({ userProfile: { ...response.data } })
-  //   )
-  // }
-  public componentDidUpdate(prevProps: any) {
-    if (Object.is(prevProps, this.props) === false) {
-      console.debug("did update",{...this.props});
-      this.setState({ userProfile: { ...this.props } });
-    }
+ 
+  componentWillReceiveProps(newProps:any) { 
+   this.setState({userProfile:newProps})
   }
+  
 
   public clearErrorMessage() {
     this.setState({
@@ -65,10 +59,10 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
       }) : null;
   }
 
-  public uploadHandler() {
+  async uploadHandler() {
     const formdata: FormData = new FormData();
     formdata.set('file', this.state.avatar);
-     uploadAvatar(formdata)
+     await uploadAvatar(formdata)
      .then(response => {
       this.setState({
         userProfile: {

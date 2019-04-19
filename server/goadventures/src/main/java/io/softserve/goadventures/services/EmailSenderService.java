@@ -66,7 +66,7 @@ public class EmailSenderService {
         InternetAddress toAddress = new InternetAddress(email);
         msg.setRecipient(Message.RecipientType.TO,toAddress);
         msg.setSubject("Event starts soon");
-        msg.setContent(contentBuilder.eventEmailNotification(fullName,eventTopic,startDate, location, eventDescription),"text/html");
+        msg.setContent(contentBuilder.eventEmailNotification(fullName,eventTopic,startDate, location, eventDescription),"text/html;charset=Windows-1251");
         closeTransport();
     }
 
