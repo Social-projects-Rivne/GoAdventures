@@ -46,7 +46,7 @@
   background-color: transparent;
   color: whitesmoke;
   font-size: large;
-  width: 100%;
+  width: 99%;
   border-right: 0ch;
   border-left: 0ch;
   text-align: left;
@@ -54,11 +54,7 @@
   -webkit-transition-duration: 0.2s; /* Safari */
   transition-duration: 0.2s;
 }
-// #sidebarBtn:hover{
-//   background-color: white; 
-//   color: black; 
-//   border: 2px solid blueviolet;
-// }
+
 #sidebarBtn:hover{ 
   border-left: 10px solid blueviolet;
 }

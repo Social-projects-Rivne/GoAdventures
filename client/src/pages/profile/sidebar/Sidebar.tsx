@@ -17,7 +17,6 @@ interface SidebarState {
   };
 
 }
-
 class Sidebar extends React.Component<UserDto, SidebarState> {
 
   fileInput: any;
@@ -106,7 +105,7 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
                   />
                   <button
                     className="btn btn-success changeAvatarBtn"
-                    onClick={() => this.fileInput.click()} > Change avatar
+                    onClick={() => this.fileInput.click()} > {(this.state.userProfile.avatarUrl!== undefined && this.state.userProfile.avatarUrl!== '') ? <div>Update avatar</div> : <div>Change avatar</div>}
                   </button>
                   <button
                     style={this.state.avatar == '' ? { display: 'none' } : { display: 'flex' }}

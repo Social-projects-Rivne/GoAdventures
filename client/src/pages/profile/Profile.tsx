@@ -30,7 +30,6 @@ interface ProfileState {
 
 }
 
-//const cookies: Cookies = new Cookies();
 export class Profile extends Component<UserDto, ProfileState> {
   fileInput: any;
   private editFormInputSettings: InputSettings[] = [
@@ -183,11 +182,11 @@ export class Profile extends Component<UserDto, ProfileState> {
           <div className='sidebar'>
             <Sidebar {...this.state.userProfile} />
           </div>
-          <div className='Profile__content'>
+          {/* <div className='Profile__content'> */}
             {
 
               this.state.choose === 'events'
-                ? <div className='container page-container'> 
+                ? <div className='container page-container orestgay'> 
                   <ShowEvents {...this.state.userEventList} />
                   </div>
                 : (this.state.choose === 'edit-profile'
@@ -229,7 +228,7 @@ export class Profile extends Component<UserDto, ProfileState> {
                 )
             }
           </div>
-        </div>
+        {/* </div> */}
       </ProfileContext.Provider>
 
     );
