@@ -8,7 +8,10 @@ import {
   deleteEvent,
   isOwner,
   closeEvent,
-  openEvent
+  openEvent,
+  isSubscribe,
+  subscribe,
+  unSubscribe
 } from '../../../api/event.service';
 import { Feedback, Gallery } from '../../../components';
 import { commentsSchema } from '../../../validationSchemas/commentValidation';
