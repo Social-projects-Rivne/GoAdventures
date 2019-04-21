@@ -11,6 +11,7 @@ import { uploadAvatar } from '../../../api/user.service';
 interface SidebarState {
   userProfile: UserDto;
   avatar: string | Blob;
+  tempAvatar: string | Blob;
   errorMesage: {
     publicError: string;
 
@@ -24,6 +25,7 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
     super(props);
     this.state = {
       avatar: '',
+      tempAvatar: '',
       errorMesage: {
         publicError: '',
       },
@@ -38,11 +40,10 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
     this.uploadHandler = this.uploadHandler.bind(this);
     this.fileSelectHandler = this.fileSelectHandler.bind(this);
   }
- 
-  componentWillReceiveProps(newProps:any) { 
-   this.setState({userProfile:newProps})
+
+  componentWillReceiveProps(newProps: any) {
+    this.setState({ userProfile: newProps })
   }
-  
 
   public clearErrorMessage() {
     this.setState({
@@ -61,18 +62,18 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
   async uploadHandler() {
     const formdata: FormData = new FormData();
     formdata.set('file', this.state.avatar);
-     await uploadAvatar(formdata)
-     .then(response => {
-      this.setState({
-        userProfile: {
-          ...this.state.userProfile,
-          avatarUrl: response.data,
-         
-        }
-      });
-      console.debug('avatar uploaded',this.state.userProfile.avatarUrl);
-    
-    })
+    await uploadAvatar(formdata)
+      .then(response => {
+        this.setState({
+          userProfile: {
+            ...this.state.userProfile,
+            avatarUrl: response.data,
+
+          }
+        });
+        console.debug('avatar uploaded', this.state.userProfile.avatarUrl);
+
+      })
       .catch((err) => {
         this.setState({ errorMesage: { ...err.response.data } }, () => {
           window.setTimeout(() => {
@@ -105,24 +106,22 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
                   />
                   <button
                     className="btn btn-success changeAvatarBtn"
-                    onClick={() => this.fileInput.click()} > {(this.state.userProfile.avatarUrl!== undefined && this.state.userProfile.avatarUrl!== '') ? <div>Update avatar</div> : <div>Change avatar</div>}
+                    onClick={() => this.fileInput.click()} > {(this.state.userProfile.avatarUrl !== undefined && this.state.userProfile.avatarUrl !== '') ? <div>Update avatar</div> : <div>Change avatar</div>}
                   </button>
                   <button
                     style={this.state.avatar == '' ? { display: 'none' } : { display: 'flex' }}
                     className="btn btn-warning"
-                    //onClick={this.uploadHandler}
-                    
-                  onClick={async () => {                   //доробити контекст
-                    
-                    await this.uploadHandler();
-                    if (this.state.userProfile.avatarUrl !== undefined) {
-                      setAvatar(this.state.userProfile.avatarUrl)
-                      
-                    }
-                    
-                  }
+                    onClick={
 
-                  }
+                      async () => {
+                        await this.uploadHandler();
+                        if (this.state.userProfile.avatarUrl !== undefined) {
+                          setAvatar(this.state.userProfile.avatarUrl)
+                        }
+
+                      }
+                    }
+
                   >Upload</button>
                 </div>
                 <div className="Errors-messages avtErrorsWraper">

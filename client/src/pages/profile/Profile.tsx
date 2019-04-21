@@ -1,6 +1,5 @@
 import { Cookies, withCookies } from 'react-cookie';
 import React, { Component, CSSProperties, ChangeEvent } from 'react';
-
 import { changeUserData, getUserData } from '../../api/user.service';
 import { Dialog, Content } from '../../components';
 import { InputSettings } from '../../components/dialog-window/interfaces/input.interface';
@@ -11,9 +10,7 @@ import AccountOverwiew from './accountOverview/AccountOverview';
 import './Profile.scss';
 import ShowEvents from './showEvents/ShowEvents';
 import Sidebar from './sidebar/Sidebar';
-import avatar from './images/Person.png';
 import axios, { AxiosResponse } from 'axios';
-import { serverUrl } from '../../api/url.config';
 
 interface ProfileState {
   userProfile: UserDto;
@@ -26,7 +23,8 @@ interface ProfileState {
   togleEditProfile: () => void;
   togleMyEvents: () => void;
   toogleAccountOverView: () => void;
-  setAvatar:(url: string) => void;
+  setAvatar: (url: string) => void;
+  isShowModal: boolean;
 
 }
 
@@ -86,6 +84,7 @@ export class Profile extends Component<UserDto, ProfileState> {
     super(props);
 
     this.state = {
+      isShowModal: false,
       errorMesage: {
         publicError: '',
       },
@@ -123,17 +122,16 @@ export class Profile extends Component<UserDto, ProfileState> {
 
         console.debug(this.state.choose)
       },
-      setAvatar:(avatar) => {
-        console.debug("avatar setAvatar",avatar)
+      setAvatar: (avatar) => {
         this.setState({
-          userProfile:{ ...this.state.userProfile, avatarUrl:avatar}
+          userProfile: { ...this.state.userProfile, avatarUrl: avatar }
         })
         console.debug("profile state", this.state.userProfile)
       }
-      
+
 
     };
-    
+    this.openModalHandler = this.openModalHandler.bind(this);
     this.clearErrorMessage = this.clearErrorMessage.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
 
@@ -146,10 +144,11 @@ export class Profile extends Component<UserDto, ProfileState> {
           userProfile: {
             ...res.data
           },
-          errorMesage: { publicError: 'saved successfully' } }, () => {
-            window.setTimeout(() => {
-              this.setState({ errorMesage: { publicError: '' } })
-            }, 3500)
+          errorMesage: { publicError: 'saved successfully' }
+        }, () => {
+          window.setTimeout(() => {
+            this.setState({ errorMesage: { publicError: '' } })
+          }, 3500)
         });
       })
       .catch((err) => {
@@ -175,6 +174,12 @@ export class Profile extends Component<UserDto, ProfileState> {
     }
     );
   }
+  public openModalHandler() {
+    this.setState({ isShowModal: true });
+  }
+  public closeModalWindow() {
+    this.setState({ isShowModal: false });
+  }
   public render() {
     return (
       <ProfileContext.Provider value={this.state}>
@@ -183,17 +188,22 @@ export class Profile extends Component<UserDto, ProfileState> {
             <Sidebar {...this.state.userProfile} />
           </div>
           {/* <div className='Profile__content'> */}
-            {
+          {
 
-              this.state.choose === 'events'
-                ? <div className='container page-container orestgay'> 
-                  <ShowEvents {...this.state.userEventList} />
-                  </div>
-                : (this.state.choose === 'edit-profile'
-                  ?  <div className='container page-container'>
-                     <Dialog
+            this.state.choose === 'events'
+              ? <div className='container page-container'>
+                <ShowEvents {...this.state.userEventList} />
+              </div>
+              : (this.state.choose === 'edit-profile'
+                ? <div className='container page-container'>
+                  <Dialog
                     validationSchema={editProfileSchema}
                     handleSubmit={this.handleSubmit}
+                    // handleSubmit={
+                    //   this.state.isShowModal === true
+                    //     ? <div>Tipo modalka </div>
+                    //     : null
+                    // }
                     inputs={this.editFormInputSettings}
                     button_text='Update'
                     header='Edit your profile'
@@ -218,16 +228,17 @@ export class Profile extends Component<UserDto, ProfileState> {
                       </div>
 
                     }
-                  />
-                  </div>
-                  : (this.state.choose === 'account-overview'
-                    ? <AccountOverwiew {...this.state.userProfile} />
-                    : null
 
-                  )
+                  />
+                </div>
+                : (this.state.choose === 'account-overview'
+                  ? <AccountOverwiew {...this.state.userProfile} />
+                  : null
+
                 )
-            }
-          </div>
+              )
+          }
+        </div>
         {/* </div> */}
       </ProfileContext.Provider>
 

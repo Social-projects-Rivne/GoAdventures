@@ -38,13 +38,9 @@ public class ImageController {
     public ResponseEntity<?> uploadAvatar(@RequestHeader(value = "Authorization") String token,
                                           @RequestParam("file") MultipartFile file) throws UserNotFoundException {
 
-        try {
-            if (!fileStorageService.checkFileSize(file)) {
-                throw new FileSizeException();
+        if (!fileStorageService.checkFileSize(file)) {
+            return ResponseEntity.status(403).body(new ErrorMessageManager("Maximum file size is 5mb!","Error"));
 
-            }
-        }catch (FileSizeException err){
-            return ResponseEntity.status(403).body(new ErrorMessageManager("Maximum file size is 5mb!",err.toString()));
         }
         User user = userService.getUserByEmail(jwtService.parseToken(token));
         String fileName = null;
@@ -54,16 +50,11 @@ public class ImageController {
             return ResponseEntity.status(403).body(new ErrorMessageManager("Something went wrong!",e.toString()));
         }
 
-        try {
-            if(!(fileStorageService.checkFileType(fileName))){
-                throw new WrongImageTypeException();
-            }
-        } catch (WrongImageTypeException e) {
-           fileStorageService.deleteFileByFileName(fileName);
-           logger.error("Could not be uploaded, it is not an image!");
-           return ResponseEntity.status(403).body(new ErrorMessageManager("Could not be uploaded, it is not an image!",e.toString()));
+        if(!(fileStorageService.checkFileType(fileName))){
+            fileStorageService.deleteFileByFileName(fileName);
+            logger.error("Could not be uploaded, it is not an image!");
+            return ResponseEntity.status(403).body(new ErrorMessageManager("Could not be uploaded, it is not an image!","Error"));
         }
-
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/downloadAvatar/")
                 .path(fileName)
