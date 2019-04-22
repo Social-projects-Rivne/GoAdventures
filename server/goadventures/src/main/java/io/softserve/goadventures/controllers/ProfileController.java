@@ -106,7 +106,7 @@ public class ProfileController {
     public ResponseEntity<?> getAllEvents(Pageable eventPageable, @RequestHeader("Authorization") String token) {
         logger.info("[GET-ALL-EVENTS]");
         User user = userService.getUserByEmail(jwtService.parseToken(token));
-        Page<Event> eventsPage = eventService.getAllEventsByOwner(eventPageable, user.getId());
+        Page<Event> eventsPage = eventService.getEventsByOwnerAndParticipants(eventPageable, user.getId());
 
         if(eventsPage != null) {
             return new ResponseEntity<Slice<EventDTO>>(eventDtoBuilder.convertToDto(eventsPage), HttpStatus.OK);
