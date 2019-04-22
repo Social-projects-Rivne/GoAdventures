@@ -202,6 +202,7 @@ public class EventController {
             Event event = eventService.getEventById(eventId);
             if (event != null) {
                 modelMapper.map(updatedEvent, event);
+                event.setCategory(categoryRepository.findByCategoryName(updatedEvent.getCategory()));
                 return ResponseEntity.ok().body(modelMapper.map(eventService.updateEvent(event), EventDTO.class));
             } else {
                 throw new IOException("Event does not exist");
