@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -29,6 +31,7 @@ public class Feedback {
 
   @JsonBackReference(value = "eventId")
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+  @OnDelete(action = OnDeleteAction.CASCADE)
   @JoinColumn(name = "events_id", nullable = false, referencedColumnName = "id")
   private Event eventId;
 

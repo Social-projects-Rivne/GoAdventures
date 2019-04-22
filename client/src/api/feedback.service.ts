@@ -28,5 +28,10 @@ export const addFeedbackRequest = async (
     headers: {
       Authorization: `Bearer ${cookies.get('tk879n')}`
     }
+  }).then(async (res: AxiosResponse<any>) => {
+    return await res.data;
+  }).catch((err: AxiosError) => {
+    console.debug(err);
+    return errorHandle(err);
   });
 };

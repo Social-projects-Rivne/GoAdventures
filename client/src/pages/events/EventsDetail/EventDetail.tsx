@@ -48,7 +48,8 @@ export class EventDetail extends Component<any, any> {
     this.state = {
       eventProps: { ...this.props },
       isOwner: false,
-      isSubs: true
+      isSubs: true,
+      newEventFeedback: []
     };
     this.handleDelete = this.handleDelete.bind(this);
 
@@ -312,11 +313,16 @@ export class EventDetail extends Component<any, any> {
                     validateOnBlur={true}
                     validateOnChange={true}
                     onSubmit={(values, actions) => {
-                      addFeedbackRequest({
-                        eventId: this.state.eventProps.event.id,
-                        comment: values.comment
+                      this.setState({
+                        newEventFeedback: this.state.newEventFeedback.unshift(
+                          addFeedbackRequest({
+                            eventId: this.state.eventProps.event.id,
+                            comment: values.comment
+                          })
+                        )
                       });
-                      actions.setSubmitting(false);
+                      console.debug(this.state.newEventFeedback);
+                      this.state.newEventFeedback.actions.setSubmitting(false);
                       actions.resetForm();
                     }}
                     render={(props: FormikProps<FormValue>) => (
@@ -354,7 +360,12 @@ export class EventDetail extends Component<any, any> {
                 </div>
                 <hr className='my-4' />
                 <div>
-                  <Feedback {...{ eventId: this.state.eventProps.event.id }} />
+                  <Feedback
+                    {...{
+                      eventId: this.state.eventProps.event.id,
+                      newFeedback: this.state.newEventFeedback
+                    }}
+                  />
                 </div>
               </div>
             </div>

@@ -1,15 +1,19 @@
-.Comment-container {
+.Feedback-container {
     width: auto;
     height: 300px;
     max-height: 320px;
 
-    & .Comment__content {
-
+    & .Feedback__content {
+        height: inherit;
         overflow-x: hidden;
         overflow-y: auto;
 
+        span {
+            display: block;
+            word-break: break-all;
+        }
 
-        & .Comment__wrapper {
+        & .Feedback__wrapper {
             max-width: 350px;
             overflow: hidden;
             font-size: 0.875rem;
