@@ -49,7 +49,7 @@ export class EventDetail extends Component<any, any> {
       eventProps: { ...this.props },
       isOwner: false,
       isSubs: true,
-      newEventFeedback: []
+      newEventFeedback: {}
     };
     this.handleDelete = this.handleDelete.bind(this);
 
@@ -71,14 +71,12 @@ export class EventDetail extends Component<any, any> {
     isSubscribe(this.state.eventProps.event.id)
       .then(
         (res: AxiosResponse): any => {
-          console.warn(res.status);
           this.setState({
             isSubs: true
           });
         }
       )
       .catch((error: any) => {
-        console.log('orest ska' + error);
         this.setState({
           isSubs: false
         });
@@ -131,8 +129,6 @@ export class EventDetail extends Component<any, any> {
         }
       );
     }
-
-    console.log(this.state.isSubs);
   }
 
   public handleClose() {
@@ -312,17 +308,14 @@ export class EventDetail extends Component<any, any> {
                     enableReinitialize={true}
                     validateOnBlur={true}
                     validateOnChange={true}
-                    onSubmit={(values, actions) => {
+                    onSubmit={async (values, actions): Promise<void> => {
                       this.setState({
-                        newEventFeedback: this.state.newEventFeedback.unshift(
-                          addFeedbackRequest({
-                            eventId: this.state.eventProps.event.id,
-                            comment: values.comment
-                          })
-                        )
+                        newEventFeedback: await addFeedbackRequest({
+                          eventId: this.state.eventProps.event.id,
+                          comment: values.comment
+                        })
                       });
-                      console.debug(this.state.newEventFeedback);
-                      this.state.newEventFeedback.actions.setSubmitting(false);
+                      actions.setSubmitting(false);
                       actions.resetForm();
                     }}
                     render={(props: FormikProps<FormValue>) => (

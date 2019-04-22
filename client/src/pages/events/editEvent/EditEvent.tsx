@@ -64,7 +64,6 @@ export const EditEvent = (props: EditEvent) => {
   const [fetch, setFetch] = useState(false);
 
   const update = async () => {
-    console.debug(description);
     props.setIsLoading(true);
     const response = await updateEvent({
       ...props.event,

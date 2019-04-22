@@ -6,7 +6,7 @@ import { ErrorMessageComponent } from '../errorMessage/ErrorMessageComponent';
 
 interface FeedbackProps {
   eventId: number;
-  newFeedback?: FeedbackSchema[];
+  newFeedback: FeedbackSchema;
 }
 
 interface FeedbackSchema {
@@ -31,6 +31,14 @@ export const Feedback = (props: FeedbackProps): JSX.Element => {
       setFeedbackData([...response] as FeedbackSchema[]);
     }
   }
+
+  useEffect(() => {
+    if (Object.keys(props.newFeedback).length > 0) {
+      setFeedbackData([...feedbackData, props.newFeedback]);
+    }
+    return () => {};
+  }, [props.newFeedback]);
+
   useEffect(() => {
     setIsLoading(true);
     getFeedback();
@@ -50,7 +58,6 @@ export const Feedback = (props: FeedbackProps): JSX.Element => {
           <ErrorMessageComponent {...{ errorMessage: [error.errorMessage] }} />
         ) : null}
         {feedbackData.map((feedback: any, index: number) => {
-          console.debug(feedback);
           return (
             <div
               key={componentUniKey + index}

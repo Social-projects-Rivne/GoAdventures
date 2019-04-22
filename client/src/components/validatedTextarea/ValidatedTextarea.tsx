@@ -24,7 +24,6 @@ export function ValidatedTextarea(props: ValidatedTextareaProps) {
         validateOnBlur={true}
         validateOnChange={true}
         onSubmit={(value: any, actions) => {
-          console.debug('Formic on submit ', value);
           props.handleSubmit(value.textarea);
           actions.setSubmitting(false);
         }}

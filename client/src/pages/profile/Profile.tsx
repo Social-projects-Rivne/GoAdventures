@@ -115,20 +115,17 @@ export class Profile extends Component<UserDto, ProfileState> {
         this.setState((state) => ({
           choose: 'edit-profile'
         }));
-        console.debug(this.state.choose);
       },
       togleMyEvents: () => {
         this.setState((state) => ({
           choose: 'events'
         }));
-        console.debug(this.state.choose);
       },
       toogleAccountOverView: () => {
         this.setState((state) => ({
           choose: 'account-overview'
         }));
 
-        console.debug(this.state.choose);
       }
     };
     this.clearErrorMessage = this.clearErrorMessage.bind(this);
@@ -139,7 +136,6 @@ export class Profile extends Component<UserDto, ProfileState> {
     // change user data
     return changeUserData({ ...data })
       .then((res) => {
-        console.debug(res);
         this.setState({
           userProfile: {
             ...res.data
@@ -152,7 +148,6 @@ export class Profile extends Component<UserDto, ProfileState> {
       });
   }
   public fileSelectHandler(event: ChangeEvent<HTMLInputElement>): void {
-    console.debug(event.target.files);
     !!event.target.files
       ? this.setState({
           avatar: event.target.files[0]
@@ -172,7 +167,6 @@ export class Profile extends Component<UserDto, ProfileState> {
     });
   }
   public render() {
-    console.debug(this.state.userProfile);
     return (
       <ProfileContext.Provider value={this.state}>
         <div className='profile-page'>

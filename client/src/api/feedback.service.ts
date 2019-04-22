@@ -24,14 +24,17 @@ export const getFeedbackRequest = async (eventId: number): Promise<any> => {
 export const addFeedbackRequest = async (
   feedback: FeedbackDTO
 ): Promise<any> => {
-  return await axios.post(`${serverUrl}/feedback/add-feedback/`, feedback, {
-    headers: {
-      Authorization: `Bearer ${cookies.get('tk879n')}`
-    }
-  }).then(async (res: AxiosResponse<any>) => {
-    return await res.data;
-  }).catch((err: AxiosError) => {
-    console.debug(err);
-    return errorHandle(err);
-  });
+  return await axios
+    .post(`${serverUrl}/feedback/add-feedback/`, feedback, {
+      headers: {
+        Authorization: `Bearer ${cookies.get('tk879n')}`
+      }
+    })
+    .then((res: AxiosResponse<any>) => {
+      return res.data;
+    })
+    .catch((err: AxiosError) => {
+      console.debug(err);
+      return errorHandle(err);
+    });
 };
