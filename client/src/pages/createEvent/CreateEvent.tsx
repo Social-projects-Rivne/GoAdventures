@@ -85,9 +85,11 @@ export class CreateEvent extends Component<any, any> {
     });
   }
 
-  public handleCategory(Category: any) {
-    console.log("Category " + Category);
-    this.setState({ newEvent: { ...this.state.newEvent, category: Category } });
+  public handleCategory(setCategory: any) {
+    this.setState({
+      newEvent: { ...this.state.newEvent, category: setCategory }
+    });
+    console.log("pizda syka " + this.state);
   }
 
   public handleStartDate(StartDate: any) {
@@ -137,11 +139,9 @@ export class CreateEvent extends Component<any, any> {
   public handleSubmit(event: any) {
     if (this.state.newEvent.endDate === 0) {
       createEvent({ ...this.state.newEvent });
-      console.debug(this.state);
       this.setState({ redirect: true });
     } else if (this.state.newEvent.startDate < this.state.newEvent.endDate) {
       createEvent({ ...this.state.newEvent });
-      console.debug(this.state);
       this.setState({ redirect: true });
     } else {
       console.log("startDate > endDate ");
@@ -246,7 +246,7 @@ export class CreateEvent extends Component<any, any> {
             Choose category for the event
           </label>
           <div className="col-sm-8">
-            <DropDown id="Category" onCategoryChange={this.handleCategory} />
+            <DropDown onCategoryChange={this.handleCategory} />
           </div>
         </div>
         <div className="form-group row">

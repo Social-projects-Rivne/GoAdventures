@@ -1,13 +1,10 @@
-.parallax {
-  /* The image used */
-  background-image: url("https://www.wallpaperwolf.com/wallpapers/desktop-wallpapers/hd/download/vw-beach-trip-0283-hd.png");
+.card-img-top {
+  height: 15rem;
+}
+h2 {
+  text-align: center;
+  font-family: "Archivo Black", sans-serif;
 
-  /* Full height */
-  height: 100%;
-
-  /* Create the parallax scrolling effect */
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  text-transform: uppercase;
+  color: #593196;
 }

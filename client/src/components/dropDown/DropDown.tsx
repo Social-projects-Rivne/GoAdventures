@@ -2,8 +2,13 @@ import axios from "axios";
 import React, { Component, ChangeEvent } from "react";
 import { DropDownSettings } from "./dropDown.interface";
 
-export class DropDown extends Component<any, DropDownSettings> {
-  constructor(props: DropDownSettings) {
+interface DropDownProps {
+  onCategoryChange: any;
+  customClassName?: string;
+}
+
+export class DropDown extends Component<DropDownProps, DropDownSettings> {
+  constructor(props: DropDownProps) {
     super(props);
     this.state = {
       categories: [],
@@ -26,7 +31,10 @@ export class DropDown extends Component<any, DropDownSettings> {
   }
 
   public handleChange(e: ChangeEvent<HTMLSelectElement>) {
-    if (!!this.props.onChangeHandle) this.props.onChangeHandle(e.target.value);
+    console.warn(this.props.onCategoryChange);
+    if (!!this.props.onCategoryChange) {
+      this.props.onCategoryChange(e.target.value);
+    }
   }
 
   public render() {
