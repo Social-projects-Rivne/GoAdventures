@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 //import com.google.inject.internal.util.Lists;
+import io.softserve.goadventures.dto.CategoryDto;
 import io.softserve.goadventures.dto.EventDTO;
 import io.softserve.goadventures.dto.GalleryDto;
 import io.softserve.goadventures.services.EventDtoBuilder;
@@ -86,6 +87,7 @@ public class EventControllerTest {
     private User user;
     private User userConfirm;
     private String token;
+    CategoryDto categoryDto = new CategoryDto( "first");
     private static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
     private static final MediaType TEXT_PLAIN = new MediaType(MediaType.TEXT_PLAIN.getType(), MediaType.TEXT_PLAIN.getSubtype(), Charset.forName("ISO-8859-1"));
 
@@ -110,7 +112,7 @@ public class EventControllerTest {
         Event first = new Event("topic1", "", "", "location", 25.33, 24.33, "description", category);
         first.setId(1);
         GalleryDto galleryDTO = new GalleryDto();
-        EventDTO firstDTO = new EventDTO(1, "topic1", "", "", "location", 25.33, 24.33, "description", 1, "first", galleryDTO);
+        EventDTO firstDTO = new EventDTO(1, "topic1", "", "", "location", 25.33, 24.33, "description", 1, categoryDto, galleryDTO);
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
@@ -118,7 +120,7 @@ public class EventControllerTest {
         String requestJson=ow.writeValueAsString(firstDTO);
 
         when(modelMapper.map(firstDTO, Event.class)).thenReturn(first);
-        when(categoryRepository.findByCategoryName(firstDTO.getCategory())).thenReturn(category);
+        when(categoryRepository.findByCategoryName(firstDTO.getCategory().getCategoryName())).thenReturn(category);
 
         this.mockMvc.perform(post("/event/create/").header("Authorization", "ghjgjh").contentType(APPLICATION_JSON_UTF8)
                 .content(requestJson))
@@ -153,8 +155,8 @@ public class EventControllerTest {
         first.setId(1);
         second.setId(2);
         GalleryDto galleryDTO = new GalleryDto();
-        EventDTO firstDTO = new EventDTO(1, "topic1", "", "", "location", 25.33, 24.33, "description", 1, "first", galleryDTO);
-        EventDTO secondDTO = new EventDTO(2, "topic2", "", "", "location", 25.33, 24.33, "description", 1, "second", galleryDTO);
+        EventDTO firstDTO = new EventDTO(1, "topic1", "", "", "location", 25.33, 24.33, "description", 1, categoryDto, galleryDTO);
+        EventDTO secondDTO = new EventDTO(2, "topic2", "", "", "location", 25.33, 24.33, "description", 1, categoryDto, galleryDTO);
 
         List<Event> events = new ArrayList<>();
         events.add(first);
@@ -245,7 +247,7 @@ public class EventControllerTest {
         int id = 1;
         first.setId(id);
         GalleryDto galleryDTO = new GalleryDto();
-        EventDTO firstDTO = new EventDTO(1, "topic1", "", "", "location", 25.33, 24.33, "description", 1, "first", galleryDTO);
+        EventDTO firstDTO = new EventDTO(1, "topic1", "", "", "location", 25.33, 24.33, "description", 1, categoryDto, galleryDTO);
 
         when(eventService.getEventById(id)).thenReturn(first);
         when(eventService.updateEvent(first)).thenReturn(first);
@@ -272,7 +274,7 @@ public class EventControllerTest {
     public void updateEvent_EventDoesNotExist_ShouldReturnResponseEntity() throws Exception{
         int id = 1;
         GalleryDto galleryDTO = new GalleryDto();
-        EventDTO firstDTO = new EventDTO(1, "topic1", "", "", "location", 25.33, 24.33, "description", 1, "first", galleryDTO);
+        EventDTO firstDTO = new EventDTO(1, "topic1", "", "", "location", 25.33, 24.33, "description", 1, categoryDto, galleryDTO);
 
         when(eventService.getEventById(id)).thenReturn(null);
 

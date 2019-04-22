@@ -1,4 +1,5 @@
 import { GalleryDto } from './Gallery.dto';
+import { CategoryDto } from './Category.dto';
 import { UserDto } from './User.dto';
 
 export interface EventDto {
@@ -10,7 +11,7 @@ export interface EventDto {
   description: string | undefined;
   startDate: string | undefined;
   endDate: string | undefined;
-  category: string | undefined;
+  category: CategoryDto;
   statusId: number;
   participants: UserDto[] | undefined;
   gallery: GalleryDto;

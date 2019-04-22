@@ -64,7 +64,7 @@ public class EventController {
   public ResponseEntity<String> createEvent(@RequestHeader(value = "Authorization") String token,
                                             @RequestBody EventDTO event) {
     Event mappedEvent = modelMapper.map(event, Event.class);
-    Category category = categoryRepository.findByCategoryName(event.getCategory());
+    Category category = categoryRepository.findByCategoryName(event.getCategory().getCategoryName());
     System.out.println(mappedEvent.getTopic());
     mappedEvent.setCategory(category);
     mappedEvent.setStatusId(EventStatus.OPENED.getEventStatus());

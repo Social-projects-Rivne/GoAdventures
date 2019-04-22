@@ -1,5 +1,6 @@
 package io.softserve.goadventures.controllers;
 
+import io.softserve.goadventures.dto.CategoryDto;
 import io.softserve.goadventures.dto.EventDTO;
 import io.softserve.goadventures.dto.GalleryDto;
 import io.softserve.goadventures.dto.UserDto;
@@ -60,11 +61,12 @@ public class ProfileControllerTest {
     private static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
 
     private Category category = new Category( "Skateboarding");
+    private CategoryDto categoryDto = new CategoryDto( "Skateboarding");
     private Event first = new Event("topic1", "", "", "location", 25.33, 24.33, "description", category);
     private Event second = new Event("topic2", "", "", "location", 25.33, 24.33, "description", category);
     private GalleryDto galleryDTO = new GalleryDto();
-    private EventDTO firstDTO = new EventDTO(1, "topic1", "", "", "location", 25.33, 24.33, "description", 1, "first", galleryDTO);
-    private EventDTO secondDTO = new EventDTO(2, "topic2", "", "", "location", 25.33, 24.33, "description", 1, "second", galleryDTO);
+    private EventDTO firstDTO = new EventDTO(1, "topic1", "", "", "location", 25.33, 24.33, "description", 1, categoryDto, galleryDTO);
+    private EventDTO secondDTO = new EventDTO(2, "topic2", "", "", "location", 25.33, 24.33, "description", 1, categoryDto, galleryDTO);
     private User user = new User();
 
     @Before
