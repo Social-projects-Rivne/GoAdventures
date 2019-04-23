@@ -71,26 +71,20 @@ public class ProfileController {
         logger.info("[EDIT-PROFILE-DATA] - updateUser: " + updateUser);
         String newToken;
         User user = userService.getUserByEmail(jwtService.parseToken(authorizationHeader));   //user with old data
-        try {
-            if(!(updateUser.getPassword().equals(""))){
-                if(BCrypt.checkpw(updateUser.getPassword(),user.getPassword())){    //check current pass
-                    logger.info("current password correct");
-                    if(Validator.validatePassword(updateUser.getNewPassword())){
-                        //if valide, set new pass
-                        user.setPassword(BCrypt.hashpw(updateUser.getNewPassword(), BCrypt.gensalt()));
-                        logger.info("password changed, new password:  " + updateUser.getNewPassword());
-                    }
-                }else{
-                    logger.info("wrong password");
-                    throw new InvalidPasswordErrorMessage();
+
+        if(!(updateUser.getPassword().equals(""))){
+            if(BCrypt.checkpw(updateUser.getPassword(),user.getPassword())){    //check current pass
+                logger.info("current password correct");
+                if(Validator.validatePassword(updateUser.getNewPassword())){
+                    //if valide, set new pass
+                    user.setPassword(BCrypt.hashpw(updateUser.getNewPassword(), BCrypt.gensalt()));
+                    logger.info("password changed, new password:  " + updateUser.getNewPassword());
                 }
+            }else{
+                logger.info("wrong password");
             }
-        }catch (InvalidPasswordErrorMessage error){
-            logger.error(error.toString());
-            return ResponseEntity.status(403).body(
-                    new ErrorMessageManager("Current password is wrong!", error.toString())
-            );
         }
+        
         modelMapper.map(updateUser, user);
         userService.updateUser(user);
         newToken = jwtService.createToken(user.getEmail());
