@@ -26,9 +26,8 @@ public class AuthController extends HttpServlet {
     private final MailContentBuilder mailContentBuilder;
 
     @Autowired
-    public AuthController(JWTService jwtService, UserService userService,
-                          GeneratePasswordService passwordService,
-                          MailContentBuilder mailContentBuilder) {
+    public AuthController(JWTService jwtService, UserService userService, GeneratePasswordService passwordService,
+            MailContentBuilder mailContentBuilder) {
         this.jwtService = jwtService;
         this.userService = userService;
         this.passwordService = passwordService;
@@ -96,9 +95,8 @@ public class AuthController extends HttpServlet {
             return ResponseEntity.badRequest().body(null);
         } else {
             User user = userService.getUserByEmail(email);
-            user.setPassword(BCrypt.hashpw(
-                    passwordService.generatePassword(email, mailContentBuilder),
-                    BCrypt.gensalt()));
+            user.setPassword(
+                    BCrypt.hashpw(passwordService.generatePassword(email, mailContentBuilder), BCrypt.gensalt()));
             userService.updateUser(user);
             return ResponseEntity.ok().body(user);
         }

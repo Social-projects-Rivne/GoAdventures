@@ -22,7 +22,7 @@ public class Gallery {
     private int id;
 
     @JsonBackReference
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
     @JoinColumn(name = "events_id", unique = true)
     private Event eventId;
 

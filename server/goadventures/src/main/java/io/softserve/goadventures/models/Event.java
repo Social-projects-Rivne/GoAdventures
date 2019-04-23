@@ -48,8 +48,10 @@ public class Event {
     @Column(name = "status_id")
     private int statusId;
 
-    @JsonManagedReference //TODO it is better to use dto models for json. You need to separate jpa logic from serialization logic.
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, mappedBy = "eventId")
+    @JsonManagedReference // TODO it is better to use dto models for json. You need to separate jpa logic
+                          // from serialization logic.
+    @OneToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE,
+            CascadeType.REFRESH }, mappedBy = "eventId", orphanRemoval = true)
     @JoinColumn(name = "gallery", referencedColumnName = "id")
     private Gallery gallery;
 
@@ -68,7 +70,7 @@ public class Event {
     private User owner;
 
     public Event(String topic, String startDate, String endDate, String location, Double latitude, Double longitude,
-                 String description, Category category) {
+            String description, Category category) {
         setTopic(topic);
         setStartDate(startDate);
         setEndDate(endDate);
@@ -81,28 +83,21 @@ public class Event {
 
     @Override
     public String toString() {
-        return "Event{" + "id=" + id +
-                ", topic='" + topic + '\'' +
-                ", startDate='" + startDate + '\'' +
-                ", endDate='" + endDate + '\'' +
-                ", location='" + location + '\'' +
-                ", latitude='" + latitude + '\'' +
-                ", longitude='" + longitude + '\'' +
-                ", description='" + description + '\'' +
-                ", statusId='" + statusId + '\'' +
-                ", owner='" + owner + '\'' +
-                ", category='" + category.getCategoryName() + '\'' +
-                ", participants='" + participants + '\'' +
-                '}';
+        return "Event{" + "id=" + id + ", topic='" + topic + '\'' + ", startDate='" + startDate + '\'' + ", endDate='"
+                + endDate + '\'' + ", location='" + location + '\'' + ", latitude='" + latitude + '\'' + ", longitude='"
+                + longitude + '\'' + ", description='" + description + '\'' + ", statusId='" + statusId + '\''
+                + ", owner='" + owner + '\'' + ", category='" + category.getCategoryName() + '\'' + ", participants='"
+                + participants + '\'' + '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Event event = (Event) o;
-        return id == event.id &&
-                owner.equals(event.owner);
+        return id == event.id && owner.equals(event.owner);
     }
 
     @Override

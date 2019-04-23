@@ -1,0 +1,28 @@
+.Feedback-container {
+    width: auto;
+    height: 300px;
+    max-height: 320px;
+
+    & .Feedback__content {
+        height: inherit;
+        overflow-x: hidden;
+        overflow-y: auto;
+
+        span {
+            display: block;
+            word-break: break-all;
+        }
+
+        & .Feedback__wrapper {
+            max-width: 350px;
+            overflow: hidden;
+            font-size: 0.875rem;
+            background-color: rgba(255, 255, 255, 0.85);
+            background-clip: padding-box;
+            border: 1px solid rgba(0, 0, 0, 0.1) 5%;
+            box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+    }
+}

@@ -31,7 +31,6 @@ export class Events extends Component<EventDto, EventState> {
   }
   public handleChange(value: string) {
     if (window.location.pathname !== '/events') {
-      // <Link ></Link>
     }
     this.setState({ search: value });
   }
