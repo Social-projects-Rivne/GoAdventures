@@ -1,38 +1,28 @@
 package io.softserve.goadventures.services;
 
 
-import io.softserve.goadventures.models.Category;
 import io.softserve.goadventures.models.Event;
 import io.softserve.goadventures.models.User;
 import io.softserve.goadventures.repositories.EventRepository;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.*;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.hamcrest.Matchers.*;
-import org.springframework.data.domain.Pageable;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 class EventServiceTest {
@@ -47,7 +37,6 @@ class EventServiceTest {
     private static final String topic = "topic";
     private Event event;
     private User user;
-    private MockMvc mockMvc;
 
     @BeforeEach
     void setUp() {

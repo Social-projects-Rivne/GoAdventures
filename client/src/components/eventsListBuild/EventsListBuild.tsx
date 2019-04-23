@@ -9,29 +9,12 @@ export class EventsListBuild extends React.Component<EventDto, any> {
   constructor(props: any) {
     super(props);
     this.state = {
-      redirect: false,
-      category: ""
+      redirect: false
     };
   }
   /**
    * redirect
    */
-
-  public componentDidMount() {
-    console.log("props", this.props.topic);
-    axios
-      .get(`http://localhost:8080/event/categ/${this.props.id}`)
-      .then(res => {
-        const category = res.data;
-        this.setState({ category });
-        console.log("Category ", res.data);
-        console.log("event id ", this.props.id);
-      })
-      .catch(error => {
-        console.debug(error);
-        return error;
-      });
-  }
 
   public redirectTo() {
     this.setState({ redirect: true });
@@ -75,7 +58,7 @@ export class EventsListBuild extends React.Component<EventDto, any> {
           <h5 className="card-title">{this.props.topic}</h5>
 
           <div className="row category">
-            <p>{this.state.category}</p>
+            <p>{this.props.category.categoryName}</p>
           </div>
           <h6 className=" row location"> {this.props.location}</h6>
         </div>

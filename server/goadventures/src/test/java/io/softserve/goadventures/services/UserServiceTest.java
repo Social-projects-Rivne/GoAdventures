@@ -7,12 +7,10 @@ import io.softserve.goadventures.models.User;
 import io.softserve.goadventures.repositories.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -87,7 +85,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void singIn() {
+    public void signIn() {
         when(userRepository.findByEmail(user.getEmail())).thenReturn(user);
 
         User userIn = userService.confirmUser(user.getEmail());
@@ -97,7 +95,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void singOut() {
+    public void signOut() {
         when(userRepository.findByEmail("service@test.com")).thenReturn(user);
 
         userService.singOut("service@test.com");

@@ -24,15 +24,15 @@ import java.io.IOException;
 @RestController
 public class AvatarController {
     private final Logger logger = LoggerFactory.getLogger(AvatarController.class);
-
-    @Autowired
-    private FileStorageService fileStorageService;
+    private final FileStorageService fileStorageService;
     private final UserService userService;
     private final JWTService jwtService;
 
-    public AvatarController(UserService userService, JWTService jwtService) {
+    @Autowired
+    public AvatarController(UserService userService, JWTService jwtService, FileStorageService fileStorageService) {
         this.userService = userService;
         this.jwtService = jwtService;
+        this.fileStorageService = fileStorageService;
     }
 
     @PostMapping(path = "/uploadAvatar", consumes = {"multipart/form-data"})

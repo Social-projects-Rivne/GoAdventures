@@ -69,7 +69,7 @@ public class EventController {
         logger.info("[CREATE-EVENT] - event: " + event);
 
         Event mappedEvent = modelMapper.map(event, Event.class);
-        Category category = categoryRepository.findByCategoryName(event.getCategory());
+        Category category = categoryRepository.findByCategoryName(event.getCategory().getCategoryName());
         mappedEvent.setCategory(category);
         mappedEvent.setStatusId(EventStatus.OPENED.getEventStatus());
 
@@ -202,7 +202,7 @@ public class EventController {
             Event event = eventService.getEventById(eventId);
             if (event != null) {
                 modelMapper.map(updatedEvent, event);
-                event.setCategory(categoryRepository.findByCategoryName(updatedEvent.getCategory()));
+                event.setCategory(categoryRepository.findByCategoryName(updatedEvent.getCategory().getCategoryName()));
                 return ResponseEntity.ok().body(modelMapper.map(eventService.updateEvent(event), EventDTO.class));
             } else {
                 throw new IOException("Event does not exist");
@@ -218,13 +218,6 @@ public class EventController {
     public Iterable<Category> getAllCategory() {
         logger.info("[GET-ALL-CATEGORY]");
         return categoryRepository.findAll();
-    }
-
-    @GetMapping("/categ/{categoryId}")
-    public String getAllCategory(@PathVariable(value = "categoryId") int categoryId) {
-        logger.info("[GET-ALL-CATEGORY] - categoryId: " + categoryId);
-        Category category = categoryRepository.findByEventsId(categoryId);
-        return category.getCategoryName();
     }
 
     @GetMapping("/category/{categoryId}")

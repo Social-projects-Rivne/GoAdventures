@@ -1,6 +1,6 @@
 package io.softserve.goadventures.models;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +15,7 @@ import java.util.Set;
 @Table(name = "category")
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Category{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,7 +24,7 @@ public class Category{
     @Column(name = "category_name")
     private String categoryName;
 
-    @JsonManagedReference //TODO it is better to use dto models for json. You need to separate jpa logic from serialization logic.
+    @JsonIgnore
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private Set<Event> events;
 
