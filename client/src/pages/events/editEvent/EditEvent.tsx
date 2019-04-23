@@ -63,31 +63,30 @@ export const EditEvent = (props: EditEvent) => {
   ]);
   const [fetch, setFetch] = useState(false);
 
+  const update = async () => {
+    props.setIsLoading(true);
+    const response = await updateEvent({
+      ...props.event,
+      category,
+      description,
+      latitude: mapCoordiantes[0],
+      ...eventDialog,
+      ...datepick,
+      gallery,
+      location,
+      longitude: mapCoordiantes[1]
+    } as EventDto);
+    props.setEvent({ ...response });
+  };
+
   useEffect(() => {
     if (fetch) {
-      const update = async () => {
-        props.setIsLoading(true);
-        const response = await updateEvent({
-          category,
-          description,
-          latitude: mapCoordiantes[0],
-          ...props.event,
-          ...eventDialog,
-          ...datepick,
-          gallery,
-          location,
-          longitude: mapCoordiantes[1]
-        });
-        props.setEvent({ ...response });
-      };
       setFetch(false);
       update();
       props.setEdit(false);
       props.setIsLoading(false);
-      return () => {};
-    } else {
-      return () => {};
     }
+    return () => {};
   }, [fetch]);
 
   const markerRef = createRef<Marker>();
@@ -247,10 +246,10 @@ export const EditEvent = (props: EditEvent) => {
         <h3>Update your event gallery</h3>
         <UploadInput
           {...{
+            eventId: props.event.id,
             gallery,
             setErrors,
-            setGallery,
-            eventId: props.event.id
+            setGallery
           }}
         />
       </div>

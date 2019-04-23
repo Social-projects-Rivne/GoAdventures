@@ -4,7 +4,6 @@ import io.softserve.goadventures.dto.EventDTO;
 import io.softserve.goadventures.dto.UserDto;
 import io.softserve.goadventures.dto.UserUpdateDto;
 import io.softserve.goadventures.errors.ErrorMessageManager;
-import io.softserve.goadventures.errors.InvalidPasswordErrorMessage;
 import io.softserve.goadventures.models.Event;
 import io.softserve.goadventures.models.User;
 import io.softserve.goadventures.services.EventService;
@@ -73,26 +72,20 @@ public class ProfileController {
         logger.info("[EDIT-PROFILE-DATA] - updateUser: " + updateUser);
         String newToken;
         User user = userService.getUserByEmail(jwtService.parseToken(authorizationHeader));   //user with old data
-        try {
-            if(!(updateUser.getPassword().equals(""))){
-                if(BCrypt.checkpw(updateUser.getPassword(),user.getPassword())){    //check current pass
-                    logger.info("current password correct");
-                    if(Validator.validatePassword(updateUser.getNewPassword())){
-                        //if valide, set new pass
-                        user.setPassword(BCrypt.hashpw(updateUser.getNewPassword(), BCrypt.gensalt()));
-                        logger.info("password changed, new password:  " + updateUser.getNewPassword());
-                    }
-                }else{
-                    logger.info("wrong password");
-                    throw new InvalidPasswordErrorMessage();
+
+        if(!(updateUser.getPassword().equals(""))){
+            if(BCrypt.checkpw(updateUser.getPassword(),user.getPassword())){    //check current pass
+                logger.info("current password correct");
+                if(Validator.validatePassword(updateUser.getNewPassword())){
+                    //if valide, set new pass
+                    user.setPassword(BCrypt.hashpw(updateUser.getNewPassword(), BCrypt.gensalt()));
+                    logger.info("password changed, new password:  " + updateUser.getNewPassword());
                 }
+            }else{
+                logger.info("wrong password");
             }
-        }catch (InvalidPasswordErrorMessage error){
-            logger.error(error.toString());
-            return ResponseEntity.status(403).body(
-                    new ErrorMessageManager("Current password is wrong!", error.toString())
-            );
         }
+        
         modelMapper.map(updateUser, user);
         userService.updateUser(user);
         newToken = jwtService.createToken(user.getEmail());
@@ -107,7 +100,7 @@ public class ProfileController {
     public ResponseEntity<?> getAllEvents(@PageableDefault(size = 15, sort = "id") Pageable eventPageable,
                                           @RequestHeader("Authorization") String token) {
         User user = userService.getUserByEmail(jwtService.parseToken(token));
-        Page<Event> eventsPage = eventService.getAllEventsByOwner(eventPageable, user.getId());
+        Page<Event> eventsPage = eventService.getEventsByOwnerAndParticipants(eventPageable, user.getId());
 
         if(eventsPage != null) {
             return new ResponseEntity<Slice<EventDTO>>(eventDtoBuilder.convertToDto(eventsPage), HttpStatus.OK);

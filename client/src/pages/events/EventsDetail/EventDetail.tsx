@@ -13,15 +13,29 @@ import {
   subscribe,
   unSubscribe
 } from "../../../api/event.service";
-import { Comments, Gallery, SettingsPanel } from "../../../components";
+import { Feedback, Gallery } from "../../../components";
 import { commentsSchema } from "../../../validationSchemas/commentValidation";
 import "./EventDetail.scss";
+import { EventDto } from "../../../interfaces/Event.dto";
+import { withRouter } from "react-router-dom";
+import { RouterProps, RouteComponentProps } from "react-router";
+import { addFeedbackRequest } from "../../../api/feedback.service";
+
+interface EventDetailState {
+  routerProps: RouterProps;
+  isOwner: boolean;
+  eventProps: {
+    event: EventDto;
+    setEdit: any;
+    setIsLoading: any;
+  };
+}
 
 interface FormValue {
   comment: string;
 }
 
-export class EventDetail extends Component<any, any> {
+class EventDetail extends Component<any, any> {
   public static getDerivedStateFromProps(nextProps: any, prevState: any): any {
     if (Object.is(nextProps.event, prevState.eventProps.event) === false) {
       return { ...prevState, eventProps: { ...nextProps } };
@@ -34,8 +48,10 @@ export class EventDetail extends Component<any, any> {
     this.state = {
       eventProps: { ...this.props },
       isOwner: false,
-      isSubs: true
+      isSubs: true,
+      newEventFeedback: {}
     };
+    console.debug(this.props);
     this.handleDelete = this.handleDelete.bind(this);
 
     this.handleClick = this.handleClick.bind(this);
@@ -56,14 +72,12 @@ export class EventDetail extends Component<any, any> {
     isSubscribe(this.state.eventProps.event.id)
       .then(
         (res: AxiosResponse): any => {
-          console.warn(res.status);
           this.setState({
             isSubs: true
           });
         }
       )
-      .catch(error => {
-        console.log("orest ska" + error);
+      .catch((error: any) => {
         this.setState({
           isSubs: false
         });
@@ -88,7 +102,7 @@ export class EventDetail extends Component<any, any> {
     deleteEvent(this.state.eventProps.event.id).then(
       (res: AxiosResponse): any => {
         if (res.status >= 200 && res.status <= 300) {
-          this.props.routerProps.history.push("/profile");
+          this.props.history.push("/profile");
         } else {
         }
       }
@@ -116,16 +130,13 @@ export class EventDetail extends Component<any, any> {
         }
       );
     }
-
-    console.log(this.state.isSubs);
   }
 
   public handleClose() {
-    console.log("status ", this.state.eventProps.event.statusId);
     closeEvent(this.state.eventProps.event.id).then(
       (res: AxiosResponse): any => {
         if (res.status >= 200 && res.status <= 300) {
-          this.props.routerProps.history.push("/profile");
+          this.props.history.push("/profile");
         } else {
         }
       }
@@ -136,7 +147,7 @@ export class EventDetail extends Component<any, any> {
     openEvent(this.state.eventProps.event.id).then(
       (res: AxiosResponse): any => {
         if (res.status >= 200 && res.status <= 300) {
-          this.props.routerProps.history.push("/profile");
+          this.props.history.push("/profile");
         } else {
         }
       }
@@ -298,7 +309,16 @@ export class EventDetail extends Component<any, any> {
                     enableReinitialize={true}
                     validateOnBlur={true}
                     validateOnChange={true}
-                    onSubmit={() => {}}
+                    onSubmit={async (values, actions): Promise<void> => {
+                      this.setState({
+                        newEventFeedback: await addFeedbackRequest({
+                          eventId: this.state.eventProps.event.id,
+                          comment: values.comment
+                        })
+                      });
+                      actions.setSubmitting(false);
+                      actions.resetForm();
+                    }}
                     render={(props: FormikProps<FormValue>) => (
                       <Form>
                         <Field
@@ -334,13 +354,10 @@ export class EventDetail extends Component<any, any> {
                 </div>
                 <hr className="my-4" />
                 <div>
-                  <Comments
+                  <Feedback
                     {...{
-                      avatar:
-                        "https://www.kidzone.ws/animal-facts/whales/images/beluga-whale-3.jpg",
-                      participant: "Jeremy Mafioznik",
-                      text: "Dolore ipsum",
-                      hashtags: ["pussy", "money", "weed"]
+                      eventId: this.state.eventProps.event.id,
+                      newFeedback: this.state.newEventFeedback
                     }}
                   />
                 </div>
@@ -352,3 +369,5 @@ export class EventDetail extends Component<any, any> {
     );
   }
 }
+
+export default withRouter(EventDetail);

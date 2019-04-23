@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import "./About.scss";
 
 export const About = (props: any) => {
-  console.debug(props);
   return (
     <div className="container page-container about">
       <div className="Home-heading d-flex flex-column">

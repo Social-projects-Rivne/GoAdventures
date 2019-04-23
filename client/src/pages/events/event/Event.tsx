@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { RouteComponentProps } from 'react-router';
-import { EventDetail } from '../EventsDetail/EventDetail';
-import { EditEvent } from '../editEvent/EditEvent';
-import { EventDto } from '../../../interfaces/Event.dto';
+import React, { useState } from "react";
+import { RouteComponentProps } from "react-router";
+import EventDetail from "../EventsDetail/EventDetail";
+import { EditEvent } from "../editEvent/EditEvent";
+import { EventDto } from "../../../interfaces/Event.dto";
 interface EventProps {
   routerProps: RouteComponentProps;
 }
@@ -14,11 +14,11 @@ export const Event = (props: EventProps) => {
     ...props.routerProps.location.state
   } as EventDto);
   return (
-    <div className='container'>
+    <div className="container">
       {edit ? (
         isLoading ? (
-          <div className='spinner-border text-primary' role='status'>
-            <span className='sr-only'>Loading...</span>
+          <div className="spinner-border text-primary" role="status">
+            <span className="sr-only">Loading...</span>
           </div>
         ) : (
           <EditEvent {...{ event, setEvent, setIsLoading, setEdit }} />

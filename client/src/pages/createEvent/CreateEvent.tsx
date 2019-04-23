@@ -22,7 +22,6 @@ const Rows = 3;
 export class CreateEvent extends Component<any, any> {
   constructor(props: any) {
     super(props);
-    console.debug(props);
     this.state = {
       newEvent: {
         topic: "",
@@ -57,14 +56,12 @@ export class CreateEvent extends Component<any, any> {
 
   public handleErrors(value: ErrorMessage) {
     this.setState({ errorMessages: { ...value } });
-    console.debug(this.state);
   }
 
   public handleAddGallery(value: GalleryDto) {
     this.setState({
       newEvent: { ...this.state.newEvent, gallery: { ...value } }
     });
-    console.debug(this.state);
   }
 
   public handleTopicChange(event: any) {

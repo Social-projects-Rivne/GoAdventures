@@ -127,7 +127,7 @@ public class ProfileControllerTest {
 
         when(jwtServiceMock.parseToken(token)).thenReturn(email);
         when(userServiceMock.getUserByEmail(email)).thenReturn(user);
-        when(eventServiceMock.getAllEventsByOwner(pageable, user.getId())).thenReturn(eventPage);
+//        when(eventServiceMock.getAllEventsByOwner(pageable, user.getId())).thenReturn(eventPage);
         when(eventDtoBuilderMock.convertToDto(eventPage)).thenReturn(eventDTOPage);
 
         mockMvc.perform(get("/profile/all-events")

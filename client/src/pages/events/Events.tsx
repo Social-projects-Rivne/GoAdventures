@@ -16,7 +16,6 @@ interface EventState {
     nextPage: string | null;
   };
   search: string | null | undefined;
- 
 }
 
 export class Events extends Component<EventDto, EventState> {
@@ -28,15 +27,13 @@ export class Events extends Component<EventDto, EventState> {
         isLast: undefined,
         nextPage: ""
       },
-      search: "",
-
+      search: ""
     };
     this.fetchEvents = this.fetchEvents.bind(this);
     this.handleCategory = this.handleCategory.bind(this);
   }
   public handleChange(value: string) {
     if (window.location.pathname !== "/events") {
-      // <Link ></Link>
     }
     this.setState({ search: value });
   }
@@ -50,15 +47,14 @@ export class Events extends Component<EventDto, EventState> {
     this.fetchEvents();
   }
 
-  public async fetchSearchEvent(category?: string ): Promise<void> {
+  public async fetchSearchEvent(category?: string): Promise<void> {
     this.state = {
       events: [],
       pageSettings: {
         isLast: undefined,
         nextPage: ""
       },
-      search: this.state.search,
-      
+      search: this.state.search
     };
     const response = await searchForEvents(null, this.state.search, category);
     this.setState({

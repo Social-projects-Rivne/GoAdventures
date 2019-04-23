@@ -1,5 +1,5 @@
 export * from '../pages/profile/sidebar/Sidebar';
-export * from './comment/Comments';
+export * from './comment/Feedback';
 export * from './content/Content';
 export * from './contextProtectedRoute/ContextProtectedRoute';
 export * from './contextRoute/ContextRoute';

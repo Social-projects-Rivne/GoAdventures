@@ -43,12 +43,6 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
       this.setState({ userProfile: { ...response.data } })
     );
   }
-  // public componentDidUpdate(prevProps: any) {
-  //   if (Object.is(prevProps, this.props) === false) {
-  //     console.debug("first");
-  //     this.setState({ userProfile: { ...this.props } });
-  //   }
-  // }
 
   public clearErrorMessage() {
     this.setState({
@@ -56,7 +50,6 @@ class Sidebar extends React.Component<UserDto, SidebarState> {
     });
   }
   public fileSelectHandler(event: ChangeEvent<HTMLInputElement>): void {
-    console.debug(event.target.files);
     !!event.target.files
       ? this.setState({
           avatar: event.target.files[0]

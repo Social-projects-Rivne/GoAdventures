@@ -12,5 +12,4 @@ public class UploadFileResponse {   //Response info about file to client
     private String fileDownloadUri;
     private String fileType;
     private long size;
-
 }

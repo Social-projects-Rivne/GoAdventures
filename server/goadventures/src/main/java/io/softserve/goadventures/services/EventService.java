@@ -5,7 +5,9 @@ import io.softserve.goadventures.enums.EventStatus;
 import io.softserve.goadventures.errors.UserNotFoundException;
 import io.softserve.goadventures.models.Category;
 import io.softserve.goadventures.models.Event;
+import io.softserve.goadventures.models.EventParticipants;
 import io.softserve.goadventures.models.User;
+import io.softserve.goadventures.repositories.EventParticipantsRepository;
 import io.softserve.goadventures.repositories.EventRepository;
 import io.softserve.goadventures.repositories.GalleryRepository;
 import org.slf4j.Logger;
@@ -26,17 +28,18 @@ public class EventService {
     private final GalleryRepository galleryRepository;
     private final UserService userService;
     private  final JWTService jwtService;
+    private final EventParticipantsRepository participantsRepository;
 
     @Autowired
     public EventService(
-            EventRepository eventRepository,
-            GalleryRepository galleryRepository,
-            UserService userService,
-            JWTService jwtService) {
+            EventRepository eventRepository, GalleryRepository galleryRepository,
+            UserService userService, JWTService jwtService,
+            EventParticipantsRepository participantsRepository) {
         this.galleryRepository = galleryRepository;
         this.eventRepository = eventRepository;
         this.userService = userService;
         this.jwtService = jwtService;
+        this.participantsRepository = participantsRepository;
     }
 
     public Event getEventById(int id) {
@@ -64,12 +67,18 @@ public class EventService {
         return  eventRepository.findAll(eventPageable);
     }
 
-    public Page<Event> getAllEventsByOwner(Pageable pageable, Integer id) {
+    public Page<Event> getEventsByOwnerAndParticipants(Pageable pageable, Integer id) {
         List<Event> list = new ArrayList<>();
 
         for (Event e : eventRepository.findAll(pageable)) {
             if (id.equals(e.getOwner().getId())) {
                 list.add(e);
+            }
+        }
+
+        for (EventParticipants eventParticipants : participantsRepository.findAll()) {
+            if (id.equals(eventParticipants.getUser().getId())) {
+                list.add(eventParticipants.getEvent());
             }
         }
         return new PageImpl<>(list);
@@ -120,7 +129,6 @@ public class EventService {
                 }
             }
         }
-
         if (search != null) {
             for (Event event : events) {
                 if (event.toString().contains(search)) {

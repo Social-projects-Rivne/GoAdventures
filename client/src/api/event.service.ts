@@ -2,6 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import { cookies } from "./cookies.service";
 import { EventDto } from "../interfaces/Event.dto";
 import { serverUrl } from "./url.config";
+import errorHandle from "./error.service";
 
 export const getEventList = async (
   nextPage?: string | null,
@@ -19,17 +20,13 @@ export const getEventList = async (
     })
     .then(
       (res: AxiosResponse<EventDto[]>): any => {
-        if (res.status >= 200 && res.status <= 300) {
-          sessionStorage.setItem("nextpage", res.headers.nextpage);
-          return res.data;
-        } else {
-          return { responseStatus: res.status.toString(10) };
-        }
+        sessionStorage.setItem("nextpage", res.headers.nextpage);
+        return res.data;
       }
     )
     .catch(error => {
       console.debug(error);
-      return error;
+      return errorHandle(error);
     });
 };
 
@@ -37,7 +34,6 @@ export const searchForEvents = async (
   nextPage?: string | null,
   search?: string | null,
   category?: string | null
-
 ): Promise<any> => {
   const defaultUrl = "/event/all?page=0";
   const searchUrl = `&search=${search}`;
@@ -46,7 +42,9 @@ export const searchForEvents = async (
   return await axios
     .get(
       `${serverUrl}${
-        !!nextPage ? nextPage + "" + searchUrl : defaultUrl + "" + searchUrl+"" +categoryUrl
+        !!nextPage
+          ? nextPage + "" + searchUrl
+          : defaultUrl + "" + searchUrl + "" + categoryUrl
       }`,
       {
         headers: {
@@ -142,8 +140,9 @@ export const openEvent = async (data: number): Promise<any> =>
     }
   );
 
-export const updateEvent = async (data: EventDto): Promise<any> =>
-  await axios
+export const updateEvent = async (data: EventDto): Promise<any> => {
+  console.debug("request data", data);
+  return await axios
     .put(
       `${serverUrl}/event/update/${data.id}`,
       { ...data },
@@ -165,6 +164,7 @@ export const updateEvent = async (data: EventDto): Promise<any> =>
       console.error(err);
       return { responseStatus: err };
     });
+};
 
 export const isOwner = async (data: number): Promise<any> =>
   await axios.post(`${serverUrl}/event/isOwner`, null, {
