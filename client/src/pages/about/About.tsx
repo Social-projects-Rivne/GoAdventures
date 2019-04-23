@@ -4,7 +4,7 @@ import "./About.scss";
 export const About = (props: any) => {
   console.debug(props);
   return (
-    <div className="container page-container">
+    <div className="container page-container about">
       <div className="Home-heading d-flex flex-column">
         <h2>GO Adventures</h2>
       </div>
@@ -53,91 +53,67 @@ export const About = (props: any) => {
         </div>
       </header>
 
-      <div className="container">
-        <div className="row">
-          <div className="col-xl-3 col-md-6 mb-4">
-            <div className="card border-0 shadow">
-              <img
-                src={require("../../assets/images/team/ivana.jpg")}
-                className="card-img-top"
-              />
-              <div className="card-body text-center">
-                <h5 className="card-title mb-0">Ivan Artiushok</h5>
-                <div className="card-text text-black-50">Docker man</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-xl-3 col-md-6 mb-4">
-            <div className="card border-0 shadow">
-              <img
-                src={require("../../assets/images/team/orest.jpg")}
-                className="card-img-top"
-              />
-              <div className="card-body text-center">
-                <h5 className="card-title mb-0">Orest Oleschuk</h5>
-                <div className="card-text text-black-50">Major frontend</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-xl-3 col-md-6 mb-4">
-            <div className="card border-0 shadow">
-              <img
-                src={require("../../assets/images/team/ivant.jpg")}
-                className="card-img-top"
-              />
-              <div className="card-body text-center">
-                <h5 className="card-title mb-0">Ivan Tymoschuk</h5>
-                <div className="card-text text-black-50">Funny devil</div>
-              </div>
-            </div>
+      <div className="card-deck">
+        <div className="card border-0 shadow">
+          <img
+            src={require("../../assets/images/team/ivana.jpg")}
+            className="card-img-top"
+          />
+          <div className="card-body text-center">
+            <h5 className="card-title mb-0">Ivan Artiushok</h5>
+            <div className="card-text text-black-50">Docker man</div>
           </div>
         </div>
-        <div className="row">
-          <div className="col-xl-3 col-md-6 mb-4">
-            <div className="card border-0 shadow">
-              <img
-                src={require("../../assets/images/team/tina.jpeg")}
-                className="card-img-top"
-              />
-              <div className="card-body text-center">
-                <h5 className="card-title mb-0">Timofiy Lanevych</h5>
-                <div className="card-text text-black-50">Likes back-end</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-xl-3 col-md-6 mb-4">
-            <div className="card border-0 shadow">
-              <img
-                src={require("../../assets/images/team/ivant.jpg")}
-                className="card-img-top"
-              />
-              <div className="card-body text-center">
-                <h5 className="card-title mb-0">Vlad Osnovin</h5>
-                <div className="card-text text-black-50">
-                  English in his blood
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-xl-3 col-md-6 mb-4">
-            <div className="card border-0 shadow">
-              <img
-                src={require("../../assets/images/team/ivant.jpg")}
-                className="card-img-top"
-              />
-              <div className="card-body text-center">
-                <h5 className="card-title mb-0">Yaroslav Dovbenko</h5>
-                <div className="card-text text-black-50">
-                  The best SCRUM-master
-                </div>
-              </div>
-            </div>
+        <div className="card border-0 shadow">
+          <img
+            src={require("../../assets/images/team/orest.jpg")}
+            className="card-img-top"
+          />
+          <div className="card-body text-center">
+            <h5 className="card-title mb-0">Orest Oleschuk</h5>
+            <div className="card-text text-black-50">Major frontend</div>
           </div>
         </div>
+        <div className="card border-0 shadow">
+          <img
+            src={require("../../assets/images/team/ivant.jpg")}
+            className="card-img-top"
+          />
+          <div className="card-body text-center">
+            <h5 className="card-title mb-0">Ivan Tymoschuk</h5>
+            <div className="card-text text-black-50">Funny devil</div>
+          </div>
+        </div>
+        <div className="card border-0 shadow">
+          <img
+            src={require("../../assets/images/team/tina.jpeg")}
+            className="card-img-top"
+          />
+          <div className="card-body text-center">
+            <h5 className="card-title mb-0">Timofiy Lanevych</h5>
+            <div className="card-text text-black-50">Likes back-end</div>
+          </div>
+        </div>
+        <div className="card border-0 shadow">
+          <img
+            src={require("../../assets/images/team/ivant.jpg")}
+            className="card-img-top"
+          />
+          <div className="card-body text-center">
+            <h5 className="card-title mb-0">Vlad Osnovin</h5>
+            <div className="card-text text-black-50">English in his blood</div>
+          </div>
+        </div>
+        <div className="card border-0 shadow">
+          <img
+            src={require("../../assets/images/team/yarik.jpeg")}
+            className="card-img-top"
+          />
+          <div className="card-body text-center">
+            <h5 className="card-title mb-0">Yaroslav Dovbenko</h5>
+            <div className="card-text text-black-50">The best SCRUM-master</div>
+          </div>
+        </div>{" "}
       </div>
     </div>
   );

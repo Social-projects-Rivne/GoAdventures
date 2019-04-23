@@ -35,15 +35,18 @@ export const getEventList = async (
 
 export const searchForEvents = async (
   nextPage?: string | null,
-  search?: string | null
+  search?: string | null,
+  category?: string | null
+
 ): Promise<any> => {
   const defaultUrl = "/event/all?page=0";
   const searchUrl = `&search=${search}`;
+  const categoryUrl = `&filter=${category}`;
   console.debug(nextPage + "" + searchUrl);
   return await axios
     .get(
       `${serverUrl}${
-        !!nextPage ? nextPage + "" + searchUrl : defaultUrl + "" + searchUrl
+        !!nextPage ? nextPage + "" + searchUrl : defaultUrl + "" + searchUrl+"" +categoryUrl
       }`,
       {
         headers: {

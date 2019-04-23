@@ -16,6 +16,7 @@ interface EventState {
     nextPage: string | null;
   };
   search: string | null | undefined;
+ 
 }
 
 export class Events extends Component<EventDto, EventState> {
@@ -27,7 +28,8 @@ export class Events extends Component<EventDto, EventState> {
         isLast: undefined,
         nextPage: ""
       },
-      search: ""
+      search: "",
+
     };
     this.fetchEvents = this.fetchEvents.bind(this);
     this.handleCategory = this.handleCategory.bind(this);
@@ -40,26 +42,27 @@ export class Events extends Component<EventDto, EventState> {
   }
 
   public handleCategory(category: any) {
-    console.log("Category " + category);
-    this.setState({});
+    console.log("==== " + category);
+    this.fetchSearchEvent(category);
   }
 
   public componentDidMount() {
     this.fetchEvents();
   }
 
-  public async fetchSearchEvent(): Promise<void> {
+  public async fetchSearchEvent(category?: string ): Promise<void> {
     this.state = {
       events: [],
       pageSettings: {
         isLast: undefined,
         nextPage: ""
       },
-      search: this.state.search
+      search: this.state.search,
+      
     };
-    const response = await searchForEvents(null, this.state.search);
+    const response = await searchForEvents(null, this.state.search, category);
     this.setState({
-      events: [...this.state.events, ...response.content],
+      events: [...response.content],
       pageSettings: {
         isLast: response.last,
         nextPage: !!sessionStorage.getItem("nextpage")
