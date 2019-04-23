@@ -187,59 +187,55 @@ export class Profile extends Component<UserDto, ProfileState> {
           <div className='sidebar'>
             <Sidebar {...this.state.userProfile} />
           </div>
-          {/* <div className='Profile__content'> */}
-          {
+          <div className='Profile__content'>
+            {
 
-            this.state.choose === 'events'
-              ? <div className='container page-container'>
-                <ShowEvents {...this.state.userEventList} />
-              </div>
-              : (this.state.choose === 'edit-profile'
-                ? <div className='container page-container'>
-                  <Dialog
-                    validationSchema={editProfileSchema}
-                    handleSubmit={this.handleSubmit}
-                    // handleSubmit={
-                    //   this.state.isShowModal === true
-                    //     ? <div>Tipo modalka </div>
-                    //     : null
-                    // }
-                    inputs={this.editFormInputSettings}
-                    button_text='Update'
-                    header='Edit your profile'
-                    inline_styles={this.editFormDialogStyles}
-                    childComponents={
-                      <div className="Errors-messages">
-                        {
-                          this.state.errorMesage.publicError !== ''
-                            ? <div className="alert alert-warning alert-dismissible fade show errProfile"
-                              data-auto-dismiss role="alert">
-                              <strong>{this.state.errorMesage.publicError}</strong>
-                              <button
-                                onClick={this.clearErrorMessage}
-                                type="button"
-                                className="close"
-                                data-dismiss="alert"
-                                aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                              </button>
-                            </div>
-                            : null}
-                      </div>
-
-                    }
-
-                  />
+              this.state.choose === 'events'
+                ?
+                <div className='container page-container'>
+                  <ShowEvents {...this.state.userEventList} />
                 </div>
-                : (this.state.choose === 'account-overview'
-                  ? <AccountOverwiew {...this.state.userProfile} />
-                  : null
+                : (this.state.choose === 'edit-profile'
+                  ? <div className='container page-container'>
+                    <Dialog
+                      validationSchema={editProfileSchema}
+                      handleSubmit={this.handleSubmit}
+                      inputs={this.editFormInputSettings}
+                      button_text='Update'
+                      header='Edit your profile'
+                      inline_styles={this.editFormDialogStyles}
+                      childComponents={
+                        <div className="Errors-messages">
+                          {
+                            this.state.errorMesage.publicError !== ''
+                              ? <div className="alert alert-warning alert-dismissible fade show errProfile"
+                                data-auto-dismiss role="alert">
+                                <strong>{this.state.errorMesage.publicError}</strong>
+                                <button
+                                  onClick={this.clearErrorMessage}
+                                  type="button"
+                                  className="close"
+                                  data-dismiss="alert"
+                                  aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              : null}
+                        </div>
 
+                      }
+
+                    />
+                  </div>
+                  : (this.state.choose === 'account-overview'
+                    ? <AccountOverwiew {...this.state.userProfile} />
+                    : null
+
+                  )
                 )
-              )
-          }
+            }
+          </div>
         </div>
-        {/* </div> */}
       </ProfileContext.Provider>
 
     );

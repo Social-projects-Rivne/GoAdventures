@@ -1,5 +1,5 @@
 import React, { Component, createRef, RefObject } from 'react';
-import { createEvent } from '../../api/event.service';
+import { createEvent, scheduleEmail } from '../../api/event.service';
 import './CreateEvent.scss';
 import './Leaflet.scss';
 import { Map as LeafletMap, TileLayer, Marker, Popup } from 'react-leaflet';
@@ -138,6 +138,8 @@ export class CreateEvent extends Component<any, any> {
     if (this.state.newEvent.endDate === 0) {
       createEvent({ ...this.state.newEvent });
       console.debug(this.state);
+      //scheduleEmail() do request (id_event, start_date)
+      scheduleEmail({ ...this.state.newEvent });
       this.setState({ redirect: true });
     } else if (this.state.newEvent.startDate < this.state.newEvent.endDate) {
       createEvent({ ...this.state.newEvent });

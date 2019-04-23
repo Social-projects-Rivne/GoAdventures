@@ -2,29 +2,31 @@
     width: 25%;
     //background: rgb(221, 69, 69);
 }
-// .Profile__content {
-//     flex: 2 2 20rem;
 
-//     //background: rgb(83, 226, 26);
-//     & .Dialog__window {
-//         max-width: 100%;
-//         margin-bottom: 0 !important;
-//         margin-top: 0 !important;
-//         height: 92%;
-        
-//     }
-// }
-.container{
+.Profile__content {
     flex: 2 2 20rem;
-    max-width: 70% !important;
+
+    //background: rgb(83, 226, 26);
     & .Dialog__window {
-        max-width: 99%;
+        max-width: 100%;
         margin-bottom: 0 !important;
         margin-top: 0 !important;
-        height: 90%;        
-        }
-    
+        height: 92%;
+
+    }
 }
+
+// .container{
+//     flex: 2 2 20rem;
+//     max-width: 70% !important;
+//     & .Dialog__window {
+//         max-width: 99%;
+//         margin-bottom: 0 !important;
+//         margin-top: 0 !important;
+//         height: 90%;        
+//         }
+
+// }
 
 .profile-page {
     display: flex;
@@ -34,9 +36,9 @@
     flex-direction: row;
     flex-flow: row wrap;
 }
-.errProfile{
+
+.errProfile {
     margin: 15px;
     border-radius: 10px;
     //display: inline-block;
 }
-

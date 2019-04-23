@@ -7,6 +7,7 @@ import io.softserve.goadventures.services.JWTService;
 import io.softserve.goadventures.models.User;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.mail.MailProperties;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -40,7 +41,6 @@ public class ImageController {
 
         if (!fileStorageService.checkFileSize(file)) {
             return ResponseEntity.status(403).body(new ErrorMessageManager("Maximum file size is 5mb!","Error"));
-
         }
         User user = userService.getUserByEmail(jwtService.parseToken(token));
         String fileName = null;

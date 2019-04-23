@@ -56,7 +56,6 @@ public class EventEmailNotification {
             String topic = "";
             if(daysBetween == 1){
                 logger.info(" " + event.getDescription() + " " + event.getLocation());
-
                 emailSenderService.eventEmailNotification(event.getOwner().getEmail(), event.getOwner().getFullname(), event.getTopic(), startDateToUser, event.getLocation(), event.getDescription()); //send email to owner event
                 //send email to subscribes
                 logger.info("Email sent successfully to " + event.getOwner().getEmail());

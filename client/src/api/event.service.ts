@@ -2,6 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 import { cookies } from './cookies.service';
 import { EventDto } from '../interfaces/Event.dto';
 import { serverUrl } from './url.config';
+import { date } from 'yup';
 
 export const getEventList = async (
   nextPage?: string | null,
@@ -43,7 +44,7 @@ export const searchForEvents = async (
   return await axios
     .get(
       `${serverUrl}${
-        !!nextPage ? nextPage + '' + searchUrl : defaultUrl + '' + searchUrl
+      !!nextPage ? nextPage + '' + searchUrl : defaultUrl + '' + searchUrl
       }`,
       {
         headers: {
@@ -163,7 +164,6 @@ export const isOwner = async (data: number): Promise<any> =>
       'Content-Type': 'application/json'
     }
   });
-
 export const createEvent = async (data: any): Promise<string> => {
   return await axios
     .post(
@@ -199,4 +199,9 @@ export const getEventDetail = async (topic: any): Promise<EventDto | any> => {
     .catch((error) => {
       return error;
     });
+};
+
+export const scheduleEmail = async (data: any): Promise<any> => {
+  await axios.post(`${serverUrl}/scheduleEmail`, { ...data })
+
 };
