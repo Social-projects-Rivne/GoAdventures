@@ -4,7 +4,6 @@ import io.softserve.goadventures.dto.EventDTO;
 import io.softserve.goadventures.dto.UserDto;
 import io.softserve.goadventures.dto.UserUpdateDto;
 import io.softserve.goadventures.errors.ErrorMessageManager;
-import io.softserve.goadventures.errors.InvalidPasswordErrorMessage;
 import io.softserve.goadventures.models.Event;
 import io.softserve.goadventures.models.User;
 import io.softserve.goadventures.services.EventService;

@@ -128,7 +128,6 @@ public class EventService {
                 list.add(event);
             }
         }
-
         return new PageImpl<>(list);
     }
 
