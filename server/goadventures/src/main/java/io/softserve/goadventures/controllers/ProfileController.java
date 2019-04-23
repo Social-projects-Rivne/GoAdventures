@@ -4,7 +4,6 @@ import io.softserve.goadventures.dto.EventDTO;
 import io.softserve.goadventures.dto.UserDto;
 import io.softserve.goadventures.dto.UserUpdateDto;
 import io.softserve.goadventures.errors.ErrorMessageManager;
-import io.softserve.goadventures.errors.InvalidPasswordErrorMessage;
 import io.softserve.goadventures.models.Event;
 import io.softserve.goadventures.models.User;
 import io.softserve.goadventures.services.EventService;
@@ -106,7 +105,7 @@ public class ProfileController {
     public ResponseEntity<?> getAllEvents(Pageable eventPageable, @RequestHeader("Authorization") String token) {
         logger.info("[GET-ALL-EVENTS]");
         User user = userService.getUserByEmail(jwtService.parseToken(token));
-        Page<Event> eventsPage = eventService.getAllEventsByOwner(eventPageable, user.getId());
+        Page<Event> eventsPage = eventService.getEventsByOwnerAndParticipants(eventPageable, user.getId());
 
         if(eventsPage != null) {
             return new ResponseEntity<Slice<EventDTO>>(eventDtoBuilder.convertToDto(eventsPage), HttpStatus.OK);
