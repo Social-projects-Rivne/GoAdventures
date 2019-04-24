@@ -4,21 +4,23 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
-  background-color: rgb(223, 223, 223); 
+  background-color: rgb(223, 223, 223);
 }
 
 html {
   height: 100%;
 }
-.select{
+
+.select {
   border-radius: 5px;
 }
-.page-container{
-  margin-top:1rem;
-    margin-bottom: 1rem;
-    border-radius: 10px;
-    padding:1rem;
-    background-color: white;
+
+.page-container {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  padding: 1rem;
+  background-color: white;
 }
 
 img.rounded-avatar-sm {
@@ -35,6 +37,10 @@ img.rounded-avatar-sm {
 
 input {
   border-radius: 0.25rem !important;
+}
+
+img {
+  object-fit: contain;
 }
 
 /*

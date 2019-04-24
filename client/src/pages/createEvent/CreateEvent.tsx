@@ -157,14 +157,12 @@ export class CreateEvent extends Component<any, any> {
     }
   }
 
-
   public componentDidMount() {
     setTimeout(() => {
       if (leafletMap) {
         leafletMap.leafletElement.invalidateSize();
       }
     }, 50);
-
   }
 
   public render() {
@@ -205,7 +203,7 @@ export class CreateEvent extends Component<any, any> {
           </label>
           <div className='col-sm-8'>
             <textarea
-              className='form-control'
+              className='form-control rounded'
               id='Description'
               placeholder='Enter description'
               rows={Rows}
@@ -299,7 +297,7 @@ export class CreateEvent extends Component<any, any> {
               center={[50.37, 26.13]}
               zoom={6}
               attributionControl={true}
-              zoomControl={true}
+              zoomControl={false}
               doubleClickZoom={true}
               scrollWheelZoom={true}
               dragging={true}
@@ -308,7 +306,10 @@ export class CreateEvent extends Component<any, any> {
               onClick={this.handleCoord}
               ref={(el: any) => (leafletMap = el)}
             >
-              <TileLayer url='https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png' />
+              <TileLayer
+              attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+              url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+            />
               {this.state.currentPos && (
                 <Marker position={this.state.currentPos} draggable={true}>
                   <Popup position={this.state.currentPos}>

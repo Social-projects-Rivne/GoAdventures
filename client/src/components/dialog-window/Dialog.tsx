@@ -7,7 +7,7 @@ import { DialogSettings } from './interfaces/dialog.interface';
 export class Dialog extends Component<DialogSettings, any> {
   constructor(props: DialogSettings) {
     super(props);
-    this.state = { category: '' };
+    this.state = { category: '', isLoading: false };
     //  :*D
     this.getInitialValues = this.getInitialValues.bind(this);
   }
@@ -31,59 +31,82 @@ export class Dialog extends Component<DialogSettings, any> {
         <div className='card-header'>
           <h3>{this.props.header}</h3>
         </div>
-        <div className='card-body'>
-          <Formik
-            enableReinitialize={true}
-            initialValues={this.getInitialValues()}
-            validateOnBlur={true}
-            validationSchema={this.props.validationSchema}
-            onSubmit={async (values: any, actions) => {
-              const valuesMutadet = { ...values };
-              if (valuesMutadet.hasOwnProperty('confirmPassword')) {
-                delete valuesMutadet!.confirmPassword;
-              }
-              if (this.props.context && this.props.context.authorize) {
-                await this.props.context.authorize(this.props.handleSubmit, {
-                  ...valuesMutadet
+        <div className='card-body d-flex justify-content-center align-items-center '>
+          {this.state.isLoading ? (
+            <div className='d-flex justify-content-center'>
+              <div className='spinner-grow' role='status'>
+                <span className='sr-only'>Loading...</span>
+              </div>
+            </div>
+          ) : (
+            <Formik
+              enableReinitialize={true}
+              initialValues={this.getInitialValues()}
+              validateOnBlur={true}
+              validationSchema={this.props.validationSchema}
+              onSubmit={async (values: any, actions) => {
+                this.setState(() => {
+                  return {
+                    isLoading: true
+                  };
                 });
-              } else {
-                await this.props.handleSubmit(
-                  { ...valuesMutadet },
-                  this.state.category
-                );
-              }
-              if (this.props.redirect) {
-                this.props.redirect.routerProps.history.push(
-                  `${this.props.redirect.redirectURL}`
-                );
-              }
-              actions.setSubmitting(false);
-            }}
-          >
-            {({
-              errors,
-              touched,
-              handleBlur,
-              handleChange,
-              values
-            }: FormikProps<any>) => {
-              return (
-                <Form id='dialog'>
-                  {this.props.inputs.map((input, index) => {
-                    return (
-                      <label key={index}>
-                        {input.label_value}
-                        <Field
-                          value={values[input.field_name]}
-                          type={input.type}
-                          placeholder={input.placeholder}
-                          className='form-control'
-                          name={input.field_name}
-                          key={index}
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                        />
-                        {errors[`${input.field_name}`] &&
+                const valuesMutadet = { ...values };
+                if (valuesMutadet.hasOwnProperty('confirmPassword')) {
+                  delete valuesMutadet!.confirmPassword;
+                }
+                if (this.props.context && this.props.context.authorize) {
+                  await this.props.context.authorize(this.props.handleSubmit, {
+                    ...valuesMutadet
+                  });
+                  this.setState(() => {
+                    return {
+                      isLoading: false
+                    };
+                  });
+                } else {
+                  await this.props.handleSubmit(
+                    { ...valuesMutadet },
+                    this.state.category
+                  );
+                  this.setState(() => {
+                    return {
+                      isLoading: false
+                    };
+                  });
+                }
+                if (this.props.redirect && !this.state.isLoading) {
+                  this.props.redirect.routerProps.history.push(
+                    `${this.props.redirect.redirectURL}`
+                  );
+                }
+                actions.resetForm();
+                actions.setSubmitting(false);
+              }}
+            >
+              {({
+                errors,
+                touched,
+                handleBlur,
+                handleChange,
+                values
+              }: FormikProps<any>) => {
+                return (
+                  <Form id='dialog'>
+                    {this.props.inputs.map((input, index) => {
+                      return (
+                        <label key={index}>
+                          {input.label_value}
+                          <Field
+                            value={values[input.field_name]}
+                            type={input.type}
+                            placeholder={input.placeholder}
+                            className='form-control'
+                            name={input.field_name}
+                            key={index}
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                          />
+                          {errors[`${input.field_name}`] &&
                           touched[input.field_name] ? (
                             <div className='invalid-feedback'>
                               {errors[input.field_name]}
@@ -93,13 +116,14 @@ export class Dialog extends Component<DialogSettings, any> {
                               <MdDone />
                             </div>
                           )}
-                      </label>
-                    );
-                  })}
-                </Form>
-              );
-            }}
-          </Formik>
+                        </label>
+                      );
+                    })}
+                  </Form>
+                );
+              }}
+            </Formik>
+          )}
           {this.props.childComponents ? this.props.childComponents : null}
         </div>
         <div className='card-footer text-muted d-flex justify-content-center'>
