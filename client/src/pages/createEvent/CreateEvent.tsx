@@ -134,12 +134,11 @@ export class CreateEvent extends Component<any, any> {
     this.setState({ currentPos: e.latlng });
   }
 
-  public handleSubmit(event: any) {
+  public async handleSubmit(event: any) {
     if (this.state.newEvent.endDate === 0) {
-      createEvent({ ...this.state.newEvent });
+      await createEvent({ ...this.state.newEvent });
       console.debug(this.state);
-      //scheduleEmail() do request (id_event, start_date)
-      scheduleEmail({ ...this.state.newEvent });
+      scheduleEmail({ ...this.state.newEvent });// topic and startDate
       this.setState({ redirect: true });
     } else if (this.state.newEvent.startDate < this.state.newEvent.endDate) {
       createEvent({ ...this.state.newEvent });

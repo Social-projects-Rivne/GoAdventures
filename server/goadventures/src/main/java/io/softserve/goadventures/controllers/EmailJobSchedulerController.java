@@ -39,6 +39,7 @@ public class EmailJobSchedulerController {
 
     @PostMapping("/scheduleEmail")
     public ResponseEntity<ScheduleEmailResponse> scheduleEmail(@Valid @RequestBody EventDTO eventDTO) throws SchedulerException {
+        String message = ""; // owner or subscriber
         ZoneId defaultZoneId = ZoneId.systemDefault();
 
         Instant instant = Instant.parse(eventDTO.getStartDate());
@@ -47,14 +48,12 @@ public class EmailJobSchedulerController {
         ZonedDateTime zonedDateTime = instant.atZone(defaultZoneId); // zonedDateTimeStartEvent
         logger.info("zoned datetime " + zonedDateTime);
 
-//        DateFormat dateFormatToUser = new SimpleDateFormat("dd MMMM HH:mm", Locale.ENGLISH);
-//        String startDateToUser = dateFormatToUser.format(instant);// date which showed in user mail
-//        logger.info("date to user" +startDateToUser);
+        DateFormat dateFormatToUser = new SimpleDateFormat("dd MMMM HH:mm", Locale.ENGLISH);
+        Date dateToUser = Date.from(zonedDateTime.toInstant());
+        String eventStartDateToUser = dateFormatToUser.format(dateToUser);// date which showed in user mail
+        logger.info("date to user " + eventStartDateToUser);
 
-        Event event = eventService.findEventByTopic(eventDTO.getTopic());
-        if(event== null){
-            logger.error("event not found");
-        }
+        Event event = eventService.findEventByTopic(eventDTO.getTopic());       //if message = owner
         User user = event.getOwner();
 
         try {
@@ -64,7 +63,7 @@ public class EmailJobSchedulerController {
                 return ResponseEntity.badRequest().body(scheduleEmailResponse);
             }
             //add fullname, eventTopic, StartDate, location, description
-            JobDetail jobDetail = buildJobDetail(user.getEmail(),event.getTopic(),"7777",event.getLocation(),user.getFullname(),event.getDescription());
+            JobDetail jobDetail = buildJobDetail(user.getEmail(),event.getTopic(),eventStartDateToUser,event.getLocation(),user.getFullname(),event.getDescription());
             Trigger trigger = buildJobTrigger(jobDetail, zonedDateTime);
             scheduler.scheduleJob(jobDetail, trigger);
             logger.info("scheduler done");
