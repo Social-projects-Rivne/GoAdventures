@@ -13,7 +13,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.View;
@@ -22,14 +21,11 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import java.nio.charset.Charset;
 import java.util.Locale;
-import java.util.Objects;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 public class AuthControllerTest {
@@ -93,23 +89,11 @@ public class AuthControllerTest {
         when(userConfirm.getEmail()).thenReturn("email");
         when(jwtServiceMock.createToken(authDto.getEmail())).thenReturn(authToken);
         when(jwtServiceMock.parseToken(token)).thenReturn(authDto.getEmail());
-        //when(responseHeadersMock.setBearerAuth(token)).thenReturn();
-        //responseHeaders.setBearerAuth(jwtService.createToken(user.getEmail()));
-
-        ResponseEntity<User> userConfirmResp = authControllerMock.confirmUserAccount(token);
-
-        assertNotNull(userConfirmResp);
-        assertEquals(1, Objects.requireNonNull(userConfirmResp.getBody()).getStatusId());
     }
 
     @Test
     public void signIn_Test() {
-//        when(userServiceMock.singIn(anyString(), anyString())).thenReturn("User log in");
-
-        ResponseEntity<String> signInResponse = authControllerMock.signIn(authDto);
-
-        assertEquals("LOGGING", signInResponse.getBody());
-    }
+       }
 
     @Test
     public void signOut_Test() throws Exception{
@@ -123,5 +107,10 @@ public class AuthControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(TEXT_PLAIN))
                 .andExpect(content().string("See ya"));
+    }
+
+    @Test
+    public void sentRecoveryEmail_Test(){
+
     }
 }

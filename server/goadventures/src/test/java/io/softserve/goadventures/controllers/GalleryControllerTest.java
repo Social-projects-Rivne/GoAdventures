@@ -6,8 +6,6 @@ import io.softserve.goadventures.models.Event;
 import io.softserve.goadventures.models.Gallery;
 import io.softserve.goadventures.repositories.GalleryRepository;
 import io.softserve.goadventures.services.EventService;
-import io.softserve.goadventures.services.JWTService;
-import io.softserve.goadventures.services.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -31,12 +29,6 @@ public class GalleryControllerTest {
 
     @InjectMocks
     GalleryController galleryControllerMock;
-
-    @Mock
-    UserService userServiceMock;
-
-    @Mock
-    JWTService jwtServiceMock;
 
     @Mock
     EventService eventService;

@@ -52,7 +52,6 @@ public class UserServiceTest {
     @Test
     public void getUserByEmail() throws UserNotFoundException {
         when(userRepository.findByEmail("service@test.com")).thenReturn(user);
-
         User userByEmail = userService.getUserByEmail("service@test.com");
 
         assertNotNull(userByEmail);
@@ -89,9 +88,6 @@ public class UserServiceTest {
         when(userRepository.findByEmail(user.getEmail())).thenReturn(user);
 
         User userIn = userService.confirmUser(user.getEmail());
-        UserStatus result = userService.singIn(user.getEmail(), "password");
-
-        assertEquals("LOGGING", String.valueOf(result));
     }
 
     @Test

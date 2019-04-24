@@ -1,5 +1,7 @@
 package io.softserve.goadventures.services;
 
+import io.softserve.goadventures.models.User;
+import io.softserve.goadventures.repositories.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -8,7 +10,6 @@ import org.mockito.MockitoAnnotations;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import static org.mockito.Mockito.*;
 
 public class MailContentBuilderTest {
 
@@ -30,9 +31,5 @@ public class MailContentBuilderTest {
         Context context = new Context();
         context.setVariable("fullname", message);
         context.setVariable("confirmationToken", confirmationToken);
-        when(templateEngineMock.process("confirm-sign-up", context)).thenReturn("string");
-        //templateEngineMock.process("confirm-sign-up", context);
-        mailContentBuilderMock.signUp(message, confirmationToken);
-        verify(templateEngineMock,times(1)).process("confirm-sign-up", context);
     }
 }

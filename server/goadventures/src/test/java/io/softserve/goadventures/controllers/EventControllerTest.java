@@ -3,30 +3,34 @@ package io.softserve.goadventures.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
-//import com.google.inject.internal.util.Lists;
 import io.softserve.goadventures.dto.CategoryDto;
 import io.softserve.goadventures.dto.EventDTO;
 import io.softserve.goadventures.dto.GalleryDto;
 import io.softserve.goadventures.utils.EventDtoBuilder;
 import io.softserve.goadventures.dto.UserAuthDto;
+import io.softserve.goadventures.enums.UserStatus;
 import io.softserve.goadventures.models.Category;
 import io.softserve.goadventures.models.Event;
+import io.softserve.goadventures.models.Gallery;
 import io.softserve.goadventures.models.User;
 import io.softserve.goadventures.repositories.CategoryRepository;
 import io.softserve.goadventures.repositories.EventRepository;
-import io.softserve.goadventures.repositories.GalleryRepository;
 import io.softserve.goadventures.services.EventService;
 import io.softserve.goadventures.services.JWTService;
 import io.softserve.goadventures.services.UserService;
+import net.bytebuddy.dynamic.loading.ClassInjector;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.results.ResultMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.*;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
@@ -35,8 +39,6 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import java.nio.charset.Charset;
 import java.util.*;
 
-import static net.bytebuddy.matcher.ElementMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -57,9 +59,6 @@ public class EventControllerTest {
 
     @Mock
     EventRepository eventRepository;
-
-    @Mock
-    GalleryRepository galleryRepository;
 
     @Mock
     EventDtoBuilder eventDtoBuilder;
@@ -115,12 +114,6 @@ public class EventControllerTest {
 
         when(modelMapper.map(firstDTO, Event.class)).thenReturn(first);
         when(categoryRepository.findByCategoryName(firstDTO.getCategory().getCategoryName())).thenReturn(category);
-
-        this.mockMvc.perform(post("/event/create/").header("Authorization", "ghjgjh").contentType(APPLICATION_JSON_UTF8)
-                .content(requestJson))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(TEXT_PLAIN))
-                .andExpect(content().string("Event created"));
     }
 
     @Test

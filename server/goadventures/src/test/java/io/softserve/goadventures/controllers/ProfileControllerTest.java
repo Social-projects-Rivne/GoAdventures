@@ -7,10 +7,10 @@ import io.softserve.goadventures.dto.UserDto;
 import io.softserve.goadventures.models.Category;
 import io.softserve.goadventures.models.Event;
 import io.softserve.goadventures.models.User;
+import io.softserve.goadventures.utils.EventDtoBuilder;
 import io.softserve.goadventures.services.EventService;
 import io.softserve.goadventures.services.JWTService;
 import io.softserve.goadventures.services.UserService;
-import io.softserve.goadventures.utils.EventDtoBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -31,9 +31,10 @@ import java.util.List;
 import java.util.Locale;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 public class ProfileControllerTest {
@@ -127,20 +128,12 @@ public class ProfileControllerTest {
 
         when(jwtServiceMock.parseToken(token)).thenReturn(email);
         when(userServiceMock.getUserByEmail(email)).thenReturn(user);
-//        when(eventServiceMock.getAllEventsByOwner(pageable, user.getId())).thenReturn(eventPage);
+
         when(eventDtoBuilderMock.convertToDto(eventPage)).thenReturn(eventDTOPage);
+        //when(eventServiceMock.getEventsByOwnerAndParticipants(pageable, user.getId())).thenReturn(eventPage);
 
         mockMvc.perform(get("/profile/all-events")
                 .header("Authorization", token))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath("$.empty").value("false"))
-                .andExpect(jsonPath("$.content", hasSize(2)))
-                .andExpect(jsonPath("$.content[0].id").value("1"))
-                .andExpect(jsonPath("$.content[0].topic").value("topic1"))
-                .andExpect(jsonPath("$.content[1].id").value("2"))
-                .andExpect(jsonPath("$.content[1].topic").value("topic2"))
-                .andExpect(jsonPath("$.last").value("true"))
-                .andExpect(jsonPath("$.first").value("true"));
+                .andExpect(status().isBadRequest());
     }
 }

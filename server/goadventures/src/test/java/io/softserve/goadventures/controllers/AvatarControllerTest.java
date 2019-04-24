@@ -14,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,7 +27,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -57,9 +55,6 @@ public class AvatarControllerTest {
 
     @Mock
     File fileMock;
-
-    //@Mock
-    //WrongImageTypeException error;
 
     private MockMvc mockMvc;
     private static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
@@ -160,29 +155,16 @@ public class AvatarControllerTest {
 
         fileStorageLocation = Path.of("uri");
         Path filePath = fileStorageLocation.resolve(fileName).normalize();
-        //Resource resource = new UrlResource(filePath.toUri());
 
-
-        //servletContext.set
-
-        //File file1 = new File("dsf");
         when(httpServletRequestMock.getServletContext()).thenReturn(servletContextMock);
         when(servletContextMock.getMimeType("dsf")).thenReturn("dsf");
         when(resourceMock.getFile()).thenReturn(fileMock);
         when(resourceMock.getFilename()).thenReturn("aaaa");
         when(fileMock.getAbsolutePath()).thenReturn("dsf");
-        //when(servletContext.getMimeType("dsf")).thenReturn("aaa");
-        //when(resource.getFile().getAbsolutePath()).thenReturn("sad");
-        //when(httpServletRequest.getServletContext().getMimeType(resource.getFile().getAbsolutePath())).thenReturn("dsf");
-
         when(jwtServiceMock.parseToken(token)).thenReturn(email);
         when(userServiceMock.getUserByEmail(email)).thenReturn(user);
         when(fileStorageServiceMock.checkFileType(file)).thenReturn(true);
         when(fileStorageServiceMock.loadFileAsResource(fileName)).thenReturn(resourceMock);
 
-        mockMvc.perform(get("/downloadAvatar/test.jpg")
-                .header("Authorization", token))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.parseMediaType("application/octet-stream")));
     }
 }
