@@ -2,6 +2,8 @@ package io.softserve.goadventures.controllers;
 
 import io.softserve.goadventures.dto.EventDTO;
 import io.softserve.goadventures.dto.ScheduleEmailResponse;
+import io.softserve.goadventures.models.Event;
+import io.softserve.goadventures.models.User;
 import io.softserve.goadventures.services.EmailJob;
 import io.softserve.goadventures.services.EventService;
 import org.quartz.*;
@@ -14,9 +16,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
-import java.text.ParseException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.*;
 import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 
 @RestController
@@ -43,6 +47,16 @@ public class EmailJobSchedulerController {
         ZonedDateTime zonedDateTime = instant.atZone(defaultZoneId); // zonedDateTimeStartEvent
         logger.info("zoned datetime " + zonedDateTime);
 
+//        DateFormat dateFormatToUser = new SimpleDateFormat("dd MMMM HH:mm", Locale.ENGLISH);
+//        String startDateToUser = dateFormatToUser.format(instant);// date which showed in user mail
+//        logger.info("date to user" +startDateToUser);
+
+        Event event = eventService.findEventByTopic(eventDTO.getTopic());
+        if(event== null){
+            logger.error("event not found");
+        }
+        User user = event.getOwner();
+
         try {
             if(zonedDateTime.isBefore(ZonedDateTime.now())) {
                 ScheduleEmailResponse scheduleEmailResponse = new ScheduleEmailResponse(false,
@@ -50,7 +64,7 @@ public class EmailJobSchedulerController {
                 return ResponseEntity.badRequest().body(scheduleEmailResponse);
             }
             //add fullname, eventTopic, StartDate, location, description
-            JobDetail jobDetail = buildJobDetail("vladislav.osnovyn@gmail.com");
+            JobDetail jobDetail = buildJobDetail(user.getEmail(),event.getTopic(),"7777",event.getLocation(),user.getFullname(),event.getDescription());
             Trigger trigger = buildJobTrigger(jobDetail, zonedDateTime);
             scheduler.scheduleJob(jobDetail, trigger);
             logger.info("scheduler done");
@@ -68,13 +82,16 @@ public class EmailJobSchedulerController {
     }
 
 
-    private JobDetail buildJobDetail(String email) {
+    private JobDetail buildJobDetail(String email,String eventTopic, String startDate, String location, String fullname, String description) {
         JobDataMap jobDataMap = new JobDataMap();
 
         //add fullname, eventTopic, StartDate, location, description
         jobDataMap.put("email", email);
-        jobDataMap.put("subject","event starts soon");
-        jobDataMap.put("body", "body22");
+        jobDataMap.put("eventTopic",eventTopic);
+        jobDataMap.put("startDate", startDate);
+        jobDataMap.put("location", location);
+        jobDataMap.put("fullname", fullname);
+        jobDataMap.put("description", description);
 
         return JobBuilder.newJob(EmailJob.class)
                 .withIdentity(UUID.randomUUID().toString(), "email-jobs")
