@@ -1,4 +1,3 @@
-import { Cookies, withCookies } from 'react-cookie';
 import React, { Component, CSSProperties, ChangeEvent } from 'react';
 import { changeUserData, getUserData } from '../../api/user.service';
 import { Dialog, Content } from '../../components';
@@ -131,7 +130,7 @@ export class Profile extends Component<UserDto, ProfileState> {
 
 
     };
-    this.openModalHandler = this.openModalHandler.bind(this);
+
     this.clearErrorMessage = this.clearErrorMessage.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
 
@@ -159,7 +158,6 @@ export class Profile extends Component<UserDto, ProfileState> {
         });
       });
   }
-
   public componentDidMount() {
     getUserData()
       .then((response: AxiosResponse<UserDto>) =>
@@ -174,12 +172,7 @@ export class Profile extends Component<UserDto, ProfileState> {
     }
     );
   }
-  public openModalHandler() {
-    this.setState({ isShowModal: true });
-  }
-  public closeModalWindow() {
-    this.setState({ isShowModal: false });
-  }
+
   public render() {
     return (
       <ProfileContext.Provider value={this.state}>

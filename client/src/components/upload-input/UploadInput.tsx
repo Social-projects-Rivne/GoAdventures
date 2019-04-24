@@ -16,7 +16,7 @@ export const UploadInput = (props: UploadInputProps) => {
     let file;
     // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < fileList.length; i++) {
-      file = fileList[i].type.match(/^.*\b(png|jpg|gif)\b.*$/);
+      file = fileList[i].type.match(/^.*\b(png|jpg|gif|jpeg)\b.*$/);
     }
     if (file) {
       return true;

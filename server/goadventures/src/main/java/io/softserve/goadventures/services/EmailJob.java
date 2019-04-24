@@ -33,8 +33,9 @@ public class EmailJob extends QuartzJobBean {
             String location = jobDataMap.getString("location");
             String fullname = jobDataMap.getString("fullname");
             String description = jobDataMap.getString("description");
+            String role = jobDataMap.getString("role");
 
-            emailSenderService.eventEmailNotification(recipientEmail,fullname,eventTopic,startDate,location,description);
+            emailSenderService.eventEmailNotification(recipientEmail,fullname,eventTopic,startDate,location,description,role);
             logger.info("Email sent successfully to " + recipientEmail);
 
         } catch (NoSuchProviderException e) {

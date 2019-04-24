@@ -22,7 +22,6 @@ const Rows = 3;
 export class CreateEvent extends Component<any, any> {
   constructor(props: any) {
     super(props);
-    console.debug(props);
     this.state = {
       newEvent: {
         topic: '',
@@ -57,14 +56,12 @@ export class CreateEvent extends Component<any, any> {
 
   public handleErrors(value: ErrorMessage) {
     this.setState({ errorMessages: { ...value } });
-    console.debug(this.state);
   }
 
   public handleAddGallery(value: GalleryDto) {
     this.setState({
       newEvent: { ...this.state.newEvent, gallery: { ...value } }
     });
-    console.debug(this.state);
   }
 
   public handleTopicChange(event: any) {
@@ -138,7 +135,7 @@ export class CreateEvent extends Component<any, any> {
     if (this.state.newEvent.endDate === 0) {
       await createEvent({ ...this.state.newEvent });
       console.debug(this.state);
-      scheduleEmail({ ...this.state.newEvent });// topic and startDate
+      scheduleEmail({ ...this.state.newEvent }, "owned"); // topic and startDate
       this.setState({ redirect: true });
     } else if (this.state.newEvent.startDate < this.state.newEvent.endDate) {
       createEvent({ ...this.state.newEvent });
@@ -163,12 +160,14 @@ export class CreateEvent extends Component<any, any> {
     }
   }
 
+
   public componentDidMount() {
     setTimeout(() => {
       if (leafletMap) {
         leafletMap.leafletElement.invalidateSize();
       }
     }, 50);
+
   }
 
   public render() {

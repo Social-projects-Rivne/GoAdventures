@@ -8,11 +8,29 @@ import {
   deleteEvent,
   isOwner,
   closeEvent,
-  openEvent
+  openEvent,
+  isSubscribe,
+  subscribe,
+  unSubscribe,
+  scheduleEmail
 } from '../../../api/event.service';
-import { Comments, Gallery, SettingsPanel } from '../../../components';
+import { Feedback, Gallery } from '../../../components';
 import { commentsSchema } from '../../../validationSchemas/commentValidation';
 import './EventDetail.scss';
+import { EventDto } from '../../../interfaces/Event.dto';
+import { withRouter } from 'react-router-dom';
+import { RouterProps, RouteComponentProps } from 'react-router';
+import { addFeedbackRequest } from '../../../api/feedback.service';
+
+interface EventDetailState {
+  routerProps: RouterProps;
+  isOwner: boolean;
+  eventProps: {
+    event: EventDto
+    setEdit: any
+    setIsLoading: any
+  };
+}
 
 
 interface FormValue {
@@ -30,24 +48,17 @@ export class EventDetail extends Component<any, any> {
   }
   constructor(props: any) {
     super(props);
-    // if (this.props.event.id === undefined) {   // redirect from email
-    //   const currentUrl = document.location.href;
-    //   const arrTopic: string[] = currentUrl.split(`detail/`);
-    //   const topic = arrTopic[1];
-    //   console.debug('topic ', topic);
-    // getEventDetail(topic).then((res) => {
-    //   console.debug('res', res.data);
-    //   this.setState({ eventProps: { event: { ...res.data } } });
-    //   console.debug('state', this.state);
-    // }
-    // );
-
-    // }
 
     this.state = {
       eventProps: { ...this.props },
-      isOwner: false
+      isOwner: false,
+      isSubs: true,
+      newEventFeedback: {}
     };
+    this.handleDelete = this.handleDelete.bind(this);
+
+    this.handleClick = this.handleClick.bind(this);
+
     this.handleClose = this.handleClose.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
     console.debug(this.state);
@@ -63,6 +74,20 @@ export class EventDetail extends Component<any, any> {
   }
 
   public componentDidMount() {
+    isSubscribe(this.state.eventProps.event.id)
+      .then(
+        (res: AxiosResponse): any => {
+          this.setState({
+            isSubs: true
+          });
+        }
+      )
+      .catch((error: any) => {
+        this.setState({
+          isSubs: false
+        });
+      });
+
     isOwner(this.state.eventProps.event.id).then(
       (res: AxiosResponse): any => {
         if (res.status >= 200 && res.status <= 300) {
@@ -88,9 +113,32 @@ export class EventDetail extends Component<any, any> {
       }
     );
   }
+  public handleClick() {
+    if (this.state.isSubs) {
+      unSubscribe(this.state.eventProps.event.id).then(
+        (res: AxiosResponse): any => {
+          if (res.status >= 200 && res.status <= 300) {
+            this.setState({
+              isSubs: false
+            });
+          }
+        }
+      );
+    } else {
+      subscribe(this.state.eventProps.event.id).then(
+        (res: AxiosResponse): any => {
+          if (res.status >= 200 && res.status <= 300) {
+            this.setState({
+              isSubs: true
+            });
+          }
+        }
+      );
+      //scheduleEmail(this.state.eventProps);
+    }
+  }
 
   public handleClose() {
-    console.log('status ', this.state.eventProps.event.statusId);
     closeEvent(this.state.eventProps.event.id).then(
       (res: AxiosResponse): any => {
         if (res.status >= 200 && res.status <= 300) {
@@ -138,50 +186,66 @@ export class EventDetail extends Component<any, any> {
                 <div className='col-6'>
                   <div className='d-flex  justify-content-end'>
                     {!this.state.isOwner ? (
-                      <button
-                        type='button'
-                        className='btn btn-outline-info btn-sm'
-                        style={style}
-                      >
-                        Subscribe
-                      </button>
-                    ) : (
                       <div>
-                        <button
-                          onClick={this.handleDelete}
-                          type='button'
-                          className='btn btn-lg btn-outline-danger ml-1'
-                        >
-                          <MdDelete />
-                        </button>
-                        <button
-                          onClick={() => {
-                            this.state.eventProps.setEdit(true);
-                          }}
-                          type='button'
-                          className='btn btn-lg btn-outline-success ml-1'
-                        >
-                          <MdEdit />
-                        </button>
-                        {this.state.eventProps.event.statusId === 2 ? (
+                        {this.state.isSubs ? (
                           <button
-                            onClick={this.handleOpen}
+                            type='button'
+                            className='btn btn-outline-danger btn-sm'
+                            onClick={this.handleClick}
+                          >
+                            Subscribed
+                          </button>
+                        ) : (
+                            <div>
+                              {this.state.eventProps.event.statusId === 2 ? null : (
+                                <button
+                                  type='button'
+                                  className='btn btn-info btn-sm'
+                                  onClick={this.handleClick}
+                                >
+                                  Subscribe
+                          </button>)
+                              }
+                            </div>
+                          )}
+                      </div>
+                    ) : (
+                        <div>
+                          <button
+                            onClick={this.handleDelete}
+                            type='button'
+                            className='btn btn-lg btn-outline-danger ml-1'
+                          >
+                            <MdDelete />
+                          </button>
+                          <button
+                            onClick={() => {
+                              this.state.eventProps.setEdit(true);
+                            }}
                             type='button'
                             className='btn btn-lg btn-outline-success ml-1'
                           >
-                            <MdLockOpen />
+                            <MdEdit />
                           </button>
-                        ) : (
-                          <button
-                            onClick={this.handleClose}
-                            type='button'
-                            className='btn btn-lg btn-outline-warning ml-1'
-                          >
-                            <MdLock />
-                          </button>
-                        )}
-                      </div>
-                    )}
+                          {this.state.eventProps.event.statusId === 2 ? (
+                            <button
+                              onClick={this.handleOpen}
+                              type='button'
+                              className='btn btn-lg btn-outline-success ml-1'
+                            >
+                              <MdLockOpen />
+                            </button>
+                          ) : (
+                              <button
+                                onClick={this.handleClose}
+                                type='button'
+                                className='btn btn-lg btn-outline-warning ml-1'
+                              >
+                                <MdLock />
+                              </button>
+                            )}
+                        </div>
+                      )}
                   </div>
                 </div>
               </div>
@@ -198,8 +262,8 @@ export class EventDetail extends Component<any, any> {
                   {this.state.eventProps.event.endDate === '0'
                     ? ''
                     : this.convertTime(
-                        this.state.eventProps.event.endDate.toString()
-                      )}
+                      this.state.eventProps.event.endDate.toString()
+                    )}
                 </p>
               </div>
 
@@ -228,8 +292,9 @@ export class EventDetail extends Component<any, any> {
                   >
                     <TileLayer
                       attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                      url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                      url='https://tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png'
                     />
+
                     <Marker
                       position={[
                         this.state.eventProps.event.latitude,
@@ -242,7 +307,9 @@ export class EventDetail extends Component<any, any> {
                 </div>
                 {this.state.eventProps.event.location}
               </div>
+
               <hr className='my-4' />
+
               <div>
                 <h3>Comments</h3>
                 <div>
@@ -252,7 +319,16 @@ export class EventDetail extends Component<any, any> {
                     enableReinitialize={true}
                     validateOnBlur={true}
                     validateOnChange={true}
-                    onSubmit={() => { }}
+                    onSubmit={async (values, actions): Promise<void> => {
+                      this.setState({
+                        newEventFeedback: await addFeedbackRequest({
+                          eventId: this.state.eventProps.event.id,
+                          comment: values.comment
+                        })
+                      });
+                      actions.setSubmitting(false);
+                      actions.resetForm();
+                    }}
                     render={(props: FormikProps<FormValue>) => (
                       <Form>
                         <Field
@@ -288,13 +364,10 @@ export class EventDetail extends Component<any, any> {
                 </div>
                 <hr className='my-4' />
                 <div>
-                  <Comments
+                  <Feedback
                     {...{
-                      avatar:
-                        'https://www.kidzone.ws/animal-facts/whales/images/beluga-whale-3.jpg',
-                      participant: 'Jeremy Mafioznik',
-                      text: 'Dolore ipsum',
-                      hashtags: ['pussy', 'money', 'weed']
+                      eventId: this.state.eventProps.event.id,
+                      newFeedback: this.state.newEventFeedback
                     }}
                   />
                 </div>
@@ -306,3 +379,5 @@ export class EventDetail extends Component<any, any> {
     );
   }
 }
+
+withRouter(EventDetail);

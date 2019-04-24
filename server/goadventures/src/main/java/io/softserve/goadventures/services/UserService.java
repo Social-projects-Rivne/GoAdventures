@@ -2,7 +2,6 @@ package io.softserve.goadventures.services;
 
 import io.softserve.goadventures.dto.UserAuthDto;
 import io.softserve.goadventures.enums.UserStatus;
-import io.softserve.goadventures.errors.UserNotFoundException;
 import io.softserve.goadventures.models.User;
 import io.softserve.goadventures.repositories.UserRepository;
 import org.springframework.beans.BeanUtils;
@@ -19,17 +18,12 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    //TODO this method is never used and should be removed. In a case if you need it you can autowire the necessary repository class in a service class.
-    public User getUserById(int id){
+    public User getUserById(int id) {
         return userRepository.findUserById(id);
     }
 
-    public User getUserByEmail(String email) throws UserNotFoundException {
-        if(userRepository.existsByEmail(email)){
-            return userRepository.findByEmail(email);
-        } else {
-            throw new UserNotFoundException("User not found"); //TODO there is no need in this exception. You can simply return null
-        }
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     public User confirmUser(String email) {
@@ -53,28 +47,29 @@ public class UserService {
         return user;
     }
 
-    public String singIn(String email, String password) {
+    public UserStatus singIn(String email, String password) {
+
         if (checkingEmail(email)) {
-            return "User not found";
+            return null;
         } else {
             User user = userRepository.findByEmail(email);
 
             if (BCrypt.checkpw(password, user.getPassword())) {
                 if (user.getStatusId() == UserStatus.PENDING.getUserStatus()) {
-                    return "User is not confirm auth!"; //TODO bad idea with such statuses! enums!
+                    return UserStatus.PENDING;
                 }
                 if (user.getStatusId() == UserStatus.BANNED.getUserStatus()) {
-                    return "User is banned";
+                    return UserStatus.BANNED;
                 }
                 if (user.getStatusId() == UserStatus.DELETED.getUserStatus()) {
-                    return "User is deleted";
+                    return UserStatus.DELETED;
                 }
                 user.setStatusId(UserStatus.ACTIVE.getUserStatus());
                 userRepository.save(user);
 
-                return "User log in";
+                return UserStatus.LOGGING;
             } else {
-                return "User password is wrong";
+                return UserStatus.WRONGPASSWORD;
             }
         }
     }
@@ -93,7 +88,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public boolean checkingEmail(String email){
+    public boolean checkingEmail(String email) {
         return userRepository.findByEmail(email) == null;
     }
 }

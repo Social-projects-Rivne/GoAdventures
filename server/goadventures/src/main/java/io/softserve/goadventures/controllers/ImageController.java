@@ -5,9 +5,10 @@ import io.softserve.goadventures.services.UserService;
 import io.softserve.goadventures.services.FileStorageService;
 import io.softserve.goadventures.services.JWTService;
 import io.softserve.goadventures.models.User;
+import io.softserve.goadventures.errors.ErrorMessageManager;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.mail.MailProperties;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -15,11 +16,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.slf4j.Logger;
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-//TODO add logging to the all controllers, both to the valid case and to the invalid/exception case
 @RestController
 public class ImageController {
 

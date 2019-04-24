@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
@@ -47,8 +48,10 @@ public class Event {
     @Column(name = "status_id")
     private int statusId;
 
-    @JsonManagedReference //TODO it is better to use dto models for json. You need to separate jpa logic from serialization logic.
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, mappedBy = "eventId")
+    @JsonManagedReference // TODO it is better to use dto models for json. You need to separate jpa logic
+                          // from serialization logic.
+    @OneToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE,
+            CascadeType.REFRESH }, mappedBy = "eventId", orphanRemoval = true)
     @JoinColumn(name = "gallery", referencedColumnName = "id")
     private Gallery gallery;
 
@@ -57,11 +60,9 @@ public class Event {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(name = "event_participants", joinColumns = {
-            @JoinColumn(name = "event_id", referencedColumnName = "id") }, inverseJoinColumns = {
-                    @JoinColumn(name = "users_id", referencedColumnName = "id") })
-    private Set<User> participants = new HashSet<>();
+    @JsonIgnore
+    @OneToMany(mappedBy = "event")
+    Set<EventParticipants> participants = new HashSet<>();
 
     @JsonIgnore
     @ManyToOne(cascade = CascadeType.PERSIST)
@@ -82,20 +83,13 @@ public class Event {
 
     @Override
     public String toString() {
-        return "\nEvent{" +
-                "\n\tid=" + id +
-                ", \n\ttopic='" + topic + '\'' +
-                ", \n\tstartDate='" + startDate + '\'' +
-                ", \n\tendDate='" + endDate + '\'' +
-                ", \n\tlocation='" + location + '\'' +
-                ", \n\tdescription='" + description + '\'' +
-                ", \n\tstatusId=" + statusId + '\'' +
-                ", \n\towner=" + owner + '\'' +
-                ", \n\tcategory=" + category.getCategoryName() +
-                ", \n\tparticipants=" + participants +
-                "\n}";
+        return "Event{" + "id=" + id + ", topic='" + topic + '\'' + ", startDate='" + startDate + '\'' + ", endDate='"
+                + endDate + '\'' + ", location='" + location + '\'' + ", latitude='" + latitude + '\'' + ", longitude='"
+                + longitude + '\'' + ", description='" + description + '\'' + ", statusId='" + statusId + '\''
+                + ", owner='" + owner + '\'' + ", category='" + category.getCategoryName() + '\'' + ", participants='"
+                + participants + '\'' + '}';
     }
-//TODO see the comment for User model
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -103,12 +97,11 @@ public class Event {
         if (o == null || getClass() != o.getClass())
             return false;
         Event event = (Event) o;
-        return id == event.id && topic.equals(event.topic) && startDate.equals(event.startDate)
-                && endDate.equals(event.endDate) && location.equals(event.location) && category.equals(event.category);
+        return id == event.id && owner.equals(event.owner);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, topic, startDate, endDate, location, latitude, longitude, category);
+        return Objects.hash(id, owner);
     }
 }

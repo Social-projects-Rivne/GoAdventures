@@ -1,9 +1,9 @@
 package io.softserve.goadventures;
-// TODO remove unused imports
+
 import io.softserve.goadventures.configurations.ApplicationConfiguration;
 import io.softserve.goadventures.configurations.CorsConfiguration;
-import io.softserve.goadventures.configurations.WebAppConfig;
 import io.softserve.goadventures.configurations.FileStorageProperties;
+import io.softserve.goadventures.configurations.WebAppConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -15,10 +15,10 @@ import org.springframework.context.annotation.Import;
 @EnableConfigurationProperties({
         FileStorageProperties.class
 })
-//TODO Use camel case
-public class GoadventuresApplication {
+
+public class GoAdventuresApplication {
   public static void main(String[] args) {
-    SpringApplication.run(GoadventuresApplication.class, args);
+    SpringApplication.run(GoAdventuresApplication.class, args);
   }
 }
 

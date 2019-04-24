@@ -63,31 +63,30 @@ export const EditEvent = (props: EditEvent) => {
   ]);
   const [fetch, setFetch] = useState(false);
 
+  const update = async () => {
+    props.setIsLoading(true);
+    const response = await updateEvent({
+      ...props.event,
+      category,
+      description,
+      latitude: mapCoordiantes[0],
+      ...eventDialog,
+      ...datepick,
+      gallery,
+      location,
+      longitude: mapCoordiantes[1]
+    } as EventDto);
+    props.setEvent({ ...response });
+  };
+
   useEffect(() => {
     if (fetch) {
-      const update = async () => {
-        props.setIsLoading(true);
-        const response = await updateEvent({
-          category,
-          description,
-          latitude: mapCoordiantes[0],
-          ...props.event,
-          ...eventDialog,
-          ...datepick,
-          gallery,
-          location,
-          longitude: mapCoordiantes[1]
-        });
-        props.setEvent({ ...response });
-      };
       setFetch(false);
       update();
       props.setEdit(false);
       props.setIsLoading(false);
-      return () => {};
-    } else {
-      return () => {};
     }
+    return () => {};
   }, [fetch]);
 
   const markerRef = createRef<Marker>();
@@ -202,7 +201,7 @@ export const EditEvent = (props: EditEvent) => {
           >
             End date
           </label>
-          {props.event.endDate === '0' && datepick.endDate != undefined ? (
+          {props.event.endDate === '0' && datepick.endDate !== undefined ? (
             <div className='col-sm-3'>
               <DatePicker
                 id='EndDate'
@@ -247,10 +246,10 @@ export const EditEvent = (props: EditEvent) => {
         <h3>Update your event gallery</h3>
         <UploadInput
           {...{
+            eventId: props.event.id,
             gallery,
             setErrors,
-            setGallery,
-            eventId: props.event.id
+            setGallery
           }}
         />
       </div>
@@ -282,10 +281,12 @@ export const EditEvent = (props: EditEvent) => {
             zoom={zoom}
             className='rounded'
           >
+
             <TileLayer
               attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
               url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
             />
+
             <Marker
               draggable={true}
               ondrag={() => {

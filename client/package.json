@@ -10,7 +10,6 @@
     "@types/react": "^16.8.3",
     "@types/react-datepicker": "^2.2.0",
     "@types/react-dom": "^16.8.1",
-    "@types/react-icons": "^3.0.0",
     "@types/react-infinite-scroll-component": "^4.2.3",
     "@types/react-leaflet": "^2.2.1",
     "@types/react-router-dom": "^4.3.1",

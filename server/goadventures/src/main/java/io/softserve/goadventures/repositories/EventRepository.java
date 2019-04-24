@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
 @Repository
@@ -13,8 +14,6 @@ public interface EventRepository extends PagingAndSortingRepository<Event, Integ
     Event findByTopic(String topic);
 
     Event findById(int id);
-
-    Long countByTopic(String topic); // TODO this method is never used
 
     Page<Event> findByCategoryId(int eventId, Pageable pageable);
 

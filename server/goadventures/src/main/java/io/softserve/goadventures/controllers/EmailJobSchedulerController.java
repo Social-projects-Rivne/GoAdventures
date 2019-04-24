@@ -6,6 +6,8 @@ import io.softserve.goadventures.models.Event;
 import io.softserve.goadventures.models.User;
 import io.softserve.goadventures.services.EmailJob;
 import io.softserve.goadventures.services.EventService;
+import io.softserve.goadventures.services.JWTService;
+import io.softserve.goadventures.services.UserService;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.text.DateFormat;
@@ -32,14 +35,18 @@ public class EmailJobSchedulerController {
 
 
     private EventService eventService;
+    private UserService userService;
+    private final JWTService jwtService;
     @Autowired
-    public EmailJobSchedulerController(EventService eventService) {
+    public EmailJobSchedulerController(EventService eventService, UserService userService, JWTService jwtService) {
         this.eventService = eventService;
+        this.userService = userService;
+        this.jwtService = jwtService;
     }
 
     @PostMapping("/scheduleEmail")
-    public ResponseEntity<ScheduleEmailResponse> scheduleEmail(@Valid @RequestBody EventDTO eventDTO) throws SchedulerException {
-        String message = ""; // owner or subscriber
+    public ResponseEntity<ScheduleEmailResponse> scheduleEmail(@Valid @RequestHeader("Authorization") String token,@RequestHeader("Role") String role, @RequestBody EventDTO eventDTO) throws SchedulerException {
+        logger.info("role- " + role);
         ZoneId defaultZoneId = ZoneId.systemDefault();
 
         Instant instant = Instant.parse(eventDTO.getStartDate());
@@ -53,8 +60,8 @@ public class EmailJobSchedulerController {
         String eventStartDateToUser = dateFormatToUser.format(dateToUser);// date which showed in user mail
         logger.info("date to user " + eventStartDateToUser);
 
-        Event event = eventService.findEventByTopic(eventDTO.getTopic());       //if message = owner
-        User user = event.getOwner();
+        Event event = eventService.findEventByTopic(eventDTO.getTopic());
+        User user = userService.getUserByEmail(jwtService.parseToken(token));
 
         try {
             if(zonedDateTime.isBefore(ZonedDateTime.now())) {
@@ -62,8 +69,7 @@ public class EmailJobSchedulerController {
                         "dateTime must be after current time");
                 return ResponseEntity.badRequest().body(scheduleEmailResponse);
             }
-            //add fullname, eventTopic, StartDate, location, description
-            JobDetail jobDetail = buildJobDetail(user.getEmail(),event.getTopic(),eventStartDateToUser,event.getLocation(),user.getFullname(),event.getDescription());
+            JobDetail jobDetail = buildJobDetail(user.getEmail(),event.getTopic(),eventStartDateToUser,event.getLocation(),user.getFullname(),event.getDescription(),role);
             Trigger trigger = buildJobTrigger(jobDetail, zonedDateTime);
             scheduler.scheduleJob(jobDetail, trigger);
             logger.info("scheduler done");
@@ -80,17 +86,16 @@ public class EmailJobSchedulerController {
 
     }
 
-
-    private JobDetail buildJobDetail(String email,String eventTopic, String startDate, String location, String fullname, String description) {
+    private JobDetail buildJobDetail(String email,String eventTopic, String startDate, String location, String fullname, String description, String role) {
         JobDataMap jobDataMap = new JobDataMap();
 
-        //add fullname, eventTopic, StartDate, location, description
         jobDataMap.put("email", email);
         jobDataMap.put("eventTopic",eventTopic);
         jobDataMap.put("startDate", startDate);
         jobDataMap.put("location", location);
         jobDataMap.put("fullname", fullname);
         jobDataMap.put("description", description);
+        jobDataMap.put("role", role);
 
         return JobBuilder.newJob(EmailJob.class)
                 .withIdentity(UUID.randomUUID().toString(), "email-jobs")

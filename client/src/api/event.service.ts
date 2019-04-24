@@ -3,6 +3,8 @@ import { cookies } from './cookies.service';
 import { EventDto } from '../interfaces/Event.dto';
 import { serverUrl } from './url.config';
 import { date } from 'yup';
+import errorHandle from './error.service';
+
 
 export const getEventList = async (
   nextPage?: string | null,
@@ -20,17 +22,13 @@ export const getEventList = async (
     })
     .then(
       (res: AxiosResponse<EventDto[]>): any => {
-        if (res.status >= 200 && res.status <= 300) {
-          sessionStorage.setItem('nextpage', res.headers.nextpage);
-          return res.data;
-        } else {
-          return { responseStatus: res.status.toString(10) };
-        }
+        sessionStorage.setItem('nextpage', res.headers.nextpage);
+        return res.data;
       }
     )
     .catch((error) => {
       console.debug(error);
-      return error;
+      return errorHandle(error);
     });
 };
 
@@ -132,8 +130,9 @@ export const openEvent = async (data: number): Promise<any> =>
     }
   );
 
-export const updateEvent = async (data: EventDto): Promise<any> =>
-  await axios
+export const updateEvent = async (data: EventDto): Promise<any> => {
+  console.debug('request data', data);
+  return await axios
     .put(
       `${serverUrl}/event/update/${data.id}`,
       { ...data },
@@ -155,6 +154,7 @@ export const updateEvent = async (data: EventDto): Promise<any> =>
       console.error(err);
       return { responseStatus: err };
     });
+};
 
 export const isOwner = async (data: number): Promise<any> =>
   await axios.post(`${serverUrl}/event/isOwner`, null, {
@@ -164,6 +164,34 @@ export const isOwner = async (data: number): Promise<any> =>
       'Content-Type': 'application/json'
     }
   });
+export const isSubscribe = async (data: number): Promise<any> =>
+  await axios.get(`${serverUrl}/event/is-subscriber`, {
+    headers: {
+      'EventId': data,
+      'Authorization': `Bearer ${cookies.get('tk879n')}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
+export const subscribe = async (data: number): Promise<any> =>
+  await axios.post(`${serverUrl}/event/subscribe`, null, {
+    headers: {
+      'EventId': data,
+      'Authorization': `Bearer ${cookies.get('tk879n')}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
+export const unSubscribe = async (data: number): Promise<any> =>
+  await axios.post(`${serverUrl}/event/unsubscribe`, null, {
+    headers: {
+      'EventId': data,
+      'Authorization': `Bearer ${cookies.get('tk879n')}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
+
 export const createEvent = async (data: any): Promise<string> => {
   return await axios
     .post(
@@ -201,7 +229,17 @@ export const getEventDetail = async (topic: any): Promise<EventDto | any> => {
     });
 };
 
-export const scheduleEmail = async (data: any): Promise<any> => {
-  await axios.post(`${serverUrl}/scheduleEmail`, { ...data })
+export const scheduleEmail = async (data: any, Role: string): Promise<any> => {
+  await axios.post(
+    `${serverUrl}/scheduleEmail`,
+    { ...data },
+    {
+      headers: {
+        'Authorization': `Bearer ${cookies.get('tk879n')}`,
+        'Role': Role,
+        'Content-Type': 'application/json'
+      }
+    }
+  )
 
 };
