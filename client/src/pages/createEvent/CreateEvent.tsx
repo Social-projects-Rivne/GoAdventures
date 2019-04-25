@@ -246,7 +246,7 @@ export class CreateEvent extends Component<any, any> {
             <DropDown onCategoryChange={this.handleCategory} />
           </div>
         </div>
-        <div className='form-group row'>
+        <div className='form-group row d-flex align-items-center'>
           <label
             className='col-sm-4 col-form-label text-right'
             htmlFor='StartDate'
