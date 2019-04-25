@@ -26,7 +26,7 @@ export class SearchEvent extends Component<any, any> {
         return (<div>
             <input placeholder='search' onChange={(e: any) => {
                 this.handleChange(e);
-            }}></input>
+            }}/>
         </div>);
     }
 }

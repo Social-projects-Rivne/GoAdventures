@@ -28,7 +28,6 @@ public class WebAppConfig {
             .setSkipNullEnabled(true);
 
     return mapper;
-
   }
 
   @Bean(name = "commonsMultipartResolver")

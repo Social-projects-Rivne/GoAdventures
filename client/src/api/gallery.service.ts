@@ -9,7 +9,7 @@ export const uploadGallery = async (
   eventId?: number
 ): Promise<any> => {
   console.warn('Ce syka',eventId);
-  return await axios
+  return axios
     .post(
       `${serverUrl}/event/gallery/add-new/${eventId ? eventId : ''}`,
       data,
@@ -30,7 +30,7 @@ export const uploadGallery = async (
 };
 
 export const getGallery = async (galleryId: number) => {
-  return await axios
+  return axios
     .get(`${serverUrl}/event/gallery/get/${galleryId}`, {
       headers: {
         'Authorization': `Bearer ${cookies.get('tk879n')}`,
@@ -50,7 +50,7 @@ export const deleteGallery = async (
   galleryId: number,
   mutatedGallery: GalleryDto
 ): Promise<any> => {
-  return await axios
+  return axios
     .put(`${serverUrl}/event/gallery/deatach/${galleryId}`, mutatedGallery, {
       headers: {
         'Authorization': `Bearer ${cookies.get('tk879n')}`,

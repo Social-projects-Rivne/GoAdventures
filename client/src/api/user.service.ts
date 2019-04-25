@@ -15,7 +15,7 @@ function setCookie(res: AxiosResponse) {
   });
 }
 export const getUserData = async (): Promise<AxiosResponse> =>
-  await axios.get(`${serverUrl}/profile/page`, {
+  axios.get(`${serverUrl}/profile/page`, {
     headers: {
       'Authorization': `Bearer ${cookies.get('tk879n')}`,
       'Content-Type': 'application/json'
@@ -23,7 +23,7 @@ export const getUserData = async (): Promise<AxiosResponse> =>
   });
 
 export const changeUserData = async (data: any): Promise<any> => {
-  return await axios
+  return axios
     .put(
       `${serverUrl}/profile/edit-profile`,
       { ...data },
@@ -35,7 +35,7 @@ export const changeUserData = async (data: any): Promise<any> => {
       }
     )
     .then((res) => {
-      console.debug(res)
+      console.debug(res);
       setCookie(res);
       return res;
     });

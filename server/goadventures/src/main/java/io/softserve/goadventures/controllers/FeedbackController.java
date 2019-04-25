@@ -15,36 +15,36 @@ import java.util.Set;
 @RestController()
 @RequestMapping("feedback")
 public class FeedbackController {
-  @Autowired
-  private FeedbackService feedbackService;
+    @Autowired
+    private FeedbackService feedbackService;
 
-  private final ErrorMessageManager errorMessageManager = new ErrorMessageManager();
+    private final ErrorMessageManager errorMessageManager = new ErrorMessageManager();
 
-  @GetMapping("/get-feedback/{eventId}")
-  public ResponseEntity<?> getFeedback(@PathVariable("eventId") int eventId) {
-    Set<FeedbackDTO> eventFeedback = feedbackService.getAllEventFeedback(eventId);
-    return ResponseEntity.ok(eventFeedback);
-  }
-
-  @PostMapping("/add-feedback/")
-  public ResponseEntity<?> addFeedback(@RequestHeader(value = "Authorization") String token,
-                                       @RequestBody FeedbackCreateDTO feedbackDTO) {
-    try {
-      if (feedbackDTO.getEventId() == 0 || (feedbackDTO.getComment() == null)) {
-        return ResponseEntity.badRequest().body(
-                errorMessageManager.initError("Invalid data provided", null));
-      } else {
-        FeedbackDTO newFeedback = feedbackService.addFeedbackToEvent(token, feedbackDTO);
-        if (newFeedback != null) {
-          return ResponseEntity.ok(newFeedback);
-        } else {
-          throw new IOException("Server error, try again later");
-        }
-      }
-    } catch (IOException error) {
-      return ResponseEntity.status(500).body(
-              errorMessageManager.initError(error.getMessage(), null));
+    @GetMapping("/get-feedback/{eventId}")
+    public ResponseEntity<?> getFeedback(@PathVariable("eventId") int eventId) {
+        Set<FeedbackDTO> eventFeedback = feedbackService.getAllEventFeedback(eventId);
+        return ResponseEntity.ok(eventFeedback);
     }
-  }
+
+    @PostMapping("/add-feedback/")
+    public ResponseEntity<?> addFeedback(@RequestHeader(value = "Authorization") String token,
+                                         @RequestBody FeedbackCreateDTO feedbackDTO) {
+        try {
+            if (feedbackDTO.getEventId() == 0 || (feedbackDTO.getComment() == null)) {
+                return ResponseEntity.badRequest().body(
+                        errorMessageManager.initError("Invalid data provided", null));
+            } else {
+                FeedbackDTO newFeedback = feedbackService.addFeedbackToEvent(token, feedbackDTO);
+                if (newFeedback != null) {
+                    return ResponseEntity.ok(newFeedback);
+                } else {
+                    throw new IOException("Server error, try again later");
+                }
+            }
+        } catch (IOException error) {
+            return ResponseEntity.status(500).body(
+                    errorMessageManager.initError(error.getMessage(), null));
+        }
+    }
 
 }

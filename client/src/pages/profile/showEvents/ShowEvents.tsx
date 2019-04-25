@@ -19,7 +19,10 @@ export class ShowEvents extends Component<EventDto, EventState> {
     this.state = {
       events: [
         {
-          category: '',
+          category: {
+            categoryName: '',
+            id: 0
+          },
           description: '',
           endDate: '',
           id: 0,

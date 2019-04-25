@@ -1,0 +1,17 @@
+.about {
+  .card {
+    border-radius: 5px;
+    .card-img-top {
+      height: 200px;
+      border-radius: 5px;
+    }
+  }
+
+  h2 {
+    text-align: center;
+    font-family: "Archivo Black", sans-serif;
+
+    text-transform: uppercase;
+    color: #593196;
+  }
+}

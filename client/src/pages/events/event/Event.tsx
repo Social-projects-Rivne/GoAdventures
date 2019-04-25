@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { RouteComponentProps } from 'react-router';
-import { EventDetail } from '../EventsDetail/EventDetail';
+import EventDetail from '../EventsDetail/EventDetail';
 import { EditEvent } from '../editEvent/EditEvent';
 import { EventDto } from '../../../interfaces/Event.dto';
 import { getEventDetail } from '../../../api/event.service';
+import { ErrorMessageComponent } from '../../../components';
 
 interface EventProps {
   routerProps: RouteComponentProps;
@@ -26,15 +27,13 @@ export const Event = (props: EventProps) => {
       setIsLoading(false);
     };
     if (Object.keys(event).length > 0) {
-      console.debug('yo da');
       setEvent({
         ...props.routerProps.location.state
       } as EventDto);
     } else {
-      console.debug('yo ne');
       fetchData();
     }
-    return () => {};
+    return () => { };
   }, []);
 
   return (
@@ -45,11 +44,15 @@ export const Event = (props: EventProps) => {
             <span className='sr-only'>Loading...</span>
           </div>
         ) : (
-          <EditEvent {...{ event, setEvent, setIsLoading, setEdit }} />
-        )
+            <EventDetail {...{ event, setEdit, setIsLoading }} />
+          )
+
+      ) : edit ? (
+        <EditEvent {...{ event, setEvent, setIsLoading, setEdit }} />
       ) : (
-        <EventDetail {...{ event, setEdit, setIsLoading }} />
-      )}
+            <EventDetail {...{ event, setEdit, setIsLoading }} />
+          )
+      }
     </div>
   );
 };

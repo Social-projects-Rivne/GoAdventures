@@ -11,6 +11,7 @@ import java.io.IOException;
 
 @Component
 public class LoginFilter implements Filter {
+
     private final JWTService jwtService;
 
     @Autowired
@@ -38,12 +39,12 @@ public class LoginFilter implements Filter {
         }
     }
 
-    public HttpServletResponse setUnauthorized(ServletResponse response) {
+    private HttpServletResponse setUnauthorized(ServletResponse response) {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         httpResponse.setStatus(401);
         return httpResponse;
     }
 
     @Override
-    public void init(FilterConfig filterconfig) throws ServletException {}
+    public void init(FilterConfig filterconfig) {}
 }

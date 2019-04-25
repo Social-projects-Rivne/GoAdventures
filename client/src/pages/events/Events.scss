@@ -1,34 +1,45 @@
-.search-comp{
-    font-size: 1.5rem;
-    margin: 10px;
-    margin-left: 10%;
-    margin-right: 10%;
-    text-align: center;
+.search-comp {
+  font-size: 1.5rem;
+  margin: 10px;
+  margin-left: 10%;
+  margin-right: 10%;
+  text-align: center;
 }
-@media screen and (max-width: 600px) {
-.card-columns { 
+.mylabel {
+  border-bottom-left-radius: 0.25rem !important;
+  border-top-left-radius: 0.25rem !important;
+}
+.myinput {
+  border-radius: 0rem !important;
+  border-bottom-right-radius: 0.25rem !important;
+  border-top-right-radius: 0.25rem !important;
+}
+.Category{
+  height:100%
+}
 
-        column-count: 2 !important;
-      
-      transition: background-color 1s ease-out 0.5s;
-           
-      :hover{
-          background-color: gainsboro;
-          border-color: #593196 ;
-      }
+@media screen and (max-width: 600px) {
+  .card-columns {
+    column-count: 2 !important;
+
+    transition: background-color 1s ease-out 0.5s;
+
+    :hover {
+      background-color: gainsboro;
+      border-color: #593196;
+    }
   }
 }
 
 @media screen and (min-width: 650px) {
-    .card-columns { 
-    
-            column-count: 5 !important;
-          
-          transition: background-color 1s ease-out 0.5s;
-               
-          :hover{
-              background-color: gainsboro;
-              border-color: #593196 ;
-          }
-      }
+  .card-columns {
+    column-count: 5 !important;
+
+    transition: background-color 1s ease-out 0.5s;
+
+    :hover {
+      background-color: gainsboro;
+      border-color: #593196;
     }
+  }
+}

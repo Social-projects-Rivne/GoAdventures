@@ -11,34 +11,31 @@ import {
   openEvent,
   isSubscribe,
   subscribe,
-  unSubscribe,
-  scheduleEmail
+  unSubscribe
 } from '../../../api/event.service';
 import { Feedback, Gallery } from '../../../components';
 import { commentsSchema } from '../../../validationSchemas/commentValidation';
 import './EventDetail.scss';
 import { EventDto } from '../../../interfaces/Event.dto';
 import { withRouter } from 'react-router-dom';
-import { RouterProps, RouteComponentProps } from 'react-router';
+import { RouterProps } from 'react-router';
 import { addFeedbackRequest } from '../../../api/feedback.service';
 
 interface EventDetailState {
   routerProps: RouterProps;
   isOwner: boolean;
   eventProps: {
-    event: EventDto
-    setEdit: any
-    setIsLoading: any
+    event: EventDto;
+    setEdit: any;
+    setIsLoading: any;
   };
 }
-
 
 interface FormValue {
   comment: string;
 }
 
-
-export class EventDetail extends Component<any, any> {
+class EventDetail extends Component<any, any> {
   public static getDerivedStateFromProps(nextProps: any, prevState: any): any {
     if (Object.is(nextProps.event, prevState.eventProps.event) === false) {
       return { ...prevState, eventProps: { ...nextProps } };
@@ -48,21 +45,19 @@ export class EventDetail extends Component<any, any> {
   }
   constructor(props: any) {
     super(props);
-
     this.state = {
       eventProps: { ...this.props },
       isOwner: false,
       isSubs: true,
       newEventFeedback: {}
     };
+    console.debug(this.props);
     this.handleDelete = this.handleDelete.bind(this);
 
     this.handleClick = this.handleClick.bind(this);
 
     this.handleClose = this.handleClose.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
-    console.debug(this.state);
-
   }
 
   public convertTime(date: string) {
@@ -107,13 +102,13 @@ export class EventDetail extends Component<any, any> {
     deleteEvent(this.state.eventProps.event.id).then(
       (res: AxiosResponse): any => {
         if (res.status >= 200 && res.status <= 300) {
-          this.props.routerProps.history.push('/profile');
+          this.props.history.push('/profile');
         } else {
         }
       }
     );
   }
-  public async handleClick() {
+  public handleClick() {
     if (this.state.isSubs) {
       unSubscribe(this.state.eventProps.event.id).then(
         (res: AxiosResponse): any => {
@@ -125,7 +120,7 @@ export class EventDetail extends Component<any, any> {
         }
       );
     } else {
-      await subscribe(this.state.eventProps.event.id).then(
+      subscribe(this.state.eventProps.event.id).then(
         (res: AxiosResponse): any => {
           if (res.status >= 200 && res.status <= 300) {
             this.setState({
@@ -134,8 +129,6 @@ export class EventDetail extends Component<any, any> {
           }
         }
       );
-      console.log(this.state.eventProps);
-      scheduleEmail(this.state.eventProps.event, "subscribed");
     }
   }
 
@@ -143,7 +136,7 @@ export class EventDetail extends Component<any, any> {
     closeEvent(this.state.eventProps.event.id).then(
       (res: AxiosResponse): any => {
         if (res.status >= 200 && res.status <= 300) {
-          this.props.routerProps.history.push('/profile');
+          this.props.history.push('/profile');
         } else {
         }
       }
@@ -154,7 +147,7 @@ export class EventDetail extends Component<any, any> {
     openEvent(this.state.eventProps.event.id).then(
       (res: AxiosResponse): any => {
         if (res.status >= 200 && res.status <= 300) {
-          this.props.routerProps.history.push('/profile');
+          this.props.history.push('/profile');
         } else {
         }
       }
@@ -198,15 +191,16 @@ export class EventDetail extends Component<any, any> {
                           </button>
                         ) : (
                             <div>
-                              {this.state.eventProps.event.statusId === 2 ? null : (
-                                <button
-                                  type='button'
-                                  className='btn btn-info btn-sm'
-                                  onClick={this.handleClick}
-                                >
-                                  Subscribe
-                          </button>)
-                              }
+                              {this.state.eventProps.event.statusId ===
+                                2 ? null : (
+                                  <button
+                                    type='button'
+                                    className='btn btn-info btn-sm'
+                                    onClick={this.handleClick}
+                                  >
+                                    Subscribe
+                              </button>
+                                )}
                             </div>
                           )}
                       </div>
@@ -381,4 +375,4 @@ export class EventDetail extends Component<any, any> {
   }
 }
 
-withRouter(EventDetail);
+export default withRouter(EventDetail);
