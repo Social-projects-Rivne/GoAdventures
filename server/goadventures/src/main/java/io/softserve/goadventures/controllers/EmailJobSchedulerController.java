@@ -72,7 +72,7 @@ public class EmailJobSchedulerController {
             JobDetail jobDetail = buildJobDetail(user.getEmail(),event.getTopic(),eventStartDateToUser,event.getLocation(),user.getFullname(),event.getDescription(),role);
             Trigger trigger = buildJobTrigger(jobDetail, zonedDateTime);
             scheduler.scheduleJob(jobDetail, trigger);
-            logger.info("scheduler done");
+            logger.info("scheduler done, triger will executed at "+ zonedDateTime);
             ScheduleEmailResponse scheduleEmailResponse = new ScheduleEmailResponse(true,
                     jobDetail.getKey().getName(), jobDetail.getKey().getGroup(), "Email Scheduled Successfully!");
             return ResponseEntity.ok(scheduleEmailResponse);
