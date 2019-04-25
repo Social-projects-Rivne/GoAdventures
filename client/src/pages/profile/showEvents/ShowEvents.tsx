@@ -82,7 +82,11 @@ export class ShowEvents extends Component<EventDto, EventState> {
               dataLength={this.state.events.length} // This is important field to render the next data
               next={this.fetchEvents}
               hasMore={!this.state.pageSettings.isLast}
-              loader={<h4>Loading...</h4>}
+              loader={<div className='d-flex justify-content-center'>
+              <div className='spinner-grow' role='status'>
+                <span className='sr-only'>Loading...</span>
+              </div>
+            </div>}
               endMessage={<p style={{ textAlign: 'center' }} />}
             >
               {this.state.events.map((event, index) => (

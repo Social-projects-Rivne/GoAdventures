@@ -18,7 +18,7 @@ import { commentsSchema } from '../../../validationSchemas/commentValidation';
 import './EventDetail.scss';
 import { EventDto } from '../../../interfaces/Event.dto';
 import { withRouter } from 'react-router-dom';
-import { RouterProps, RouteComponentProps } from 'react-router';
+import { RouterProps } from 'react-router';
 import { addFeedbackRequest } from '../../../api/feedback.service';
 
 interface EventDetailState {
@@ -191,16 +191,17 @@ class EventDetail extends Component<any, any> {
                           </button>
                         ) : (
                           <div>
-                            {this.state.eventProps.event.statusId === 2 ? null : (
-                          <button
-                            type='button'
-                            className='btn btn-info btn-sm'
-                            onClick={this.handleClick}
-                          >
-                            Subscribe
-                          </button>) 
-                            }
-                            </div>
+                            {this.state.eventProps.event.statusId ===
+                            2 ? null : (
+                              <button
+                                type='button'
+                                className='btn btn-info btn-sm'
+                                onClick={this.handleClick}
+                              >
+                                Subscribe
+                              </button>
+                            )}
+                          </div>
                         )}
                       </div>
                     ) : (

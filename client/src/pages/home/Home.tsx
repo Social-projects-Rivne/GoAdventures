@@ -17,6 +17,7 @@ import './Home.scss';
 export class Home extends Component<RouterProps, any> {
   private signUpDialogStyles: CSSProperties = {
     height: '30rem',
+    width: '20rem',
     maxHeight: '30rem',
     maxWidth: '20rem',
     opacity: 0.9
@@ -133,7 +134,7 @@ export class Home extends Component<RouterProps, any> {
                           button_text='Sign in'
                           header='Sign in for adventures'
                           childComponents={
-                            <div className='text-center'>
+                            <div className='text-center w-100'>
                               <h3>Sign in with</h3>
                               <div className='d-flex flex-row justify-content-around align-self-center'>
                                 <a href='#'>

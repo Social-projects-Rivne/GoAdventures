@@ -1,7 +1,13 @@
 @import url("https://fonts.googleapis.com/css?family=Archivo+Black");
+
 .Home-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
   width: 100%;
-  height: 100vh;
+
   background-image: url("../../assets/images/background.jpg");
   background-repeat: no-repeat;
   background-size: cover;
@@ -13,6 +19,7 @@
     justify-content: right;
     height: 100%;
     margin: 15px;
+
     & .alert {
       position: absolute;
       z-index: 1;
@@ -23,6 +30,7 @@
     height: auto;
     margin: 5px 2px 5px 2px;
     padding: 5px;
+
     & h2 {
       font-family: "Archivo Black", sans-serif;
       font-size: 4vw;
