@@ -49,16 +49,16 @@ export class EventsListBuild extends React.Component<EventDto, any> {
           alt='Card image cap'
         />
         <div className='card-body'>
-        <small className='text-muted text-right '>{this.props.statusId === 2 ? (
-            <p style={{ color: 'red' }}>CLOSED</p>
-          ) : null}
-</small>
+          <small className='text-muted text-right '>
+            {this.props.statusId === 2 ? (
+              <p style={{ color: 'red' }}>CLOSED</p>
+            ) : null}
+          </small>
           <h5 className='card-title'>{this.props.topic}</h5>
           <h6 className=' row location' > {this.props.location}</h6>
           <div className='row category'>
             <p>{this.props.category.categoryName}</p>
           </div>
-
         </div>
       </div>
     );

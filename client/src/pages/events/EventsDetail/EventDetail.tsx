@@ -11,7 +11,8 @@ import {
   openEvent,
   isSubscribe,
   subscribe,
-  unSubscribe
+  unSubscribe,
+  scheduleEmail
 } from '../../../api/event.service';
 import { Feedback, Gallery } from '../../../components';
 import { commentsSchema } from '../../../validationSchemas/commentValidation';
@@ -108,7 +109,7 @@ class EventDetail extends Component<any, any> {
       }
     );
   }
-  public handleClick() {
+  public async handleClick() {
     if (this.state.isSubs) {
       unSubscribe(this.state.eventProps.event.id).then(
         (res: AxiosResponse): any => {
@@ -120,7 +121,7 @@ class EventDetail extends Component<any, any> {
         }
       );
     } else {
-      subscribe(this.state.eventProps.event.id).then(
+      await subscribe(this.state.eventProps.event.id).then(
         (res: AxiosResponse): any => {
           if (res.status >= 200 && res.status <= 300) {
             this.setState({
@@ -129,6 +130,8 @@ class EventDetail extends Component<any, any> {
           }
         }
       );
+      console.log(this.state.eventProps);
+      scheduleEmail(this.state.eventProps.event, "subscribed");
     }
   }
 

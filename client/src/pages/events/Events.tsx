@@ -39,7 +39,6 @@ export class Events extends Component<EventDto, EventState> {
   }
 
   public handleCategory(category: any) {
-    console.log('==== ' + category);
     this.fetchSearchEvent(category);
   }
 
@@ -92,7 +91,13 @@ export class Events extends Component<EventDto, EventState> {
               dataLength={this.state.events ? this.state.events.length : 0}
               next={this.fetchEvents}
               hasMore={!this.state.pageSettings.isLast}
-              loader={<h4>Loading...</h4>}
+              loader={
+                <div className='d-flex justify-content-center'>
+                  <div className='spinner-grow' role='status'>
+                    <span className='sr-only'>Loading...</span>
+                  </div>
+                </div>
+              }
               endMessage={
                 <p style={{ textAlign: 'center' }}>
                   <b>Yay! You have seen it all</b>
@@ -103,11 +108,12 @@ export class Events extends Component<EventDto, EventState> {
                 <form
                   onSubmit={(e: any) => {
                     e.preventDefault();
+                    e.target.reset();
                     this.fetchSearchEvent();
                   }}
                 >
-                  <div className='row mb-3 '>
-                    <div className='col-8'>
+                  <div className='row mb-3 align-items-center'>
+                    <div className='col-7'>
                       <div className='input-group input-group-lg '>
                         <div className='input-group-prepend'>
                           <span
@@ -135,6 +141,11 @@ export class Events extends Component<EventDto, EventState> {
                           onCategoryChange: this.handleCategory
                         }}
                       />
+                    </div>
+                    <div className='col-1'>
+                      <button className='btn-md btn-primary rounded' onClick={() => {
+                        this.fetchEvents();
+                      }} >Clear</button>
                     </div>
                   </div>
                 </form>
