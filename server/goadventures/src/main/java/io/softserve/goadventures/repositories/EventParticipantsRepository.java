@@ -6,7 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EventParticipantsRepository extends JpaRepository<EventParticipants, Integer> {
-
     EventParticipants findById(int id);
-
 }

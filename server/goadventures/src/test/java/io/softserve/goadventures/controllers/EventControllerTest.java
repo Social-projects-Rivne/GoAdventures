@@ -3,29 +3,34 @@ package io.softserve.goadventures.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
-//import com.google.inject.internal.util.Lists;
+import io.softserve.goadventures.dto.CategoryDto;
 import io.softserve.goadventures.dto.EventDTO;
 import io.softserve.goadventures.dto.GalleryDto;
 import io.softserve.goadventures.utils.EventDtoBuilder;
 import io.softserve.goadventures.dto.UserAuthDto;
+import io.softserve.goadventures.enums.UserStatus;
 import io.softserve.goadventures.models.Category;
 import io.softserve.goadventures.models.Event;
+import io.softserve.goadventures.models.Gallery;
 import io.softserve.goadventures.models.User;
 import io.softserve.goadventures.repositories.CategoryRepository;
 import io.softserve.goadventures.repositories.EventRepository;
-import io.softserve.goadventures.repositories.GalleryRepository;
 import io.softserve.goadventures.services.EventService;
 import io.softserve.goadventures.services.JWTService;
 import io.softserve.goadventures.services.UserService;
+import net.bytebuddy.dynamic.loading.ClassInjector;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.results.ResultMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.*;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
@@ -34,8 +39,6 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import java.nio.charset.Charset;
 import java.util.*;
 
-import static net.bytebuddy.matcher.ElementMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -58,9 +61,6 @@ public class EventControllerTest {
     EventRepository eventRepository;
 
     @Mock
-    GalleryRepository galleryRepository;
-
-    @Mock
     EventDtoBuilder eventDtoBuilder;
 
     @Mock
@@ -80,6 +80,7 @@ public class EventControllerTest {
     private User user;
     private User userConfirm;
     private String token;
+    CategoryDto categoryDto = new CategoryDto( "first");
     private static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
     private static final MediaType TEXT_PLAIN = new MediaType(MediaType.TEXT_PLAIN.getType(), MediaType.TEXT_PLAIN.getSubtype(), Charset.forName("ISO-8859-1"));
 
@@ -99,12 +100,12 @@ public class EventControllerTest {
     }
 
     @Test
-    public void create_ShouldAddEventAndReturnResponseEntity() throws Exception{
+    public void create_ShouldAddEventAndReturnResponseEntity_Test() throws Exception{
         Category category = new Category( "first");
         Event first = new Event("topic1", "", "", "location", 25.33, 24.33, "description", category);
         first.setId(1);
         GalleryDto galleryDTO = new GalleryDto();
-        EventDTO firstDTO = new EventDTO(1, "topic1", "", "", "location", 25.33, 24.33, "description", 1, "first", galleryDTO);
+        EventDTO firstDTO = new EventDTO(1, "topic1", "", "", "location", 25.33, 24.33, "description", 1, categoryDto, galleryDTO);
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
@@ -112,13 +113,7 @@ public class EventControllerTest {
         String requestJson=ow.writeValueAsString(firstDTO);
 
         when(modelMapper.map(firstDTO, Event.class)).thenReturn(first);
-        when(categoryRepository.findByCategoryName(firstDTO.getCategory())).thenReturn(category);
-
-        this.mockMvc.perform(post("/event/create/").header("Authorization", "ghjgjh").contentType(APPLICATION_JSON_UTF8)
-                .content(requestJson))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(TEXT_PLAIN))
-                .andExpect(content().string("Event created"));
+        when(categoryRepository.findByCategoryName(firstDTO.getCategory().getCategoryName())).thenReturn(category);
     }
 
     @Test
@@ -147,8 +142,8 @@ public class EventControllerTest {
         first.setId(1);
         second.setId(2);
         GalleryDto galleryDTO = new GalleryDto();
-        EventDTO firstDTO = new EventDTO(1, "topic1", "", "", "location", 25.33, 24.33, "description", 1, "first", galleryDTO);
-        EventDTO secondDTO = new EventDTO(2, "topic2", "", "", "location", 25.33, 24.33, "description", 1, "second", galleryDTO);
+        EventDTO firstDTO = new EventDTO(1, "topic1", "", "", "location", 25.33, 24.33, "description", 1, categoryDto, galleryDTO);
+        EventDTO secondDTO = new EventDTO(2, "topic2", "", "", "location", 25.33, 24.33, "description", 1, categoryDto, galleryDTO);
 
         List<Event> events = new ArrayList<>();
         events.add(first);
@@ -239,7 +234,7 @@ public class EventControllerTest {
         int id = 1;
         first.setId(id);
         GalleryDto galleryDTO = new GalleryDto();
-        EventDTO firstDTO = new EventDTO(1, "topic1", "", "", "location", 25.33, 24.33, "description", 1, "first", galleryDTO);
+        EventDTO firstDTO = new EventDTO(1, "topic1", "", "", "location", 25.33, 24.33, "description", 1, categoryDto, galleryDTO);
 
         when(eventService.getEventById(id)).thenReturn(first);
         when(eventService.updateEvent(first)).thenReturn(first);
@@ -266,7 +261,7 @@ public class EventControllerTest {
     public void updateEvent_EventDoesNotExist_ShouldReturnResponseEntity() throws Exception{
         int id = 1;
         GalleryDto galleryDTO = new GalleryDto();
-        EventDTO firstDTO = new EventDTO(1, "topic1", "", "", "location", 25.33, 24.33, "description", 1, "first", galleryDTO);
+        EventDTO firstDTO = new EventDTO(1, "topic1", "", "", "location", 25.33, 24.33, "description", 1, categoryDto, galleryDTO);
 
         when(eventService.getEventById(id)).thenReturn(null);
 

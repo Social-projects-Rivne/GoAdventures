@@ -22,7 +22,6 @@ public interface EventRepository extends PagingAndSortingRepository<Event, Integ
     List<Event> findAll();
 
     Page<Event> findAllByCategory(Pageable pageable, Category category);
-
 }
 
 

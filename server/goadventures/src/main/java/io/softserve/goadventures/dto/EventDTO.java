@@ -26,7 +26,7 @@ public class EventDTO {
 
     private int statusId;
 
-    private String category;
+    private CategoryDto category;
 
     private GalleryDto gallery;
 }

@@ -1,15 +1,19 @@
 import axios from 'axios';
-import React, { Component } from 'react';
+import React, { Component, ChangeEvent } from 'react';
 import { DropDownSettings } from './dropDown.interface';
 
-export class DropDown extends Component<any, DropDownSettings> {
-  public state: DropDownSettings = {
-    categories: [],
-    categ: ''
-  };
+interface DropDownProps {
+  onCategoryChange: any;
+  customClassName?: string;
+}
 
-  constructor(props: DropDownSettings) {
+export class DropDown extends Component<DropDownProps, DropDownSettings> {
+  constructor(props: DropDownProps) {
     super(props);
+    this.state = {
+      categories: [],
+      categ: ''
+    };
     this.handleChange = this.handleChange.bind(this);
   }
 
@@ -26,8 +30,11 @@ export class DropDown extends Component<any, DropDownSettings> {
     });
   }
 
-  public handleChange(e: any) {
-    this.props.onCategoryChange(e.target.value);
+  public handleChange(e: ChangeEvent<HTMLSelectElement>) {
+    console.warn(this.props.onCategoryChange);
+    if (!!this.props.onCategoryChange) {
+      this.props.onCategoryChange(e.target.value);
+    }
   }
 
   public render() {
@@ -36,9 +43,8 @@ export class DropDown extends Component<any, DropDownSettings> {
       return <div />;
     } else {
       return (
-
-        <div className="input-group">
-          <select className="custom-select select" onChange={this.handleChange}>
+        <div className={`input-group ${this.props.customClassName}`}>
+          <select className='custom-select select' onChange={this.handleChange}>
             {this.state.categories.map((option, index) => (
               <option key={index} value={option.categoryName}>
                 {option.categoryName}

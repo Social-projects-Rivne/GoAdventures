@@ -10,9 +10,9 @@ export interface UserDto {
 
   phone?: string;
   role?: string;
-  //statusId?: string;
-  //id?: string;
+  // statusId?: string;
+  // id?: string;
 
-  //show?: boolean;
-  //errorMesage?: boolean;
+  // show?: boolean;
+  // errorMesage?: boolean;
 }

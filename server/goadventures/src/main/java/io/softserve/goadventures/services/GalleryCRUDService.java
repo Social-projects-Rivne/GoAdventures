@@ -17,5 +17,4 @@ public class GalleryCRUDService {
     public Gallery updateGallery(Gallery mutatedGallery) {
         return galleryRepository.save( mutatedGallery );
     }
-
 }

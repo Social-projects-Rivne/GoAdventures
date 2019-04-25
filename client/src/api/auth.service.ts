@@ -20,7 +20,7 @@ function setCookie(res: AxiosResponse) {
 }
 
 export const signUp = async (data: UserDto): Promise<string> => {
-  return await axios
+  return axios
     .post(
       `${serverUrl}/auth/sign-up`,
       { ...data },
@@ -36,7 +36,7 @@ export const signUp = async (data: UserDto): Promise<string> => {
 };
 
 export const signIn = async (data: UserDto): Promise<string> => {
-  return await axios
+  return axios
     .post(
       `${serverUrl}/auth/sign-in`,
       { ...data },
@@ -58,7 +58,7 @@ export const signIn = async (data: UserDto): Promise<string> => {
 
 export const confirmAccount = async (data: any): Promise<string> => {
   const { param } = data;
-  return await axios
+  return axios
     .get(`${serverUrl}/auth/confirm-account${param}`, {
       headers: { 'Content-Type': 'application/text' }
     })
@@ -77,7 +77,7 @@ export const confirmAccount = async (data: any): Promise<string> => {
 };
 
 export const sentRecoveryEmail = async (data: any): Promise<any> => {
-  return await axios
+  return axios
     .get(`${serverUrl}/auth/recovery${data}`, {
       headers: { 'Content-Type': 'application/text' }
     })
@@ -88,7 +88,7 @@ export const sentRecoveryEmail = async (data: any): Promise<any> => {
 };
 
 export const signOut = async (): Promise<string> => {
-  return await axios
+  return axios
     .put(`${serverUrl}/auth/sign-out`, null, {
       headers: {
         Authorization: `Bearer ${cookies.get('tk879n')}`

@@ -26,7 +26,7 @@ export class AddEventBtn extends Component<any, any> {
           <FaPlus />
           {this.state.redirect ? (
             <Redirect
-              push
+              push={true}
               to={{
                 pathname: `/create-event`,
                 state: {

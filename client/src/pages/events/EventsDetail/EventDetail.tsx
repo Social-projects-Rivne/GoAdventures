@@ -25,9 +25,9 @@ interface EventDetailState {
   routerProps: RouterProps;
   isOwner: boolean;
   eventProps: {
-    event: EventDto
-    setEdit: any
-    setIsLoading: any
+    event: EventDto;
+    setEdit: any;
+    setIsLoading: any;
   };
 }
 
@@ -35,7 +35,7 @@ interface FormValue {
   comment: string;
 }
 
-export class EventDetail extends Component<any, any> {
+class EventDetail extends Component<any, any> {
   public static getDerivedStateFromProps(nextProps: any, prevState: any): any {
     if (Object.is(nextProps.event, prevState.eventProps.event) === false) {
       return { ...prevState, eventProps: { ...nextProps } };
@@ -51,6 +51,7 @@ export class EventDetail extends Component<any, any> {
       isSubs: true,
       newEventFeedback: {}
     };
+    console.debug(this.props);
     this.handleDelete = this.handleDelete.bind(this);
 
     this.handleClick = this.handleClick.bind(this);
@@ -101,7 +102,7 @@ export class EventDetail extends Component<any, any> {
     deleteEvent(this.state.eventProps.event.id).then(
       (res: AxiosResponse): any => {
         if (res.status >= 200 && res.status <= 300) {
-          this.props.routerProps.history.push('/profile');
+          this.props.history.push('/profile');
         } else {
         }
       }
@@ -135,7 +136,7 @@ export class EventDetail extends Component<any, any> {
     closeEvent(this.state.eventProps.event.id).then(
       (res: AxiosResponse): any => {
         if (res.status >= 200 && res.status <= 300) {
-          this.props.routerProps.history.push('/profile');
+          this.props.history.push('/profile');
         } else {
         }
       }
@@ -146,7 +147,7 @@ export class EventDetail extends Component<any, any> {
     openEvent(this.state.eventProps.event.id).then(
       (res: AxiosResponse): any => {
         if (res.status >= 200 && res.status <= 300) {
-          this.props.routerProps.history.push('/profile');
+          this.props.history.push('/profile');
         } else {
         }
       }
@@ -373,4 +374,4 @@ export class EventDetail extends Component<any, any> {
   }
 }
 
-withRouter(EventDetail);
+export default withRouter(EventDetail);

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { RouteComponentProps } from 'react-router';
-import { EventDetail } from '../EventsDetail/EventDetail';
+import EventDetail from '../EventsDetail/EventDetail';
 import { EditEvent } from '../editEvent/EditEvent';
 import { EventDto } from '../../../interfaces/Event.dto';
 interface EventProps {

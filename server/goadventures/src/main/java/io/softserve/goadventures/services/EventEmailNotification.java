@@ -17,21 +17,17 @@ import java.util.TimeZone;
 
 @RestController
 public class EventEmailNotification {
-
     private final Logger logger = LoggerFactory.getLogger(EventEmailNotification.class);
 
     @Autowired
     private MailContentBuilder mailContentBuilder;
     private EventService eventService;
 
-
     public EventEmailNotification(MailContentBuilder mailContentBuilder, EventService eventService) {
         this.mailContentBuilder = mailContentBuilder;
         this.eventService = eventService;
 
     }
-
-    //@Scheduled(cron = "0 0 9 ? * * ") // every day at 9 am
 
     @Async
     @Scheduled(cron = "0 10 12 ? * * ") // every day at 9 am
@@ -60,14 +56,7 @@ public class EventEmailNotification {
             if((dayNow+1) == dayOfStartEvent){
                  emailSenderService.eventEmailNotification(event.getOwner().getEmail(),event.getOwner().getFullname(),event.getTopic());
                  logger.info("Email sent successfully to "+ event.getOwner().getEmail());
-
             }
-
         }
-
     }
-
-
-
-
 }

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>io.softserve.goadventures.controllers.AuthController</OriginalElement>
+  <nodes>
+    <node x="566.0" y="1643.0">io.softserve.goadventures.controllers.UserController</node>
+    <node x="4229.57619047619" y="12.0">javax.servlet.ServletConfig</node>
+    <node x="4103.822619047619" y="644.0">javax.servlet.http.HttpServlet</node>
+    <node x="3824.5761904761903" y="0.0">javax.servlet.Servlet</node>
+    <node x="2210.5" y="849.0">org.springframework.web.bind.annotation.RequestMapping</node>
+    <node x="701.7214285714285" y="933.0">org.springframework.web.bind.annotation.RestController</node>
+    <node x="3539.697619047619" y="812.5">org.springframework.web.bind.annotation.CrossOrigin</node>
+    <node x="4644.57619047619" y="60.0">java.io.Serializable</node>
+    <node x="3709.0" y="1535.0">io.softserve.goadventures.controllers.AuthController</node>
+    <node x="849.0" y="1427.0">io.softserve.goadventures.controllers.EventController</node>
+    <node x="4143.822619047619" y="201.0">javax.servlet.GenericServlet</node>
+    <node x="2756.0" y="1523.0">io.softserve.goadventures.controllers.ProfileController</node>
+    <node x="0.0" y="1595.0">io.softserve.goadventures.controllers.AvatarController</node>
+    <node x="1941.0" y="1523.0">io.softserve.goadventures.controllers.GalleryController</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="io.softserve.goadventures.controllers.ProfileController" target="org.springframework.web.bind.annotation.RequestMapping">
+      <point x="0.0" y="-172.5" />
+      <point x="3222.5" y="1327.0" />
+      <point x="2389.7" y="1327.0" />
+      <point x="51.19999999999982" y="111.5" />
+    </edge>
+    <edge source="io.softserve.goadventures.controllers.EventController" target="org.springframework.web.bind.annotation.CrossOrigin">
+      <point x="357.3333333333335" y="-268.5" />
+      <point x="1742.3333333333335" y="1387.0" />
+      <point x="3583.947619047619" y="1387.0" />
+      <point x="-132.75" y="148.0" />
+    </edge>
+    <edge source="io.softserve.goadventures.controllers.GalleryController" target="org.springframework.web.bind.annotation.RestController">
+      <point x="-265.0" y="-172.5" />
+      <point x="2073.5" y="1347.0" />
+      <point x="795.6380952380955" y="1347.0" />
+      <point x="13.41666666666697" y="27.5" />
+    </edge>
+    <edge source="io.softserve.goadventures.controllers.AvatarController" target="org.springframework.web.bind.annotation.RestController">
+      <point x="0.0" y="-100.5" />
+      <point x="273.0" y="1397.0" />
+      <point x="715.138095238095" y="1397.0" />
+      <point x="-67.08333333333348" y="27.5" />
+    </edge>
+    <edge source="io.softserve.goadventures.controllers.UserController" target="org.springframework.web.bind.annotation.RequestMapping">
+      <point x="65.75" y="-52.5" />
+      <point x="763.25" y="1367.0" />
+      <point x="2236.1" y="1367.0" />
+      <point x="-102.40000000000009" y="111.5" />
+    </edge>
+    <edge source="io.softserve.goadventures.controllers.GalleryController" target="org.springframework.web.bind.annotation.CrossOrigin">
+      <point x="265.0" y="-172.5" />
+      <point x="2603.5" y="1397.0" />
+      <point x="3672.447619047619" y="1397.0" />
+      <point x="-44.25" y="148.0" />
+    </edge>
+    <edge source="javax.servlet.GenericServlet" target="java.io.Serializable">
+      <point x="131.66666666666663" y="-196.5" />
+      <point x="4472.989285714286" y="176.0" />
+      <point x="4707.57619047619" y="176.0" />
+      <point x="0.0" y="15.5" />
+    </edge>
+    <edge source="io.softserve.goadventures.controllers.EventController" target="org.springframework.web.bind.annotation.RestController">
+      <point x="-357.33333333333303" y="-268.5" />
+      <point x="1027.666666666667" y="1357.0" />
+      <point x="768.804761904762" y="1357.0" />
+      <point x="-13.416666666666515" y="27.5" />
+    </edge>
+    <edge source="io.softserve.goadventures.controllers.AuthController" target="org.springframework.web.bind.annotation.RestController">
+      <point x="-255.0" y="-160.5" />
+      <point x="3794.0" y="1317.0" />
+      <point x="849.3047619047616" y="1317.0" />
+      <point x="67.08333333333303" y="27.5" />
+    </edge>
+    <edge source="io.softserve.goadventures.controllers.ProfileController" target="org.springframework.web.bind.annotation.RestController">
+      <point x="-311.0" y="-172.5" />
+      <point x="2911.5" y="1337.0" />
+      <point x="822.4714285714285" y="1337.0" />
+      <point x="40.25" y="27.5" />
+    </edge>
+    <edge source="io.softserve.goadventures.controllers.ProfileController" target="org.springframework.web.bind.annotation.CrossOrigin">
+      <point x="311.0" y="-172.5" />
+      <point x="3533.5" y="1407.0" />
+      <point x="3760.947619047619" y="1407.0" />
+      <point x="44.25" y="148.0" />
+    </edge>
+    <edge source="io.softserve.goadventures.controllers.UserController" target="org.springframework.web.bind.annotation.RestController">
+      <point x="-65.75" y="-52.5" />
+      <point x="631.75" y="1407.0" />
+      <point x="741.9714285714285" y="1407.0" />
+      <point x="-40.25" y="27.5" />
+    </edge>
+    <edge source="javax.servlet.http.HttpServlet" target="javax.servlet.GenericServlet">
+      <point x="0.0" y="-316.5" />
+      <point x="0.0" y="196.5" />
+    </edge>
+    <edge source="io.softserve.goadventures.controllers.GalleryController" target="org.springframework.web.bind.annotation.RequestMapping">
+      <point x="0.0" y="-172.5" />
+      <point x="0.0" y="111.5" />
+    </edge>
+    <edge source="io.softserve.goadventures.controllers.AuthController" target="org.springframework.web.bind.annotation.CrossOrigin">
+      <point x="85.0" y="-160.5" />
+      <point x="4134.0" y="1297.0" />
+      <point x="3849.447619047619" y="1297.0" />
+      <point x="132.75" y="148.0" />
+    </edge>
+    <edge source="io.softserve.goadventures.controllers.EventController" target="org.springframework.web.bind.annotation.RequestMapping">
+      <point x="2.2737367544323206E-13" y="-268.5" />
+      <point x="1385.0000000000002" y="1377.0" />
+      <point x="2287.3" y="1377.0" />
+      <point x="-51.19999999999982" y="111.5" />
+    </edge>
+    <edge source="javax.servlet.GenericServlet" target="javax.servlet.ServletConfig">
+      <point x="0.0" y="-196.5" />
+      <point x="4341.322619047619" y="176.0" />
+      <point x="4427.07619047619" y="176.0" />
+      <point x="0.0" y="63.5" />
+    </edge>
+    <edge source="javax.servlet.GenericServlet" target="javax.servlet.Servlet">
+      <point x="-131.66666666666663" y="-196.5" />
+      <point x="4209.655952380952" y="176.0" />
+      <point x="4017.0761904761903" y="176.0" />
+      <point x="0.0" y="75.5" />
+    </edge>
+    <edge source="io.softserve.goadventures.controllers.AuthController" target="org.springframework.web.bind.annotation.RequestMapping">
+      <point x="-85.0" y="-160.5" />
+      <point x="3964.0" y="1307.0" />
+      <point x="2440.9" y="1307.0" />
+      <point x="102.40000000000009" y="111.5" />
+    </edge>
+    <edge source="io.softserve.goadventures.controllers.AuthController" target="javax.servlet.http.HttpServlet">
+      <point x="255.0" y="-160.5" />
+      <point x="4304.0" y="1407.0" />
+      <point x="4341.322619047619" y="1407.0" />
+      <point x="0.0" y="316.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.7869369369369369" x="561.368059530624" y="1641.7269605037206" />
+  <SelectedNodes>
+    <node>io.softserve.goadventures.controllers.AuthController</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
