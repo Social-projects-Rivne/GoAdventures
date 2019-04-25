@@ -1,16 +1,16 @@
-import React, { Component } from "react";
-import "./About.scss";
+import React, { Component } from 'react';
+import './About.scss';
 
 export const About = (props: any) => {
   return (
-    <div className="container page-container about">
-      <div className="Home-heading d-flex flex-column">
+    <div className='container page-container about'>
+      <div className='Home-heading d-flex flex-column'>
         <h2>GO Adventures</h2>
       </div>
 
-      <header className="bg-primary text-center py-3 mb-4">
-        <div className="container">
-          <h1 className="font-weight-light text-white rounded">
+      <header className='bg-primary text-center py-3 mb-4'>
+        <div className='container'>
+          <h1 className='font-weight-light text-white rounded'>
             About project
           </h1>
         </div>
@@ -44,75 +44,75 @@ export const About = (props: any) => {
         in the future.
       </p>
 
-      <header className="bg-primary text-center py-3 mb-4">
-        <div className="container">
-          <h1 className="font-weight-light text-white rounded">
+      <header className='bg-primary text-center py-3 mb-4'>
+        <div className='container'>
+          <h1 className='font-weight-light text-white rounded'>
             Meet the Team
           </h1>
         </div>
       </header>
 
-      <div className="card-deck">
-        <div className="card border-0 shadow">
+      <div className='card-deck'>
+        <div className='card border-0 shadow'>
           <img
-            src={require("../../assets/images/team/ivana.jpg")}
-            className="card-img-top"
+            src={require('../../assets/images/team/ivana.jpg')}
+            className='card-img-top'
           />
-          <div className="card-body text-center">
-            <h5 className="card-title mb-0">Ivan Artiushok</h5>
-            <div className="card-text text-black-50">Docker man</div>
+          <div className='card-body text-center'>
+            <h5 className='card-title mb-0'>Ivan Artiushok</h5>
+            <div className='card-text text-black-50'>Docker man</div>
           </div>
         </div>
-        <div className="card border-0 shadow">
+        <div className='card border-0 shadow'>
           <img
-            src={require("../../assets/images/team/orest.jpg")}
-            className="card-img-top"
+            src={require('../../assets/images/team/orest.jpg')}
+            className='card-img-top'
           />
-          <div className="card-body text-center">
-            <h5 className="card-title mb-0">Orest Oleschuk</h5>
-            <div className="card-text text-black-50">Major frontend</div>
+          <div className='card-body text-center'>
+            <h5 className='card-title mb-0'>Orest Oleschuk</h5>
+            <div className='card-text text-black-50'>Major frontend</div>
           </div>
         </div>
-        <div className="card border-0 shadow">
+        <div className='card border-0 shadow'>
           <img
-            src={require("../../assets/images/team/ivant.jpg")}
-            className="card-img-top"
+            src={require('../../assets/images/team/ivant.jpg')}
+            className='card-img-top'
           />
-          <div className="card-body text-center">
-            <h5 className="card-title mb-0">Ivan Tymoschuk</h5>
-            <div className="card-text text-black-50">Funny devil</div>
+          <div className='card-body text-center'>
+            <h5 className='card-title mb-0'>Ivan Tymoschuk</h5>
+            <div className='card-text text-black-50'>Funny devil</div>
           </div>
         </div>
-        <div className="card border-0 shadow">
+        <div className='card border-0 shadow'>
           <img
-            src={require("../../assets/images/team/tina.jpeg")}
-            className="card-img-top"
+            src={require('../../assets/images/team/tina.jpeg')}
+            className='card-img-top'
           />
-          <div className="card-body text-center">
-            <h5 className="card-title mb-0">Timofiy Lanevych</h5>
-            <div className="card-text text-black-50">Likes back-end</div>
+          <div className='card-body text-center'>
+            <h5 className='card-title mb-0'>Timofiy Lanevych</h5>
+            <div className='card-text text-black-50'>Likes back-end</div>
           </div>
         </div>
-        <div className="card border-0 shadow">
+        <div className='card border-0 shadow'>
           <img
-            src={require("../../assets/images/team/ivant.jpg")}
-            className="card-img-top"
+            src={require('../../assets/images/team/vlad.jpeg')}
+            className='card-img-top'
           />
-          <div className="card-body text-center">
-            <h5 className="card-title mb-0">Vlad Osnovin</h5>
-            <div className="card-text text-black-50">English in his blood</div>
+          <div className='card-body text-center'>
+            <h5 className='card-title mb-0'>Vlad Osnovin</h5>
+            <div className='card-text text-black-50'>English in his blood</div>
           </div>
         </div>
-        <div className="card border-0 shadow">
+        <div className='card border-0 shadow'>
           <img
-            src={require("../../assets/images/team/yarik.jpeg")}
-            className="card-img-top"
+            src={require('../../assets/images/team/yarik.jpeg')}
+            className='card-img-top'
           />
-          <div className="card-body text-center">
-            <h5 className="card-title mb-0">Yaroslav Dovbenko</h5>
-            <div className="card-text text-black-50">The best SCRUM-master</div>
+          <div className='card-body text-center'>
+            <h5 className='card-title mb-0'>Yaroslav Dovbenko</h5>
+            <div className='card-text text-black-50'>The best SCRUM-master</div>
           </div>
-        </div>{" "}
+        </div>{' '}
       </div>
     </div>
   );

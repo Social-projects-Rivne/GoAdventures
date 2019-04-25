@@ -6,7 +6,7 @@ import { AxiosResponse, AxiosError } from 'axios';
 import { FeedbackDTO } from '../interfaces/Feedback.dto';
 
 export const getFeedbackRequest = async (eventId: number): Promise<any> => {
-  return await axios
+  return axios
     .get(`${serverUrl}/feedback/get-feedback/${eventId}`, {
       headers: {
         Authorization: `Bearer ${cookies.get('tk879n')}`
@@ -24,7 +24,7 @@ export const getFeedbackRequest = async (eventId: number): Promise<any> => {
 export const addFeedbackRequest = async (
   feedback: FeedbackDTO
 ): Promise<any> => {
-  return await axios
+  return axios
     .post(`${serverUrl}/feedback/add-feedback/`, feedback, {
       headers: {
         Authorization: `Bearer ${cookies.get('tk879n')}`

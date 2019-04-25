@@ -189,7 +189,7 @@ export class Profile extends Component<UserDto, ProfileState> {
                     {this.state.errorMesage.publicError !== '' ? (
                       <div
                         className='alert alert-warning alert-dismissible fade show errProfile'
-                        data-auto-dismiss
+                        data-auto-dismiss={true}
                         role='alert'
                         auto-close='3000'
                       >

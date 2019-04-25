@@ -22,10 +22,10 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import java.nio.charset.Charset;
 import java.util.Locale;
 
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 public class AuthControllerTest {
@@ -93,7 +93,7 @@ public class AuthControllerTest {
 
     @Test
     public void signIn_Test() {
-       }
+    }
 
     @Test
     public void signOut_Test() throws Exception{

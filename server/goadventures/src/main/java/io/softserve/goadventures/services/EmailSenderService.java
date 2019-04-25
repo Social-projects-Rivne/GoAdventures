@@ -15,7 +15,6 @@ public class EmailSenderService {
     private Properties props;
     private Transport transport;
     private Message msg;
-
     private MailContentBuilder contentBuilder;
 
     @Autowired

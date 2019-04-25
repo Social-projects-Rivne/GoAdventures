@@ -118,24 +118,8 @@ public class EventService {
     }
 
     public Page<Event> getAllByCategoryOrSearch(Pageable pageable, Category category, String search) {
-        Page<Event> events = eventRepository.findAll(pageable);
-
         List<Event> list = new ArrayList<>();
-
-        if (category != null) {
-            for (Event event : events) {
-                if (event.getCategory() == category) {
-                    list.add(event);
-                }
-            }
-        }
-        if (search != null) {
-            for (Event event : events) {
-                if (event.toString().contains(search)) {
-                    list.add(event);
-                }
-            }
-        }
+        Page<Event> events = eventRepository.findAll(pageable);
 
         if (category != null & search != null) {
             List<Event> newList = new ArrayList<>();
@@ -146,8 +130,23 @@ public class EventService {
                     newList.add(event);
                 }
             }
-
             return new PageImpl<>(newList);
+        }
+
+        if (category != null) {
+            for (Event event : events) {
+                if (event.getCategory() == category) {
+                    list.add(event);
+                }
+            }
+        }
+
+        if (search != null) {
+            for (Event event : events) {
+                if (event.toString().contains(search)) {
+                    list.add(event);
+                }
+            }
         }
 
         return new PageImpl<>(list);

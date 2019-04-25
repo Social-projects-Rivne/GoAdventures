@@ -9,9 +9,7 @@ import static io.softserve.goadventures.utils.SecurityConstants.*;
 @Service("jwtService")
 public class JWTService {
     public JWTService(){}
-    /**
-     * Get email from token
-     */
+
     public String parseToken(String token) {
         String userEmail = JWT.require(HMAC256(SECRET.getBytes()))
                 .build()
@@ -25,9 +23,6 @@ public class JWTService {
         }
     }
 
-    /**
-     * Create token from user email
-     */
     public String createToken(String email) {
         return JWT.create()
                 .withSubject(email)
@@ -35,9 +30,6 @@ public class JWTService {
                 .sign(HMAC256(SECRET.getBytes()));
     }
 
-    /**
-     * Create refresh token from email
-     */
     public String refreshToken(String email) {
         return JWT.create()
                 .withSubject(email)

@@ -59,7 +59,7 @@ export const UploadInput = (props: UploadInputProps) => {
               }
             }}
             type='file'
-            multiple
+            multiple={true}
             className='custom-file-input rounded'
             id='inputFileUpload'
             aria-describedby='fileUpload'

@@ -1,9 +1,9 @@
-import React from "react";
-import axios from "axios";
-import { Redirect } from "react-router";
-import { EventDto } from "../../interfaces/Event.dto";
+import React from 'react';
+import axios from 'axios';
+import { Redirect } from 'react-router';
+import { EventDto } from '../../interfaces/Event.dto';
 
-import "./EventsListBuild.scss";
+import './EventsListBuild.scss';
 
 export class EventsListBuild extends React.Component<EventDto, any> {
   constructor(props: any) {
@@ -24,11 +24,11 @@ export class EventsListBuild extends React.Component<EventDto, any> {
     return (
       <div
         onClick={this.redirectTo.bind(this)}
-        className="Events_card col card"
+        className='Events_card col card'
       >
         {this.state.redirect ? (
           <Redirect
-            push
+            push={true}
             to={{
               pathname: `/events/detail/${this.props.topic}`,
               state: {
@@ -39,14 +39,14 @@ export class EventsListBuild extends React.Component<EventDto, any> {
         ) : null}
 
         <img
-          className="card-img-top"
+          className='card-img-top'
           src={
             this.props.gallery !== null &&
             this.props.gallery.imageUrls.length > 0
               ? this.props.gallery.imageUrls[0]
-              : "https://via.placeholder.com/250"
+              : 'https://via.placeholder.com/250'
           }
-          alt="Card image cap"
+          alt='Card image cap'
         />
         <div className='card-body'>
         <small className='text-muted text-right '>{this.props.statusId === 2 ? (
@@ -55,10 +55,10 @@ export class EventsListBuild extends React.Component<EventDto, any> {
 </small>
           <h5 className='card-title'>{this.props.topic}</h5>
           <h6 className=' row location' > {this.props.location}</h6>
-          <div className="row category">
+          <div className='row category'>
             <p>{this.props.category.categoryName}</p>
           </div>
-         
+
         </div>
       </div>
     );

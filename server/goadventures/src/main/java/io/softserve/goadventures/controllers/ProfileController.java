@@ -3,7 +3,6 @@ package io.softserve.goadventures.controllers;
 import io.softserve.goadventures.dto.EventDTO;
 import io.softserve.goadventures.dto.UserDto;
 import io.softserve.goadventures.dto.UserUpdateDto;
-import io.softserve.goadventures.errors.ErrorMessageManager;
 import io.softserve.goadventures.models.Event;
 import io.softserve.goadventures.models.User;
 import io.softserve.goadventures.services.EventService;
@@ -51,6 +50,7 @@ public class ProfileController {
         this.modelMapper = modelMapper;
         this.modelMapper.addMappings(skipModifiedFieldsMap);
     }
+
     PropertyMap<UserUpdateDto, User> skipModifiedFieldsMap = new PropertyMap<UserUpdateDto, User>() {
         protected void configure() {
             skip().setPassword(null);

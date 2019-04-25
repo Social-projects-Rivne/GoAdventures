@@ -47,7 +47,6 @@ public class Event {
     private int statusId;
 
     @JsonManagedReference // TODO it is better to use dto models for json. You need to separate jpa logic
-                          // from serialization logic.
     @OneToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE,
             CascadeType.REFRESH }, mappedBy = "eventId", orphanRemoval = true)
     @JoinColumn(name = "gallery", referencedColumnName = "id")
@@ -80,11 +79,20 @@ public class Event {
 
     @Override
     public String toString() {
-        return "Event{" + "id=" + id + ", topic='" + topic + '\'' + ", startDate='" + startDate + '\'' + ", endDate='"
-                + endDate + '\'' + ", location='" + location + '\'' + ", latitude='" + latitude + '\'' + ", longitude='"
-                + longitude + '\'' + ", description='" + description + '\'' + ", statusId='" + statusId + '\''
-                + ", owner='" + owner + '\'' + ", category='" + category.getCategoryName() + '\'' + ", participants='"
-                + participants + '\'' + '}';
+        return "Event{" +
+                "topic='" + topic + '\'' +
+                ", startDate='" + startDate + '\'' +
+                ", endDate='" + endDate + '\'' +
+                ", location='" + location + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", description='" + description + '\'' +
+                ", statusId=" + statusId +
+                ", gllr=" + gallery +
+                ", ctg=" + category +
+                ", prtcpnts=" + participants +
+                ", owner=" + owner +
+                '}';
     }
 
     @Override

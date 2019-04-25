@@ -20,30 +20,30 @@ export const Content = () => {
       <div className='container-fluid'>
         <div className='row'>
           <Switch>
-            <Route exact strict path='/' component={Home} />
-            <Route strict path='/about' component={About} />
+            <Route exact={true} strict={true} path='/' component={Home} />
+            <Route strict={true} path='/about' component={About} />
             <Route
-              strict
-              exact
+              strict={true}
+              exact={true}
               path='/confirm-yor-yo'
               component={ValidateUser}
             />
-            <Route exact path='/recovery-password' component={ForgotPassword} />
-            <ContextRoute strict path='/confirm-account' component={Confirm} />
+            <Route exact={true} path='/recovery-password' component={ForgotPassword} />
+            <ContextRoute strict={true} path='/confirm-account' component={Confirm} />
             <ContextProtectedRoute path='/profile' component={Profile} />
             <ContextRoute
-              exact
+              exact={true}
               path='/send-recovery-email'
               component={SendRecoveryEmail}
             />
-            <ContextProtectedRoute exact path='/events' component={Events} />
+            <ContextProtectedRoute exact={true} path='/events' component={Events} />
             <ContextProtectedRoute
-              exact
+              exact={true}
               path='/events/detail/:name'
               component={Event}
             />
             <ContextProtectedRoute
-              exact
+              exact={true}
               path='/create-event'
               component={CreateEvent}
             />

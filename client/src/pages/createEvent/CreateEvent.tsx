@@ -1,16 +1,16 @@
-import React, { Component, createRef, RefObject } from "react";
-import { createEvent } from "../../api/event.service";
-import "./CreateEvent.scss";
-import "./Leaflet.scss";
-import { Map as LeafletMap, TileLayer, Marker, Popup } from "react-leaflet";
-import LCG from "leaflet-control-geocoder";
-import { DropDown } from "../../components";
-import DatePicker from "react-datepicker";
-import { Redirect } from "react-router";
-import { GalleryDto } from "../../interfaces/Gallery.dto";
-import { UploadInput } from "../../components/upload-input/UploadInput";
-import { ErrorMessage } from "../../interfaces/ErrorMessage";
-import { ErrorMessageComponent } from "../../components/errorMessage/ErrorMessageComponent";
+import React, { Component, createRef, RefObject } from 'react';
+import { createEvent } from '../../api/event.service';
+import './CreateEvent.scss';
+import './Leaflet.scss';
+import { Map as LeafletMap, TileLayer, Marker, Popup } from 'react-leaflet';
+import LCG from 'leaflet-control-geocoder';
+import { DropDown } from '../../components';
+import DatePicker from 'react-datepicker';
+import { Redirect } from 'react-router';
+import { GalleryDto } from '../../interfaces/Gallery.dto';
+import { UploadInput } from '../../components/upload-input/UploadInput';
+import { ErrorMessage } from '../../interfaces/ErrorMessage';
+import { ErrorMessageComponent } from '../../components/errorMessage/ErrorMessageComponent';
 
 interface ExtendetRef extends RefObject<LeafletMap> {
   leafletElement: any;
@@ -24,13 +24,13 @@ export class CreateEvent extends Component<any, any> {
     super(props);
     this.state = {
       newEvent: {
-        topic: "",
+        topic: '',
         startDate: new Date(),
         endDate: 0,
-        location: "",
+        location: '',
         latitude: 0,
         longitude: 0,
-        description: "",
+        description: '',
         gallery: null as GalleryDto | null
       },
       redirect: false,
@@ -86,23 +86,23 @@ export class CreateEvent extends Component<any, any> {
     this.setState({
       newEvent: { ...this.state.newEvent, category: setCategory }
     });
-    console.log("pizda syka " + this.state);
+    console.log('pizda syka ' + this.state);
   }
 
   public handleStartDate(StartDate: any) {
-    console.log("DIALOG " + StartDate);
+    console.log('DIALOG ' + StartDate);
     this.setState({
       newEvent: { ...this.state.newEvent, startDate: StartDate }
     });
-    console.log("startDate ", this.state.newEvent.startDate);
+    console.log('startDate ', this.state.newEvent.startDate);
     console.log(
-      "startDateToLocaleString ",
+      'startDateToLocaleString ',
       this.state.newEvent.startDate.toLocaleString()
     );
   }
 
   public handleEndDate(EndDate: any) {
-    console.log("DIALOG " + EndDate);
+    console.log('DIALOG ' + EndDate);
     this.setState({ newEvent: { ...this.state.newEvent, endDate: EndDate } });
   }
 
@@ -116,7 +116,7 @@ export class CreateEvent extends Component<any, any> {
         (results: any) => {
           const r = results[0];
           if (r) {
-            console.log("r ", r);
+            console.log('r ', r);
             this.setState({
               newEvent: {
                 ...this.state.newEvent,
@@ -125,7 +125,7 @@ export class CreateEvent extends Component<any, any> {
                 longitude: r.center.lng
               }
             });
-            console.log("location: ", this.state.newEvent.location);
+            console.log('location: ', this.state.newEvent.location);
           }
         }
       );
@@ -141,10 +141,10 @@ export class CreateEvent extends Component<any, any> {
       createEvent({ ...this.state.newEvent });
       this.setState({ redirect: true });
     } else {
-      console.log("startDate > endDate ");
+      console.log('startDate > endDate ');
       this.setState({
         errorMessages: {
-          errorMessage: ["End date must be greater than the start date!"]
+          errorMessage: ['End date must be greater than the start date!']
         }
       });
     }
@@ -171,130 +171,130 @@ export class CreateEvent extends Component<any, any> {
     const isDisabled =
       this.state.newEvent.topic.length > 0 &&
       this.state.newEvent.description.length > 0;
-    console.log("Isdisabled ", isDisabled);
-    const style = !this.state.showEndDate ? { display: "none" } : {};
+    console.log('Isdisabled ', isDisabled);
+    const style = !this.state.showEndDate ? { display: 'none' } : {};
 
     return (
-      <div className="container page-container">
+      <div className='container page-container'>
         {this.state.errorMessages.errorMessage.length > 0 ? (
           <ErrorMessageComponent {...this.state.errorMessages} />
         ) : null}
-        <h1 className="text-center">New Event</h1>
-        <div className="form-group row">
-          <label className="col-sm-4 col-form-label text-right" htmlFor="Topic">
+        <h1 className='text-center'>New Event</h1>
+        <div className='form-group row'>
+          <label className='col-sm-4 col-form-label text-right' htmlFor='Topic'>
             Name of event(required)
           </label>
-          <div className="col-sm-8">
+          <div className='col-sm-8'>
             <input
-              type="text"
-              className="form-control"
-              id="Topic"
-              placeholder="enter name of event"
+              type='text'
+              className='form-control'
+              id='Topic'
+              placeholder='enter name of event'
               onChange={this.handleTopicChange}
               value={this.state.newEvent.topic}
             />
           </div>
         </div>
 
-        <div className="form-group row">
+        <div className='form-group row'>
           <label
-            className="col-sm-4 col-form-label text-right"
-            htmlFor="Description"
+            className='col-sm-4 col-form-label text-right'
+            htmlFor='Description'
           >
             Description(required)
           </label>
-          <div className="col-sm-8">
+          <div className='col-sm-8'>
             <textarea
-              className="form-control"
-              id="Description"
-              placeholder="Enter description"
+              className='form-control'
+              id='Description'
+              placeholder='Enter description'
               rows={Rows}
               onChange={this.handleDescriptionChange}
             />
           </div>
         </div>
 
-        <div className="form-group row">
+        <div className='form-group row'>
           <label
-            className="col-sm-4 col-form-label text-right"
-            htmlFor="Location"
+            className='col-sm-4 col-form-label text-right'
+            htmlFor='Location'
           >
             Location
           </label>
-          <div className="col-sm-8">
+          <div className='col-sm-8'>
             <input
-              type="text"
-              className="form-control"
-              id="Location"
-              aria-describedby="LocationHelp"
-              placeholder="Choose location on map"
+              type='text'
+              className='form-control'
+              id='Location'
+              aria-describedby='LocationHelp'
+              placeholder='Choose location on map'
               onChange={this.handleLocationChange}
               value={this.state.newEvent.location}
-              readOnly
+              readOnly={true}
             />
           </div>
         </div>
 
-        <div className="form-group row">
+        <div className='form-group row'>
           <label
-            className="col-sm-4 col-form-label text-right"
-            htmlFor="Category"
+            className='col-sm-4 col-form-label text-right'
+            htmlFor='Category'
           >
             Choose category for the event
           </label>
-          <div className="col-sm-8">
+          <div className='col-sm-8'>
             <DropDown onCategoryChange={this.handleCategory} />
           </div>
         </div>
-        <div className="form-group row">
+        <div className='form-group row'>
           <label
-            className="col-sm-4 col-form-label text-right"
-            htmlFor="StartDate"
+            className='col-sm-4 col-form-label text-right'
+            htmlFor='StartDate'
           >
             Start date
           </label>
-          <div className="col-sm-3">
+          <div className='col-sm-3'>
             <DatePicker
-              id="StartDate"
+              id='StartDate'
               selected={this.state.newEvent.startDate}
               onChange={this.handleStartDate}
-              showTimeSelect
-              timeFormat="HH:mm"
+              showTimeSelect={true}
+              timeFormat='HH:mm'
               timeIntervals={15}
-              timeCaption="time"
-              withPortal
-              dateFormat="MMMM d, yyyy h:mm aa"
+              timeCaption='time'
+              withPortal={true}
+              dateFormat='MMMM d, yyyy h:mm aa'
             />
           </div>
           <label
-            className="col-sm-2 col-form-label text-right"
-            htmlFor="EndDate"
+            className='col-sm-2 col-form-label text-right'
+            htmlFor='EndDate'
           >
             <button
-              className="btn btn-info"
-              id="EndDate"
+              className='btn btn-link'
+              id='EndDate'
               onClick={this.showEndDate}
             >
               End date
             </button>
           </label>
-          <div className="col-sm-3" style={style}>
+          <div className='col-sm-3' style={style}>
             <DatePicker
-              id="EndDate"
+              id='EndDate'
               selected={this.state.newEvent.endDate}
               onChange={this.handleEndDate}
-              showTimeSelect
-              timeFormat="HH:mm"
+              showTimeSelect={true}
+              timeFormat='HH:mm'
               timeIntervals={15}
-              timeCaption="time"
-              withPortal
-              dateFormat="MMMM d, yyyy h:mm aa"
+              timeCaption='time'
+              withPortal={true}
+              dateFormat='MMMM d, yyyy h:mm aa'
             />
           </div>
         </div>
 
-        <div className="row">
-          <div className="col" id="map">
+        <div className='row'>
+          <div className='col' id='map'>
             <LeafletMap
               center={[50.37, 26.13]}
               zoom={6}
@@ -308,11 +308,11 @@ export class CreateEvent extends Component<any, any> {
               onClick={this.handleCoord}
               ref={(el: any) => (leafletMap = el)}
             >
-              <TileLayer url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png" />
+              <TileLayer url='https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png' />
               {this.state.currentPos && (
                 <Marker position={this.state.currentPos} draggable={true}>
                   <Popup position={this.state.currentPos}>
-                    Current location:{" "}
+                    Current location:{' '}
                     <pre>{JSON.stringify(this.state.currentPos, null, 2)}</pre>
                   </Popup>
                 </Marker>
@@ -321,8 +321,8 @@ export class CreateEvent extends Component<any, any> {
           </div>
         </div>
 
-        <div className="row">
-          <div className="col">
+        <div className='row'>
+          <div className='col'>
             <label>Upload images for your event</label>
             <UploadInput
               {...{
@@ -333,19 +333,19 @@ export class CreateEvent extends Component<any, any> {
           </div>
         </div>
 
-        <div className="row justify-content-center btns-content">
+        <div className='row justify-content-center btns-content'>
           <button
-            type="button"
-            className="btn btn-primary col-lg-2 col-sm-12"
+            type='button'
+            className='btn btn-primary col-lg-2 col-sm-12'
             onClick={this.handleSubmit}
             disabled={!isDisabled}
           >
-            {" "}
-            Save{" "}
+            {' '}
+            Save{' '}
           </button>
           {this.state.redirect ? (
             <Redirect
-              push
+              push={true}
               to={{
                 pathname: `/profile`,
                 state: {

@@ -3,7 +3,6 @@ package io.softserve.goadventures.services;
 import io.softserve.goadventures.configurations.FileStorageProperties;
 import io.softserve.goadventures.errors.FileStorageException;
 import io.softserve.goadventures.errors.MyFileNotFoundException;
-import io.softserve.goadventures.errors.WrongImageTypeException;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,19 +38,15 @@ public class FileStorageService {
         }
     }
 
-    // Create unique file name, check invalid characters and copy file to directory
     public String storeFile(MultipartFile file) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         String uuidFile = UUID.randomUUID().toString();
         String finalFileName = uuidFile + "." + fileName;
 
         try {
-            // Check if the file's name contains invalid characters
             if (finalFileName.contains("..")) {
                 throw new FileStorageException("Sorry! Filename contains invalid path sequence " + finalFileName);
             }
-
-            // Copy file to the target location
             Path targetLocation = this.fileStorageLocation.resolve(finalFileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
@@ -61,11 +56,9 @@ public class FileStorageService {
         }
     }
 
-    public boolean checkFileType(MultipartFile file) { // check file type
+    public boolean checkFileType(MultipartFile file) {
         String contentType = file.getContentType();
         if (!(contentType.startsWith("image/"))) {
-            // throw new WrongImageTypeException("Could not be uploaded, it is not an
-            // image!");
             return false;
         }
         return true;

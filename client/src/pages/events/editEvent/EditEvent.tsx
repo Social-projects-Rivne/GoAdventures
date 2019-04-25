@@ -1,17 +1,17 @@
-import React, { createRef, useState, useEffect, ChangeEvent } from "react";
-import { EventDto } from "../../../interfaces/Event.dto";
-import DatePicker from "react-datepicker";
-import LCG from "leaflet-control-geocoder";
-import { TileLayer, Popup, Marker, Map } from "react-leaflet";
+import React, { createRef, useState, useEffect, ChangeEvent } from 'react';
+import { EventDto } from '../../../interfaces/Event.dto';
+import DatePicker from 'react-datepicker';
+import LCG from 'leaflet-control-geocoder';
+import { TileLayer, Popup, Marker, Map } from 'react-leaflet';
 import {
   ValidatedTextarea,
   DropDown,
   ErrorMessageComponent,
   UploadInput
-} from "../../../components";
-import { eventSchema } from "../../../validationSchemas/eventValidation";
-import { editEventFormInputSettings } from "./inputSettings";
-import { GalleryDto } from "../../../interfaces/Gallery.dto";
+} from '../../../components';
+import { eventSchema } from '../../../validationSchemas/eventValidation';
+import { editEventFormInputSettings } from './inputSettings';
+import { GalleryDto } from '../../../interfaces/Gallery.dto';
 import {
   Formik,
   Form,
@@ -19,12 +19,12 @@ import {
   FormikProps,
   FieldProps,
   FormikValues
-} from "formik";
-import { MdDone } from "react-icons/md";
-import moment from "moment";
-import { updateEvent } from "../../../api/event.service";
-import "./EditEvent.scss";
-import { ErrorMessage } from "../../../interfaces/ErrorMessage";
+} from 'formik';
+import { MdDone } from 'react-icons/md';
+import moment from 'moment';
+import { updateEvent } from '../../../api/event.service';
+import './EditEvent.scss';
+import { ErrorMessage } from '../../../interfaces/ErrorMessage';
 
 interface EditEvent {
   event: EventDto;
@@ -93,16 +93,16 @@ export const EditEvent = (props: EditEvent) => {
   const mapRef = createRef<Map>();
   const formRef = createRef<Formik>();
   return (
-    <div className="page-container row justify-content-center">
+    <div className='page-container row justify-content-center'>
       <h2>Edit event info</h2>
       {errors.errorMessage ? <ErrorMessageComponent {...errors} /> : null}
-      <div className="col-12">
+      <div className='col-12'>
         <h2>Change event description</h2>
-        <div className="row form-group">
+        <div className='row form-group'>
           <Formik
             ref={formRef}
             validationSchema={eventSchema}
-            initialValues={{ topic: eventDialog.topic, gallery: "" }}
+            initialValues={{ topic: eventDialog.topic, gallery: '' }}
             enableReinitialize={true}
             validateOnBlur={true}
             validateOnChange={true}
@@ -111,7 +111,7 @@ export const EditEvent = (props: EditEvent) => {
               actions.setSubmitting(false);
             }}
             render={(formikProps: FormikProps<FormikValues>) => (
-              <Form className="d-flex flex-column w-100">
+              <Form className='d-flex flex-column w-100'>
                 {editEventFormInputSettings.map((input, index) => {
                   return (
                     <label key={index}>
@@ -120,22 +120,22 @@ export const EditEvent = (props: EditEvent) => {
                         name={input.field_name}
                         render={({ field, form }: FieldProps<FormikValues>) => {
                           return (
-                            <div className="mb-3">
+                            <div className='mb-3'>
                               <input
                                 type={input.type}
-                                multiple
-                                className="form-control rounded"
-                                placeholder="firstName"
+                                multiple={true}
+                                className='form-control rounded'
+                                placeholder='firstName'
                                 {...field}
                               />
                               {form.touched[input.field_name] &&
                               form.errors[input.field_name] &&
                               form.errors[input.field_name] ? (
-                                <div className="invalid-feedback">
+                                <div className='invalid-feedback'>
                                   {form.errors[input.field_name]}
                                 </div>
                               ) : (
-                                <div className="valid-feedback">
+                                <div className='valid-feedback'>
                                   <MdDone /> Update info for your event
                                 </div>
                               )}
@@ -150,99 +150,99 @@ export const EditEvent = (props: EditEvent) => {
             )}
           />
         </div>
-        <div className="row form-group">
+        <div className='row form-group'>
           <ValidatedTextarea
             {...{
               bindSubmit,
-              labelText: "Description",
+              labelText: 'Description',
               initialValue: { textarea: description },
               handleSubmit: setDescription
             }}
           />
         </div>
-        <div className="form-group row">
+        <div className='form-group row'>
           <label
-            className="col-sm-4 col-form-label text-right"
-            htmlFor="Category"
+            className='col-sm-4 col-form-label text-right'
+            htmlFor='Category'
           >
             Choose category for the event
           </label>
-          <div className="col-sm-8">
+          <div className='col-sm-8'>
             <DropDown onCategoryChange={setCategory} />
           </div>
         </div>
-        <div className="form-group row">
+        <div className='form-group row'>
           <label
-            className="col-sm-4 col-form-label text-right"
-            htmlFor="StartDate"
+            className='col-sm-4 col-form-label text-right'
+            htmlFor='StartDate'
           >
             Start date
           </label>
-          <div className="col-sm-3">
+          <div className='col-sm-3'>
             <DatePicker
-              id="StartDate"
-              className="input-group-text"
+              id='StartDate'
+              className='input-group-text'
               selected={moment(datepick.startDate).toDate()}
               onChange={(e: Date): void => {
                 setDate({ ...datepick, startDate: moment(e).toISOString() });
               }}
-              showTimeSelect
-              timeFormat="HH:mm"
+              showTimeSelect={true}
+              timeFormat='HH:mm'
               timeIntervals={15}
-              timeCaption="time"
-              withPortal
-              dateFormat="MMMM d, yyyy h:mm aa"
+              timeCaption='time'
+              withPortal={true}
+              dateFormat='MMMM d, yyyy h:mm aa'
             />
           </div>
 
           <label
-            className="col-sm-2 col-form-label text-right"
-            htmlFor="EndDate"
+            className='col-sm-2 col-form-label text-right'
+            htmlFor='EndDate'
           >
             End date
           </label>
-          {props.event.endDate === "0" && datepick.endDate != undefined ? (
-            <div className="col-sm-3">
+          {props.event.endDate === '0' && datepick.endDate != undefined ? (
+            <div className='col-sm-3'>
               <DatePicker
-                id="EndDate"
-                className="input-group-text"
+                id='EndDate'
+                className='input-group-text'
                 selected={
-                  datepick.endDate != "0"
+                  datepick.endDate != '0'
                     ? moment(datepick.endDate).toDate()
                     : moment().toDate()
                 }
                 onChange={(e: Date): void => {
                   setDate({ ...datepick, endDate: moment(e).toISOString() });
                 }}
-                showTimeSelect
-                timeFormat="HH:mm"
+                showTimeSelect={true}
+                timeFormat='HH:mm'
                 timeIntervals={15}
-                timeCaption="time"
-                withPortal
-                dateFormat="MMMM d, yyyy h:mm aa"
+                timeCaption='time'
+                withPortal={true}
+                dateFormat='MMMM d, yyyy h:mm aa'
               />
             </div>
           ) : (
-            <div className="col-sm-3">
+            <div className='col-sm-3'>
               <DatePicker
-                id="EndDate"
-                className="input-group-text"
+                id='EndDate'
+                className='input-group-text'
                 selected={moment(datepick.endDate).toDate()}
                 onChange={(e: Date): void => {
                   setDate({ ...datepick, endDate: moment(e).toISOString() });
                 }}
-                showTimeSelect
-                timeFormat="HH:mm"
+                showTimeSelect={true}
+                timeFormat='HH:mm'
                 timeIntervals={15}
-                timeCaption="time"
-                withPortal
-                dateFormat="MMMM d, yyyy h:mm aa"
+                timeCaption='time'
+                withPortal={true}
+                dateFormat='MMMM d, yyyy h:mm aa'
               />
             </div>
           )}
         </div>
       </div>
-      <div className="col-12">
+      <div className='col-12'>
         <h3>Update your event gallery</h3>
         <UploadInput
           {...{
@@ -253,7 +253,7 @@ export const EditEvent = (props: EditEvent) => {
           }}
         />
       </div>
-      <div className="col-12">
+      <div className='col-12'>
         <h3>Update event location</h3>
         <h5>Event location: {location}</h5>
         <div>
@@ -266,7 +266,7 @@ export const EditEvent = (props: EditEvent) => {
             animate={true}
             easeLinearity={0.35}
             ref={mapRef}
-            onclick={e => {
+            onclick={(e) => {
               const currentMarker = markerRef.current;
               if (!!currentMarker) {
                 const latLng = currentMarker.leafletElement.getLatLng();
@@ -279,11 +279,11 @@ export const EditEvent = (props: EditEvent) => {
             }}
             center={[mapCoordiantes[0], mapCoordiantes[1]]}
             zoom={zoom}
-            className="rounded"
+            className='rounded'
           >
             <TileLayer
               attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
             />
 
             <Marker
@@ -308,11 +308,11 @@ export const EditEvent = (props: EditEvent) => {
           </Map>
         </div>
       </div>
-      <div className="row justify-content-center btns-content">
+      <div className='row justify-content-center btns-content'>
         <button
-          type="button"
-          name="cancel"
-          className="btn btn-danger m-1"
+          type='button'
+          name='cancel'
+          className='btn btn-danger m-1'
           onClick={() => {
             props.setEdit(false);
           }}
@@ -320,9 +320,9 @@ export const EditEvent = (props: EditEvent) => {
           Cancel
         </button>
         <button
-          type="button"
-          name="update"
-          className="btn btn-primary m-1"
+          type='button'
+          name='update'
+          className='btn btn-primary m-1'
           onClick={async () => {
             const formCurrent = formRef.current;
             if (formCurrent) {

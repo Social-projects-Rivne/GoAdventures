@@ -51,7 +51,6 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
     private Set<Feedback> user_feedback = new HashSet<>();
 
-
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     Set<EventParticipants> participants = new HashSet<>();

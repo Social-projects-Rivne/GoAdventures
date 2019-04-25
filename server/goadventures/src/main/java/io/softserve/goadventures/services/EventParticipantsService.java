@@ -12,7 +12,6 @@ import java.util.List;
 
 @Service
 public class EventParticipantsService {
-
     private  final EventParticipantsRepository eventParticipantsRepository;
 
     @Autowired
@@ -38,7 +37,6 @@ public class EventParticipantsService {
         eventParticipant.setIs_subscriber(true);
 
         return eventParticipantsRepository.save(eventParticipant);
-
     }
 
     public boolean deleteParticipant(User user, Event event){
@@ -49,7 +47,6 @@ public class EventParticipantsService {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -72,8 +69,6 @@ public class EventParticipantsService {
                 return  true;
             }
         }
-
         return false;
     }
-
 }

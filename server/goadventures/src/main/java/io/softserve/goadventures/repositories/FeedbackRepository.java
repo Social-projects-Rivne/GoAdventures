@@ -10,6 +10,6 @@ import java.util.Set;
 
 @Repository
 public interface FeedbackRepository extends CrudRepository<Feedback, Long> {
-  @Query("from Feedback where events_id = :eventId")
-  Set<Feedback> findByEventId(@Param("eventId") int eventId);
+    @Query("from Feedback where events_id = :eventId")
+    Set<Feedback> findByEventId(@Param("eventId") int eventId);
 }
