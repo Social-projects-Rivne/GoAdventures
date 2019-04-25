@@ -31,7 +31,7 @@ export class Dialog extends Component<DialogSettings, any> {
         <div className='card-header'>
           <h3>{this.props.header}</h3>
         </div>
-        <div className='card-body d-flex justify-content-center align-items-center '>
+        <div className='card-body d-flex justify-content-center align-items-center flex-column'>
           {this.state.isLoading ? (
             <div className='d-flex justify-content-center'>
               <div className='spinner-grow' role='status'>

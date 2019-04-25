@@ -134,7 +134,7 @@ export class Home extends Component<RouterProps, any> {
                           button_text='Sign in'
                           header='Sign in for adventures'
                           childComponents={
-                            <div className='text-center'>
+                            <div className='text-center w-100'>
                               <h3>Sign in with</h3>
                               <div className='d-flex flex-row justify-content-around align-self-center'>
                                 <a href='#'>
