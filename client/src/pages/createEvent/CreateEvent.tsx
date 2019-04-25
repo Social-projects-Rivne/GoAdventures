@@ -82,9 +82,11 @@ export class CreateEvent extends Component<any, any> {
     });
   }
 
-  public handleCategory(Category: any) {
-    console.log('Category ' + Category);
-    this.setState({ newEvent: { ...this.state.newEvent, category: Category } });
+  public handleCategory(setCategory: any) {
+    this.setState({
+      newEvent: { ...this.state.newEvent, category: setCategory }
+    });
+    console.log('pizda syka ' + this.state);
   }
 
   public handleStartDate(StartDate: any) {
@@ -228,7 +230,7 @@ export class CreateEvent extends Component<any, any> {
               placeholder='Choose location on map'
               onChange={this.handleLocationChange}
               value={this.state.newEvent.location}
-              readOnly
+              readOnly={true}
             />
           </div>
         </div>
@@ -241,7 +243,7 @@ export class CreateEvent extends Component<any, any> {
             Choose category for the event
           </label>
           <div className='col-sm-8'>
-            <DropDown id='Category' onCategoryChange={this.handleCategory} />
+            <DropDown onCategoryChange={this.handleCategory} />
           </div>
         </div>
         <div className='form-group row'>
@@ -256,11 +258,11 @@ export class CreateEvent extends Component<any, any> {
               id='StartDate'
               selected={this.state.newEvent.startDate}
               onChange={this.handleStartDate}
-              showTimeSelect
+              showTimeSelect={true}
               timeFormat='HH:mm'
               timeIntervals={15}
               timeCaption='time'
-              withPortal
+              withPortal={true}
               dateFormat='MMMM d, yyyy h:mm aa'
             />
           </div>
@@ -269,7 +271,7 @@ export class CreateEvent extends Component<any, any> {
             htmlFor='EndDate'
           >
             <button
-              className='btn btn-info'
+              className='btn btn-link'
               id='EndDate'
               onClick={this.showEndDate}
             >
@@ -281,11 +283,11 @@ export class CreateEvent extends Component<any, any> {
               id='EndDate'
               selected={this.state.newEvent.endDate}
               onChange={this.handleEndDate}
-              showTimeSelect
+              showTimeSelect={true}
               timeFormat='HH:mm'
               timeIntervals={15}
               timeCaption='time'
-              withPortal
+              withPortal={true}
               dateFormat='MMMM d, yyyy h:mm aa'
             />
           </div>
@@ -346,7 +348,7 @@ export class CreateEvent extends Component<any, any> {
           </button>
           {this.state.redirect ? (
             <Redirect
-              push
+              push={true}
               to={{
                 pathname: `/profile`,
                 state: {

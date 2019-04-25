@@ -3,7 +3,6 @@ package io.softserve.goadventures.controllers;
 import io.softserve.goadventures.dto.EventDTO;
 import io.softserve.goadventures.dto.UserDto;
 import io.softserve.goadventures.dto.UserUpdateDto;
-import io.softserve.goadventures.errors.ErrorMessageManager;
 import io.softserve.goadventures.models.Event;
 import io.softserve.goadventures.models.User;
 import io.softserve.goadventures.services.EventService;
@@ -19,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -50,6 +50,7 @@ public class ProfileController {
         this.modelMapper = modelMapper;
         this.modelMapper.addMappings(skipModifiedFieldsMap);
     }
+
     PropertyMap<UserUpdateDto, User> skipModifiedFieldsMap = new PropertyMap<UserUpdateDto, User>() {
         protected void configure() {
             skip().setPassword(null);
@@ -96,8 +97,8 @@ public class ProfileController {
     }
 
     @GetMapping("/all-events")
-    public ResponseEntity<?> getAllEvents(Pageable eventPageable, @RequestHeader("Authorization") String token) {
-        logger.info("[GET-ALL-EVENTS]");
+    public ResponseEntity<?> getAllEvents(@PageableDefault(size = 15, sort = "id") Pageable eventPageable,
+                                          @RequestHeader("Authorization") String token) {
         User user = userService.getUserByEmail(jwtService.parseToken(token));
         Page<Event> eventsPage = eventService.getEventsByOwnerAndParticipants(eventPageable, user.getId());
 

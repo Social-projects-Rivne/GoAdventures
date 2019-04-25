@@ -1,8 +1,6 @@
 package io.softserve.goadventures.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -49,13 +47,11 @@ public class Event {
     private int statusId;
 
     @JsonManagedReference // TODO it is better to use dto models for json. You need to separate jpa logic
-                          // from serialization logic.
     @OneToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE,
             CascadeType.REFRESH }, mappedBy = "eventId", orphanRemoval = true)
     @JoinColumn(name = "gallery", referencedColumnName = "id")
     private Gallery gallery;
 
-    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "category_id")
     private Category category;
@@ -83,11 +79,20 @@ public class Event {
 
     @Override
     public String toString() {
-        return "Event{" + "id=" + id + ", topic='" + topic + '\'' + ", startDate='" + startDate + '\'' + ", endDate='"
-                + endDate + '\'' + ", location='" + location + '\'' + ", latitude='" + latitude + '\'' + ", longitude='"
-                + longitude + '\'' + ", description='" + description + '\'' + ", statusId='" + statusId + '\''
-                + ", owner='" + owner + '\'' + ", category='" + category.getCategoryName() + '\'' + ", participants='"
-                + participants + '\'' + '}';
+        return "Event{" +
+                "topic='" + topic + '\'' +
+                ", startDate='" + startDate + '\'' +
+                ", endDate='" + endDate + '\'' +
+                ", location='" + location + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", description='" + description + '\'' +
+                ", statusId=" + statusId +
+                ", gllr=" + gallery +
+                ", ctg=" + category +
+                ", prtcpnts=" + participants +
+                ", owner=" + owner +
+                '}';
     }
 
     @Override

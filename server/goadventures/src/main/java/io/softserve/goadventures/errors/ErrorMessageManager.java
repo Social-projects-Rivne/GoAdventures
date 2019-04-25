@@ -14,5 +14,4 @@ public class ErrorMessageManager {
     public ErrorMessageManager initError(String publicError, String innerError) {
         return new ErrorMessageManager(publicError, innerError);
     }
-
 }

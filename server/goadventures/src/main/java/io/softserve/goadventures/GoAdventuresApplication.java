@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 
-
 @SpringBootApplication
 @Import({CorsConfiguration.class, WebAppConfig.class, ApplicationConfiguration.class})
 @EnableConfigurationProperties({

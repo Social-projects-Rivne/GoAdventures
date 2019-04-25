@@ -1,11 +1,10 @@
 package io.softserve.goadventures.services;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
+import org.mockito.MockitoAnnotations;
 
 public class GeneratePasswordServiceTest {
 
@@ -15,10 +14,13 @@ public class GeneratePasswordServiceTest {
     @Mock
     MailContentBuilder mailContentBuilder;
 
+    @Before
+    public void setUp(){
+        MockitoAnnotations.initMocks(this);
+    }
+
     @Test
-    public void generatePassword() {
-
-
+    public void generatePassword_Test() {
 
     }
 }

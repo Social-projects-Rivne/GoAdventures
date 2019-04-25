@@ -44,7 +44,7 @@ export const editProfileSchema = Yup.object().shape({
   phone: Yup.string().matches(phoneRegExp, 'Phone number is not valid'),
 
   password: Yup.string()
-    .required("Required"),
+    .required('Required'),
   newPassword: Yup.string()
     .max(18, 'Password is to long')
     .notOneOf([Yup.ref('password')], 'The new password must be different from the previous one')

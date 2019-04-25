@@ -3,6 +3,8 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { getEventList, searchForEvents } from '../../api/event.service';
 import { AddEventBtn } from '../../components/addEventBtn/AddEventBtn';
 import { EventsListBuild } from '../../components/eventsListBuild/EventsListBuild';
+import { DropDown } from '../../components/dropDown/DropDown';
+
 import { EventDto } from '../../interfaces/Event.dto';
 import './Events.scss';
 import { MdSearch } from 'react-icons/md';
@@ -10,8 +12,8 @@ import { MdSearch } from 'react-icons/md';
 interface EventState {
   events: EventDto[];
   pageSettings: {
-    isLast: true | false | undefined
-    nextPage: string | null
+    isLast: true | false | undefined;
+    nextPage: string | null;
   };
   search: string | null | undefined;
 }
@@ -28,6 +30,7 @@ export class Events extends Component<EventDto, EventState> {
       search: ''
     };
     this.fetchEvents = this.fetchEvents.bind(this);
+    this.handleCategory = this.handleCategory.bind(this);
   }
   public handleChange(value: string) {
     if (window.location.pathname !== '/events') {
@@ -35,11 +38,16 @@ export class Events extends Component<EventDto, EventState> {
     this.setState({ search: value });
   }
 
+  public handleCategory(category: any) {
+    console.log('==== ' + category);
+    this.fetchSearchEvent(category);
+  }
+
   public componentDidMount() {
     this.fetchEvents();
   }
 
-  public async fetchSearchEvent(): Promise<void> {
+  public async fetchSearchEvent(category?: string): Promise<void> {
     this.state = {
       events: [],
       pageSettings: {
@@ -48,9 +56,9 @@ export class Events extends Component<EventDto, EventState> {
       },
       search: this.state.search
     };
-    const response = await searchForEvents(null, this.state.search);
+    const response = await searchForEvents(null, this.state.search, category);
     this.setState({
-      events: [...this.state.events, ...response.content],
+      events: [...response.content],
       pageSettings: {
         isLast: response.last,
         nextPage: !!sessionStorage.getItem('nextpage')
@@ -104,16 +112,36 @@ export class Events extends Component<EventDto, EventState> {
                     this.fetchSearchEvent();
                   }}
                 >
-                  <div className='input-group input-group-lg mb-3'>
-                    <input
-                      type='text'
-                      className='form-control search-comp'
-                      placeholder='search'
-                      aria-describedby='basic-addon1'
-                      onChange={(e: any) => {
-                        this.handleChange(e.target.value);
-                      }}
-                    />
+                  <div className='row mb-3 '>
+                    <div className='col-8'>
+                      <div className='input-group input-group-lg '>
+                        <div className='input-group-prepend'>
+                          <span
+                            className='input-group-text mylabel'
+                            id='basic-addon1'
+                          >
+                            Search
+                          </span>
+                        </div>
+                        <input
+                          type='text'
+                          className='form-control myinput'
+                          placeholder='type something ...'
+                          aria-describedby='basic-addon1'
+                          onChange={(e: any) => {
+                            this.handleChange(e.target.value);
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className='col-4'>
+                      <DropDown
+                        {...{
+                          customClassName: 'input-group-lg',
+                          onCategoryChange: this.handleCategory
+                        }}
+                      />
+                    </div>
                   </div>
                 </form>
 

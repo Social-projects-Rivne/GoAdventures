@@ -123,7 +123,7 @@ export const EditEvent = (props: EditEvent) => {
                             <div className='mb-3'>
                               <input
                                 type={input.type}
-                                multiple
+                                multiple={true}
                                 className='form-control rounded'
                                 placeholder='firstName'
                                 {...field}
@@ -168,7 +168,7 @@ export const EditEvent = (props: EditEvent) => {
             Choose category for the event
           </label>
           <div className='col-sm-8'>
-            <DropDown id='Category' onCategoryChange={setCategory} />
+            <DropDown onCategoryChange={setCategory} />
           </div>
         </div>
         <div className='form-group row'>
@@ -186,11 +186,11 @@ export const EditEvent = (props: EditEvent) => {
               onChange={(e: Date): void => {
                 setDate({ ...datepick, startDate: moment(e).toISOString() });
               }}
-              showTimeSelect
+              showTimeSelect={true}
               timeFormat='HH:mm'
               timeIntervals={15}
               timeCaption='time'
-              withPortal
+              withPortal={true}
               dateFormat='MMMM d, yyyy h:mm aa'
             />
           </div>
@@ -201,7 +201,7 @@ export const EditEvent = (props: EditEvent) => {
           >
             End date
           </label>
-          {props.event.endDate === '0' && datepick.endDate !== undefined ? (
+          {props.event.endDate === '0' && datepick.endDate != undefined ? (
             <div className='col-sm-3'>
               <DatePicker
                 id='EndDate'
@@ -214,11 +214,11 @@ export const EditEvent = (props: EditEvent) => {
                 onChange={(e: Date): void => {
                   setDate({ ...datepick, endDate: moment(e).toISOString() });
                 }}
-                showTimeSelect
+                showTimeSelect={true}
                 timeFormat='HH:mm'
                 timeIntervals={15}
                 timeCaption='time'
-                withPortal
+                withPortal={true}
                 dateFormat='MMMM d, yyyy h:mm aa'
               />
             </div>
@@ -231,11 +231,11 @@ export const EditEvent = (props: EditEvent) => {
                 onChange={(e: Date): void => {
                   setDate({ ...datepick, endDate: moment(e).toISOString() });
                 }}
-                showTimeSelect
+                showTimeSelect={true}
                 timeFormat='HH:mm'
                 timeIntervals={15}
                 timeCaption='time'
-                withPortal
+                withPortal={true}
                 dateFormat='MMMM d, yyyy h:mm aa'
               />
             </div>
