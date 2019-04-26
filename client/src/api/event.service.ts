@@ -266,5 +266,11 @@ export const deleteScheduleEmail = async (data: any): Promise<any> => {
       }
     }
   );
+}
+export const updateSchedule = async (data: any): Promise<any> => {
+  await axios.post(
+    `${serverUrl}/updateSchedule`,
+    { ...data }
 
+  )
 }
