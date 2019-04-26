@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AvatarControllerTest {
 
     @InjectMocks
-    AvatarController avatarControllerMock;
+    ImageController avatarControllerMock;
 
     @Mock
     UserService userServiceMock;
@@ -84,7 +84,7 @@ public class AvatarControllerTest {
 
         when(jwtServiceMock.parseToken(token)).thenReturn(email);
         when(userServiceMock.getUserByEmail(email)).thenReturn(user);
-        when(fileStorageServiceMock.checkFileType(file)).thenReturn(true);
+        //when(fileStorageServiceMock.checkFileType(file)).thenReturn(true);
         when(fileStorageServiceMock.checkFileSize(file)).thenReturn(true);
         when(fileStorageServiceMock.storeFile(file)).thenReturn(fileName);
 
@@ -104,7 +104,7 @@ public class AvatarControllerTest {
                 "image/jpg", fileInputStream);//"test image content".getBytes());
         String token = "ds4567basbj/sasdas-";
 
-        when(fileStorageServiceMock.checkFileType(file)).thenReturn(false);
+        //when(fileStorageServiceMock.checkFileType(file)).thenReturn(false);
         WrongImageTypeException error = new WrongImageTypeException();
 
         mockMvc.perform(multipart("/uploadAvatar")
@@ -124,7 +124,7 @@ public class AvatarControllerTest {
                 "image/jpg", fileInputStream);//"test image content".getBytes());
         String token = "ds4567basbj/sasdas-";
 
-        when(fileStorageServiceMock.checkFileType(file)).thenReturn(true);
+        //when(fileStorageServiceMock.checkFileType(file)).thenReturn(true);
         when(fileStorageServiceMock.checkFileSize(file)).thenReturn(false);
         FileSizeException error = new FileSizeException();
 
@@ -163,7 +163,7 @@ public class AvatarControllerTest {
         when(fileMock.getAbsolutePath()).thenReturn("dsf");
         when(jwtServiceMock.parseToken(token)).thenReturn(email);
         when(userServiceMock.getUserByEmail(email)).thenReturn(user);
-        when(fileStorageServiceMock.checkFileType(file)).thenReturn(true);
+        //when(fileStorageServiceMock.checkFileType(file)).thenReturn(true);
         when(fileStorageServiceMock.loadFileAsResource(fileName)).thenReturn(resourceMock);
 
     }

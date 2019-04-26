@@ -82,7 +82,7 @@ public class EventController {
         try {
             eventService.addEvent(mappedEvent, token);
             LoggerFactory.getLogger("Create Event Controller: ")
-            .info(userService.getUserByEmail(jwtService.parseToken(token)).toString());
+                    .info(userService.getUserByEmail(jwtService.parseToken(token)).toString());
             eventService.addEvent(mappedEvent, token);
         } catch (UserNotFoundException e) {
             logger.error(e.toString());
@@ -150,7 +150,7 @@ public class EventController {
 
     @GetMapping("/allSubscribers")
     public Iterable<EventParticipants> getAllSubcribers() {
-       return eventParticipantsRepository.findAll();
+        return eventParticipantsRepository.findAll();
     }
 
     @GetMapping("/allSubscribersForEvent")
@@ -184,7 +184,7 @@ public class EventController {
         if (eventsPage != null) {
             int nextPageNum = eventsPage.getNumber() + 1;
             UriComponents uriComponentsBuilder = UriComponentsBuilder.newInstance().path("/event/all")
-            .query("page={keyword}").buildAndExpand(nextPageNum);
+                    .query("page={keyword}").buildAndExpand(nextPageNum);
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.set("nextpage", uriComponentsBuilder.toString());
             Slice<EventDTO> eventDTOSlice = eventDtoBuilder.convertToDto(eventsPage);
@@ -222,7 +222,7 @@ public class EventController {
 
     @GetMapping("/category/{categoryId}")
     public Page<Event> getAllEventsByCategoryId(@PathVariable(value = "categoryId") int categoryId,
-                                                @PageableDefault(size = 15, sort = "id")Pageable pageable) {
+                                                @PageableDefault(size = 15, sort = "id") Pageable pageable) {
         logger.info("[GET-ALL-EVENTS-BY-CATEGORY-ID] - categoryId: " + categoryId);
         return eventRepository.findByCategoryId(categoryId, pageable);
     }
@@ -267,7 +267,14 @@ public class EventController {
         Event event = eventService.getEventById(eventId);
         User user = userService.getUserByEmail(jwtService.parseToken(token));
 
-        return eventParticipantsService.isParticipant(user,event) ? ResponseEntity.ok().body("IS SUBSCRIBER")
+        return eventParticipantsService.isParticipant(user, event) ? ResponseEntity.ok().body("IS SUBSCRIBER")
                 : ResponseEntity.badRequest().body("IS NOT SUBSCRIBER");
+    }
+
+    @GetMapping("/event-detail/{eventName}")
+    public ResponseEntity<?> eventDetail(@PathVariable("eventName") String eventName) {
+        Event event = eventService.findEventByTopic(eventName);
+        EventDTO findedEvent = modelMapper.map(event, EventDTO.class);
+        return ResponseEntity.ok().body(findedEvent);
     }
 }

@@ -3,6 +3,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { getOwnerEventList } from '../../../api/event.service';
 import { EventsListBuild } from '../../../components/eventsListBuild/EventsListBuild';
 import { EventDto } from '../../../interfaces/Event.dto';
+import './showEvents.scss';
 
 interface EventState {
   events: EventDto[];
@@ -68,7 +69,7 @@ export class ShowEvents extends Component<EventDto, EventState> {
   public render() {
     return (
       <div className='container-fluid'>
-        <h1 className='text-center'>Events where you are owner</h1>
+        <h2 className='titleEvents'>Events where you are owner</h2>
 
         <div className='row'>
           <div className='col'>

@@ -11,7 +11,9 @@ import {
   openEvent,
   isSubscribe,
   subscribe,
-  unSubscribe
+  unSubscribe,
+  scheduleEmail,
+  deleteScheduleEmail
 } from '../../../api/event.service';
 import { Feedback, Gallery } from '../../../components';
 import { commentsSchema } from '../../../validationSchemas/commentValidation';
@@ -108,9 +110,9 @@ class EventDetail extends Component<any, any> {
       }
     );
   }
-  public handleClick() {
+  public async handleClick() {
     if (this.state.isSubs) {
-      unSubscribe(this.state.eventProps.event.id).then(
+      await unSubscribe(this.state.eventProps.event.id).then(
         (res: AxiosResponse): any => {
           if (res.status >= 200 && res.status <= 300) {
             this.setState({
@@ -119,8 +121,11 @@ class EventDetail extends Component<any, any> {
           }
         }
       );
+      console.debug("delete schedule");
+      deleteScheduleEmail(this.state.eventProps.event);
+
     } else {
-      subscribe(this.state.eventProps.event.id).then(
+      await subscribe(this.state.eventProps.event.id).then(
         (res: AxiosResponse): any => {
           if (res.status >= 200 && res.status <= 300) {
             this.setState({
@@ -129,6 +134,8 @@ class EventDetail extends Component<any, any> {
           }
         }
       );
+
+      scheduleEmail(this.state.eventProps.event, "subscribed");
     }
   }
 
@@ -190,57 +197,57 @@ class EventDetail extends Component<any, any> {
                             Subscribed
                           </button>
                         ) : (
-                          <div>
-                            {this.state.eventProps.event.statusId ===
-                            2 ? null : (
-                              <button
-                                type='button'
-                                className='btn btn-info btn-sm'
-                                onClick={this.handleClick}
-                              >
-                                Subscribe
+                            <div>
+                              {this.state.eventProps.event.statusId ===
+                                2 ? null : (
+                                  <button
+                                    type='button'
+                                    className='btn btn-info btn-sm'
+                                    onClick={this.handleClick}
+                                  >
+                                    Subscribe
                               </button>
-                            )}
-                          </div>
-                        )}
+                                )}
+                            </div>
+                          )}
                       </div>
                     ) : (
-                      <div>
-                        <button
-                          onClick={this.handleDelete}
-                          type='button'
-                          className='btn btn-lg btn-outline-danger ml-1'
-                        >
-                          <MdDelete />
-                        </button>
-                        <button
-                          onClick={() => {
-                            this.state.eventProps.setEdit(true);
-                          }}
-                          type='button'
-                          className='btn btn-lg btn-outline-success ml-1'
-                        >
-                          <MdEdit />
-                        </button>
-                        {this.state.eventProps.event.statusId === 2 ? (
+                        <div>
                           <button
-                            onClick={this.handleOpen}
+                            onClick={this.handleDelete}
+                            type='button'
+                            className='btn btn-lg btn-outline-danger ml-1'
+                          >
+                            <MdDelete />
+                          </button>
+                          <button
+                            onClick={() => {
+                              this.state.eventProps.setEdit(true);
+                            }}
                             type='button'
                             className='btn btn-lg btn-outline-success ml-1'
                           >
-                            <MdLockOpen />
+                            <MdEdit />
                           </button>
-                        ) : (
-                          <button
-                            onClick={this.handleClose}
-                            type='button'
-                            className='btn btn-lg btn-outline-warning ml-1'
-                          >
-                            <MdLock />
-                          </button>
-                        )}
-                      </div>
-                    )}
+                          {this.state.eventProps.event.statusId === 2 ? (
+                            <button
+                              onClick={this.handleOpen}
+                              type='button'
+                              className='btn btn-lg btn-outline-success ml-1'
+                            >
+                              <MdLockOpen />
+                            </button>
+                          ) : (
+                              <button
+                                onClick={this.handleClose}
+                                type='button'
+                                className='btn btn-lg btn-outline-warning ml-1'
+                              >
+                                <MdLock />
+                              </button>
+                            )}
+                        </div>
+                      )}
                   </div>
                 </div>
               </div>
@@ -257,8 +264,8 @@ class EventDetail extends Component<any, any> {
                   {this.state.eventProps.event.endDate === '0'
                     ? ''
                     : this.convertTime(
-                        this.state.eventProps.event.endDate.toString()
-                      )}
+                      this.state.eventProps.event.endDate.toString()
+                    )}
                 </p>
               </div>
 
@@ -339,16 +346,16 @@ class EventDetail extends Component<any, any> {
                                   name='comment'
                                 />
                                 {form.touched.comment &&
-                                form.errors.comment &&
-                                form.errors.comment ? (
-                                  <div className='invalid-feedback'>
-                                    {form.errors.comment}
+                                  form.errors.comment &&
+                                  form.errors.comment ? (
+                                    <div className='invalid-feedback'>
+                                      {form.errors.comment}
+                                    </div>
+                                  ) : (
+                                    <div className='valid-feedback'>
+                                      <MdDone /> Press enter to add comment
                                   </div>
-                                ) : (
-                                  <div className='valid-feedback'>
-                                    <MdDone /> Press enter to add comment
-                                  </div>
-                                )}
+                                  )}
                               </div>
                             );
                           }}

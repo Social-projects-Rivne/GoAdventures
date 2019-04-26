@@ -1,5 +1,5 @@
 import React, { Component, createRef, RefObject } from 'react';
-import { createEvent } from '../../api/event.service';
+import { createEvent, scheduleEmail } from '../../api/event.service';
 import './CreateEvent.scss';
 import './Leaflet.scss';
 import { Map as LeafletMap, TileLayer, Marker, Popup } from 'react-leaflet';
@@ -133,12 +133,15 @@ export class CreateEvent extends Component<any, any> {
     this.setState({ currentPos: e.latlng });
   }
 
-  public handleSubmit(event: any) {
+  public async handleSubmit(event: any) {
     if (this.state.newEvent.endDate === 0) {
-      createEvent({ ...this.state.newEvent });
+      await createEvent({ ...this.state.newEvent });
+      console.debug(this.state);
+      scheduleEmail({ ...this.state.newEvent }, "owned"); // topic and startDate
       this.setState({ redirect: true });
     } else if (this.state.newEvent.startDate < this.state.newEvent.endDate) {
       createEvent({ ...this.state.newEvent });
+      console.debug(this.state);
       this.setState({ redirect: true });
     } else {
       console.log('startDate > endDate ');

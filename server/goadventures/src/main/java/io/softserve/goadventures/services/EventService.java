@@ -155,4 +155,7 @@ public class EventService {
     public List<Event> findAllEvents() {
         return eventRepository.findAll();
     }
+    public Event findEventByTopic(String topic){
+        return eventRepository.findByTopic(topic);
+    }
 }

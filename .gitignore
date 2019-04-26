@@ -8,7 +8,7 @@
 *.class
 
 # Database dump
-*.sql
+
 
 # Log file
 *.log

@@ -34,10 +34,14 @@ public class MailContentBuilder {
         context.setVariable("sendNewPassword", sendNewPassword);
         return templateEngine.process("send-new-password", context);
     }
-    public String eventEmailNotification(String fullname, String eventTopic){
+    public String eventEmailNotification(String fullname, String eventTopic,String startDate,String location, String eventDescription, String role){
         Context context = new Context();
         context.setVariable("fullname", fullname);
         context.setVariable("eventTopic", eventTopic);
+        context.setVariable("startDate", startDate);
+        context.setVariable("location", location);
+        context.setVariable("description", eventDescription);
+        context.setVariable("role", role);
 
         return templateEngine.process("eventEmailNotification",context);
     }

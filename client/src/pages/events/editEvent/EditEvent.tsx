@@ -22,7 +22,7 @@ import {
 } from 'formik';
 import { MdDone } from 'react-icons/md';
 import moment from 'moment';
-import { updateEvent } from '../../../api/event.service';
+import { updateEvent, updateSchedule } from '../../../api/event.service';
 import './EditEvent.scss';
 import { ErrorMessage } from '../../../interfaces/ErrorMessage';
 
@@ -77,6 +77,11 @@ export const EditEvent = (props: EditEvent) => {
       longitude: mapCoordiantes[1]
     } as EventDto);
     props.setEvent({ ...response });
+
+    console.debug("updateSchedule");
+    updateSchedule(props.event);
+
+
   };
 
   useEffect(() => {
@@ -86,7 +91,7 @@ export const EditEvent = (props: EditEvent) => {
       props.setEdit(false);
       props.setIsLoading(false);
     }
-    return () => {};
+    return () => { };
   }, [fetch]);
 
   const markerRef = createRef<Marker>();
@@ -129,16 +134,16 @@ export const EditEvent = (props: EditEvent) => {
                                 {...field}
                               />
                               {form.touched[input.field_name] &&
-                              form.errors[input.field_name] &&
-                              form.errors[input.field_name] ? (
-                                <div className='invalid-feedback'>
-                                  {form.errors[input.field_name]}
+                                form.errors[input.field_name] &&
+                                form.errors[input.field_name] ? (
+                                  <div className='invalid-feedback'>
+                                    {form.errors[input.field_name]}
+                                  </div>
+                                ) : (
+                                  <div className='valid-feedback'>
+                                    <MdDone /> Update info for your event
                                 </div>
-                              ) : (
-                                <div className='valid-feedback'>
-                                  <MdDone /> Update info for your event
-                                </div>
-                              )}
+                                )}
                             </div>
                           );
                         }}
@@ -223,23 +228,23 @@ export const EditEvent = (props: EditEvent) => {
               />
             </div>
           ) : (
-            <div className='col-sm-3'>
-              <DatePicker
-                id='EndDate'
-                className='input-group-text'
-                selected={moment(datepick.endDate).toDate()}
-                onChange={(e: Date): void => {
-                  setDate({ ...datepick, endDate: moment(e).toISOString() });
-                }}
-                showTimeSelect={true}
-                timeFormat='HH:mm'
-                timeIntervals={15}
-                timeCaption='time'
-                withPortal={true}
-                dateFormat='MMMM d, yyyy h:mm aa'
-              />
-            </div>
-          )}
+              <div className='col-sm-3'>
+                <DatePicker
+                  id='EndDate'
+                  className='input-group-text'
+                  selected={moment(datepick.endDate).toDate()}
+                  onChange={(e: Date): void => {
+                    setDate({ ...datepick, endDate: moment(e).toISOString() });
+                  }}
+                  showTimeSelect={true}
+                  timeFormat='HH:mm'
+                  timeIntervals={15}
+                  timeCaption='time'
+                  withPortal={true}
+                  dateFormat='MMMM d, yyyy h:mm aa'
+                />
+              </div>
+            )}
         </div>
       </div>
       <div className='col-12'>

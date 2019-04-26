@@ -112,7 +112,7 @@ export class Events extends Component<EventDto, EventState> {
                     this.fetchSearchEvent();
                   }}
                 >
-                  <div className='row mb-3 '>
+                  <div className='row mb-3 align-items-center'>
                     <div className='col-7'>
                       <div className='input-group input-group-lg '>
                         <div className='input-group-prepend'>
@@ -143,9 +143,9 @@ export class Events extends Component<EventDto, EventState> {
                       />
                     </div>
                     <div className='col-1'>
-                        <button className='btn-md btn-primary' onClick={() => {
-                          this.fetchEvents();
-                        }} >Clear</button>
+                      <button className='btn-md btn-primary rounded' onClick={() => {
+                        this.fetchEvents();
+                      }} >Clear</button>
                     </div>
                   </div>
                 </form>

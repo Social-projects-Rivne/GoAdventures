@@ -40,3 +40,16 @@ export const changeUserData = async (data: any): Promise<any> => {
       return res;
     });
 };
+
+export const uploadAvatar = async (data:any) : Promise<AxiosResponse> =>
+  await axios.post(
+    `${serverUrl}/uploadAvatar`,
+    data,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${cookies.get('tk879n')}`
+      }
+    }
+    
+  )

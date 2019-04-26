@@ -8,15 +8,12 @@ public class Validator {
     private static Matcher matcher;
 
     public static boolean validatePassword(final String password){
-        pattern = Pattern.compile("((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})");
-        matcher = pattern.matcher(password);
-        return matcher.matches();
+
+//        pattern = Pattern.compile("((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})");
+//        matcher = pattern.matcher(password);
+//        return matcher.matches();
+        return (password.length()> 4 && password.length()< 19);
     }
 
-    public static boolean validateEmail(final String hex) {
-        pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" +
-                "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
-        matcher = pattern.matcher(hex);
-        return matcher.matches();
-    }
+
 }

@@ -5,17 +5,20 @@
   margin-right: 10%;
   text-align: center;
 }
+
 .mylabel {
   border-bottom-left-radius: 0.25rem !important;
   border-top-left-radius: 0.25rem !important;
 }
+
 .myinput {
   border-radius: 0rem !important;
   border-bottom-right-radius: 0.25rem !important;
   border-top-right-radius: 0.25rem !important;
 }
-.Category{
-  height:100%
+
+.Category {
+  height: 100%
 }
 
 @media screen and (max-width: 600px) {

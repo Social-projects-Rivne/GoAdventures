@@ -2,7 +2,9 @@ import axios, { AxiosResponse } from 'axios';
 import { cookies } from './cookies.service';
 import { EventDto } from '../interfaces/Event.dto';
 import { serverUrl } from './url.config';
+import { date } from 'yup';
 import errorHandle from './error.service';
+
 
 export const getEventList = async (
   nextPage?: string | null,
@@ -42,9 +44,9 @@ export const searchForEvents = async (
   return axios
     .get(
       `${serverUrl}${
-        !!nextPage
-          ? nextPage + '' + searchUrl
-          : defaultUrl + '' + searchUrl + '' + categoryUrl
+      !!nextPage
+        ? nextPage + '' + searchUrl
+        : defaultUrl + '' + searchUrl + '' + categoryUrl
       }`,
       {
         headers: {
@@ -174,7 +176,6 @@ export const isOwner = async (data: number): Promise<any> =>
       'Content-Type': 'application/json'
     }
   });
-
 export const isSubscribe = async (data: number): Promise<any> =>
   axios.get(`${serverUrl}/event/is-subscriber`, {
     headers: {
@@ -202,6 +203,7 @@ export const unSubscribe = async (data: number): Promise<any> =>
     }
   });
 
+
 export const createEvent = async (data: any): Promise<string> => {
   return axios
     .post(
@@ -226,3 +228,49 @@ export const createEvent = async (data: any): Promise<string> => {
       return 'server error';
     });
 };
+
+export const getEventDetail = async (topic: any): Promise<EventDto | any> => {
+  return await axios
+    .get(`${serverUrl}/event/event-detail/${topic}`)
+    .then((res: AxiosResponse<EventDto>) => {
+      console.debug(res.data);
+      return res.data;
+    })
+    .catch((error) => {
+      return error;
+    });
+};
+
+export const scheduleEmail = async (data: any, Role: string): Promise<any> => {
+  await axios.post(
+    `${serverUrl}/scheduleEmail`,
+    { ...data },
+    {
+      headers: {
+        'Authorization': `Bearer ${cookies.get('tk879n')}`,
+        'Role': Role,
+        'Content-Type': 'application/json'
+      }
+    }
+  )
+
+};
+export const deleteScheduleEmail = async (data: any): Promise<any> => {
+  await axios.post(
+    `${serverUrl}/deleteSchedule`,
+    { ...data },
+    {
+      headers: {
+        'Authorization': `Bearer ${cookies.get('tk879n')}`,
+        'Content-Type': 'application/json'
+      }
+    }
+  );
+}
+export const updateSchedule = async (data: any): Promise<any> => {
+  await axios.post(
+    `${serverUrl}/updateSchedule`,
+    { ...data }
+
+  )
+}

@@ -12,9 +12,21 @@
         margin-bottom: 0 !important;
         margin-top: 0 !important;
         height: 92%;
-        
+
     }
 }
+
+// .container{
+//     flex: 2 2 20rem;
+//     max-width: 70% !important;
+//     & .Dialog__window {
+//         max-width: 99%;
+//         margin-bottom: 0 !important;
+//         margin-top: 0 !important;
+//         height: 90%;        
+//         }
+
+// }
 
 .profile-page {
     display: flex;
@@ -24,18 +36,9 @@
     flex-direction: row;
     flex-flow: row wrap;
 }
-.errProfile{
+
+.errProfile {
     margin: 15px;
     border-radius: 10px;
     //display: inline-block;
 }
-
-
-
-
-.show{-webkit-animation:scale-in-center .5s cubic-bezier(.25,.46,.45,.94) both;animation:scale-in-center .5s cubic-bezier(.25,.46,.45,.94) both}
-@-webkit-keyframes scale-in-center{0%{-webkit-transform:scale(0);transform:scale(0);opacity:1}100%{-webkit-transform:scale(1);transform:scale(1);opacity:1}}@keyframes scale-in-center{0%{-webkit-transform:scale(0);transform:scale(0);opacity:1}100%{-webkit-transform:scale(1);transform:scale(1);opacity:1}}
-
-
-
-

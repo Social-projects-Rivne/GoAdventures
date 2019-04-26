@@ -1,31 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { RouteComponentProps } from 'react-router';
 import EventDetail from '../EventsDetail/EventDetail';
 import { EditEvent } from '../editEvent/EditEvent';
 import { EventDto } from '../../../interfaces/Event.dto';
+import { getEventDetail } from '../../../api/event.service';
+import { ErrorMessageComponent } from '../../../components';
+
 interface EventProps {
   routerProps: RouteComponentProps;
 }
 
 export const Event = (props: EventProps) => {
-  const [isLoading, setIsLoading] = useState(false);
+  const currentUrl = document.location.href;
+  const arrTopic: string[] = currentUrl.split(`detail/`);
+
+  const [isLoading, setIsLoading] = useState(true);
   const [edit, setEdit] = useState(false);
-  const [event, setEvent] = useState({
-    ...props.routerProps.location.state
-  } as EventDto);
+  const [event, setEvent] = useState({} as EventDto);
+
+  /* https://overreacted.io/a-complete-guide-to-useeffect/ */
+  console.debug('deamn', event);
+
+  useEffect(() => {
+    const fetchData = async (): Promise<void> => {
+      setEvent({ ...(await getEventDetail(arrTopic[1])) } as EventDto | any);
+      setIsLoading(false);
+    };
+    if (Object.keys(event).length > 0) {
+      setEvent({
+        ...props.routerProps.location.state
+      } as EventDto);
+    } else {
+      fetchData();
+    }
+    return () => { };
+  }, []);
+
   return (
     <div className='container'>
-      {edit ? (
+      {Object.keys(event).length === 0 ? (
         isLoading ? (
           <div className='spinner-border text-primary' role='status'>
             <span className='sr-only'>Loading...</span>
           </div>
         ) : (
-          <EditEvent {...{ event, setEvent, setIsLoading, setEdit }} />
-        )
+            <EventDetail {...{ event, setEdit, setIsLoading }} />
+          )
+
+      ) : edit ? (
+        <EditEvent {...{ event, setEvent, setIsLoading, setEdit }} />
       ) : (
-        <EventDetail {...{ event, setEdit, setIsLoading }} />
-      )}
+            <EventDetail {...{ event, setEdit, setIsLoading }} />
+          )
+      }
     </div>
   );
 };
