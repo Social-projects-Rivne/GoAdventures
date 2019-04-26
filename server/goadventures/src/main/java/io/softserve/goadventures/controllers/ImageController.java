@@ -40,6 +40,7 @@ public class ImageController {
                                           @RequestParam("file") MultipartFile file) throws UserNotFoundException {
 
         if (!fileStorageService.checkFileSize(file)) {
+            logger.error("File size > 5mb");
             return ResponseEntity.status(403).body(new ErrorMessageManager("Maximum file size is 5mb!","Error"));
         }
         User user = userService.getUserByEmail(jwtService.parseToken(token));
@@ -65,7 +66,7 @@ public class ImageController {
 
         user.setAvatarUrl(fileDownloadUri);
         userService.updateUser(user);
-
+        logger.info("avatar uploaded successfully");
         return ResponseEntity.ok(fileDownloadUri);
     }
 

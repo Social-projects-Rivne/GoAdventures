@@ -3,6 +3,7 @@ package io.softserve.goadventures.controllers;
 import io.softserve.goadventures.dto.EventDTO;
 import io.softserve.goadventures.dto.ScheduleEmailResponse;
 import io.softserve.goadventures.models.Event;
+import io.softserve.goadventures.models.EventParticipants;
 import io.softserve.goadventures.models.User;
 import io.softserve.goadventures.services.EmailJob;
 import io.softserve.goadventures.services.EventService;
@@ -22,9 +23,7 @@ import javax.validation.Valid;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.*;
-import java.util.Date;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 public class EmailJobSchedulerController {
@@ -50,7 +49,6 @@ public class EmailJobSchedulerController {
         ZoneId defaultZoneId = ZoneId.systemDefault();
 
         Instant instant = Instant.parse(eventDTO.getStartDate());
-        logger.info("instant " + instant.toString());
 
         ZonedDateTime zonedDateTime = instant.atZone(defaultZoneId); // zonedDateTimeStartEvent
         logger.info("zoned datetime " + zonedDateTime);
@@ -58,21 +56,22 @@ public class EmailJobSchedulerController {
         DateFormat dateFormatToUser = new SimpleDateFormat("dd MMMM HH:mm", Locale.ENGLISH);
         Date dateToUser = Date.from(zonedDateTime.toInstant());
         String eventStartDateToUser = dateFormatToUser.format(dateToUser);// date which showed in user mail
-        logger.info("date to user " + eventStartDateToUser);
 
         Event event = eventService.findEventByTopic(eventDTO.getTopic());
         User user = userService.getUserByEmail(jwtService.parseToken(token));
 
         try {
             if(zonedDateTime.isBefore(ZonedDateTime.now())) {
+                logger.error("dateTime must be after current time");
                 ScheduleEmailResponse scheduleEmailResponse = new ScheduleEmailResponse(false,
                         "dateTime must be after current time");
                 return ResponseEntity.badRequest().body(scheduleEmailResponse);
             }
+
             JobDetail jobDetail = buildJobDetail(user.getEmail(),event.getTopic(),eventStartDateToUser,event.getLocation(),user.getFullname(),event.getDescription(),role);
             Trigger trigger = buildJobTrigger(jobDetail, zonedDateTime);
             scheduler.scheduleJob(jobDetail, trigger);
-            logger.info("scheduler done, triger will executed at "+ zonedDateTime);
+            logger.info("scheduler done, trigger will executed at "+ zonedDateTime + " Email recipient  "+ user.getEmail());
             ScheduleEmailResponse scheduleEmailResponse = new ScheduleEmailResponse(true,
                     jobDetail.getKey().getName(), jobDetail.getKey().getGroup(), "Email Scheduled Successfully!");
             return ResponseEntity.ok(scheduleEmailResponse);
@@ -98,7 +97,7 @@ public class EmailJobSchedulerController {
         jobDataMap.put("role", role);
 
         return JobBuilder.newJob(EmailJob.class)
-                .withIdentity(UUID.randomUUID().toString(), "email-jobs")
+                .withIdentity("trigger" + email + eventTopic, "email-jobs")
                 .withDescription("Send Email Job")
                 .usingJobData(jobDataMap)
                 .storeDurably()
@@ -114,5 +113,42 @@ public class EmailJobSchedulerController {
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule().withMisfireHandlingInstructionFireNow())
                 .build();
     }
+
+
+    @PostMapping("/deleteSchedule")
+    public boolean deleteSchedule(@RequestHeader("Authorization") String token, @RequestBody EventDTO eventDTO) throws SchedulerException { //unsubscribe
+        String email = jwtService.parseToken(token);
+        String name = "trigger" + email + eventDTO.getTopic();
+
+        JobKey key = new JobKey(name,"email-jobs");
+        logger.info("delete job with key  " + key);
+        return scheduler.deleteJob(key);
+    }
+
+//    @PostMapping("/updateSchedule")
+//    public ResponseEntity<ScheduleEmailResponse> updateSchedule(@RequestBody EventDTO eventDTO) throws SchedulerException {      //if owner edit date of start event
+//        Event event = eventService.findEventByTopic(eventDTO.getTopic());
+//        Set<EventParticipants> participants = event.getParticipants();
+//        for ( EventParticipants eventParticipant: participants) {
+//            String email = eventParticipant.getUser().getEmail();   //delete old trigger
+//            String name = "trigger" + email + event.getTopic();
+//            JobKey key = new JobKey(name,"email-jobs");
+//            logger.info("delete job with key  " + key);
+//            boolean isDelete = scheduler.deleteJob(key);
+//            logger.info("deletes successfully");
+//            if(isDelete){
+//                //update schedule
+//            String token = jwtService.createToken(email);
+//            scheduleEmail(token,"role",eventDTO);
+//            logger.info("true");
+//
+//            }
+//        }
+//
+//        return null;
+//
+//    }
+
+
 
 }

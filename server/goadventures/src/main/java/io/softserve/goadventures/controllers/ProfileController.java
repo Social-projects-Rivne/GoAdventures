@@ -109,10 +109,10 @@ public class ProfileController {
         User user = userService.getUserByEmail(jwtService.parseToken(token));
         Page<Event> eventsPage = eventService.getEventsByOwnerAndParticipants(eventPageable, user.getId());
 
-        if (eventsPage != null) {
+        if(eventsPage != null) {
             return new ResponseEntity<Slice<EventDTO>>(eventDtoBuilder.convertToDto(eventsPage), HttpStatus.OK);
         } else {
-            return ResponseEntity.badRequest().body("End of pages");
+            return  ResponseEntity.badRequest().body("End of pages");
         }
     }
 }

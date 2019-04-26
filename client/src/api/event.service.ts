@@ -255,3 +255,16 @@ export const scheduleEmail = async (data: any, Role: string): Promise<any> => {
   )
 
 };
+export const deleteScheduleEmail = async (data: any): Promise<any> => {
+  await axios.post(
+    `${serverUrl}/deleteSchedule`,
+    { ...data },
+    {
+      headers: {
+        'Authorization': `Bearer ${cookies.get('tk879n')}`,
+        'Content-Type': 'application/json'
+      }
+    }
+  );
+
+}
