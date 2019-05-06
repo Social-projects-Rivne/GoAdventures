@@ -3,7 +3,12 @@ import React, { Component } from 'react';
 import { Field, FieldProps, Form, Formik, FormikProps } from 'formik';
 import { TileLayer, Map, Marker, Popup } from 'react-leaflet';
 import { MdDone, MdLockOpen, MdEdit, MdDelete, MdLock } from 'react-icons/md';
+import { TimePicker, Button, message } from "antd";
 import moment from 'moment';
+import 'antd/dist/antd.css';
+
+
+const format = 'HH:mm';
 import {
   deleteEvent,
   isOwner,
@@ -48,6 +53,11 @@ class EventDetail extends Component<any, any> {
   constructor(props: any) {
     super(props);
     this.state = {
+      timeToAlert: '',
+      showAlert: false,
+      errorMessage: {
+        message: ''
+      },
       eventProps: { ...this.props },
       isOwner: false,
       isSubs: true,
@@ -55,11 +65,12 @@ class EventDetail extends Component<any, any> {
     };
     console.debug(this.props);
     this.handleDelete = this.handleDelete.bind(this);
-
     this.handleClick = this.handleClick.bind(this);
-
     this.handleClose = this.handleClose.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
+    this.timePickerChange = this.timePickerChange.bind(this);
+    this.showAlertSwitcher = this.showAlertSwitcher.bind(this);
+    this.clearErrorMessage = this.clearErrorMessage.bind(this);
   }
 
   public convertTime(date: string) {
@@ -125,17 +136,28 @@ class EventDetail extends Component<any, any> {
       deleteScheduleEmail(this.state.eventProps.event);
 
     } else {
-      await subscribe(this.state.eventProps.event.id).then(
-        (res: AxiosResponse): any => {
-          if (res.status >= 200 && res.status <= 300) {
-            this.setState({
-              isSubs: true
-            });
+      await scheduleEmail(this.state.eventProps.event, "subscribed", this.state.timeToAlert)
+        .catch((err) => {
+          this.setState({ errorMessage: { ...err.response.data } }, () => {
+            window.setTimeout(() => {
+              this.setState({ errorMessage: { message: '' } })
+            }, 3500);
+          });
+        });
+      if (this.state.errorMessage.message === '') {
+        await subscribe(this.state.eventProps.event.id).then(
+          (res: AxiosResponse): any => {
+            if (res.status >= 200 && res.status <= 300) {
+              this.setState({
+                isSubs: true
+              });
+            }
           }
-        }
-      );
+        );
 
-      scheduleEmail(this.state.eventProps.event, "subscribed");
+      }
+
+
     }
   }
 
@@ -159,6 +181,17 @@ class EventDetail extends Component<any, any> {
         }
       }
     );
+  }
+  public timePickerChange(time: moment.Moment, timestring: string) {
+    console.debug("TIME PICKER", timestring);
+    this.setState({ timeToAlert: timestring });
+  }
+  public showAlertSwitcher() {
+    this.setState({ showAlert: !this.state.showAlert })
+    console.debug(this.state.showAlert);
+  }
+  public clearErrorMessage() {
+    this.setState({ errorMessage: { message: '' } })
   }
 
   public render() {
@@ -192,7 +225,12 @@ class EventDetail extends Component<any, any> {
                           <button
                             type='button'
                             className='btn btn-outline-danger btn-sm'
-                            onClick={this.handleClick}
+                            onClick={
+                              () => {
+                                this.handleClick();
+                                this.showAlertSwitcher();
+                              }
+                            }
                           >
                             Subscribed
                           </button>
@@ -203,11 +241,51 @@ class EventDetail extends Component<any, any> {
                                   <button
                                     type='button'
                                     className='btn btn-info btn-sm'
-                                    onClick={this.handleClick}
+                                    onClick={this.showAlertSwitcher}
                                   >
                                     Subscribe
                               </button>
                                 )}
+
+                              {this.state.showAlert === true
+                                ?
+                                <div className="Timepicker">
+                                  <label>Notify time(before event start)</label><br />
+                                  <TimePicker
+                                    defaultValue={moment('01:05', format)}
+                                    onChange={
+                                      this.timePickerChange
+
+                                    }
+                                    format={format} />
+                                  <Button onClick={this.handleClick}
+
+                                  >
+                                    Ok
+                                </Button>
+                                  <div className="Errors-messages timePicker">
+                                    {
+                                      this.state.errorMessage.message !== ''
+                                        ? <div className="alert alert-danger alert-dismissible fade show errorTimePickerMessage "
+                                          role="alert">
+                                          <strong>{this.state.errorMessage.message}</strong>
+                                          <button type="button"
+                                            onClick={this.clearErrorMessage}
+                                            className="close"
+                                            data-dismiss="alert"
+                                            aria-label="Close">
+
+                                            <span aria-hidden="true">&times;</span>
+                                          </button>
+                                        </div>
+                                        : null
+                                    }
+                                  </div>
+
+                                </div>
+                                :
+                                null
+                              }
                             </div>
                           )}
                       </div>
@@ -373,6 +451,7 @@ class EventDetail extends Component<any, any> {
                     }}
                   />
                 </div>
+
               </div>
             </div>
           </div>

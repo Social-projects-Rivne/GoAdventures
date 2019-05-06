@@ -241,7 +241,7 @@ export const getEventDetail = async (topic: any): Promise<EventDto | any> => {
     });
 };
 
-export const scheduleEmail = async (data: any, Role: string): Promise<any> => {
+export const scheduleEmail = async (data: any, Role: string, timeToAlert: string): Promise<any> => {
   await axios.post(
     `${serverUrl}/scheduleEmail`,
     { ...data },
@@ -249,6 +249,7 @@ export const scheduleEmail = async (data: any, Role: string): Promise<any> => {
       headers: {
         'Authorization': `Bearer ${cookies.get('tk879n')}`,
         'Role': Role,
+        "timeToAlert": timeToAlert,
         'Content-Type': 'application/json'
       }
     }

@@ -9,6 +9,7 @@ import io.softserve.goadventures.services.EmailJob;
 import io.softserve.goadventures.services.EventService;
 import io.softserve.goadventures.services.JWTService;
 import io.softserve.goadventures.services.UserService;
+import io.softserve.goadventures.utils.DateParser;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,24 +44,19 @@ public class EmailJobSchedulerController {
     }
 
     @PostMapping("/scheduleEmail")
-    public ResponseEntity<ScheduleEmailResponse> scheduleEmail(@Valid @RequestHeader("Authorization") String token,@RequestHeader("Role") String role, @RequestBody EventDTO eventDTO) throws SchedulerException {
-        logger.info("role- " + role);
-        ZoneId defaultZoneId = ZoneId.systemDefault();
-
-        Instant instant = Instant.parse(eventDTO.getStartDate());
-
-        ZonedDateTime zonedDateTime = instant.atZone(defaultZoneId); // zonedDateTimeStartEvent
-        logger.info("zoned datetime " + zonedDateTime);
-
-        DateFormat dateFormatToUser = new SimpleDateFormat("dd MMMM HH:mm", Locale.ENGLISH);
-        Date dateToUser = Date.from(zonedDateTime.toInstant());
-        String eventStartDateToUser = dateFormatToUser.format(dateToUser);// date which showed in user mail
+    public ResponseEntity<ScheduleEmailResponse> scheduleEmail(@Valid @RequestHeader("Authorization") String token,
+                                                               @RequestHeader("Role") String role,
+                                                               @RequestHeader("timeToAlert") String timeToAlert,
+                                                               @RequestBody EventDTO eventDTO) throws SchedulerException {
 
         Event event = eventService.findEventByTopic(eventDTO.getTopic());
         User user = userService.getUserByEmail(jwtService.parseToken(token));
+        ZonedDateTime zonedDateTimeOfStartEvent = DateParser.dateParser(eventDTO.getStartDate());// start event date
+        String eventStartDateToUser = DateParser.dateToUser(zonedDateTimeOfStartEvent);
+        ZonedDateTime zonedDateTimeStartEventUserChoose = DateParser.dateOfStartEventUserChoose(zonedDateTimeOfStartEvent,timeToAlert);//start event date, user choose
 
         try {
-            if(zonedDateTime.isBefore(ZonedDateTime.now())) {
+            if(zonedDateTimeStartEventUserChoose.isBefore(ZonedDateTime.now())) {
                 logger.error("dateTime must be after current time");
                 ScheduleEmailResponse scheduleEmailResponse = new ScheduleEmailResponse(false,
                         "dateTime must be after current time");
@@ -68,9 +64,9 @@ public class EmailJobSchedulerController {
             }
 
             JobDetail jobDetail = buildJobDetail(user.getEmail(),event.getTopic(),eventStartDateToUser,event.getLocation(),user.getFullname(),event.getDescription(),role);
-            Trigger trigger = buildJobTrigger(jobDetail, zonedDateTime);
+            Trigger trigger = buildJobTrigger(jobDetail, zonedDateTimeStartEventUserChoose);
             scheduler.scheduleJob(jobDetail, trigger);
-            logger.info("scheduler done, trigger will executed at "+ zonedDateTime + " Email recipient  "+ user.getEmail());
+            logger.info("scheduler done, trigger will executed at "+ zonedDateTimeStartEventUserChoose + " Email recipient  "+ user.getEmail());
             ScheduleEmailResponse scheduleEmailResponse = new ScheduleEmailResponse(true,
                     jobDetail.getKey().getName(), jobDetail.getKey().getGroup(), "Email Scheduled Successfully!");
             return ResponseEntity.ok(scheduleEmailResponse);
@@ -124,47 +120,46 @@ public class EmailJobSchedulerController {
         return scheduler.deleteJob(key);
     }
 
-    @PostMapping("/updateSchedule")
-    public ResponseEntity<?> updateSchedule(@RequestBody EventDTO eventDTO) throws SchedulerException {      //if owner edit date of start event
-        Event event = eventService.findEventByTopic(eventDTO.getTopic());
-        if(eventDTO.getStartDate().equals(event.getStartDate())){
-            logger.info("date not changed");
-            return null;
-        }
-        Set<EventParticipants> participants = event.getParticipants();
-        for ( EventParticipants eventParticipant: participants) {
-            String email = eventParticipant.getUser().getEmail();   //delete old trigger
-            String name = "trigger" + email + event.getTopic();
-            JobKey key = new JobKey(name,"email-jobs");
-            logger.info("delete job with key  " + key);
-            boolean isDelete = scheduler.deleteJob(key);
-            logger.info("deletes successfully");
-            if(isDelete){
-                //update schedule
-                ZoneId defaultZoneId = ZoneId.systemDefault();
-                Instant instant = Instant.parse(eventDTO.getStartDate());
-                logger.info("instance rescheduling " + instant);
-                ZonedDateTime zonedDateTime = instant.atZone(defaultZoneId);
-                logger.info("zoned datetime,rescheduling " + zonedDateTime);
-                DateFormat dateFormatToUser = new SimpleDateFormat("dd MMMM HH:mm", Locale.ENGLISH);
-                Date dateToUser = Date.from(zonedDateTime.toInstant());
-                String eventStartDateToUser = dateFormatToUser.format(dateToUser);// date which showed in user mail
-                if(zonedDateTime.isBefore(ZonedDateTime.now())) {
-                    logger.error("dateTime must be after current time");
-                    continue;
-                }
-                JobDetail jobDetail = buildJobDetail(email,event.getTopic(),eventStartDateToUser,event.getLocation(),eventParticipant.getUser().getFullname(),event.getDescription(),"subscribed");
-                Trigger trigger = buildJobTrigger(jobDetail, zonedDateTime);
-                scheduler.scheduleJob(jobDetail, trigger);
-                logger.info("rescheduling done, trigger will executed at "+ zonedDateTime + " Email recipient  " + email );
-
-
-            }
-        }
-
-        return ResponseEntity.ok("triggers changed");
-
-    }
+//    @PostMapping("/updateSchedule")
+//    public ResponseEntity<?> updateSchedule(@RequestBody EventDTO eventDTO) throws SchedulerException {      //if owner edit date of start event
+//        Event event = eventService.findEventByTopic(eventDTO.getTopic());
+//        if(eventDTO.getStartDate().equals(event.getStartDate())){
+//            logger.info("date not changed");
+//            return null;
+//        }
+//        Set<EventParticipants> participants = event.getParticipants();
+//        for ( EventParticipants eventParticipant: participants) {
+//            String email = eventParticipant.getUser().getEmail();   //delete old trigger
+//            String name = "trigger" + email + event.getTopic();
+//            JobKey key = new JobKey(name,"email-jobs");
+//            logger.info("delete job with key  " + key);
+//            boolean isDelete = scheduler.deleteJob(key);
+//            logger.info("deletes successfully");
+//            if(isDelete){
+//                //update schedule
+//                ZoneId defaultZoneId = ZoneId.systemDefault();
+//                Instant instant = Instant.parse(eventDTO.getStartDate());
+//                logger.info("instance rescheduling " + instant);
+//                ZonedDateTime zonedDateTime = instant.atZone(defaultZoneId);
+//                logger.info("zoned datetime,rescheduling " + zonedDateTime);
+//                DateFormat dateFormatToUser = new SimpleDateFormat("dd MMMM HH:mm", Locale.ENGLISH);
+//                Date dateToUser = Date.from(zonedDateTime.toInstant());
+//                String eventStartDateToUser = dateFormatToUser.format(dateToUser);// date which showed in user mail
+//                if(zonedDateTime.isBefore(ZonedDateTime.now())) {
+//                    logger.error("dateTime must be after current time");
+//                    continue;
+//                }
+//                JobDetail jobDetail = buildJobDetail(email,event.getTopic(),eventStartDateToUser,event.getLocation(),eventParticipant.getUser().getFullname(),event.getDescription(),"subscribed");
+//                Trigger trigger = buildJobTrigger(jobDetail, zonedDateTime);
+//                scheduler.scheduleJob(jobDetail, trigger);
+//                logger.info("rescheduling done, trigger will executed at "+ zonedDateTime + " Email recipient  " + email );
+//
+//            }
+//        }
+//
+//        return ResponseEntity.ok("triggers changed");
+//
+//    }
 
 
 

@@ -137,7 +137,7 @@ export class CreateEvent extends Component<any, any> {
     if (this.state.newEvent.endDate === 0) {
       await createEvent({ ...this.state.newEvent });
       console.debug(this.state);
-      scheduleEmail({ ...this.state.newEvent }, "owned"); // topic and startDate
+      //scheduleEmail({ ...this.state.newEvent }, "owned"); // topic and startDate
       this.setState({ redirect: true });
     } else if (this.state.newEvent.startDate < this.state.newEvent.endDate) {
       createEvent({ ...this.state.newEvent });
@@ -312,9 +312,9 @@ export class CreateEvent extends Component<any, any> {
               ref={(el: any) => (leafletMap = el)}
             >
               <TileLayer
-              attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-              url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-            />
+                attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+              />
               {this.state.currentPos && (
                 <Marker position={this.state.currentPos} draggable={true}>
                   <Popup position={this.state.currentPos}>
