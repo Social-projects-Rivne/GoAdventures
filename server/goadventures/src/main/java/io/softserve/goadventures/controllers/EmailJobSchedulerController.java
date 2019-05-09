@@ -2,6 +2,7 @@ package io.softserve.goadventures.controllers;
 
 import io.softserve.goadventures.dto.EventDTO;
 import io.softserve.goadventures.dto.ScheduleEmailResponse;
+import io.softserve.goadventures.errors.WrongNotifyTimeException;
 import io.softserve.goadventures.models.Event;
 import io.softserve.goadventures.models.EventParticipants;
 import io.softserve.goadventures.models.User;
@@ -52,31 +53,18 @@ public class EmailJobSchedulerController {
                                                                @RequestHeader("timeToAlert") String timeToAlert,
                                                                @RequestBody EventDTO eventDTO) throws SchedulerException {
 
-        String message =  null;
-        if(timeToAlert.equals("00:00")){
-            message = EmailMessagesNotification.SIMPLENOTIFICATIONSTARTNOW;   //service
-        }else{
-            message = EmailMessagesNotification.SIMPLENOTIFICATIONSTARTSOON;
-        }
         Event event = eventService.findEventByTopic(eventDTO.getTopic());
         User user = userService.getUserByEmail(jwtService.parseToken(token));
-        ZonedDateTime zonedDateTimeOfStartEvent = DateParser.dateParser(eventDTO.getStartDate());// start event date      //service
-        String eventStartDateToUser = DateParser.dateToUser(zonedDateTimeOfStartEvent);
 
-        ZonedDateTime zonedDateTimeStartEventUserChoose = DateParser.dateOfStartEventUserChoose(zonedDateTimeOfStartEvent, timeToAlert); // start event date, user choose
-
-        if (zonedDateTimeStartEventUserChoose.isBefore(ZonedDateTime.now())) {
-            logger.error("Notify time must be after current time");
-            ScheduleEmailResponse scheduleEmailResponse = new ScheduleEmailResponse(false,
-                    "Notify time must be after current time");
-            return ResponseEntity.badRequest().body(scheduleEmailResponse);
-        }
         try {
-            emailScheduleService.scheduleEmail(user, event, eventStartDateToUser, zonedDateTimeStartEventUserChoose, message);
-            logger.info("Scheduler done, trigger will executed at " + zonedDateTimeStartEventUserChoose + ", Email recipient  " + user.getEmail());
+            emailScheduleService.scheduleEmail(user, event, event.getStartDate(), timeToAlert);
             return ResponseEntity.ok(new ScheduleEmailResponse(true, "scheduler done"));
 
-        } catch (SchedulerException ex) {
+        }catch (WrongNotifyTimeException ex){
+            logger.error("Notify time must be after current time");
+            return ResponseEntity.badRequest().body(new ScheduleEmailResponse(false,"Notify time must be after current time"));
+        }
+        catch (SchedulerException ex) {
             logger.error("Error scheduling email", ex);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ScheduleEmailResponse(false, "Error scheduling email. Please try later!"));
         }
