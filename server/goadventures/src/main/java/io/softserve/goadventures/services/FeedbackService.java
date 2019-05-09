@@ -2,6 +2,7 @@ package io.softserve.goadventures.services;
 
 import io.softserve.goadventures.dto.FeedbackCreateDTO;
 import io.softserve.goadventures.dto.FeedbackDTO;
+import io.softserve.goadventures.models.Event;
 import io.softserve.goadventures.models.Feedback;
 import io.softserve.goadventures.models.User;
 import io.softserve.goadventures.repositories.FeedbackRepository;
@@ -11,9 +12,12 @@ import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.Optional;
 
 @Service
 public class FeedbackService {
@@ -45,13 +49,16 @@ public class FeedbackService {
 
     }
 
-    private static Set<FeedbackDTO> convertToDto(Set<Feedback> feedback) {
-        return modelMapper.map(feedback, new TypeToken<Set<FeedbackDTO>>() {}.getType());
+    private static Slice<FeedbackDTO> convertToDto(Slice<Feedback> feedback) {
+        return modelMapper.map(feedback, new TypeToken<Slice<FeedbackDTO>>() {}.getType());
     }
 
 
-    public Set<FeedbackDTO> getAllEventFeedback(int eventId) {
-        Set<Feedback> feedback = feedbackRepository.findByEventId(eventId);
+    public Slice<FeedbackDTO> getAllEventFeedback(int eventId) {
+        Event event = new Event(eventId);
+        Slice<Feedback> feedback = feedbackRepository.findFeedbackByEventId(
+                event, new PageRequest(0, 15, Sort.by(Sort.Direction.ASC,  "timeStamp")));
+//        logger.info(feedback.getContent().toString());
         return convertToDto(feedback);
     }
 
@@ -64,4 +71,19 @@ public class FeedbackService {
         }
         return null;
     }
+
+    public boolean removeFeedback(long feedbackId, String userEmail) {
+        Optional<Feedback> feedback = feedbackRepository.findById(feedbackId);
+
+        if(feedback.isPresent() && feedback.get().getUserId() == userService.getUserByEmail(userEmail)) {
+            feedbackRepository.delete(feedback.get());
+            return true;
+//            return "Your feedback deleted";
+        } else {
+            return false;
+//            return "Somehow, you are trying to delete someone's feedback";
+        }
+    }
+
+
 }

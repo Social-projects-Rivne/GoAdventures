@@ -13,6 +13,7 @@ export const getFeedbackRequest = async (eventId: number): Promise<any> => {
       }
     })
     .then((res: AxiosResponse<any>) => {
+      console.log(res.data);
       return res.data;
     })
     .catch((err: AxiosError) => {

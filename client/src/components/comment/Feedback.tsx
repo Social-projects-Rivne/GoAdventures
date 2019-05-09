@@ -25,10 +25,11 @@ export const Feedback = (props: FeedbackProps): JSX.Element => {
 
   async function getFeedback(): Promise<void> {
     const response = await getFeedbackRequest(props.eventId);
+    console.debug(response.content);
     if (response.errorMessage) {
       setError({ ...response } as ErrorMessage);
     } else {
-      setFeedbackData([...response] as FeedbackSchema[]);
+      setFeedbackData([...response.content] as FeedbackSchema[]);
     }
   }
 

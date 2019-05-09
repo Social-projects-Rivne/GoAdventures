@@ -246,7 +246,7 @@ public class EventController {
         }
     }
 
-    @PostMapping("isOwner")
+    @GetMapping("isOwner")
     public ResponseEntity<?> isOwner(@RequestHeader(value = "Authorization") String token,
                                      @RequestHeader(value = "EventId") int eventId) {
         logger.info("[IS-OWNER] - eventId: " + eventId + "; ownerId: "

@@ -169,7 +169,7 @@ export const updateEvent = async (data: EventDto): Promise<any> => {
 };
 
 export const isOwner = async (data: number): Promise<any> =>
-  axios.post(`${serverUrl}/event/isOwner`, null, {
+  axios.get(`${serverUrl}/event/isOwner`, {
     headers: {
       'EventId': data,
       'Authorization': `Bearer ${cookies.get('tk879n')}`,
