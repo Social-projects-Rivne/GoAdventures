@@ -33,18 +33,18 @@
         box-shadow: 0 5px #666;
         transform: translateY(4px);
         }
+
     </style>
 </head>
 <body>
 
 <h3 class=pink align="center">Hi <span th:text="${fullname}"></span></h3>
-<h3 class=pink align="center">Event which you <span th:text="${role}"></span> starting soon!</h3>
+<h3 class=pink align="center"><span th:text="${message}"></span></h3>
 <hr align="center" width="90%" size="1"/>
 
 <h3 class=pink align="center"><span th:text="${description}"></span></h3>
 <h3 class=pink align="center"><span th:text="${location}"></span></h3>
-<h3 class=pink align="center"><span th:text="${startDate}"></span></h3>
-
+<h3 class=pink align="center"><span th:text="${newDate}"></span><span th:text="${startDate}"></span></h3>
 
 
 <p align="center">
@@ -53,13 +53,12 @@
     </a>
 </p>
 
-<h3 class=pink align="center">See you at <span th:text="${eventTopic}"></span> tomorrow!</h3>
-
+<h3 class=pink align="center">See you at <span th:text="${eventTopic}"></span> !</h3>
 
 
 <br><br>
 <hr align="center" width="90%" size="1"/>
-<h4 class=pink align = "center">All Rights Reserved</h4>
+<h4 class=pink align="center">All Rights Reserved</h4>
 
 </body>
 </html>

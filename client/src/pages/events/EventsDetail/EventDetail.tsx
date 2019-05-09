@@ -3,12 +3,10 @@ import React, { Component } from 'react';
 import { Field, FieldProps, Form, Formik, FormikProps } from 'formik';
 import { TileLayer, Map, Marker, Popup } from 'react-leaflet';
 import { MdDone, MdLockOpen, MdEdit, MdDelete, MdLock } from 'react-icons/md';
-import { TimePicker, Button, message } from "antd";
 import moment from 'moment';
-import 'antd/dist/antd.css';
+import DatePicker from 'react-datepicker';
+// import TimePicker from 'rc-time-picker';
 
-
-const format = 'HH:mm';
 import {
   deleteEvent,
   isOwner,
@@ -42,6 +40,7 @@ interface FormValue {
   comment: string;
 }
 
+const l = 's';
 class EventDetail extends Component<any, any> {
   public static getDerivedStateFromProps(nextProps: any, prevState: any): any {
     if (Object.is(nextProps.event, prevState.eventProps.event) === false) {
@@ -53,8 +52,9 @@ class EventDetail extends Component<any, any> {
   constructor(props: any) {
     super(props);
     this.state = {
-      timeToAlert: '',
+      timeToAlert: new Date(2013, 2, 1, 1, 10),
       showAlert: false,
+      isSchedule: true,
       errorMessage: {
         message: ''
       },
@@ -63,7 +63,7 @@ class EventDetail extends Component<any, any> {
       isSubs: true,
       newEventFeedback: {}
     };
-    console.debug(this.props);
+    console.debug('state', this.state);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -74,7 +74,14 @@ class EventDetail extends Component<any, any> {
   }
 
   public convertTime(date: string) {
-    const dateFormat = 'dddd, DD MMMM YYYY';
+    const dateFormat = 'dddd, DD MMMM YYYY HH:mm';
+    return moment(date)
+      .local()
+      .format(dateFormat)
+      .toString();
+  }
+  public convertTimeSchedule(date: string) {
+    const dateFormat = 'HH:mm';
     return moment(date)
       .local()
       .format(dateFormat)
@@ -132,18 +139,23 @@ class EventDetail extends Component<any, any> {
           }
         }
       );
-      console.debug("delete schedule");
+      console.debug('delete schedule');
       deleteScheduleEmail(this.state.eventProps.event);
-
     } else {
-      await scheduleEmail(this.state.eventProps.event, "subscribed", this.state.timeToAlert)
-        .catch((err) => {
-          this.setState({ errorMessage: { ...err.response.data } }, () => {
-            window.setTimeout(() => {
-              this.setState({ errorMessage: { message: '' } })
-            }, 3500);
-          });
-        });
+      const date1 = this.state.timeToAlert;
+      const timeToAlert = this.convertTimeSchedule(date1);
+      console.debug('time to alert', timeToAlert);
+      if (this.state.isSchedule) {
+        await scheduleEmail(this.state.eventProps.event, timeToAlert).catch(
+          (err) => {
+            this.setState({ errorMessage: { ...err.response.data } }, () => {
+              window.setTimeout(() => {
+                this.setState({ errorMessage: { message: '' } });
+              }, 3500);
+            });
+          }
+        );
+      }
       if (this.state.errorMessage.message === '') {
         await subscribe(this.state.eventProps.event.id).then(
           (res: AxiosResponse): any => {
@@ -154,10 +166,7 @@ class EventDetail extends Component<any, any> {
             }
           }
         );
-
       }
-
-
     }
   }
 
@@ -182,16 +191,20 @@ class EventDetail extends Component<any, any> {
       }
     );
   }
-  public timePickerChange(time: moment.Moment, timestring: string) {
-    console.debug("TIME PICKER", timestring);
-    this.setState({ timeToAlert: timestring });
+  public timePickerChange(time: Date) {
+    console.debug('TIME PICKER', time);
+    this.setState({ timeToAlert: time });
   }
   public showAlertSwitcher() {
-    this.setState({ showAlert: !this.state.showAlert })
-    console.debug(this.state.showAlert);
+    this.setState({ showAlert: !this.state.showAlert });
+    console.debug('show alert window', this.state.showAlert);
+  }
+  public schedulerSwitcher() {
+    this.setState({ isSchedule: !this.state.isSchedule });
+    console.debug('is schedule', this.state.isSchedule);
   }
   public clearErrorMessage() {
-    this.setState({ errorMessage: { message: '' } })
+    this.setState({ errorMessage: { message: '' } });
   }
 
   public render() {
@@ -218,114 +231,139 @@ class EventDetail extends Component<any, any> {
                   </div>
                 </div>
                 <div className='col-6'>
-                  <div className='d-flex  justify-content-end'>
+                  <div className='d-flex justify-content-end'>
                     {!this.state.isOwner ? (
                       <div>
                         {this.state.isSubs ? (
                           <button
                             type='button'
                             className='btn btn-outline-danger btn-sm'
-                            onClick={
-                              () => {
-                                this.handleClick();
-                                this.showAlertSwitcher();
+                            onClick={async () => {
+                              if (this.state.showAlert) {
+                                await this.showAlertSwitcher();
                               }
-                            }
+                              this.handleClick();
+                            }}
                           >
                             Subscribed
                           </button>
                         ) : (
-                            <div>
-                              {this.state.eventProps.event.statusId ===
-                                2 ? null : (
-                                  <button
-                                    type='button'
-                                    className='btn btn-info btn-sm'
-                                    onClick={this.showAlertSwitcher}
-                                  >
-                                    Subscribe
+                          <div>
+                            {this.state.eventProps.event.statusId ===
+                            2 ? null : (
+                              <button
+                                type='button'
+                                className='btn btn-info btn-sm'
+                                onClick={async () => {
+                                  if (!this.state.isSchedule) {
+                                    await this.schedulerSwitcher();
+                                  }
+                                  this.showAlertSwitcher();
+                                }}
+                              >
+                                Subscribe
                               </button>
-                                )}
+                            )}
 
-                              {this.state.showAlert === true
-                                ?
-                                <div className="Timepicker">
-                                  <label>Notify time(before event start)</label><br />
-                                  <TimePicker
-                                    defaultValue={moment('01:05', format)}
-                                    onChange={
-                                      this.timePickerChange
+                            {this.state.showAlert === true ? (
+                              <div className='TimepickerWrapper'>
+                                <label className='notifyText'>
+                                  Notify time(before event start)
+                                </label>
 
-                                    }
-                                    format={format} />
-                                  <Button onClick={this.handleClick}
+                                <DatePicker
+                                  className='TimePicker'
+                                  selected={this.state.timeToAlert}
+                                  showTimeSelect
+                                  onChange={this.timePickerChange}
+                                  showTimeSelectOnly
+                                  timeIntervals={15}
+                                  dateFormat='H:mm'
+                                  timeFormat='HH:mm'
+                                  timeCaption='hh  mm'
+                                />
+                                <br />
 
-                                  >
-                                    Ok
-                                </Button>
-                                  <div className="Errors-messages timePicker">
-                                    {
-                                      this.state.errorMessage.message !== ''
-                                        ? <div className="alert alert-danger alert-dismissible fade show errorTimePickerMessage "
-                                          role="alert">
-                                          <strong>{this.state.errorMessage.message}</strong>
-                                          <button type="button"
-                                            onClick={this.clearErrorMessage}
-                                            className="close"
-                                            data-dismiss="alert"
-                                            aria-label="Close">
-
-                                            <span aria-hidden="true">&times;</span>
-                                          </button>
-                                        </div>
-                                        : null
-                                    }
-                                  </div>
-
+                                <button
+                                  className='btn btn-info btn-sm'
+                                  onClick={this.handleClick}
+                                >
+                                  Ok
+                                </button>
+                                <button
+                                  onClick={async () => {
+                                    await this.schedulerSwitcher();
+                                    this.clearErrorMessage();
+                                    this.handleClick();
+                                  }}
+                                  className='btn btn-info btn-sm'
+                                >
+                                  Without notification
+                                </button>
+                                <div className='Errors-messages timePicker'>
+                                  {this.state.errorMessage.message !== '' ? (
+                                    <div
+                                      className='alert alert-danger alert-dismissible fade show errorTimePickerMessage'
+                                      role='alert'
+                                    >
+                                      <strong>
+                                        {this.state.errorMessage.message}
+                                      </strong>
+                                      <button
+                                        type='button'
+                                        onClick={this.clearErrorMessage}
+                                        className='close'
+                                        data-dismiss='alert'
+                                        aria-label='Close'
+                                        ref='qwe'
+                                      >
+                                        <span aria-hidden='true'>&times;</span>
+                                      </button>
+                                    </div>
+                                  ) : null}
                                 </div>
-                                :
-                                null
-                              }
-                            </div>
-                          )}
+                              </div>
+                            ) : null}
+                          </div>
+                        )}
                       </div>
                     ) : (
-                        <div>
+                      <div>
+                        <button
+                          onClick={this.handleDelete}
+                          type='button'
+                          className='btn btn-lg btn-outline-danger ml-1'
+                        >
+                          <MdDelete />
+                        </button>
+                        <button
+                          onClick={() => {
+                            this.state.eventProps.setEdit(true);
+                          }}
+                          type='button'
+                          className='btn btn-lg btn-outline-success ml-1'
+                        >
+                          <MdEdit />
+                        </button>
+                        {this.state.eventProps.event.statusId === 2 ? (
                           <button
-                            onClick={this.handleDelete}
-                            type='button'
-                            className='btn btn-lg btn-outline-danger ml-1'
-                          >
-                            <MdDelete />
-                          </button>
-                          <button
-                            onClick={() => {
-                              this.state.eventProps.setEdit(true);
-                            }}
+                            onClick={this.handleOpen}
                             type='button'
                             className='btn btn-lg btn-outline-success ml-1'
                           >
-                            <MdEdit />
+                            <MdLockOpen />
                           </button>
-                          {this.state.eventProps.event.statusId === 2 ? (
-                            <button
-                              onClick={this.handleOpen}
-                              type='button'
-                              className='btn btn-lg btn-outline-success ml-1'
-                            >
-                              <MdLockOpen />
-                            </button>
-                          ) : (
-                              <button
-                                onClick={this.handleClose}
-                                type='button'
-                                className='btn btn-lg btn-outline-warning ml-1'
-                              >
-                                <MdLock />
-                              </button>
-                            )}
-                        </div>
-                      )}
+                        ) : (
+                          <button
+                            onClick={this.handleClose}
+                            type='button'
+                            className='btn btn-lg btn-outline-warning ml-1'
+                          >
+                            <MdLock />
+                          </button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -342,8 +380,8 @@ class EventDetail extends Component<any, any> {
                   {this.state.eventProps.event.endDate === '0'
                     ? ''
                     : this.convertTime(
-                      this.state.eventProps.event.endDate.toString()
-                    )}
+                        this.state.eventProps.event.endDate.toString()
+                      )}
                 </p>
               </div>
 
@@ -424,16 +462,16 @@ class EventDetail extends Component<any, any> {
                                   name='comment'
                                 />
                                 {form.touched.comment &&
-                                  form.errors.comment &&
-                                  form.errors.comment ? (
-                                    <div className='invalid-feedback'>
-                                      {form.errors.comment}
-                                    </div>
-                                  ) : (
-                                    <div className='valid-feedback'>
-                                      <MdDone /> Press enter to add comment
+                                form.errors.comment &&
+                                form.errors.comment ? (
+                                  <div className='invalid-feedback'>
+                                    {form.errors.comment}
                                   </div>
-                                  )}
+                                ) : (
+                                  <div className='valid-feedback'>
+                                    <MdDone /> Press enter to add comment
+                                  </div>
+                                )}
                               </div>
                             );
                           }}
@@ -451,7 +489,6 @@ class EventDetail extends Component<any, any> {
                     }}
                   />
                 </div>
-
               </div>
             </div>
           </div>

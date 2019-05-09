@@ -1,5 +1,6 @@
 package io.softserve.goadventures.services;
 
+import io.softserve.goadventures.utils.EmailMessagesNotification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
@@ -34,15 +35,18 @@ public class MailContentBuilder {
         context.setVariable("sendNewPassword", sendNewPassword);
         return templateEngine.process("send-new-password", context);
     }
-    public String eventEmailNotification(String fullname, String eventTopic,String startDate,String location, String eventDescription, String role){
+    public String eventEmailNotification(String fullname, String eventTopic,String startDate,String location, String eventDescription,String message){
         Context context = new Context();
         context.setVariable("fullname", fullname);
         context.setVariable("eventTopic", eventTopic);
         context.setVariable("startDate", startDate);
         context.setVariable("location", location);
         context.setVariable("description", eventDescription);
-        context.setVariable("role", role);
-
+        context.setVariable("message", message);
+        if(EmailMessagesNotification.NOTIFICATIONWITHCHANGEDDATE.equals(message)){
+            context.setVariable("newDate", "new date: ");
+        }
         return templateEngine.process("eventEmailNotification",context);
     }
+
 }

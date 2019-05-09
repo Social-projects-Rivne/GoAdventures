@@ -137,7 +137,6 @@ export class CreateEvent extends Component<any, any> {
     if (this.state.newEvent.endDate === 0) {
       await createEvent({ ...this.state.newEvent });
       console.debug(this.state);
-      //scheduleEmail({ ...this.state.newEvent }, "owned"); // topic and startDate
       this.setState({ redirect: true });
     } else if (this.state.newEvent.startDate < this.state.newEvent.endDate) {
       createEvent({ ...this.state.newEvent });

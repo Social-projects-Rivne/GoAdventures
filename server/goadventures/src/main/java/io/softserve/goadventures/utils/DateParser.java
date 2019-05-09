@@ -13,14 +13,12 @@ public class DateParser {
 
     public static ZonedDateTime dateParser(String date) {
         Instant instant = Instant.parse(date);
-        ZonedDateTime zonedDateTime = instant.atZone(defaultZoneId); // zonedDateTimeStartEvent
-        return zonedDateTime;
+        return instant.atZone(defaultZoneId); // zonedDateTimeStartEvent
     }
     public static String dateToUser(ZonedDateTime zonedDateTime){
         DateFormat dateFormatToUser = new SimpleDateFormat("dd MMMM HH:mm", Locale.ENGLISH);
         Date dateToUser = Date.from(zonedDateTime.toInstant());
-        String eventStartDateToUser = dateFormatToUser.format(dateToUser);
-        return eventStartDateToUser;
+        return dateFormatToUser.format(dateToUser);
     }
     public static ZonedDateTime dateOfStartEventUserChoose(ZonedDateTime zonedDateTime,String timeToAlert){
         long msStartEvent = zonedDateTime.toInstant().toEpochMilli(); //event start date in ms
