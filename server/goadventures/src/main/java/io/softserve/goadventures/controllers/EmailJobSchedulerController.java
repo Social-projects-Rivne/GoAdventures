@@ -2,13 +2,13 @@ package io.softserve.goadventures.controllers;
 
 import io.softserve.goadventures.dto.EventDTO;
 import io.softserve.goadventures.dto.ScheduleEmailResponse;
+import io.softserve.goadventures.errors.WrongNotifyTimeException;
 import io.softserve.goadventures.models.Event;
 import io.softserve.goadventures.models.EventParticipants;
 import io.softserve.goadventures.models.User;
-import io.softserve.goadventures.services.EmailJob;
-import io.softserve.goadventures.services.EventService;
-import io.softserve.goadventures.services.JWTService;
-import io.softserve.goadventures.services.UserService;
+import io.softserve.goadventures.services.*;
+import io.softserve.goadventures.utils.DateParser;
+import io.softserve.goadventures.utils.EmailMessagesNotification;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,11 +19,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.mail.MessagingException;
 import javax.validation.Valid;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Set;
 
 @RestController
 public class EmailJobSchedulerController {
@@ -35,137 +36,98 @@ public class EmailJobSchedulerController {
     private EventService eventService;
     private UserService userService;
     private final JWTService jwtService;
+    private final EmailScheduleService emailScheduleService;
+    private MailContentBuilder mailContentBuilder;
+
     @Autowired
-    public EmailJobSchedulerController(EventService eventService, UserService userService, JWTService jwtService) {
+    public EmailJobSchedulerController(EventService eventService, UserService userService, JWTService jwtService, EmailScheduleService emailScheduleService, MailContentBuilder mailContentBuilder) {
         this.eventService = eventService;
         this.userService = userService;
         this.jwtService = jwtService;
+        this.emailScheduleService = emailScheduleService;
+        this.mailContentBuilder = mailContentBuilder;
     }
 
     @PostMapping("/scheduleEmail")
-    public ResponseEntity<ScheduleEmailResponse> scheduleEmail(@Valid @RequestHeader("Authorization") String token,@RequestHeader("Role") String role, @RequestBody EventDTO eventDTO) throws SchedulerException {
-        logger.info("role- " + role);
-        ZoneId defaultZoneId = ZoneId.systemDefault();
-
-        Instant instant = Instant.parse(eventDTO.getStartDate());
-
-        ZonedDateTime zonedDateTime = instant.atZone(defaultZoneId); // zonedDateTimeStartEvent
-        logger.info("zoned datetime " + zonedDateTime);
-
-        DateFormat dateFormatToUser = new SimpleDateFormat("dd MMMM HH:mm", Locale.ENGLISH);
-        Date dateToUser = Date.from(zonedDateTime.toInstant());
-        String eventStartDateToUser = dateFormatToUser.format(dateToUser);// date which showed in user mail
+    public ResponseEntity<ScheduleEmailResponse> scheduleEmail(@Valid @RequestHeader("Authorization") String token,
+                                                               @RequestHeader("timeToAlert") String timeToAlert,
+                                                               @RequestBody EventDTO eventDTO) throws SchedulerException {
 
         Event event = eventService.findEventByTopic(eventDTO.getTopic());
         User user = userService.getUserByEmail(jwtService.parseToken(token));
 
         try {
-            if(zonedDateTime.isBefore(ZonedDateTime.now())) {
-                logger.error("dateTime must be after current time");
-                ScheduleEmailResponse scheduleEmailResponse = new ScheduleEmailResponse(false,
-                        "dateTime must be after current time");
-                return ResponseEntity.badRequest().body(scheduleEmailResponse);
-            }
+            emailScheduleService.scheduleEmail(user, event, event.getStartDate(), timeToAlert);
+            return ResponseEntity.ok(new ScheduleEmailResponse(true, "scheduler done"));
 
-            JobDetail jobDetail = buildJobDetail(user.getEmail(),event.getTopic(),eventStartDateToUser,event.getLocation(),user.getFullname(),event.getDescription(),role);
-            Trigger trigger = buildJobTrigger(jobDetail, zonedDateTime);
-            scheduler.scheduleJob(jobDetail, trigger);
-            logger.info("scheduler done, trigger will executed at "+ zonedDateTime + " Email recipient  "+ user.getEmail());
-            ScheduleEmailResponse scheduleEmailResponse = new ScheduleEmailResponse(true,
-                    jobDetail.getKey().getName(), jobDetail.getKey().getGroup(), "Email Scheduled Successfully!");
-            return ResponseEntity.ok(scheduleEmailResponse);
-        } catch (SchedulerException ex) {
+        }catch (WrongNotifyTimeException ex){
+            logger.error("Notify time must be after current time");
+            return ResponseEntity.badRequest().body(new ScheduleEmailResponse(false,"Notify time must be after current time"));
+        }
+        catch (SchedulerException ex) {
             logger.error("Error scheduling email", ex);
-
-            ScheduleEmailResponse scheduleEmailResponse = new ScheduleEmailResponse(false,
-                    "Error scheduling email. Please try later!");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(scheduleEmailResponse);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ScheduleEmailResponse(false, "Error scheduling email. Please try later!"));
         }
 
     }
 
-    private JobDetail buildJobDetail(String email,String eventTopic, String startDate, String location, String fullname, String description, String role) {
-        JobDataMap jobDataMap = new JobDataMap();
-
-        jobDataMap.put("email", email);
-        jobDataMap.put("eventTopic",eventTopic);
-        jobDataMap.put("startDate", startDate);
-        jobDataMap.put("location", location);
-        jobDataMap.put("fullname", fullname);
-        jobDataMap.put("description", description);
-        jobDataMap.put("role", role);
-
-        return JobBuilder.newJob(EmailJob.class)
-                .withIdentity("trigger" + email + eventTopic, "email-jobs")
-                .withDescription("Send Email Job")
-                .usingJobData(jobDataMap)
-                .storeDurably()
-                .build();
-    }
-
-    private Trigger buildJobTrigger(JobDetail jobDetail, ZonedDateTime startAt) {
-        return TriggerBuilder.newTrigger()
-                .forJob(jobDetail)
-                .withIdentity(jobDetail.getKey().getName(), "email-triggers")
-                .withDescription("Send Email Trigger")
-                .startAt(Date.from(startAt.toInstant()))
-                .withSchedule(SimpleScheduleBuilder.simpleSchedule().withMisfireHandlingInstructionFireNow())
-                .build();
-    }
-
-
     @PostMapping("/deleteSchedule")
-    public boolean deleteSchedule(@RequestHeader("Authorization") String token, @RequestBody EventDTO eventDTO) throws SchedulerException { //unsubscribe
+    public ResponseEntity<ScheduleEmailResponse> deleteSchedule(@RequestHeader("Authorization") String token, @RequestBody EventDTO eventDTO) { // unsubscribe
         String email = jwtService.parseToken(token);
-        String name = "trigger" + email + eventDTO.getTopic();
+        try {
+            boolean isDelete = emailScheduleService.deleteSchedule(email, eventDTO.getTopic());
+            if (isDelete) {
+                logger.info("Job deleted successfully");
+                return ResponseEntity.ok(new ScheduleEmailResponse(true, "Job deleted successfully"));
+            }
+            logger.error("Error deleting job, key not found");
+            return ResponseEntity.ok(new ScheduleEmailResponse(false, "Error deleting job, key not found"));
 
-        JobKey key = new JobKey(name,"email-jobs");
-        logger.info("delete job with key  " + key);
-        return scheduler.deleteJob(key);
+        } catch (SchedulerException e) {
+            logger.error("Error deleting job");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ScheduleEmailResponse(false, "Error deleting job"));
+        }
+
     }
 
     @PostMapping("/updateSchedule")
-    public ResponseEntity<?> updateSchedule(@RequestBody EventDTO eventDTO) throws SchedulerException {      //if owner edit date of start event
+    public ResponseEntity<?> updateSchedule(@RequestBody EventDTO eventDTO) {      //if owner edit date of start event
         Event event = eventService.findEventByTopic(eventDTO.getTopic());
-        if(eventDTO.getStartDate().equals(event.getStartDate())){
+        if (eventDTO.getStartDate().equals(event.getStartDate())) {
             logger.info("date not changed");
             return null;
         }
+        HashMap<String, Boolean> isSuccess = new HashMap<>();
         Set<EventParticipants> participants = event.getParticipants();
-        for ( EventParticipants eventParticipant: participants) {
-            String email = eventParticipant.getUser().getEmail();   //delete old trigger
-            String name = "trigger" + email + event.getTopic();
-            JobKey key = new JobKey(name,"email-jobs");
-            logger.info("delete job with key  " + key);
-            boolean isDelete = scheduler.deleteJob(key);
-            logger.info("deletes successfully");
-            if(isDelete){
-                //update schedule
-                ZoneId defaultZoneId = ZoneId.systemDefault();
-                Instant instant = Instant.parse(eventDTO.getStartDate());
-                logger.info("instance rescheduling " + instant);
-                ZonedDateTime zonedDateTime = instant.atZone(defaultZoneId);
-                logger.info("zoned datetime,rescheduling " + zonedDateTime);
-                DateFormat dateFormatToUser = new SimpleDateFormat("dd MMMM HH:mm", Locale.ENGLISH);
-                Date dateToUser = Date.from(zonedDateTime.toInstant());
-                String eventStartDateToUser = dateFormatToUser.format(dateToUser);// date which showed in user mail
-                if(zonedDateTime.isBefore(ZonedDateTime.now())) {
-                    logger.error("dateTime must be after current time");
-                    continue;
-                }
-                JobDetail jobDetail = buildJobDetail(email,event.getTopic(),eventStartDateToUser,event.getLocation(),eventParticipant.getUser().getFullname(),event.getDescription(),"subscribed");
-                Trigger trigger = buildJobTrigger(jobDetail, zonedDateTime);
-                scheduler.scheduleJob(jobDetail, trigger);
-                logger.info("rescheduling done, trigger will executed at "+ zonedDateTime + " Email recipient  " + email );
+        for (EventParticipants eventParticipant : participants) {
+            String email = eventParticipant.getUser().getEmail();
+            boolean isDelete = false;
+            //delete old trigger
+            try {
+                isDelete = emailScheduleService.deleteSchedule(email, event.getTopic());
+                isSuccess.put(email, true);
+            } catch (SchedulerException e) {
+                logger.error("Error deleting job");
+                isSuccess.put(email, false);
+            }
+            if (isDelete) {
+                //send email to user with new date of start event
+                try {
+                    EmailSenderService emailSenderService = new EmailSenderService(mailContentBuilder);
+                    emailSenderService.eventEmailNotification(
+                            email, eventParticipant.getUser().getFullname(), event.getTopic(),
+                            DateParser.dateToUser(DateParser.dateParser(eventDTO.getStartDate())), event.getLocation(), event.getDescription(), EmailMessagesNotification.NOTIFICATIONWITHCHANGEDDATE); // Notify that event start date is changed
 
+                } catch (MessagingException e) {
+                    logger.error("Error, cant sent email to " + email + ", " + e.toString());
+                }
 
             }
         }
-
-        return ResponseEntity.ok("triggers changed");
+        logger.info("subst list email sent success" + isSuccess.toString());
+        return ResponseEntity.ok(isSuccess);
 
     }
-
 
 
 }
