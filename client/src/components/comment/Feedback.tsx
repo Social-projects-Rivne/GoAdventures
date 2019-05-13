@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, MouseEvent } from 'react';
 import './Feedback.scss';
-import { getFeedbackRequest } from '../../api/feedback.service';
+import { getFeedbackRequest, deleteFeedback } from '../../api/feedback.service';
 import { ErrorMessage } from '../../interfaces/ErrorMessage';
 import { ErrorMessageComponent } from '../errorMessage/ErrorMessageComponent';
 
 interface FeedbackProps {
   eventId: number;
   newFeedback: FeedbackSchema;
+  isOwner: boolean;
 }
 
 interface FeedbackSchema {
+  id: number;
+  eventId: number;
   userId: {
     avatarUrl: string
     username: string
@@ -37,14 +40,14 @@ export const Feedback = (props: FeedbackProps): JSX.Element => {
     if (Object.keys(props.newFeedback).length > 0) {
       setFeedbackData([...feedbackData, props.newFeedback]);
     }
-    return () => {};
+    return () => { };
   }, [props.newFeedback]);
 
   useEffect(() => {
     setIsLoading(true);
     getFeedback();
     setIsLoading(false);
-    return () => {};
+    return () => { };
   }, []);
 
   return (
@@ -58,7 +61,7 @@ export const Feedback = (props: FeedbackProps): JSX.Element => {
         {error ? (
           <ErrorMessageComponent {...{ errorMessage: [error.errorMessage] }} />
         ) : null}
-        {feedbackData.map((feedback: any, index: number) => {
+        {feedbackData.map((feedback: FeedbackSchema, index: number) => {
           return (
             <div
               key={componentUniKey + index}
@@ -70,7 +73,23 @@ export const Feedback = (props: FeedbackProps): JSX.Element => {
               />
               <div className='toast show rounded w-100'>
                 <div className='toast-header'>
-                  <strong>{feedback.userId.username}</strong>
+                  <strong className='mr-auto'>{feedback.userId.username}</strong>
+                  {props.isOwner ? (
+                    <button
+                      onClick={(): void => {
+                        const feedbackArrayCopy: FeedbackSchema[] = [...feedbackData];
+                        feedbackArrayCopy.splice(feedbackData.indexOf(feedback), 1);
+                        deleteFeedback(feedback.id);
+                        setFeedbackData([...feedbackArrayCopy]);
+                      }}
+                      type='button'
+                      className='ml-2 mb-1 close'
+                      data-dismiss='toast'
+                      aria-label='Close'>
+                      <span aria-hidden='true'>&times;</span>
+                    </button>
+                  ) : null}
+
                 </div>
                 <div className='toast-body'>
                   <span>{feedback.comment}</span>

@@ -4,7 +4,11 @@
     "max-line-length": {
       "options": [120]
     },
+    "jsx-no-multiline-js": false,
+    "jsx-no-lambda": false,
     "jsx-wrap-multiline": false,
+    "space-within-parens": false,
+    "no-object-literal-type-assertion": false,
     "object-literal-sort-keys": false,
     "triple-equals": true,
     "quotemark": [true, "single"],

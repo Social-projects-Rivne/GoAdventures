@@ -34,11 +34,14 @@ public class FeedbackController {
     }
 
     @GetMapping("/get-feedback/{eventId}")
-    public ResponseEntity<?> getFeedback(@PathVariable("eventId") int eventId
-                                         /* @PageableDefault(size = 15, sort = "id") Pageable feedbackPageable */) {
+    public ResponseEntity<?> getFeedback(@PathVariable("eventId") int eventId) {
         Slice<FeedbackDTO> eventFeedback = feedbackService.getAllEventFeedback(eventId);
-        logger.info(eventFeedback.getContent().toString());
-        return ResponseEntity.ok(eventFeedback);
+        if(eventFeedback != null) {
+            return ResponseEntity.ok(eventFeedback);
+        } else {
+            return new ResponseEntity<>(errorMessageManager.initError(
+                    "There is no feedback to your event", ""), HttpStatus.OK);
+        }
     }
 
     @PostMapping("/add-feedback/")
@@ -63,7 +66,7 @@ public class FeedbackController {
     }
 
 
-    @DeleteMapping("remove-feedback")
+    @DeleteMapping("remove-feedback/{feedbackId}")
     public ResponseEntity<?> removeFeedback(@RequestHeader(value = "Authorization") String token,
                                             @PathVariable("feedbackId") long feedbackId) {
        String userEmail = jwtService.parseToken(token);

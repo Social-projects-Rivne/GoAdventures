@@ -168,7 +168,7 @@ export const updateEvent = async (data: EventDto): Promise<any> => {
     });
 };
 
-export const isOwner = async (data: number): Promise<any> =>
+export const isOwnerCheck = async (data: number): Promise<any> =>
   axios.get(`${serverUrl}/event/isOwner`, {
     headers: {
       'EventId': data,
@@ -230,7 +230,7 @@ export const createEvent = async (data: any): Promise<string> => {
 };
 
 export const getEventDetail = async (topic: any): Promise<EventDto | any> => {
-  return await axios
+  return axios
     .get(`${serverUrl}/event/event-detail/${topic}`)
     .then((res: AxiosResponse<EventDto>) => {
       console.debug(res.data);
@@ -252,7 +252,7 @@ export const scheduleEmail = async (data: any, Role: string): Promise<any> => {
         'Content-Type': 'application/json'
       }
     }
-  )
+  );
 
 };
 export const deleteScheduleEmail = async (data: any): Promise<any> => {
@@ -266,11 +266,11 @@ export const deleteScheduleEmail = async (data: any): Promise<any> => {
       }
     }
   );
-}
+};
 export const updateSchedule = async (data: any): Promise<any> => {
   await axios.post(
     `${serverUrl}/updateSchedule`,
     { ...data }
 
-  )
-}
+  );
+};

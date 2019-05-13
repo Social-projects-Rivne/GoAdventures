@@ -4,15 +4,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import io.softserve.goadventures.dto.FeedbackDTO;
+import io.softserve.goadventures.dto.UserFeedbackDTO;
 import io.softserve.goadventures.services.FeedbackService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -51,12 +53,20 @@ public class FeedbackControllerTest {
     public void getFeedback_Test() throws Exception{
         List<FeedbackDTO> eventFeedBack = new ArrayList<>();
         FeedbackDTO feed = new FeedbackDTO();
-        feed.setId(1);
-        eventFeedBack.add(feed);
-        Page<FeedbackDTO> feedbackSlice = new PageImpl<FeedbackDTO>(eventFeedBack);
         int eventId = 1;
-
-        when(feedbackServiceMock.getAllEventFeedback(eventId)).thenReturn(feedbackSlice);
+        UserFeedbackDTO userId = new UserFeedbackDTO(
+                1,
+                "https://hornews.com/images/news_large/c1d4b2b8ec608ea72764c5678816d5c9.jpg",
+                "Testing");
+        feed.setId(1);
+        feed.setUserId(userId);
+        eventFeedBack.add(feed);
+        Slice<FeedbackDTO> eventFeedbackDTO = new SliceImpl<>(
+                eventFeedBack,
+                new PageRequest(0, 15, Sort.by(Sort.Direction.ASC,  "timeStamp")),
+                true
+        );
+        when(feedbackServiceMock.getAllEventFeedback(eventId)).thenReturn(eventFeedbackDTO);
 
         mockMvc.perform(get("/feedback/get-feedback/" + eventId))
                 .andExpect(status().isOk())

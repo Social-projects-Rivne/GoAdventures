@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
@@ -49,15 +50,16 @@ public class AuthController extends HttpServlet {
     @PostMapping("/sign-up")
     public ResponseEntity<?> signUp(@RequestBody UserAuthDto userAuthDto) throws MessagingException {
         logger.info("[SIGN-UP] - userDto : " + userAuthDto);
-        HttpHeaders httpHeaders = new HttpHeaders();
-
         User user = userService.addUser(userAuthDto);
         String confirmationToken = jwtService.createToken(user.getEmail());
-
         EmailSenderService emailSenderService = new EmailSenderService(mailContentBuilder);
-        emailSenderService.sendEmail(confirmationToken, user);
-
-        return ResponseEntity.ok().headers(httpHeaders).body(user);
+        try {
+            emailSenderService.sendEmail(confirmationToken, user);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }catch (MessagingException err){
+            logger.error(err.toString());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/sign-in")
@@ -83,7 +85,7 @@ public class AuthController extends HttpServlet {
     public ResponseEntity<String> signOut(@RequestHeader("Authorization") String authToken) {
         logger.info("[SIGN-OUT]");
         userService.singOut(jwtService.parseToken(authToken));
-        return ResponseEntity.ok("See ya");
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/recovery")

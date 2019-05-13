@@ -14,9 +14,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -49,8 +51,18 @@ public class FeedbackService {
 
     }
 
-    private static Slice<FeedbackDTO> convertToDto(Slice<Feedback> feedback) {
-        return modelMapper.map(feedback, new TypeToken<Slice<FeedbackDTO>>() {}.getType());
+    private static Slice<FeedbackDTO> convertFeedbackCollectionToDto(Slice<Feedback> feedback) {
+        if(feedback.hasContent()){
+            List<Feedback> feedbackList = feedback.getContent();
+            Slice<FeedbackDTO> newSliceFromList = new SliceImpl<FeedbackDTO>(
+                    modelMapper.map(feedbackList, new TypeToken<List<FeedbackDTO>>() {}.getType()),
+                    feedback.getPageable(), feedback.hasNext()
+            );
+            return newSliceFromList;
+        } else {
+            return null;
+        }
+
     }
 
 
@@ -59,7 +71,7 @@ public class FeedbackService {
         Slice<Feedback> feedback = feedbackRepository.findFeedbackByEventId(
                 event, new PageRequest(0, 15, Sort.by(Sort.Direction.ASC,  "timeStamp")));
 //        logger.info(feedback.getContent().toString());
-        return convertToDto(feedback);
+        return convertFeedbackCollectionToDto(feedback);
     }
 
     public FeedbackDTO addFeedbackToEvent(String token, FeedbackCreateDTO feedbackCreateDTO) {

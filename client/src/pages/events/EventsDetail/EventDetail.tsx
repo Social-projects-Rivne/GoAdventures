@@ -6,7 +6,7 @@ import { MdDone, MdLockOpen, MdEdit, MdDelete, MdLock } from 'react-icons/md';
 import moment from 'moment';
 import {
   deleteEvent,
-  isOwner,
+  isOwnerCheck,
   closeEvent,
   openEvent,
   isSubscribe,
@@ -53,7 +53,6 @@ class EventDetail extends Component<any, any> {
       isSubs: true,
       newEventFeedback: {}
     };
-    console.debug(this.props);
     this.handleDelete = this.handleDelete.bind(this);
 
     this.handleClick = this.handleClick.bind(this);
@@ -85,7 +84,7 @@ class EventDetail extends Component<any, any> {
         });
       });
 
-    isOwner(this.state.eventProps.event.id).then(
+    isOwnerCheck(this.state.eventProps.event.id).then(
       (res: AxiosResponse): any => {
         if (res.status >= 200 && res.status <= 300) {
           this.setState({
@@ -121,7 +120,7 @@ class EventDetail extends Component<any, any> {
           }
         }
       );
-      console.debug("delete schedule");
+      console.debug('delete schedule');
       deleteScheduleEmail(this.state.eventProps.event);
 
     } else {
@@ -135,7 +134,7 @@ class EventDetail extends Component<any, any> {
         }
       );
 
-      scheduleEmail(this.state.eventProps.event, "subscribed");
+      scheduleEmail(this.state.eventProps.event, 'subscribed');
     }
   }
 
@@ -368,6 +367,7 @@ class EventDetail extends Component<any, any> {
                 <div>
                   <Feedback
                     {...{
+                      isOwner: this.state.isOwner,
                       eventId: this.state.eventProps.event.id,
                       newFeedback: this.state.newEventFeedback
                     }}
