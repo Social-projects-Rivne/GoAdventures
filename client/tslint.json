@@ -1,37 +1,36 @@
 {
-  "extends": ["tslint:latest", "tslint-react"],
-  "rules": {
-    "max-line-length": {
-      "options": [120]
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended"
+    ],
+    "rules": {
+        "max-line-length": {
+            "options": [120]
+        },
+        "jsx-wrap-multiline": false,
+        "object-literal-sort-keys": false,
+        "triple-equals": true,
+        "quotemark": [true, "single"],
+        "ordered-imports": false,
+        "interface-name": false,
+        "semicolon": true,
+        "trailing-comma": true,
+        "new-parens": true,
+        "whitespace": false,
+        "no-arg": true,
+        "no-bitwise": true,
+        "no-empty": false,
+        "no-conditional-assignment": true,
+        "no-consecutive-blank-lines": false,
+        "no-console": {
+            "severity": "warning",
+            "options": ["info", "log", "time", "timeEnd"]
+        }
     },
-    "jsx-no-multiline-js": false,
-    "jsx-no-lambda": false,
-    "jsx-wrap-multiline": false,
-    "space-within-parens": false,
-    "no-object-literal-type-assertion": false,
-    "object-literal-sort-keys": false,
-    "triple-equals": true,
-    "quotemark": [true, "single"],
-    "ordered-imports": false,
-    "interface-name": false,
-    "semicolon": true,
-    "trailing-comma": true,
-    "new-parens": true,
-    "whitespace": false,
-    "no-arg": true,
-    "no-bitwise": true,
-    "no-empty": false,
-    "no-conditional-assignment": true,
-    "no-consecutive-blank-lines": false,
-    "no-console": {
-      "severity": "warning",
-      "options": ["info", "log", "time", "timeEnd"]
+    "jsRules": {
+        "max-line-length": {
+            "options": [120]
+        },
+        "no-unused-expression": false
     }
-  },
-  "jsRules": {
-    "max-line-length": {
-      "options": [120]
-    },
-    "no-unused-expression": false
-  }
 }

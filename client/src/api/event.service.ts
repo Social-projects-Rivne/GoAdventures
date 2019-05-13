@@ -5,7 +5,6 @@ import { serverUrl } from './url.config';
 import { date } from 'yup';
 import errorHandle from './error.service';
 
-
 export const getEventList = async (
   nextPage?: string | null,
   search?: string | null
@@ -203,7 +202,6 @@ export const unSubscribe = async (data: number): Promise<any> =>
     }
   });
 
-
 export const createEvent = async (data: any): Promise<string> => {
   return axios
     .post(
@@ -241,19 +239,21 @@ export const getEventDetail = async (topic: any): Promise<EventDto | any> => {
     });
 };
 
-export const scheduleEmail = async (data: any, Role: string): Promise<any> => {
+export const scheduleEmail = async (
+  data: any,
+  timeToAlert: string
+): Promise<any> => {
   await axios.post(
     `${serverUrl}/scheduleEmail`,
     { ...data },
     {
       headers: {
         'Authorization': `Bearer ${cookies.get('tk879n')}`,
-        'Role': Role,
+        'timeToAlert': timeToAlert,
         'Content-Type': 'application/json'
       }
     }
   );
-
 };
 export const deleteScheduleEmail = async (data: any): Promise<any> => {
   await axios.post(
@@ -268,9 +268,5 @@ export const deleteScheduleEmail = async (data: any): Promise<any> => {
   );
 };
 export const updateSchedule = async (data: any): Promise<any> => {
-  await axios.post(
-    `${serverUrl}/updateSchedule`,
-    { ...data }
-
-  );
+  await axios.post(`${serverUrl}/updateSchedule`, { ...data });
 };

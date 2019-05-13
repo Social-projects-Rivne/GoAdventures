@@ -1,16 +1,13 @@
 package io.softserve.goadventures.services;
 
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import io.softserve.goadventures.utils.EmailMessagesNotification;
+import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Component;
 import javax.mail.MessagingException;
-import javax.mail.NoSuchProviderException;
-
 
 @Component
 public class EmailJob extends QuartzJobBean {
@@ -20,7 +17,7 @@ public class EmailJob extends QuartzJobBean {
     private MailContentBuilder mailContentBuilder;
 
     @Override
-    protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+    protected void executeInternal(JobExecutionContext jobExecutionContext) {
         try {
             EmailSenderService emailSenderService = new EmailSenderService(mailContentBuilder);
             logger.info("Executing Job with key {}", jobExecutionContext.getJobDetail().getKey());
@@ -31,18 +28,17 @@ public class EmailJob extends QuartzJobBean {
             String location = jobDataMap.getString("location");
             String fullname = jobDataMap.getString("fullname");
             String description = jobDataMap.getString("description");
-            String role = jobDataMap.getString("role");
+            String message = jobDataMap.getString("message");
 
-            emailSenderService.eventEmailNotification(recipientEmail,fullname,eventTopic,startDate,location,description,role);
+            emailSenderService.eventEmailNotification(recipientEmail,fullname,eventTopic,startDate,location,description, message);
             logger.info("Email sent successfully to " + recipientEmail);
 
-        } catch (NoSuchProviderException e) {
-            logger.error(e.toString());
         } catch (MessagingException e) {
-            logger.error(e.toString());
+            logger.error("MessagingException, " + e.toString());
         }
 
 
     }
+
 
 }
