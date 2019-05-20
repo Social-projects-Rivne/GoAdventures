@@ -9,7 +9,7 @@ import DatePicker from 'react-datepicker';
 
 import {
   deleteEvent,
-  isOwner,
+  isOwnerCheck,
   closeEvent,
   openEvent,
   isSubscribe,
@@ -63,7 +63,6 @@ class EventDetail extends Component<any, any> {
       isSubs: true,
       newEventFeedback: {}
     };
-    console.debug('state', this.state);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -103,7 +102,7 @@ class EventDetail extends Component<any, any> {
         });
       });
 
-    isOwner(this.state.eventProps.event.id).then(
+    isOwnerCheck(this.state.eventProps.event.id).then(
       (res: AxiosResponse): any => {
         if (res.status >= 200 && res.status <= 300) {
           this.setState({
@@ -142,9 +141,8 @@ class EventDetail extends Component<any, any> {
       console.debug('delete schedule');
       deleteScheduleEmail(this.state.eventProps.event);
     } else {
-      const date1 = this.state.timeToAlert;
-      const timeToAlert = this.convertTimeSchedule(date1);
-      console.debug('time to alert', timeToAlert);
+      const date = this.state.timeToAlert;
+      const timeToAlert = this.convertTimeSchedule(date);
       if (this.state.isSchedule) {
         await scheduleEmail(this.state.eventProps.event, timeToAlert).catch(
           (err) => {
@@ -248,122 +246,123 @@ class EventDetail extends Component<any, any> {
                             Subscribed
                           </button>
                         ) : (
-                          <div>
-                            {this.state.eventProps.event.statusId ===
-                            2 ? null : (
-                              <button
-                                type='button'
-                                className='btn btn-info btn-sm'
-                                onClick={async () => {
-                                  if (!this.state.isSchedule) {
-                                    await this.schedulerSwitcher();
-                                  }
-                                  this.showAlertSwitcher();
-                                }}
-                              >
-                                Subscribe
+                            <div>
+                              {this.state.eventProps.event.statusId ===
+                                2 ? null : (
+                                  <button
+                                    type='button'
+                                    className='btn btn-info btn-sm'
+                                    onClick={async () => {
+                                      if (!this.state.isSchedule) {
+                                        await this.schedulerSwitcher();
+                                      }
+                                      this.showAlertSwitcher();
+                                    }}
+                                  >
+                                    Subscribe
                               </button>
-                            )}
+                                )}
 
-                            {this.state.showAlert === true ? (
-                              <div className='TimepickerWrapper'>
-                                <label className='notifyText'>
-                                  Notify time(before event start)
+                              {this.state.showAlert === true ? (
+                                <div className='TimepickerWrapper'>
+                                  <label className='notifyText'>
+                                    Notify time(before event start)
                                 </label>
 
-                                <DatePicker
-                                  className='TimePicker'
-                                  selected={this.state.timeToAlert}
-                                  showTimeSelect
-                                  onChange={this.timePickerChange}
-                                  showTimeSelectOnly
-                                  timeIntervals={15}
-                                  dateFormat='H:mm'
-                                  timeFormat='HH:mm'
-                                  timeCaption='hh  mm'
-                                />
-                                <br />
+                                  <DatePicker
+                                    className='TimePicker'
+                                    selected={this.state.timeToAlert}
+                                    showTimeSelect
+                                    onChange={this.timePickerChange}
+                                    showTimeSelectOnly
+                                    timeIntervals={15}
+                                    dateFormat='H:mm'
+                                    timeFormat='HH:mm'
+                                    timeCaption='hh  mm'
+                                  />
+                                  <br />
 
-                                <button
-                                  className='btn btn-info btn-sm'
-                                  onClick={this.handleClick}
-                                >
-                                  Ok
+                                  <button
+                                    className='btn btn-info btn-sm'
+                                    onClick={this.handleClick}
+                                  >
+                                    Ok
                                 </button>
-                                <button
-                                  onClick={async () => {
-                                    await this.schedulerSwitcher();
-                                    this.clearErrorMessage();
-                                    this.handleClick();
-                                  }}
-                                  className='btn btn-info btn-sm'
-                                >
-                                  Without notification
+                                  <button
+                                    onClick={async () => {
+                                      await this.schedulerSwitcher();
+                                      this.clearErrorMessage();
+                                      this.handleClick();
+                                    }}
+                                    className='btn btn-info btn-sm'
+                                  >
+                                    Without notification
                                 </button>
-                                <div className='Errors-messages timePicker'>
-                                  {this.state.errorMessage.message !== '' ? (
-                                    <div
-                                      className='alert alert-danger alert-dismissible fade show errorTimePickerMessage'
-                                      role='alert'
-                                    >
-                                      <strong>
-                                        {this.state.errorMessage.message}
-                                      </strong>
-                                      <button
-                                        type='button'
-                                        onClick={this.clearErrorMessage}
-                                        className='close'
-                                        data-dismiss='alert'
-                                        aria-label='Close'
-                                        ref='qwe'
+                                  <div className='Errors-messages timePicker'>
+                                    {this.state.errorMessage.message !== '' ? (
+                                      <div
+                                        className='alert alert-danger
+                                         alert-dismissible fade show errorTimePickerMessage'
+                                        role='alert'
                                       >
-                                        <span aria-hidden='true'>&times;</span>
-                                      </button>
-                                    </div>
-                                  ) : null}
+                                        <strong>
+                                          {this.state.errorMessage.message}
+                                        </strong>
+                                        <button
+                                          type='button'
+                                          onClick={this.clearErrorMessage}
+                                          className='close'
+                                          data-dismiss='alert'
+                                          aria-label='Close'
+                                          ref='qwe'
+                                        >
+                                          <span aria-hidden='true'>&times;</span>
+                                        </button>
+                                      </div>
+                                    ) : null}
+                                  </div>
                                 </div>
-                              </div>
-                            ) : null}
-                          </div>
-                        )}
+                              ) : null}
+                            </div>
+                          )}
                       </div>
                     ) : (
-                      <div>
-                        <button
-                          onClick={this.handleDelete}
-                          type='button'
-                          className='btn btn-lg btn-outline-danger ml-1'
-                        >
-                          <MdDelete />
-                        </button>
-                        <button
-                          onClick={() => {
-                            this.state.eventProps.setEdit(true);
-                          }}
-                          type='button'
-                          className='btn btn-lg btn-outline-success ml-1'
-                        >
-                          <MdEdit />
-                        </button>
-                        {this.state.eventProps.event.statusId === 2 ? (
+                        <div>
                           <button
-                            onClick={this.handleOpen}
+                            onClick={this.handleDelete}
+                            type='button'
+                            className='btn btn-lg btn-outline-danger ml-1'
+                          >
+                            <MdDelete />
+                          </button>
+                          <button
+                            onClick={() => {
+                              this.state.eventProps.setEdit(true);
+                            }}
                             type='button'
                             className='btn btn-lg btn-outline-success ml-1'
                           >
-                            <MdLockOpen />
+                            <MdEdit />
                           </button>
-                        ) : (
-                          <button
-                            onClick={this.handleClose}
-                            type='button'
-                            className='btn btn-lg btn-outline-warning ml-1'
-                          >
-                            <MdLock />
-                          </button>
-                        )}
-                      </div>
-                    )}
+                          {this.state.eventProps.event.statusId === 2 ? (
+                            <button
+                              onClick={this.handleOpen}
+                              type='button'
+                              className='btn btn-lg btn-outline-success ml-1'
+                            >
+                              <MdLockOpen />
+                            </button>
+                          ) : (
+                              <button
+                                onClick={this.handleClose}
+                                type='button'
+                                className='btn btn-lg btn-outline-warning ml-1'
+                              >
+                                <MdLock />
+                              </button>
+                            )}
+                        </div>
+                      )}
                   </div>
                 </div>
               </div>
@@ -380,8 +379,8 @@ class EventDetail extends Component<any, any> {
                   {this.state.eventProps.event.endDate === '0'
                     ? ''
                     : this.convertTime(
-                        this.state.eventProps.event.endDate.toString()
-                      )}
+                      this.state.eventProps.event.endDate.toString()
+                    )}
                 </p>
               </div>
 
@@ -462,16 +461,16 @@ class EventDetail extends Component<any, any> {
                                   name='comment'
                                 />
                                 {form.touched.comment &&
-                                form.errors.comment &&
-                                form.errors.comment ? (
-                                  <div className='invalid-feedback'>
-                                    {form.errors.comment}
+                                  form.errors.comment &&
+                                  form.errors.comment ? (
+                                    <div className='invalid-feedback'>
+                                      {form.errors.comment}
+                                    </div>
+                                  ) : (
+                                    <div className='valid-feedback'>
+                                      <MdDone /> Press enter to add comment
                                   </div>
-                                ) : (
-                                  <div className='valid-feedback'>
-                                    <MdDone /> Press enter to add comment
-                                  </div>
-                                )}
+                                  )}
                               </div>
                             );
                           }}
@@ -484,6 +483,7 @@ class EventDetail extends Component<any, any> {
                 <div>
                   <Feedback
                     {...{
+                      isOwner: this.state.isOwner,
                       eventId: this.state.eventProps.event.id,
                       newFeedback: this.state.newEventFeedback
                     }}

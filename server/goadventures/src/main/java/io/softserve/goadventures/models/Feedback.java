@@ -11,7 +11,6 @@ import org.springframework.data.annotation.CreatedDate;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.util.Date;
-import java.util.Objects;
 
 @Data
 @NoArgsConstructor
@@ -30,7 +29,7 @@ public class Feedback {
     private User userId;
 
     @JsonBackReference(value = "eventId")
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "events_id", nullable = false, referencedColumnName = "id")
     private Event eventId;
@@ -40,24 +39,8 @@ public class Feedback {
     private String comment;
 
     @CreatedDate
-    @Column(name = "created_date")
-    private Date createdDate;
+    @Column(name = "timestamp")
+    private Date timeStamp = new Date();
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Feedback feedback = (Feedback) o;
-        return id == feedback.id &&
-                userId.equals(feedback.userId) &&
-                createdDate.equals(feedback.createdDate) &&
-                eventId.equals(feedback.eventId) &&
-                comment.equals(feedback.comment);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, comment, createdDate, eventId, userId);
-    }
 }
 

@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios';
 import { ErrorMessage } from '../interfaces/ErrorMessage';
 
-export default function(error: AxiosError): ErrorMessage {
+export default function (error: AxiosError): ErrorMessage {
   if (error.response) {
     if (error.response.status === 500) {
       return {
@@ -10,7 +10,7 @@ export default function(error: AxiosError): ErrorMessage {
     } else {
       console.debug(error.response.data);
       return {
-        errorMessage: [`Oops, bad request ${error.code} code`]
+        errorMessage: [`Oops, request is malformed`]
       } as ErrorMessage;
     }
   } else if (error.request) {

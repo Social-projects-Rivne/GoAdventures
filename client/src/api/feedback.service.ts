@@ -38,3 +38,15 @@ export const addFeedbackRequest = async (
       return errorHandle(err);
     });
 };
+
+export const deleteFeedback =  async (feedbackId: number): Promise<any> => {
+  return axios.delete(`${serverUrl}/feedback/remove-feedback/${feedbackId}`, {
+    headers: {
+      Authorization: `Bearer ${cookies.get('tk879n')}`
+    }
+  })
+  .catch((err: AxiosError) => {
+    console.debug(err);
+    return errorHandle(err);
+  });
+};

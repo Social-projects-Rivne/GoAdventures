@@ -43,9 +43,9 @@ export const searchForEvents = async (
   return axios
     .get(
       `${serverUrl}${
-        !!nextPage
-          ? nextPage + '' + searchUrl
-          : defaultUrl + '' + searchUrl + '' + categoryUrl
+      !!nextPage
+        ? nextPage + '' + searchUrl
+        : defaultUrl + '' + searchUrl + '' + categoryUrl
       }`,
       {
         headers: {
@@ -167,8 +167,8 @@ export const updateEvent = async (data: EventDto): Promise<any> => {
     });
 };
 
-export const isOwner = async (data: number): Promise<any> =>
-  axios.post(`${serverUrl}/event/isOwner`, null, {
+export const isOwnerCheck = async (data: number): Promise<any> =>
+  axios.get(`${serverUrl}/event/isOwner`, {
     headers: {
       'EventId': data,
       'Authorization': `Bearer ${cookies.get('tk879n')}`,
@@ -228,7 +228,7 @@ export const createEvent = async (data: any): Promise<string> => {
 };
 
 export const getEventDetail = async (topic: any): Promise<EventDto | any> => {
-  return await axios
+  return axios
     .get(`${serverUrl}/event/event-detail/${topic}`)
     .then((res: AxiosResponse<EventDto>) => {
       console.debug(res.data);

@@ -65,6 +65,12 @@ public class Event {
     @JoinColumn(name = "owner")
     private User owner;
 
+
+    public Event(int id)
+    {
+        setId(id);
+    }
+
     public Event(String topic, String startDate, String endDate, String location, Double latitude, Double longitude,
             String description, Category category) {
         setTopic(topic);

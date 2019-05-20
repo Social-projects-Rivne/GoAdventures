@@ -78,7 +78,7 @@ export const EditEvent = (props: EditEvent) => {
     } as EventDto);
     props.setEvent({ ...response });
 
-    console.debug("updateSchedule");
+    console.debug('updateSchedule');
     updateSchedule(props.event);
 
 

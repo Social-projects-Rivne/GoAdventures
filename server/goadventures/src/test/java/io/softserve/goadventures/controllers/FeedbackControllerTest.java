@@ -4,25 +4,29 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import io.softserve.goadventures.dto.FeedbackDTO;
+import io.softserve.goadventures.dto.UserFeedbackDTO;
 import io.softserve.goadventures.services.FeedbackService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.nio.charset.Charset;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 public class FeedbackControllerTest {
 
@@ -47,13 +51,22 @@ public class FeedbackControllerTest {
 
     @Test
     public void getFeedback_Test() throws Exception{
-        Set<FeedbackDTO> eventFeedBack = new HashSet<>();
+        List<FeedbackDTO> eventFeedBack = new ArrayList<>();
         FeedbackDTO feed = new FeedbackDTO();
-        feed.setId(1);
-        eventFeedBack.add(feed);
         int eventId = 1;
-
-        when(feedbackServiceMock.getAllEventFeedback(eventId)).thenReturn(eventFeedBack);
+        UserFeedbackDTO userId = new UserFeedbackDTO(
+                1,
+                "https://hornews.com/images/news_large/c1d4b2b8ec608ea72764c5678816d5c9.jpg",
+                "Testing");
+        feed.setId(1);
+        feed.setUserId(userId);
+        eventFeedBack.add(feed);
+        Slice<FeedbackDTO> eventFeedbackDTO = new SliceImpl<>(
+                eventFeedBack,
+                new PageRequest(0, 15, Sort.by(Sort.Direction.ASC,  "timeStamp")),
+                true
+        );
+        when(feedbackServiceMock.getAllEventFeedback(eventId)).thenReturn(eventFeedbackDTO);
 
         mockMvc.perform(get("/feedback/get-feedback/" + eventId))
                 .andExpect(status().isOk())
@@ -63,7 +76,7 @@ public class FeedbackControllerTest {
 
     @Test
     public void addFeedback_eventIdNull_Test() throws Exception{
-        Set<FeedbackDTO> eventFeedBack = new HashSet<>();
+        Slice<FeedbackDTO> eventFeedBack;
         FeedbackDTO feedDTO = new FeedbackDTO();
         feedDTO.setId(0);
 
